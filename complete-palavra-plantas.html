@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Complete a Palavra! | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root { --primary: #22C55E; --light: #6EE7A0; --bg: #F0FDF4; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100vh; padding-bottom: 60px; }
+.header { background: linear-gradient(135deg, #14532D, #22C55E 60%, #6EE7A0); padding: 28px 32px; color: #fff; text-align: center; }
+.header-emoji { font-size: 3rem; display: block; margin-bottom: 8px; }
+.header-title { font-family: 'Baloo 2', cursive; font-size: 1.8rem; font-weight: 900; }
+.header-sub { font-size: 1rem; opacity: 0.9; font-weight: 600; margin-top: 4px; }
+.container { max-width: 720px; margin: 0 auto; padding: 32px 20px; }
+.instruction-card { background: #fff; border-radius: 16px; padding: 20px 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); margin-bottom: 28px; border-left: 5px solid var(--primary); }
+.instruction-card p { font-size: 1.15rem; font-weight: 700; color: #334155; line-height: 1.5; }
+.progress-wrap { margin-bottom: 24px; }
+.progress-label { font-size: 0.9rem; font-weight: 700; color: #475569; margin-bottom: 6px; }
+.progress-bar { height: 10px; background: #D1FAE5; border-radius: 20px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--primary); border-radius: 20px; transition: width 0.4s; }
+.word-card { background: #fff; border-radius: 20px; box-shadow: 0 2px 16px rgba(0,0,0,0.08); padding: 32px; margin-bottom: 24px; }
+.word-hint { font-size: 1rem; font-weight: 700; color: #64748B; margin-bottom: 6px; }
+.word-emoji { font-size: 3.5rem; display: block; text-align: center; margin-bottom: 8px; }
+.word-clue { font-size: 1.1rem; font-weight: 800; color: #334155; text-align: center; margin-bottom: 24px; line-height: 1.4; }
+.letter-slots { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 24px; }
+.letter-slot { width: 48px; height: 56px; border-radius: 12px; border: 3px solid #CBD5E1; background: #F8FAFC; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 900; color: #1E293B; text-transform: uppercase; transition: all 0.18s; position: relative; cursor: pointer; }
+.letter-slot.filled { border-color: var(--primary); background: #DCFCE7; color: #15803D; }
+.letter-slot.correct-slot { border-color: #22C55E; background: #DCFCE7; color: #15803D; }
+.letter-slot.wrong-slot { border-color: #EF4444; background: #FEE2E2; color: #B91C1C; animation: shake 0.3s; }
+.letter-slot.fixed { border-color: #E2E8F0; background: #F1F5F9; color: #334155; cursor: default; }
+@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
+.separator { font-size: 1.5rem; font-weight: 900; color: #94A3B8; display: flex; align-items: center; }
+.letter-bank { margin-bottom: 20px; }
+.bank-label { font-family: 'Baloo 2', cursive; font-size: 1rem; font-weight: 800; color: #475569; margin-bottom: 12px; text-align: center; }
+.bank-letters { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.bank-letter { width: 48px; height: 48px; border-radius: 12px; border: 3px solid var(--light); background: var(--bg); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 900; color: #15803D; cursor: pointer; text-transform: uppercase; transition: all 0.18s; user-select: none; }
+.bank-letter:hover:not(.used) { border-color: var(--primary); background: #DCFCE7; transform: scale(1.1); }
+.bank-letter.used { opacity: 0.25; pointer-events: none; }
+.feedback-box { padding: 14px 18px; border-radius: 14px; font-size: 1.05rem; font-weight: 700; display: none; margin-bottom: 16px; line-height: 1.5; text-align: center; }
+.feedback-box.show { display: block; }
+.feedback-box.correct-fb { background: #DCFCE7; color: #15803D; }
+.feedback-box.wrong-fb { background: #FEE2E2; color: #B91C1C; }
+.next-btn { display: none; width: 100%; padding: 16px; border-radius: 14px; border: none; background: var(--primary); color: #fff; font-family: 'Baloo 2', cursive; font-size: 1.2rem; font-weight: 800; cursor: pointer; transition: all 0.18s; }
+.next-btn:hover { background: #16A34A; transform: translateY(-2px); }
+.next-btn.show { display: block; }
+.result-card { background: #fff; border-radius: 24px; box-shadow: 0 4px 24px rgba(0,0,0,0.10); padding: 40px 32px; text-align: center; display: none; }
+.result-card.show { display: block; }
+.result-emoji { font-size: 4rem; margin-bottom: 16px; }
+.result-title { font-family: 'Baloo 2', cursive; font-size: 2rem; font-weight: 900; color: #1E293B; margin-bottom: 8px; }
+.result-score { font-size: 1.3rem; font-weight: 700; color: #475569; margin-bottom: 24px; }
+.result-score span { font-family: 'Baloo 2', cursive; font-size: 2rem; color: var(--primary); }
+.result-msg { font-size: 1.15rem; font-weight: 700; color: #334155; margin-bottom: 32px; line-height: 1.5; }
+.result-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.btn-retry { padding: 14px 28px; border-radius: 14px; border: 2px solid var(--primary); background: #fff; color: var(--primary); font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800; cursor: pointer; }
+.btn-back { padding: 14px 28px; border-radius: 14px; border: none; background: var(--primary); color: #fff; font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800; cursor: pointer; }
+</style>
+</head>
+<body>
+<div class="header">
+  <span class="header-emoji">🔤</span>
+  <div class="header-title">Complete a Palavra!</div>
+  <div class="header-sub">Descubra os nomes das plantas clicando nas letras!</div>
+</div>
+<div class="container">
+  <div class="instruction-card">
+    <p>🌱 Olhe a dica e clique nas letras certas para completar o nome da planta!<br>Clique numa letra já colocada para removê-la.</p>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label" id="prog-label">Palavra 1 de 6</div>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:16.6%"></div></div>
+  </div>
+  <div id="game-area">
+    <div class="word-card">
+      <div class="word-hint" id="word-hint"></div>
+      <span class="word-emoji" id="word-emoji"></span>
+      <div class="word-clue" id="word-clue"></div>
+      <div class="letter-slots" id="letter-slots"></div>
+      <div class="letter-bank">
+        <div class="bank-label">🔤 Letras disponíveis:</div>
+        <div class="bank-letters" id="bank-letters"></div>
+      </div>
+      <div class="feedback-box" id="feedback"></div>
+      <button class="next-btn" id="next-btn" onclick="nextWord()">Próxima palavra ➜</button>
+    </div>
+  </div>
+  <div class="result-card" id="result">
+    <div class="result-emoji" id="res-emoji"></div>
+    <div class="result-title" id="res-title"></div>
+    <div class="result-score">Você acertou <span id="res-score"></span> de 6!</div>
+    <div class="result-msg" id="res-msg"></div>
+    <div class="result-btns">
+      <button class="btn-retry" onclick="startGame()">Tentar de novo 🔄</button>
+      <button class="btn-back" onclick="window.close()">Voltar ao Portal 🏠</button>
+    </div>
+  </div>
+</div>
+<script>
+// Each word: answer (uppercase), fixed positions (index: letter), clue, emoji, hint
+const words = [
+  {
+    answer: 'AGUAPE',
+    fixed: { 0:'A', 3:'P' },
+    clue: 'Planta aquática que flutua em rios e lagos. Tem folhas redondas e flores roxas.',
+    emoji: '🌊',
+    hint: 'Planta aquática — 6 letras'
+  },
+  {
+    answer: 'CACTO',
+    fixed: { 0:'C', 4:'O' },
+    clue: 'Planta do semiárido. Tem espinhos e guarda água no caule.',
+    emoji: '🌵',
+    hint: 'Planta do semiárido — 5 letras'
+  },
+  {
+    answer: 'RAIZ',
+    fixed: { 0:'R', 3:'Z' },
+    clue: 'Parte da planta que fica no solo. Absorve água e nutrientes e fixa a planta.',
+    emoji: '🌱',
+    hint: 'Parte da planta — 4 letras'
+  },
+  {
+    answer: 'ESPINHO',
+    fixed: { 0:'E', 6:'O' },
+    clue: 'O cacto tem __________ em vez de folhas. Isso ajuda a guardar água!',
+    emoji: '🌵',
+    hint: 'Parte do cacto — 7 letras'
+  },
+  {
+    answer: 'FLUTUA',
+    fixed: { 0:'F', 5:'A' },
+    clue: 'O aguapé __________ na superfície da água graças às suas folhas e caule.',
+    emoji: '💧',
+    hint: 'O que o aguapé faz — 6 letras'
+  },
+  {
+    answer: 'TERRESTRE',
+    fixed: { 0:'T', 4:'S' },
+    clue: 'A laranjeira é uma planta __________. Ela vive no solo com raízes fixas.',
+    emoji: '🌳',
+    hint: 'Tipo de planta — 9 letras'
+  }
+];
+
+let current = 0, score = 0;
+let slotState = []; // each item: null or {letter, bankIdx}
+let answered = false;
+
+function playSound(type) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator(), g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  if (type === 'correct') {
+    o.frequency.setValueAtTime(523, ctx.currentTime); o.frequency.setValueAtTime(659, ctx.currentTime+0.1); o.frequency.setValueAtTime(784, ctx.currentTime+0.2);
+    g.gain.setValueAtTime(0.3, ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.5);
+    o.start(); o.stop(ctx.currentTime+0.5);
+  } else {
+    o.frequency.setValueAtTime(300, ctx.currentTime); o.frequency.setValueAtTime(200, ctx.currentTime+0.15);
+    g.gain.setValueAtTime(0.3, ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.4);
+    o.start(); o.stop(ctx.currentTime+0.4);
+  }
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function buildBankLetters(word) {
+  // Take the missing letters + some decoys
+  const missing = [];
+  for (let i = 0; i < word.answer.length; i++) {
+    if (word.fixed[i] === undefined) missing.push(word.answer[i]);
+  }
+  // Add 3 decoy letters
+  const decoys = 'BCDFGHJKLMNPQRSTVWXYZ'.split('').filter(l => !missing.includes(l));
+  const chosen = shuffle(decoys).slice(0, 3);
+  return shuffle([...missing, ...chosen]);
+}
+
+function renderWord() {
+  const w = words[current];
+  document.getElementById('prog-label').textContent = `Palavra ${current+1} de ${words.length}`;
+  document.getElementById('prog-fill').style.width = ((current+1)/words.length*100) + '%';
+  document.getElementById('word-hint').textContent = w.hint;
+  document.getElementById('word-emoji').textContent = w.emoji;
+  document.getElementById('word-clue').textContent = w.clue;
+
+  const len = w.answer.length;
+  slotState = Array(len).fill(null);
+  answered = false;
+
+  // Render slots
+  const slotsEl = document.getElementById('letter-slots');
+  slotsEl.innerHTML = '';
+  for (let i = 0; i < len; i++) {
+    if (w.fixed[i] !== undefined) {
+      const slot = document.createElement('div');
+      slot.className = 'letter-slot fixed';
+      slot.textContent = w.fixed[i];
+      slot.dataset.index = i;
+      slotsEl.appendChild(slot);
+    } else {
+      const slot = document.createElement('div');
+      slot.className = 'letter-slot';
+      slot.dataset.index = i;
+      slot.onclick = () => removeFromSlot(i);
+      slotsEl.appendChild(slot);
+    }
+  }
+
+  // Render bank
+  const bank = buildBankLetters(w);
+  const bankEl = document.getElementById('bank-letters');
+  bankEl.innerHTML = '';
+  bank.forEach((letter, bi) => {
+    const btn = document.createElement('div');
+    btn.className = 'bank-letter';
+    btn.textContent = letter;
+    btn.dataset.bankIdx = bi;
+    btn.onclick = () => addLetter(letter, bi);
+    bankEl.appendChild(btn);
+  });
+
+  document.getElementById('feedback').className = 'feedback-box';
+  document.getElementById('next-btn').className = 'next-btn';
+}
+
+function addLetter(letter, bankIdx) {
+  if (answered) return;
+  const w = words[current];
+  // Find first empty non-fixed slot
+  let targetSlot = -1;
+  for (let i = 0; i < w.answer.length; i++) {
+    if (w.fixed[i] === undefined && slotState[i] === null) { targetSlot = i; break; }
+  }
+  if (targetSlot === -1) return;
+
+  slotState[targetSlot] = { letter, bankIdx };
+  document.getElementById('bank-letters').children[bankIdx].classList.add('used');
+  const slotEl = document.querySelector(`.letter-slot[data-index="${targetSlot}"]`);
+  slotEl.textContent = letter;
+  slotEl.classList.add('filled');
+
+  // Check if all slots filled
+  const allFilled = slotState.every((s, i) => w.fixed[i] !== undefined || s !== null);
+  if (allFilled) checkWord();
+}
+
+function removeFromSlot(idx) {
+  if (answered) return;
+  const w = words[current];
+  if (w.fixed[idx] !== undefined) return;
+  if (slotState[idx] === null) return;
+  const { bankIdx } = slotState[idx];
+  slotState[idx] = null;
+  document.getElementById('bank-letters').children[bankIdx].classList.remove('used');
+  const slotEl = document.querySelector(`.letter-slot[data-index="${idx}"]`);
+  slotEl.textContent = '';
+  slotEl.classList.remove('filled', 'correct-slot', 'wrong-slot');
+  document.getElementById('feedback').className = 'feedback-box';
+}
+
+function checkWord() {
+  if (answered) return;
+  answered = true;
+  const w = words[current];
+  let correct = true;
+  for (let i = 0; i < w.answer.length; i++) {
+    if (w.fixed[i] !== undefined) continue;
+    const slotEl = document.querySelector(`.letter-slot[data-index="${i}"]`);
+    if (slotState[i] && slotState[i].letter === w.answer[i]) {
+      slotEl.classList.add('correct-slot');
+    } else {
+      slotEl.classList.add('wrong-slot');
+      correct = false;
+    }
+  }
+  const fb = document.getElementById('feedback');
+  if (correct) {
+    score++;
+    playSound('correct');
+    fb.textContent = `✅ Correto! A palavra é "${w.answer.charAt(0) + w.answer.slice(1).toLowerCase()}"! Muito bem! 🎉`;
+    fb.className = 'feedback-box correct-fb show';
+  } else {
+    playSound('wrong');
+    fb.textContent = `❌ Quase! A palavra certa é "${w.answer.charAt(0) + w.answer.slice(1).toLowerCase()}". Continue tentando! 🌱`;
+    fb.className = 'feedback-box wrong-fb show';
+    // Show correct answer
+    setTimeout(() => {
+      for (let i = 0; i < w.answer.length; i++) {
+        if (w.fixed[i] !== undefined) continue;
+        const slotEl = document.querySelector(`.letter-slot[data-index="${i}"]`);
+        slotEl.textContent = w.answer[i];
+        slotEl.classList.remove('wrong-slot');
+        slotEl.classList.add('correct-slot');
+      }
+    }, 600);
+  }
+  document.getElementById('next-btn').className = 'next-btn show';
+}
+
+function nextWord() {
+  current++;
+  if (current < words.length) renderWord();
+  else showResult();
+}
+
+function showResult() {
+  document.getElementById('game-area').style.display = 'none';
+  document.getElementById('result').classList.add('show');
+  document.getElementById('res-score').textContent = score;
+  let emoji, title, msg;
+  if (score === 6) { emoji='🏆'; title='Botânico(a) expert!'; msg='Você completou todas as palavras! Incrível! Você conhece muito sobre as plantas! 🌱🌵💧'; }
+  else if (score >= 4) { emoji='🌟'; title='Muito bem!'; msg='Você foi ótimo(a)! Estude mais um pouquinho e tente de novo! 🌿'; }
+  else if (score >= 2) { emoji='💪'; title='Continue assim!'; msg='Você está aprendendo! Releia sobre as plantas e tente de novo! 🌱'; }
+  else { emoji='📚'; title='Vamos praticar mais!'; msg='Não desanime! Revise os nomes das plantas e tente de novo! 🎯'; }
+  document.getElementById('res-emoji').textContent = emoji;
+  document.getElementById('res-title').textContent = title;
+  document.getElementById('res-msg').textContent = msg;
+}
+
+function startGame() {
+  current = 0; score = 0;
+  document.getElementById('game-area').style.display = 'block';
+  document.getElementById('result').classList.remove('show');
+  renderWord();
+}
+
+startGame();
+</script>
+</body>
+</html>

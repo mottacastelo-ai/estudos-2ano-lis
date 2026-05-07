@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ordene o Ciclo de Vida | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root { --primary: #22C55E; --light: #6EE7A0; --bg: #F0FDF4; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100vh; padding-bottom: 60px; }
+
+.header {
+  background: linear-gradient(135deg, #14532D, #22C55E 60%, #6EE7A0);
+  padding: 28px 32px; color: #fff; text-align: center;
+}
+.header-emoji { font-size: 3rem; display: block; margin-bottom: 8px; }
+.header-title { font-family: 'Baloo 2', cursive; font-size: 1.8rem; font-weight: 900; }
+.header-sub { font-size: 1rem; opacity: 0.9; font-weight: 600; margin-top: 4px; }
+
+.container { max-width: 720px; margin: 0 auto; padding: 32px 20px; }
+
+.instruction-card {
+  background: #fff; border-radius: 16px; padding: 20px 24px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07); margin-bottom: 28px;
+  border-left: 5px solid var(--primary);
+}
+.instruction-card p { font-size: 1.15rem; font-weight: 700; color: #334155; line-height: 1.5; }
+
+.phase-label { font-family: 'Baloo 2', cursive; font-size: 1.15rem; font-weight: 800; color: #1E293B; margin-bottom: 14px; }
+
+/* DRAG SOURCE */
+.drag-pool {
+  background: #fff; border-radius: 20px; padding: 24px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07); margin-bottom: 28px;
+}
+.pool-title { font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800; color: #475569; margin-bottom: 16px; }
+.pool-items { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+
+.drag-item {
+  background: var(--bg); border: 3px solid var(--light);
+  border-radius: 16px; padding: 18px 14px;
+  cursor: grab; user-select: none;
+  text-align: center; min-width: 120px; flex: 0 0 auto;
+  transition: all 0.18s;
+  font-family: 'Nunito', sans-serif;
+}
+.drag-item:hover { transform: scale(1.05); border-color: var(--primary); box-shadow: 0 4px 12px rgba(34,197,94,.2); }
+.drag-item.dragging { opacity: 0.4; transform: scale(0.95); }
+.drag-item-emoji { font-size: 2.4rem; display: block; margin-bottom: 6px; }
+.drag-item-name { font-size: 1rem; font-weight: 800; color: #1E293B; }
+
+/* DROP SLOTS */
+.drop-area {
+  display: flex; gap: 12px; flex-wrap: wrap;
+  justify-content: center; margin-bottom: 28px;
+}
+.drop-slot {
+  border: 3px dashed #CBD5E1; border-radius: 16px;
+  min-width: 120px; min-height: 120px; padding: 12px;
+  text-align: center; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 6px;
+  background: #fff; transition: all 0.18s; flex: 0 0 auto;
+}
+.drop-slot.drag-over { border-color: var(--primary); background: var(--bg); }
+.drop-slot.filled { border-style: solid; border-color: var(--light); }
+.slot-number {
+  font-family: 'Baloo 2', cursive; font-size: 1.3rem; font-weight: 900;
+  color: #CBD5E1; position: absolute;
+}
+.slot-label { font-size: 0.8rem; font-weight: 700; color: #94A3B8; }
+.arrow-between { font-size: 1.8rem; color: var(--primary); align-self: center; }
+
+.btn-check {
+  display: block; width: 100%; padding: 18px;
+  border-radius: 16px; border: none; background: var(--primary);
+  color: #fff; font-family: 'Baloo 2', cursive; font-size: 1.3rem; font-weight: 900;
+  cursor: pointer; transition: all 0.18s; margin-bottom: 16px;
+}
+.btn-check:hover { background: #16A34A; transform: translateY(-2px); }
+.btn-reset {
+  display: block; width: 100%; padding: 14px;
+  border-radius: 16px; border: 2px solid #CBD5E1; background: #fff;
+  color: #64748B; font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800;
+  cursor: pointer; transition: all 0.18s;
+}
+.btn-reset:hover { border-color: var(--primary); color: var(--primary); }
+
+.result-box {
+  border-radius: 16px; padding: 20px 24px; text-align: center;
+  font-size: 1.3rem; font-weight: 800; display: none; margin-top: 16px;
+}
+.result-box.show { display: block; }
+.result-box.correct { background: #DCFCE7; color: #15803D; }
+.result-box.wrong { background: #FEE2E2; color: #B91C1C; }
+.back-btn {
+  margin-top: 24px; display: block; text-align: center;
+  padding: 14px; border-radius: 14px; border: none;
+  background: var(--primary); color: #fff;
+  font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800;
+  cursor: pointer; transition: all 0.18s;
+}
+.back-btn:hover { background: #16A34A; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="header-emoji">🔄</span>
+  <div class="header-title">Ordene o Ciclo de Vida</div>
+  <div class="header-sub">Arraste as fases na ordem certa!</div>
+</div>
+
+<div class="container">
+  <div class="instruction-card">
+    <p>🐕 O cachorro passa por 4 fases ao longo da vida.<br>Arraste cada fase para o lugar certo, da <strong>1ª até a 4ª</strong>!</p>
+  </div>
+
+  <div class="drag-pool">
+    <div class="pool-title">📦 Fases para ordenar:</div>
+    <div class="pool-items" id="pool">
+      <div class="drag-item" draggable="true" data-value="adulto" id="item-adulto">
+        <span class="drag-item-emoji">🐕</span>
+        <span class="drag-item-name">Adulto</span>
+      </div>
+      <div class="drag-item" draggable="true" data-value="idoso" id="item-idoso">
+        <span class="drag-item-emoji">🐾</span>
+        <span class="drag-item-name">Idoso</span>
+      </div>
+      <div class="drag-item" draggable="true" data-value="filhote-mamando" id="item-filhote-mamando">
+        <span class="drag-item-emoji">🍼</span>
+        <span class="drag-item-name">Filhote mamando</span>
+      </div>
+      <div class="drag-item" draggable="true" data-value="filhote" id="item-filhote">
+        <span class="drag-item-emoji">🐶</span>
+        <span class="drag-item-name">Filhote</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase-label">➡️ Coloque as fases em ordem:</div>
+  <div class="drop-area" id="drop-area">
+    <div class="drop-slot" data-pos="0"><span class="slot-label">1ª fase</span></div>
+    <div style="align-self:center;font-size:1.8rem;color:#22C55E;">➜</div>
+    <div class="drop-slot" data-pos="1"><span class="slot-label">2ª fase</span></div>
+    <div style="align-self:center;font-size:1.8rem;color:#22C55E;">➜</div>
+    <div class="drop-slot" data-pos="2"><span class="slot-label">3ª fase</span></div>
+    <div style="align-self:center;font-size:1.8rem;color:#22C55E;">➜</div>
+    <div class="drop-slot" data-pos="3"><span class="slot-label">4ª fase</span></div>
+  </div>
+
+  <button class="btn-check" onclick="checkAnswer()">Verificar minha resposta ✅</button>
+  <button class="btn-reset" onclick="resetAll()">🔄 Recomeçar</button>
+  <div class="result-box" id="result-box"></div>
+  <button class="back-btn" onclick="window.close()">🏠 Voltar ao Portal</button>
+</div>
+
+<script>
+const correctOrder = ['filhote-mamando', 'filhote', 'adulto', 'idoso'];
+let dragging = null;
+const slotContents = [null, null, null, null];
+
+function playSound(type) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator(), g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  if (type === 'correct') {
+    o.frequency.setValueAtTime(523, ctx.currentTime);
+    o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+    o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    o.start(); o.stop(ctx.currentTime + 0.5);
+  } else {
+    o.frequency.setValueAtTime(300, ctx.currentTime);
+    o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    o.start(); o.stop(ctx.currentTime + 0.4);
+  }
+}
+
+document.querySelectorAll('.drag-item').forEach(item => {
+  item.addEventListener('dragstart', e => {
+    dragging = item;
+    setTimeout(() => item.classList.add('dragging'), 0);
+    e.dataTransfer.setData('text/plain', item.dataset.value);
+  });
+  item.addEventListener('dragend', () => {
+    item.classList.remove('dragging');
+    dragging = null;
+  });
+});
+
+document.querySelectorAll('.drop-slot').forEach(slot => {
+  slot.addEventListener('dragover', e => { e.preventDefault(); slot.classList.add('drag-over'); });
+  slot.addEventListener('dragleave', () => slot.classList.remove('drag-over'));
+  slot.addEventListener('drop', e => {
+    e.preventDefault();
+    slot.classList.remove('drag-over');
+    const pos = parseInt(slot.dataset.pos);
+    const val = e.dataTransfer.getData('text/plain');
+    const srcItem = document.querySelector(`[data-value="${val}"]`);
+    if (!srcItem) return;
+    // If slot already occupied, return item to pool
+    if (slotContents[pos] !== null) {
+      const oldVal = slotContents[pos];
+      document.getElementById('item-' + oldVal).style.display = 'flex';
+      document.getElementById('item-' + oldVal).style.display = '';
+    }
+    slotContents[pos] = val;
+    srcItem.style.display = 'none';
+    slot.innerHTML = srcItem.outerHTML.replace('display: none;', '').replace('style="display: none;"', '');
+    slot.querySelector('.drag-item').style.display = '';
+    slot.querySelector('.drag-item').removeAttribute('draggable');
+    slot.classList.add('filled');
+  });
+});
+
+function checkAnswer() {
+  const filled = slotContents.filter(s => s !== null);
+  if (filled.length < 4) {
+    const rb = document.getElementById('result-box');
+    rb.className = 'result-box wrong show';
+    rb.textContent = '⚠️ Coloque todas as 4 fases antes de verificar!';
+    return;
+  }
+  const rb = document.getElementById('result-box');
+  const correct = correctOrder.every((v, i) => slotContents[i] === v);
+  if (correct) {
+    playSound('correct');
+    rb.className = 'result-box correct show';
+    rb.textContent = '🎉 Perfeito! A ordem certa é: Filhote mamando → Filhote → Adulto → Idoso! Você arrasou! 🏆';
+  } else {
+    playSound('wrong');
+    rb.className = 'result-box wrong show';
+    rb.textContent = '❌ Não está certo ainda! Pense: o que acontece primeiro quando um cachorro nasce? Tente de novo!';
+  }
+}
+
+function resetAll() {
+  slotContents.fill(null);
+  document.querySelectorAll('.drag-item').forEach(i => i.style.display = '');
+  document.querySelectorAll('.drop-slot').forEach(slot => {
+    slot.innerHTML = `<span class="slot-label">${slot.querySelector('.slot-label') ? slot.querySelector('.slot-label').textContent : (parseInt(slot.dataset.pos)+1) + 'ª fase'}</span>`;
+    const labels = ['1ª fase','2ª fase','3ª fase','4ª fase'];
+    slot.innerHTML = `<span class="slot-label">${labels[parseInt(slot.dataset.pos)]}</span>`;
+    slot.classList.remove('filled');
+  });
+  document.getElementById('result-box').className = 'result-box';
+}
+</script>
+</body>
+</html>

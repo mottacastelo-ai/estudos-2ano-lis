@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crie sua Mensagem! | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root { --primary: #22C55E; --light: #6EE7A0; --bg: #F0FDF4; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100vh; padding-bottom: 60px; }
+.header { background: linear-gradient(135deg, #14532D, #22C55E 60%, #6EE7A0); padding: 28px 32px; color: #fff; text-align: center; }
+.header-emoji { font-size: 3rem; display: block; margin-bottom: 8px; }
+.header-title { font-family: 'Baloo 2', cursive; font-size: 1.8rem; font-weight: 900; }
+.header-sub { font-size: 1rem; opacity: 0.9; font-weight: 600; margin-top: 4px; }
+.container { max-width: 740px; margin: 0 auto; padding: 32px 20px; }
+.instruction-card { background: #fff; border-radius: 16px; padding: 20px 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); margin-bottom: 28px; border-left: 5px solid var(--primary); }
+.instruction-card p { font-size: 1.15rem; font-weight: 700; color: #334155; line-height: 1.5; }
+
+/* PHRASE BUILDER */
+.phrase-display {
+  background: #fff; border-radius: 20px; padding: 24px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.08); margin-bottom: 24px;
+  min-height: 90px; border: 3px dashed #CBD5E1;
+  display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+  transition: all 0.18s;
+}
+.phrase-display.has-words { border-style: solid; border-color: var(--light); }
+.phrase-word {
+  background: var(--primary); color: #fff; border-radius: 10px;
+  padding: 8px 14px; font-size: 1.1rem; font-weight: 800;
+  cursor: pointer; transition: all 0.18s; user-select: none;
+  display: flex; align-items: center; gap: 6px;
+}
+.phrase-word:hover { background: #16A34A; transform: scale(1.05); }
+.phrase-word .remove-btn { font-size: 0.9rem; opacity: 0.8; }
+.placeholder-text { color: #94A3B8; font-size: 1.05rem; font-weight: 700; }
+
+/* PHRASE COUNTER */
+.phrase-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.word-count { font-size: 0.9rem; font-weight: 700; color: #64748B; }
+.clear-btn { padding: 8px 16px; border-radius: 8px; border: 2px solid #EF4444; background: #FEF2F2; color: #B91C1C; font-family: 'Nunito', sans-serif; font-size: 0.9rem; font-weight: 800; cursor: pointer; }
+
+/* WORD BANKS */
+.banks-section { margin-bottom: 28px; }
+.bank-label { font-family: 'Baloo 2', cursive; font-size: 1rem; font-weight: 800; color: #475569; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.word-bank { background: #fff; border-radius: 16px; padding: 18px; box-shadow: 0 2px 10px rgba(0,0,0,0.07); margin-bottom: 16px; }
+.bank-words { display: flex; gap: 8px; flex-wrap: wrap; }
+.bank-word {
+  border-radius: 10px; padding: 9px 14px; font-size: 1rem; font-weight: 800;
+  cursor: pointer; transition: all 0.18s; user-select: none; border: 2px solid transparent;
+}
+.bank-word:hover:not(.used) { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+.bank-word.used { opacity: 0.3; cursor: not-allowed; pointer-events: none; }
+.bank-word.subject { background: #DBEAFE; color: #1D4ED8; border-color: #93C5FD; }
+.bank-word.verb { background: #FEF9C3; color: #92400E; border-color: #FDE047; }
+.bank-word.object { background: #DCFCE7; color: #15803D; border-color: #86EFAC; }
+.bank-word.extra { background: #F3E8FF; color: #7E22CE; border-color: #C4B5FD; }
+
+/* SENTENCES GALLERY */
+.gallery-section { margin-bottom: 28px; }
+.gallery-title { font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800; color: #1E293B; margin-bottom: 12px; }
+.gallery { display: flex; flex-direction: column; gap: 8px; }
+.gallery-item {
+  background: #fff; border-radius: 14px; padding: 14px 18px;
+  border: 2px solid #E2E8F0; font-size: 1.05rem; font-weight: 700; color: #1E293B;
+  display: flex; align-items: center; gap: 10px;
+}
+.gallery-bullet { font-size: 1.3rem; }
+
+/* BUTTONS */
+.btn-row { display: flex; gap: 12px; margin-bottom: 16px; }
+.btn-save {
+  flex: 1; padding: 16px; border-radius: 14px; border: none; background: var(--primary);
+  color: #fff; font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 900; cursor: pointer; transition: all 0.18s;
+}
+.btn-save:hover { background: #16A34A; transform: translateY(-2px); }
+.btn-share {
+  flex: 1; padding: 16px; border-radius: 14px; border: 2px solid var(--primary); background: #fff;
+  color: var(--primary); font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 900; cursor: pointer; transition: all 0.18s;
+}
+.btn-share:hover { background: var(--bg); }
+.feedback-msg { border-radius: 12px; padding: 14px 18px; font-size: 1.05rem; font-weight: 700; display: none; margin-bottom: 16px; }
+.feedback-msg.show { display: block; }
+.feedback-msg.ok { background: #DCFCE7; color: #15803D; }
+.feedback-msg.warn { background: #FEF9C3; color: #92400E; }
+.back-btn { display: block; text-align: center; padding: 14px; border-radius: 14px; border: none; background: var(--primary); color: #fff; font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800; cursor: pointer; }
+.back-btn:hover { background: #16A34A; }
+</style>
+</head>
+<body>
+<div class="header">
+  <span class="header-emoji">✏️</span>
+  <div class="header-title">Crie sua Mensagem!</div>
+  <div class="header-sub">Monte frases para cuidar do planeta 🌍</div>
+</div>
+<div class="container">
+  <div class="instruction-card">
+    <p>🌿 Clique nas palavras abaixo para montar uma mensagem sobre cuidar do meio ambiente.<br>Você pode criar quantas frases quiser! Clique na palavra na frase para removê-la.</p>
+  </div>
+
+  <div class="phrase-info">
+    <span class="word-count" id="word-count">0 palavras na frase</span>
+    <button class="clear-btn" onclick="clearPhrase()">🗑️ Limpar</button>
+  </div>
+  <div class="phrase-display" id="phrase-display">
+    <span class="placeholder-text">👆 Clique nas palavras abaixo para montar sua frase...</span>
+  </div>
+
+  <div class="banks-section">
+    <div class="word-bank">
+      <div class="bank-label">🧑 Quem faz:</div>
+      <div class="bank-words">
+        <span class="bank-word subject" onclick="addWord(this, 'Eu')">Eu</span>
+        <span class="bank-word subject" onclick="addWord(this, 'Nós')">Nós</span>
+        <span class="bank-word subject" onclick="addWord(this, 'As pessoas')">As pessoas</span>
+        <span class="bank-word subject" onclick="addWord(this, 'As crianças')">As crianças</span>
+        <span class="bank-word subject" onclick="addWord(this, 'Todos nós')">Todos nós</span>
+      </div>
+    </div>
+    <div class="word-bank">
+      <div class="bank-label">⚡ O que faz:</div>
+      <div class="bank-words">
+        <span class="bank-word verb" onclick="addWord(this, 'devemos cuidar de')">devemos cuidar de</span>
+        <span class="bank-word verb" onclick="addWord(this, 'precisamos proteger')">precisamos proteger</span>
+        <span class="bank-word verb" onclick="addWord(this, 'podemos salvar')">podemos salvar</span>
+        <span class="bank-word verb" onclick="addWord(this, 'não devemos destruir')">não devemos destruir</span>
+        <span class="bank-word verb" onclick="addWord(this, 'vamos preservar')">vamos preservar</span>
+      </div>
+    </div>
+    <div class="word-bank">
+      <div class="bank-label">🌍 O quê:</div>
+      <div class="bank-words">
+        <span class="bank-word object" onclick="addWord(this, 'o meio ambiente')">o meio ambiente</span>
+        <span class="bank-word object" onclick="addWord(this, 'as árvores')">as árvores</span>
+        <span class="bank-word object" onclick="addWord(this, 'os animais')">os animais</span>
+        <span class="bank-word object" onclick="addWord(this, 'a água')">a água</span>
+        <span class="bank-word object" onclick="addWord(this, 'a floresta')">a floresta</span>
+        <span class="bank-word object" onclick="addWord(this, 'o planeta')">o planeta</span>
+      </div>
+    </div>
+    <div class="word-bank">
+      <div class="bank-label">💬 Para completar:</div>
+      <div class="bank-words">
+        <span class="bank-word extra" onclick="addWord(this, 'sempre!')">sempre! 🌱</span>
+        <span class="bank-word extra" onclick="addWord(this, 'com carinho!')">com carinho! 💚</span>
+        <span class="bank-word extra" onclick="addWord(this, 'para o futuro!')">para o futuro! 🌟</span>
+        <span class="bank-word extra" onclick="addWord(this, 'juntos!')">juntos! 🤝</span>
+        <span class="bank-word extra" onclick="addWord(this, 'agora!')">agora! ⚡</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn-save" onclick="savePhrase()">💾 Guardar minha frase</button>
+    <button class="btn-share" onclick="sharePhrase()">🗣️ Ler em voz alta</button>
+  </div>
+  <div class="feedback-msg" id="feedback-msg"></div>
+
+  <div class="gallery-section" id="gallery-section" style="display:none">
+    <div class="gallery-title">📋 Minhas mensagens:</div>
+    <div class="gallery" id="gallery"></div>
+  </div>
+
+  <button class="back-btn" onclick="window.close()">🏠 Voltar ao Portal</button>
+</div>
+<script>
+let currentWords = [];
+let savedPhrases = [];
+
+function addWord(el, word) {
+  if (el.classList.contains('used')) return;
+  currentWords.push({ word, el });
+  el.classList.add('used');
+  renderPhrase();
+  playClick();
+}
+
+function removeWord(index) {
+  const { el } = currentWords[index];
+  el.classList.remove('used');
+  currentWords.splice(index, 1);
+  renderPhrase();
+}
+
+function renderPhrase() {
+  const display = document.getElementById('phrase-display');
+  document.getElementById('word-count').textContent = currentWords.length + ' palavra(s) na frase';
+  if (currentWords.length === 0) {
+    display.classList.remove('has-words');
+    display.innerHTML = '<span class="placeholder-text">👆 Clique nas palavras abaixo para montar sua frase...</span>';
+    return;
+  }
+  display.classList.add('has-words');
+  display.innerHTML = currentWords.map((w, i) =>
+    `<span class="phrase-word" onclick="removeWord(${i})">${w.word} <span class="remove-btn">✕</span></span>`
+  ).join('');
+}
+
+function clearPhrase() {
+  currentWords.forEach(({ el }) => el.classList.remove('used'));
+  currentWords = [];
+  renderPhrase();
+}
+
+function savePhrase() {
+  if (currentWords.length < 2) {
+    showFeedback('⚠️ Sua frase está muito curta! Adicione mais palavras.', 'warn');
+    return;
+  }
+  const phrase = currentWords.map(w => w.word).join(' ');
+  savedPhrases.push(phrase);
+  renderGallery();
+  showFeedback('🎉 Mensagem guardada! Que frase poderosa! 🌍', 'ok');
+  playSuccess();
+  clearPhrase();
+}
+
+function sharePhrase() {
+  if (currentWords.length === 0) {
+    showFeedback('⚠️ Monte uma frase primeiro!', 'warn');
+    return;
+  }
+  const phrase = currentWords.map(w => w.word).join(' ');
+  if ('speechSynthesis' in window) {
+    const utt = new SpeechSynthesisUtterance(phrase);
+    utt.lang = 'pt-BR'; utt.rate = 0.9;
+    speechSynthesis.speak(utt);
+    showFeedback('🗣️ Lendo: "' + phrase + '"', 'ok');
+  } else {
+    showFeedback('📣 Leia em voz alta: "' + phrase + '"', 'ok');
+  }
+}
+
+function renderGallery() {
+  const section = document.getElementById('gallery-section');
+  const gallery = document.getElementById('gallery');
+  section.style.display = savedPhrases.length ? 'block' : 'none';
+  const emojis = ['🌱','🌍','💚','🌿','🌳','♻️','💧','⭐'];
+  gallery.innerHTML = savedPhrases.map((p, i) =>
+    `<div class="gallery-item"><span class="gallery-bullet">${emojis[i % emojis.length]}</span>${p}</div>`
+  ).join('');
+}
+
+function showFeedback(msg, type) {
+  const fb = document.getElementById('feedback-msg');
+  fb.textContent = msg; fb.className = 'feedback-msg ' + type + ' show';
+  setTimeout(() => fb.classList.remove('show'), 4000);
+}
+
+function playClick() {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator(), g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  o.frequency.setValueAtTime(440, ctx.currentTime);
+  g.gain.setValueAtTime(0.15, ctx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+  o.start(); o.stop(ctx.currentTime + 0.15);
+}
+
+function playSuccess() {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator(), g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  o.frequency.setValueAtTime(523, ctx.currentTime);
+  o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+  o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+  g.gain.setValueAtTime(0.3, ctx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+  o.start(); o.stop(ctx.currentTime + 0.5);
+}
+</script>
+</body>
+</html>

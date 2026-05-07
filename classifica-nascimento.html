@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Como Nasce? | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root { --primary: #22C55E; --light: #6EE7A0; --bg: #F0FDF4; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100vh; padding-bottom: 60px; }
+
+.header {
+  background: linear-gradient(135deg, #14532D, #22C55E 60%, #6EE7A0);
+  padding: 28px 32px; color: #fff; text-align: center;
+}
+.header-emoji { font-size: 3rem; display: block; margin-bottom: 8px; }
+.header-title { font-family: 'Baloo 2', cursive; font-size: 1.8rem; font-weight: 900; }
+.header-sub { font-size: 1rem; opacity: 0.9; font-weight: 600; margin-top: 4px; }
+
+.container { max-width: 760px; margin: 0 auto; padding: 32px 20px; }
+
+.instruction-card {
+  background: #fff; border-radius: 16px; padding: 20px 24px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07); margin-bottom: 28px;
+  border-left: 5px solid var(--primary);
+}
+.instruction-card p { font-size: 1.15rem; font-weight: 700; color: #334155; line-height: 1.5; }
+
+/* ANIMAL CARDS TO CLASSIFY */
+.animals-pool {
+  background: #fff; border-radius: 20px; padding: 24px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07); margin-bottom: 28px;
+}
+.pool-title { font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800; color: #475569; margin-bottom: 16px; }
+.animals-grid { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+
+.animal-card {
+  background: var(--bg); border: 3px solid var(--light);
+  border-radius: 16px; padding: 16px 12px; cursor: grab;
+  text-align: center; min-width: 100px; flex: 0 0 auto;
+  transition: all 0.18s; user-select: none;
+}
+.animal-card:hover { transform: scale(1.06); border-color: var(--primary); box-shadow: 0 4px 12px rgba(34,197,94,.2); }
+.animal-card.dragging { opacity: 0.35; }
+.animal-emoji { font-size: 2.6rem; display: block; margin-bottom: 6px; }
+.animal-name { font-size: 1rem; font-weight: 800; color: #1E293B; }
+
+/* CLASSIFICATION ZONES */
+.zones { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 28px; }
+.zone {
+  background: #fff; border-radius: 20px; padding: 20px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  min-height: 200px; transition: all 0.18s;
+  border: 3px solid #E2E8F0;
+}
+.zone.drag-over { border-color: var(--primary); background: var(--bg); }
+.zone-header { text-align: center; margin-bottom: 16px; }
+.zone-emoji { font-size: 2.8rem; display: block; }
+.zone-title { font-family: 'Baloo 2', cursive; font-size: 1.2rem; font-weight: 900; color: #1E293B; margin-top: 6px; }
+.zone-items { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; min-height: 60px; }
+.zone-item {
+  background: #DCFCE7; border: 2px solid var(--primary); border-radius: 12px;
+  padding: 8px 10px; text-align: center; font-size: 0.85rem; font-weight: 800; color: #15803D;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+}
+.zone-item-emoji { font-size: 1.8rem; }
+
+.btn-check {
+  display: block; width: 100%; padding: 18px;
+  border-radius: 16px; border: none; background: var(--primary);
+  color: #fff; font-family: 'Baloo 2', cursive; font-size: 1.3rem; font-weight: 900;
+  cursor: pointer; transition: all 0.18s; margin-bottom: 12px;
+}
+.btn-check:hover { background: #16A34A; transform: translateY(-2px); }
+.btn-reset {
+  display: block; width: 100%; padding: 14px;
+  border-radius: 14px; border: 2px solid #CBD5E1; background: #fff;
+  color: #64748B; font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800;
+  cursor: pointer; transition: all 0.18s; margin-bottom: 16px;
+}
+.btn-reset:hover { border-color: var(--primary); color: var(--primary); }
+.result-box {
+  border-radius: 16px; padding: 20px 24px; text-align: center;
+  font-size: 1.15rem; font-weight: 800; display: none; margin-bottom: 16px; line-height: 1.5;
+}
+.result-box.show { display: block; }
+.result-box.correct { background: #DCFCE7; color: #15803D; }
+.result-box.partial { background: #FEF9C3; color: #92400E; }
+.result-box.wrong { background: #FEE2E2; color: #B91C1C; }
+.back-btn {
+  display: block; text-align: center; padding: 14px; border-radius: 14px; border: none;
+  background: var(--primary); color: #fff; font-family: 'Baloo 2', cursive;
+  font-size: 1.1rem; font-weight: 800; cursor: pointer; transition: all 0.18s;
+}
+.back-btn:hover { background: #16A34A; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="header-emoji">🥚</span>
+  <div class="header-title">Como Nasce?</div>
+  <div class="header-sub">Arraste cada animal para o lugar certo!</div>
+</div>
+
+<div class="container">
+  <div class="instruction-card">
+    <p>🐣 Cada animal nasce de um jeito diferente!<br>Arraste os animais para a categoria correta: <strong>nasce da barriga da mãe</strong> ou <strong>nasce de ovo</strong>.</p>
+  </div>
+
+  <div class="animals-pool">
+    <div class="pool-title">🐾 Animais para classificar:</div>
+    <div class="animals-grid" id="pool">
+      <div class="animal-card" draggable="true" data-value="cachorro" data-correct="barriga" id="card-cachorro">
+        <span class="animal-emoji">🐶</span><span class="animal-name">Cachorro</span>
+      </div>
+      <div class="animal-card" draggable="true" data-value="pato" data-correct="ovo" id="card-pato">
+        <span class="animal-emoji">🦆</span><span class="animal-name">Pato</span>
+      </div>
+      <div class="animal-card" draggable="true" data-value="gato" data-correct="barriga" id="card-gato">
+        <span class="animal-emoji">🐱</span><span class="animal-name">Gato</span>
+      </div>
+      <div class="animal-card" draggable="true" data-value="cobra" data-correct="ovo" id="card-cobra">
+        <span class="animal-emoji">🐍</span><span class="animal-name">Cobra</span>
+      </div>
+      <div class="animal-card" draggable="true" data-value="tartaruga" data-correct="ovo" id="card-tartaruga">
+        <span class="animal-emoji">🐢</span><span class="animal-name">Tartaruga</span>
+      </div>
+      <div class="animal-card" draggable="true" data-value="vaca" data-correct="barriga" id="card-vaca">
+        <span class="animal-emoji">🐄</span><span class="animal-name">Vaca</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="zones">
+    <div class="zone" id="zone-barriga" data-zone="barriga">
+      <div class="zone-header">
+        <span class="zone-emoji">🤰</span>
+        <div class="zone-title">Nasce da barriga da mãe</div>
+      </div>
+      <div class="zone-items" id="items-barriga"></div>
+    </div>
+    <div class="zone" id="zone-ovo" data-zone="ovo">
+      <div class="zone-header">
+        <span class="zone-emoji">🥚</span>
+        <div class="zone-title">Nasce de ovo</div>
+      </div>
+      <div class="zone-items" id="items-ovo"></div>
+    </div>
+  </div>
+
+  <button class="btn-check" onclick="checkAnswer()">Verificar minha resposta ✅</button>
+  <button class="btn-reset" onclick="resetAll()">🔄 Recomeçar</button>
+  <div class="result-box" id="result-box"></div>
+  <button class="back-btn" onclick="window.close()">🏠 Voltar ao Portal</button>
+</div>
+
+<script>
+const animals = {
+  cachorro: { emoji: '🐶', name: 'Cachorro', correct: 'barriga' },
+  pato:     { emoji: '🦆', name: 'Pato',     correct: 'ovo' },
+  gato:     { emoji: '🐱', name: 'Gato',     correct: 'barriga' },
+  cobra:    { emoji: '🐍', name: 'Cobra',     correct: 'ovo' },
+  tartaruga:{ emoji: '🐢', name: 'Tartaruga', correct: 'ovo' },
+  vaca:     { emoji: '🐄', name: 'Vaca',      correct: 'barriga' }
+};
+
+const placed = { barriga: [], ovo: [] };
+let dragging = null;
+
+function playSound(type) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator(), g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  if (type === 'correct') {
+    o.frequency.setValueAtTime(523, ctx.currentTime);
+    o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+    o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    o.start(); o.stop(ctx.currentTime + 0.5);
+  } else {
+    o.frequency.setValueAtTime(300, ctx.currentTime);
+    o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    o.start(); o.stop(ctx.currentTime + 0.4);
+  }
+}
+
+document.querySelectorAll('.animal-card').forEach(card => {
+  card.addEventListener('dragstart', e => {
+    dragging = card;
+    setTimeout(() => card.classList.add('dragging'), 0);
+    e.dataTransfer.setData('text/plain', card.dataset.value);
+  });
+  card.addEventListener('dragend', () => {
+    card.classList.remove('dragging');
+    dragging = null;
+  });
+});
+
+document.querySelectorAll('.zone').forEach(zone => {
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
+    zone.classList.remove('drag-over');
+    const val = e.dataTransfer.getData('text/plain');
+    const zoneId = zone.dataset.zone;
+    if (!animals[val]) return;
+    // Remove from other zone if already placed
+    for (const z of ['barriga', 'ovo']) {
+      const idx = placed[z].indexOf(val);
+      if (idx > -1) { placed[z].splice(idx, 1); renderZone(z); }
+    }
+    placed[zoneId].push(val);
+    document.getElementById('card-' + val).style.display = 'none';
+    renderZone(zoneId);
+    document.getElementById('result-box').className = 'result-box';
+  });
+});
+
+function renderZone(zoneId) {
+  const container = document.getElementById('items-' + zoneId);
+  container.innerHTML = placed[zoneId].map(v =>
+    `<div class="zone-item">
+      <span class="zone-item-emoji">${animals[v].emoji}</span>
+      <span>${animals[v].name}</span>
+    </div>`
+  ).join('');
+}
+
+function checkAnswer() {
+  const total = placed.barriga.length + placed.ovo.length;
+  if (total < 6) {
+    const rb = document.getElementById('result-box');
+    rb.className = 'result-box partial show';
+    rb.textContent = '⚠️ Ainda faltam animais! Classifique todos antes de verificar.';
+    return;
+  }
+  let correct = 0;
+  for (const z of ['barriga', 'ovo']) {
+    placed[z].forEach(v => { if (animals[v].correct === z) correct++; });
+  }
+  const rb = document.getElementById('result-box');
+  if (correct === 6) {
+    playSound('correct');
+    rb.className = 'result-box correct show';
+    rb.textContent = '🎉 Parabéns! Você classificou todos os animais corretamente! Cães, gatos e vacas nascem da barriga da mãe. Patos, cobras e tartarugas nascem de ovos! 🏆';
+  } else {
+    playSound('wrong');
+    rb.className = 'result-box wrong show';
+    rb.textContent = `❌ Você acertou ${correct} de 6. Tente de novo! Dica: os mamíferos (como cachorro, gato e vaca) nascem da barriga da mãe.`;
+  }
+}
+
+function resetAll() {
+  placed.barriga = []; placed.ovo = [];
+  document.querySelectorAll('.animal-card').forEach(c => c.style.display = '');
+  renderZone('barriga'); renderZone('ovo');
+  document.getElementById('result-box').className = 'result-box';
+}
+</script>
+</body>
+</html>

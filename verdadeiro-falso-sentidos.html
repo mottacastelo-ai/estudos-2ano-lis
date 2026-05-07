@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verdadeiro ou Falso? — Sentidos | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root { --primary: #22C55E; --light: #6EE7A0; --bg: #F0FDF4; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100vh; padding-bottom: 60px; }
+.header { background: linear-gradient(135deg, #14532D, #22C55E 60%, #6EE7A0); padding: 28px 32px; color: #fff; text-align: center; }
+.header-emoji { font-size: 3rem; display: block; margin-bottom: 8px; }
+.header-title { font-family: 'Baloo 2', cursive; font-size: 1.8rem; font-weight: 900; }
+.header-sub { font-size: 1rem; opacity: 0.9; font-weight: 600; margin-top: 4px; }
+.container { max-width: 680px; margin: 0 auto; padding: 32px 20px 60px; }
+.progress-wrap { margin-bottom: 24px; }
+.progress-label { font-size: 0.9rem; font-weight: 700; color: #475569; margin-bottom: 6px; }
+.progress-bar { height: 10px; background: #D1FAE5; border-radius: 20px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--primary); border-radius: 20px; transition: width 0.4s; }
+
+.statement-card { background: #fff; border-radius: 24px; box-shadow: 0 2px 16px rgba(0,0,0,0.08); padding: 36px 32px; margin-bottom: 20px; text-align: center; }
+.stmt-num { font-size: 0.82rem; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; }
+.stmt-text { font-size: 1.5rem; font-weight: 800; color: #1E293B; line-height: 1.4; margin-bottom: 32px; }
+.tf-btns { display: flex; gap: 16px; justify-content: center; }
+.tf-btn {
+  padding: 20px 36px; border-radius: 20px; border: 3px solid #E2E8F0;
+  font-family: 'Baloo 2', cursive; font-size: 1.4rem; font-weight: 900;
+  cursor: pointer; transition: all 0.18s; min-width: 150px;
+}
+.tf-btn.verdadeiro { background: #DCFCE7; color: #15803D; border-color: #22C55E; }
+.tf-btn.falso { background: #FEE2E2; color: #B91C1C; border-color: #EF4444; }
+.tf-btn:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,0.1); }
+.tf-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.tf-btn.selected-correct { box-shadow: 0 0 0 4px #22C55E; }
+.tf-btn.selected-wrong { box-shadow: 0 0 0 4px #EF4444; opacity: 0.7; }
+
+.feedback-box { border-radius: 16px; padding: 18px 22px; font-size: 1.15rem; font-weight: 700; display: none; margin-top: 16px; line-height: 1.5; }
+.feedback-box.show { display: block; }
+.feedback-box.correct-fb { background: #DCFCE7; color: #15803D; }
+.feedback-box.wrong-fb { background: #FEE2E2; color: #B91C1C; }
+.next-btn { display: none; width: 100%; margin-top: 16px; padding: 16px; border-radius: 14px; border: none; background: var(--primary); color: #fff; font-family: 'Baloo 2', cursive; font-size: 1.2rem; font-weight: 800; cursor: pointer; transition: all 0.18s; }
+.next-btn:hover { background: #16A34A; transform: translateY(-2px); }
+.next-btn.show { display: block; }
+
+.result-card { background: #fff; border-radius: 24px; box-shadow: 0 4px 24px rgba(0,0,0,0.10); padding: 40px 32px; text-align: center; display: none; }
+.result-card.show { display: block; }
+.result-emoji { font-size: 4rem; margin-bottom: 16px; }
+.result-title { font-family: 'Baloo 2', cursive; font-size: 2rem; font-weight: 900; color: #1E293B; margin-bottom: 8px; }
+.result-score { font-size: 1.3rem; font-weight: 700; color: #475569; margin-bottom: 24px; }
+.result-score span { font-family: 'Baloo 2', cursive; font-size: 2rem; color: var(--primary); }
+.result-msg { font-size: 1.15rem; font-weight: 700; color: #334155; margin-bottom: 32px; line-height: 1.5; }
+.result-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.btn-retry { padding: 14px 28px; border-radius: 14px; border: 2px solid var(--primary); background: #fff; color: var(--primary); font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800; cursor: pointer; }
+.btn-back { padding: 14px 28px; border-radius: 14px; border: none; background: var(--primary); color: #fff; font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800; cursor: pointer; }
+</style>
+</head>
+<body>
+<div class="header">
+  <span class="header-emoji">✅</span>
+  <div class="header-title">Verdadeiro ou Falso?</div>
+  <div class="header-sub">Leia com atenção e responda!</div>
+</div>
+<div class="container">
+  <div class="progress-wrap">
+    <div class="progress-label" id="prog-label">Afirmação 1 de 8</div>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:12.5%"></div></div>
+  </div>
+  <div id="game-area">
+    <div class="statement-card">
+      <div class="stmt-num" id="stmt-num">Afirmação 1</div>
+      <div class="stmt-text" id="stmt-text"></div>
+      <div class="tf-btns">
+        <button class="tf-btn verdadeiro" id="btn-v" onclick="answer(true)">✅ Verdadeiro</button>
+        <button class="tf-btn falso" id="btn-f" onclick="answer(false)">❌ Falso</button>
+      </div>
+      <div class="feedback-box" id="feedback"></div>
+      <button class="next-btn" id="next-btn" onclick="nextStatement()">Próxima ➜</button>
+    </div>
+  </div>
+  <div class="result-card" id="result">
+    <div class="result-emoji" id="res-emoji"></div>
+    <div class="result-title" id="res-title"></div>
+    <div class="result-score">Você acertou <span id="res-score"></span> de 8!</div>
+    <div class="result-msg" id="res-msg"></div>
+    <div class="result-btns">
+      <button class="btn-retry" onclick="startGame()">Tentar de novo 🔄</button>
+      <button class="btn-back" onclick="window.close()">Voltar ao Portal 🏠</button>
+    </div>
+  </div>
+</div>
+<script>
+const statements = [
+  { text: "O nariz é o órgão que usamos para sentir cheiros.", correct: true, feedback: "Verdadeiro! O nariz é o órgão do olfato e nos ajuda a sentir os cheiros." },
+  { text: "Usamos os olhos para ouvir músicas.", correct: false, feedback: "Falso! Usamos os ouvidos para ouvir músicas. Os olhos servem para ver!" },
+  { text: "A língua percebe o gosto dos alimentos.", correct: true, feedback: "Verdadeiro! A língua é o órgão do paladar e detecta sabores doces, salgados, azedos e amargos." },
+  { text: "A pele só percebe o calor, não percebe o frio.", correct: false, feedback: "Falso! A pele percebe tanto o calor quanto o frio, além de dor e textura." },
+  { text: "Os seres humanos têm 5 órgãos dos sentidos.", correct: true, feedback: "Verdadeiro! São 5 sentidos: visão (olhos), audição (ouvidos), olfato (nariz), paladar (língua) e tato (pele)." },
+  { text: "Uma pessoa com deficiência visual não consegue perceber nada ao redor.", correct: false, feedback: "Falso! Ela usa os outros sentidos — tato, audição, olfato e paladar — para perceber o mundo." },
+  { text: "Os ouvidos nos ajudam a perceber sons.", correct: true, feedback: "Verdadeiro! Os ouvidos são o órgão da audição e captam sons de todo tipo." },
+  { text: "Podemos sentir se um objeto é liso ou áspero com a pele.", correct: true, feedback: "Verdadeiro! O tato (pele) percebe texturas: liso, áspero, macio, duro." }
+];
+let current = 0, score = 0, answered = false;
+
+function playSound(type) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator(), g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  if (type === 'correct') {
+    o.frequency.setValueAtTime(523, ctx.currentTime); o.frequency.setValueAtTime(659, ctx.currentTime+0.1); o.frequency.setValueAtTime(784, ctx.currentTime+0.2);
+    g.gain.setValueAtTime(0.3, ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.5);
+    o.start(); o.stop(ctx.currentTime+0.5);
+  } else {
+    o.frequency.setValueAtTime(300, ctx.currentTime); o.frequency.setValueAtTime(200, ctx.currentTime+0.15);
+    g.gain.setValueAtTime(0.3, ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.4);
+    o.start(); o.stop(ctx.currentTime+0.4);
+  }
+}
+
+function renderStatement() {
+  const s = statements[current];
+  document.getElementById('stmt-num').textContent = 'Afirmação ' + (current+1);
+  document.getElementById('stmt-text').textContent = s.text;
+  document.getElementById('prog-label').textContent = 'Afirmação ' + (current+1) + ' de 8';
+  document.getElementById('prog-fill').style.width = ((current+1)/8*100) + '%';
+  document.getElementById('feedback').className = 'feedback-box';
+  document.getElementById('next-btn').className = 'next-btn';
+  document.getElementById('btn-v').disabled = false;
+  document.getElementById('btn-f').disabled = false;
+  document.getElementById('btn-v').className = 'tf-btn verdadeiro';
+  document.getElementById('btn-f').className = 'tf-btn falso';
+  answered = false;
+}
+
+function answer(isTrue) {
+  if (answered) return;
+  answered = true;
+  const s = statements[current];
+  const fb = document.getElementById('feedback');
+  document.getElementById('btn-v').disabled = true;
+  document.getElementById('btn-f').disabled = true;
+  const isCorrect = (isTrue === s.correct);
+  if (isCorrect) {
+    score++;
+    playSound('correct');
+    (isTrue ? document.getElementById('btn-v') : document.getElementById('btn-f')).className = 'tf-btn ' + (isTrue ? 'verdadeiro' : 'falso') + ' selected-correct';
+    fb.textContent = '✅ ' + s.feedback;
+    fb.className = 'feedback-box correct-fb show';
+  } else {
+    playSound('wrong');
+    (isTrue ? document.getElementById('btn-v') : document.getElementById('btn-f')).className = 'tf-btn ' + (isTrue ? 'verdadeiro' : 'falso') + ' selected-wrong';
+    fb.textContent = '❌ ' + s.feedback;
+    fb.className = 'feedback-box wrong-fb show';
+  }
+  document.getElementById('next-btn').className = 'next-btn show';
+}
+
+function nextStatement() {
+  current++;
+  if (current < statements.length) renderStatement();
+  else showResult();
+}
+
+function showResult() {
+  document.getElementById('game-area').style.display = 'none';
+  const res = document.getElementById('result');
+  res.classList.add('show');
+  document.getElementById('res-score').textContent = score;
+  let emoji, title, msg;
+  if (score === 8) { emoji='🏆'; title='Perfeito!'; msg='Você acertou todas as 8! Você conhece muito bem os órgãos dos sentidos! 🎉'; }
+  else if (score >= 6) { emoji='🌟'; title='Muito bem!'; msg='Ótimo resultado! Revise as que errou e tente de novo! 👃'; }
+  else if (score >= 4) { emoji='💪'; title='Continue assim!'; msg='Você está no caminho certo! Estude mais um pouquinho! 🌱'; }
+  else { emoji='📚'; title='Vamos estudar mais!'; msg='Releia o conteúdo sobre os sentidos e tente de novo! 🎯'; }
+  document.getElementById('res-emoji').textContent = emoji;
+  document.getElementById('res-title').textContent = title;
+  document.getElementById('res-msg').textContent = msg;
+}
+
+function startGame() {
+  current = 0; score = 0;
+  document.getElementById('game-area').style.display = 'block';
+  document.getElementById('result').classList.remove('show');
+  renderStatement();
+}
+startGame();
+</script>
+</body>
+</html>

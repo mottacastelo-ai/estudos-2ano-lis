@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz — Animais e Ciclo de Vida | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root { --primary: #22C55E; --light: #6EE7A0; --bg: #F0FDF4; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100vh; }
+
+.header {
+  background: linear-gradient(135deg, #14532D, #22C55E 60%, #6EE7A0);
+  padding: 28px 32px; color: #fff; text-align: center;
+}
+.header-emoji { font-size: 3rem; display: block; margin-bottom: 8px; }
+.header-title { font-family: 'Baloo 2', cursive; font-size: 1.8rem; font-weight: 900; }
+.header-sub { font-size: 1rem; opacity: 0.9; font-weight: 600; margin-top: 4px; }
+
+.container { max-width: 680px; margin: 0 auto; padding: 32px 20px 60px; }
+
+.progress-wrap { margin-bottom: 24px; }
+.progress-label { font-size: 0.9rem; font-weight: 700; color: #475569; margin-bottom: 6px; }
+.progress-bar { height: 10px; background: #D1FAE5; border-radius: 20px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--primary); border-radius: 20px; transition: width 0.4s; }
+
+.question-card {
+  background: #fff; border-radius: 20px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+  padding: 32px; margin-bottom: 16px;
+}
+.q-number { font-size: 0.82rem; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+.q-text { font-size: 1.5rem; font-weight: 800; color: #1E293B; line-height: 1.35; margin-bottom: 28px; }
+
+.options { display: flex; flex-direction: column; gap: 12px; }
+.option-btn {
+  padding: 16px 20px; border-radius: 14px;
+  border: 2px solid #E2E8F0; background: #fff;
+  cursor: pointer; font-family: 'Nunito', sans-serif;
+  font-size: 1.2rem; font-weight: 700; color: #334155;
+  text-align: left; transition: all 0.18s;
+  display: flex; align-items: center; gap: 12px;
+}
+.option-btn:hover:not(:disabled) { border-color: var(--primary); background: var(--bg); transform: translateX(4px); }
+.option-btn.correct { background: #DCFCE7; border-color: #22C55E; color: #15803D; }
+.option-btn.wrong { background: #FEE2E2; border-color: #EF4444; color: #B91C1C; }
+.option-letter {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: #F1F5F9; display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 0.95rem; flex-shrink: 0;
+}
+.option-btn.correct .option-letter { background: #22C55E; color: #fff; }
+.option-btn.wrong .option-letter { background: #EF4444; color: #fff; }
+
+.feedback-box {
+  padding: 16px 20px; border-radius: 14px; font-size: 1.1rem; font-weight: 700;
+  display: none; margin-top: 16px; align-items: center; gap: 10px;
+}
+.feedback-box.show { display: flex; }
+.feedback-box.correct-fb { background: #DCFCE7; color: #15803D; }
+.feedback-box.wrong-fb { background: #FEE2E2; color: #B91C1C; }
+
+.next-btn {
+  display: none; width: 100%; margin-top: 20px;
+  padding: 16px; border-radius: 14px;
+  border: none; background: var(--primary);
+  color: #fff; font-family: 'Baloo 2', cursive;
+  font-size: 1.2rem; font-weight: 800; cursor: pointer;
+  transition: all 0.18s;
+}
+.next-btn:hover { background: #16A34A; transform: translateY(-2px); }
+.next-btn.show { display: block; }
+
+/* RESULT */
+.result-card {
+  background: #fff; border-radius: 24px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  padding: 40px 32px; text-align: center; display: none;
+}
+.result-card.show { display: block; }
+.result-emoji { font-size: 4rem; margin-bottom: 16px; }
+.result-title { font-family: 'Baloo 2', cursive; font-size: 2rem; font-weight: 900; color: #1E293B; margin-bottom: 8px; }
+.result-score { font-size: 1.3rem; font-weight: 700; color: #475569; margin-bottom: 24px; }
+.result-score span { font-family: 'Baloo 2', cursive; font-size: 2rem; color: var(--primary); }
+.result-msg { font-size: 1.15rem; font-weight: 700; color: #334155; margin-bottom: 32px; line-height: 1.5; }
+.result-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.btn-retry {
+  padding: 14px 28px; border-radius: 14px; border: 2px solid var(--primary);
+  background: #fff; color: var(--primary); font-family: 'Baloo 2', cursive;
+  font-size: 1.1rem; font-weight: 800; cursor: pointer; transition: all 0.18s;
+}
+.btn-retry:hover { background: var(--bg); }
+.btn-back {
+  padding: 14px 28px; border-radius: 14px; border: none;
+  background: var(--primary); color: #fff; font-family: 'Baloo 2', cursive;
+  font-size: 1.1rem; font-weight: 800; cursor: pointer; transition: all 0.18s;
+}
+.btn-back:hover { background: #16A34A; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="header-emoji">🐾</span>
+  <div class="header-title">Quiz — Animais e Ciclo de Vida</div>
+  <div class="header-sub">8 perguntas · Responda com calma!</div>
+</div>
+
+<div class="container">
+  <div class="progress-wrap">
+    <div class="progress-label" id="prog-label">Pergunta 1 de 8</div>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:12.5%"></div></div>
+  </div>
+
+  <div id="quiz-area">
+    <div class="question-card">
+      <div class="q-number" id="q-num">Pergunta 1</div>
+      <div class="q-text" id="q-text"></div>
+      <div class="options" id="options"></div>
+      <div class="feedback-box" id="feedback"></div>
+      <button class="next-btn" id="next-btn" onclick="nextQuestion()">Próxima ➜</button>
+    </div>
+  </div>
+
+  <div class="result-card" id="result">
+    <div class="result-emoji" id="res-emoji"></div>
+    <div class="result-title" id="res-title"></div>
+    <div class="result-score">Você acertou <span id="res-score"></span> de 8!</div>
+    <div class="result-msg" id="res-msg"></div>
+    <div class="result-btns">
+      <button class="btn-retry" onclick="startQuiz()">Tentar de novo 🔄</button>
+      <button class="btn-back" onclick="window.close()">Voltar ao Portal 🏠</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const questions = [
+  {
+    text: "O que acontece com o corpo do cachorro ao longo da vida?",
+    options: ["Ele fica sempre igual 😐", "Ele cresce e muda com o tempo 🐶", "Ele para de crescer quando filhote 🛑"],
+    correct: 1,
+    feedback: "Isso mesmo! Todos os animais crescem e mudam com o tempo — é o ciclo de vida!"
+  },
+  {
+    text: "Como nascem os patos?",
+    options: ["Da barriga da mãe 🤰", "De ovos 🥚", "Já nascem adultos 🦆"],
+    correct: 1,
+    feedback: "Correto! Os patos nascem de ovos, assim como a maioria das aves."
+  },
+  {
+    text: "Qual fase da vida vem depois de filhote?",
+    options: ["Idoso 👴", "Adulto 🐕", "Bebê 👶"],
+    correct: 1,
+    feedback: "Muito bem! A ordem é: filhote → adulto → idoso."
+  },
+  {
+    text: "Qual dessas coisas TODOS os animais fazem ao longo da vida?",
+    options: ["Voam pelo céu ✈️", "Crescem e se alimentam 🌱", "Vivem só na água 🌊"],
+    correct: 1,
+    feedback: "Parabéns! Crescer, se alimentar, respirar e ter filhotes são características de todos os animais."
+  },
+  {
+    text: "Como nascem os cães e os gatos?",
+    options: ["Da barriga da mãe 🤰", "De ovos 🥚", "Brotam do chão 🌱"],
+    correct: 0,
+    feedback: "Isso! Cães e gatos são mamíferos — nascem da barriga da mãe."
+  },
+  {
+    text: "Qual é a última fase da vida de um animal?",
+    options: ["Filhote 🐣", "Adulto 🐕", "Idoso 🐾"],
+    correct: 2,
+    feedback: "Correto! A última fase é o idoso, quando o animal já viveu muito."
+  },
+  {
+    text: "Por que os seres humanos precisam de animais?",
+    options: ["Só para brincar 🎮", "Para alimento e companhia, entre outras razões 🤝", "Não precisam de animais ❌"],
+    correct: 1,
+    feedback: "Muito bem! Os seres humanos dependem dos animais de muitas formas — alimento, companhia e mais."
+  },
+  {
+    text: "O que é o ciclo de vida de um animal?",
+    options: ["Uma brincadeira de roda 🎡", "A sequência de fases desde o nascimento até a morte 🔄", "O nome da casa onde o animal vive 🏠"],
+    correct: 1,
+    feedback: "Perfeito! O ciclo de vida mostra todas as fases que um animal passa: nascimento, crescimento, reprodução e morte."
+  }
+];
+
+let current = 0, score = 0, answered = false;
+
+function playSound(type) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator(), g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  if (type === 'correct') {
+    o.frequency.setValueAtTime(523, ctx.currentTime);
+    o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+    o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    o.start(); o.stop(ctx.currentTime + 0.5);
+  } else {
+    o.frequency.setValueAtTime(300, ctx.currentTime);
+    o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    o.start(); o.stop(ctx.currentTime + 0.4);
+  }
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  document.getElementById('q-num').textContent = 'Pergunta ' + (current + 1);
+  document.getElementById('q-text').textContent = q.text;
+  document.getElementById('prog-label').textContent = 'Pergunta ' + (current + 1) + ' de 8';
+  document.getElementById('prog-fill').style.width = ((current + 1) / 8 * 100) + '%';
+  const letters = ['A', 'B', 'C'];
+  document.getElementById('options').innerHTML = q.options.map((opt, i) =>
+    `<button class="option-btn" onclick="selectOption(${i})">
+      <span class="option-letter">${letters[i]}</span>${opt}
+    </button>`
+  ).join('');
+  document.getElementById('feedback').className = 'feedback-box';
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('next-btn').className = 'next-btn';
+  answered = false;
+}
+
+function selectOption(idx) {
+  if (answered) return;
+  answered = true;
+  const q = questions[current];
+  const btns = document.querySelectorAll('.option-btn');
+  btns.forEach(b => b.disabled = true);
+  const fb = document.getElementById('feedback');
+  if (idx === q.correct) {
+    btns[idx].classList.add('correct');
+    score++;
+    playSound('correct');
+    fb.textContent = '✅ ' + q.feedback;
+    fb.className = 'feedback-box correct-fb show';
+  } else {
+    btns[idx].classList.add('wrong');
+    btns[q.correct].classList.add('correct');
+    playSound('wrong');
+    fb.textContent = '❌ ' + q.feedback;
+    fb.className = 'feedback-box wrong-fb show';
+  }
+  document.getElementById('next-btn').className = 'next-btn show';
+}
+
+function nextQuestion() {
+  current++;
+  if (current < questions.length) {
+    renderQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function showResult() {
+  document.getElementById('quiz-area').style.display = 'none';
+  document.getElementById('progress-wrap');
+  const res = document.getElementById('result');
+  res.classList.add('show');
+  document.getElementById('res-score').textContent = score;
+  let emoji, title, msg;
+  if (score === 8) { emoji = '🏆'; title = 'Incrível!'; msg = 'Você acertou tudo! Você é expert em animais! 🐾🌟'; }
+  else if (score >= 6) { emoji = '🌟'; title = 'Muito bem!'; msg = 'Você mandou muito bem! Revise as que errou e tente de novo! 🐶'; }
+  else if (score >= 4) { emoji = '💪'; title = 'Continue assim!'; msg = 'Você está no caminho certo! Estude um pouquinho mais e volte! 🌱'; }
+  else { emoji = '📚'; title = 'Vamos estudar mais!'; msg = 'Releia o conteúdo sobre animais e tente de novo. Você consegue! 🎯'; }
+  document.getElementById('res-emoji').textContent = emoji;
+  document.getElementById('res-title').textContent = title;
+  document.getElementById('res-msg').textContent = msg;
+}
+
+function startQuiz() {
+  current = 0; score = 0;
+  document.getElementById('quiz-area').style.display = 'block';
+  document.getElementById('result').classList.remove('show');
+  renderQuestion();
+}
+
+startQuiz();
+</script>
+</body>
+</html>

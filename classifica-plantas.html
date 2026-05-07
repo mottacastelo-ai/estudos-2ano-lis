@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Que Ambiente é Esse? | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root { --primary: #22C55E; --light: #6EE7A0; --bg: #F0FDF4; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100vh; padding-bottom: 60px; }
+.header { background: linear-gradient(135deg, #14532D, #22C55E 60%, #6EE7A0); padding: 28px 32px; color: #fff; text-align: center; }
+.header-emoji { font-size: 3rem; display: block; margin-bottom: 8px; }
+.header-title { font-family: 'Baloo 2', cursive; font-size: 1.8rem; font-weight: 900; }
+.header-sub { font-size: 1rem; opacity: 0.9; font-weight: 600; margin-top: 4px; }
+.container { max-width: 860px; margin: 0 auto; padding: 32px 20px; }
+.instruction-card { background: #fff; border-radius: 16px; padding: 20px 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); margin-bottom: 28px; border-left: 5px solid var(--primary); }
+.instruction-card p { font-size: 1.15rem; font-weight: 700; color: #334155; line-height: 1.5; }
+.plants-pool { background: #fff; border-radius: 20px; padding: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); margin-bottom: 28px; }
+.pool-title { font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800; color: #475569; margin-bottom: 16px; }
+.plants-grid { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.plant-card { background: var(--bg); border: 3px solid var(--light); border-radius: 14px; padding: 14px 12px; cursor: grab; user-select: none; text-align: center; min-width: 105px; max-width: 130px; flex: 0 0 auto; transition: all 0.18s; }
+.plant-card:hover { border-color: var(--primary); transform: scale(1.05); }
+.plant-card.dragging { opacity: 0.35; }
+.plant-card.used { display: none; }
+.pc-emoji { font-size: 2.2rem; display: block; margin-bottom: 6px; }
+.pc-name { font-size: 0.88rem; font-weight: 800; color: #1E293B; line-height: 1.3; }
+.zones { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 28px; }
+.zone { background: #fff; border-radius: 20px; padding: 18px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); min-height: 200px; border: 3px solid #E2E8F0; transition: all 0.18s; }
+.zone.drag-over { border-color: var(--primary); background: var(--bg); }
+.zone-header { text-align: center; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 2px solid #E2E8F0; }
+.zone-emoji { font-size: 2.5rem; display: block; margin-bottom: 4px; }
+.zone-title { font-family: 'Baloo 2', cursive; font-size: 1.05rem; font-weight: 900; }
+.zone.aquatico .zone-title { color: #0369A1; }
+.zone.terrestre .zone-title { color: #15803D; }
+.zone.semiarido .zone-title { color: #B45309; }
+.zone.aquatico { border-color: #BAE6FD; }
+.zone.terrestre { border-color: #BBF7D0; }
+.zone.semiarido { border-color: #FDE68A; }
+.zone-items { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.zone-chip { border-radius: 10px; padding: 8px 10px; font-size: 0.8rem; font-weight: 800; display: flex; flex-direction: column; align-items: center; gap: 3px; text-align: center; min-width: 70px; }
+.zone.aquatico .zone-chip { background: #E0F2FE; color: #0369A1; }
+.zone.terrestre .zone-chip { background: #DCFCE7; color: #15803D; }
+.zone.semiarido .zone-chip { background: #FEF3C7; color: #B45309; }
+.zone-chip-emoji { font-size: 1.4rem; }
+.btn-check { display: block; width: 100%; padding: 18px; border-radius: 16px; border: none; background: var(--primary); color: #fff; font-family: 'Baloo 2', cursive; font-size: 1.3rem; font-weight: 900; cursor: pointer; transition: all 0.18s; margin-bottom: 12px; }
+.btn-check:hover { background: #16A34A; transform: translateY(-2px); }
+.btn-reset { display: block; width: 100%; padding: 14px; border-radius: 14px; border: 2px solid #CBD5E1; background: #fff; color: #64748B; font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800; cursor: pointer; margin-bottom: 16px; }
+.btn-reset:hover { border-color: var(--primary); color: var(--primary); }
+.result-box { border-radius: 16px; padding: 20px 24px; font-size: 1.1rem; font-weight: 700; display: none; margin-bottom: 16px; line-height: 1.5; }
+.result-box.show { display: block; }
+.result-box.correct { background: #DCFCE7; color: #15803D; }
+.result-box.partial { background: #FEF9C3; color: #92400E; }
+.result-box.wrong { background: #FEE2E2; color: #B91C1C; }
+.back-btn { display: block; text-align: center; padding: 14px; border-radius: 14px; border: none; background: var(--primary); color: #fff; font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800; cursor: pointer; }
+.back-btn:hover { background: #16A34A; }
+@media (max-width: 600px) { .zones { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="header">
+  <span class="header-emoji">🌿</span>
+  <div class="header-title">Que Ambiente é Esse?</div>
+  <div class="header-sub">Coloque cada planta no lugar onde ela vive!</div>
+</div>
+<div class="container">
+  <div class="instruction-card">
+    <p>🌱 Cada planta tem um lugar favorito para viver!<br>Arraste cada planta para o ambiente certo: <strong>aquático</strong>, <strong>terrestre</strong> ou <strong>semiárido</strong>!</p>
+  </div>
+  <div class="plants-pool">
+    <div class="pool-title">🌿 Plantas para classificar:</div>
+    <div class="plants-grid" id="pool">
+      <div class="plant-card" draggable="true" data-value="aguape" data-correct="aquatico" id="card-aguape"><span class="pc-emoji">🌊</span><span class="pc-name">Aguapé</span></div>
+      <div class="plant-card" draggable="true" data-value="laranjeira" data-correct="terrestre" id="card-laranjeira"><span class="pc-emoji">🍊</span><span class="pc-name">Laranjeira</span></div>
+      <div class="plant-card" draggable="true" data-value="cacto" data-correct="semiarido" id="card-cacto"><span class="pc-emoji">🌵</span><span class="pc-name">Cacto (Mandacaru)</span></div>
+      <div class="plant-card" draggable="true" data-value="vitoria-regia" data-correct="aquatico" id="card-vitoria-regia"><span class="pc-emoji">🪷</span><span class="pc-name">Vitória-Régia</span></div>
+      <div class="plant-card" draggable="true" data-value="mangueira" data-correct="terrestre" id="card-mangueira"><span class="pc-emoji">🥭</span><span class="pc-name">Mangueira</span></div>
+      <div class="plant-card" draggable="true" data-value="jurema" data-correct="semiarido" id="card-jurema"><span class="pc-emoji">🌿</span><span class="pc-name">Jurema</span></div>
+      <div class="plant-card" draggable="true" data-value="ipê" data-correct="terrestre" id="card-ipê"><span class="pc-emoji">🌸</span><span class="pc-name">Ipê</span></div>
+      <div class="plant-card" draggable="true" data-value="nenufar" data-correct="aquatico" id="card-nenufar"><span class="pc-emoji">🌺</span><span class="pc-name">Nenúfar</span></div>
+      <div class="plant-card" draggable="true" data-value="facheiro" data-correct="semiarido" id="card-facheiro"><span class="pc-emoji">🏜️</span><span class="pc-name">Facheiro</span></div>
+    </div>
+  </div>
+  <div class="zones">
+    <div class="zone aquatico" id="zone-aquatico" data-zone="aquatico">
+      <div class="zone-header"><span class="zone-emoji">💧</span><div class="zone-title">Aquático<br><small style="font-size:0.8rem;font-weight:700;color:#64748B;">Rios, lagos e lagoas</small></div></div>
+      <div class="zone-items" id="items-aquatico"></div>
+    </div>
+    <div class="zone terrestre" id="zone-terrestre" data-zone="terrestre">
+      <div class="zone-header"><span class="zone-emoji">🌳</span><div class="zone-title">Terrestre<br><small style="font-size:0.8rem;font-weight:700;color:#64748B;">Solo com água</small></div></div>
+      <div class="zone-items" id="items-terrestre"></div>
+    </div>
+    <div class="zone semiarido" id="zone-semiarido" data-zone="semiarido">
+      <div class="zone-header"><span class="zone-emoji">🏜️</span><div class="zone-title">Semiárido<br><small style="font-size:0.8rem;font-weight:700;color:#64748B;">Pouca chuva</small></div></div>
+      <div class="zone-items" id="items-semiarido"></div>
+    </div>
+  </div>
+  <button class="btn-check" onclick="checkAnswer()">Verificar minha resposta ✅</button>
+  <button class="btn-reset" onclick="resetAll()">🔄 Recomeçar</button>
+  <div class="result-box" id="result-box"></div>
+  <button class="back-btn" onclick="window.close()">🏠 Voltar ao Portal</button>
+</div>
+<script>
+const plants = {
+  aguape:       { emoji:'🌊', name:'Aguapé',            correct:'aquatico'  },
+  laranjeira:   { emoji:'🍊', name:'Laranjeira',         correct:'terrestre' },
+  cacto:        { emoji:'🌵', name:'Cacto (Mandacaru)',   correct:'semiarido' },
+  'vitoria-regia':{ emoji:'🪷', name:'Vitória-Régia',    correct:'aquatico'  },
+  mangueira:    { emoji:'🥭', name:'Mangueira',          correct:'terrestre' },
+  jurema:       { emoji:'🌿', name:'Jurema',             correct:'semiarido' },
+  'ipê':        { emoji:'🌸', name:'Ipê',               correct:'terrestre' },
+  nenufar:      { emoji:'🌺', name:'Nenúfar',           correct:'aquatico'  },
+  facheiro:     { emoji:'🏜️', name:'Facheiro',          correct:'semiarido' }
+};
+const total = Object.keys(plants).length;
+const placed = { aquatico: [], terrestre: [], semiarido: [] };
+
+function playSound(type) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator(), g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  if (type === 'correct') {
+    o.frequency.setValueAtTime(523, ctx.currentTime); o.frequency.setValueAtTime(659, ctx.currentTime+0.1); o.frequency.setValueAtTime(784, ctx.currentTime+0.2);
+    g.gain.setValueAtTime(0.3, ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.5);
+    o.start(); o.stop(ctx.currentTime+0.5);
+  } else {
+    o.frequency.setValueAtTime(300, ctx.currentTime); o.frequency.setValueAtTime(200, ctx.currentTime+0.15);
+    g.gain.setValueAtTime(0.3, ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.4);
+    o.start(); o.stop(ctx.currentTime+0.4);
+  }
+}
+
+document.querySelectorAll('.plant-card').forEach(card => {
+  card.addEventListener('dragstart', e => { setTimeout(() => card.classList.add('dragging'), 0); e.dataTransfer.setData('text/plain', card.dataset.value); });
+  card.addEventListener('dragend', () => card.classList.remove('dragging'));
+});
+
+document.querySelectorAll('.zone').forEach(zone => {
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault(); zone.classList.remove('drag-over');
+    const val = e.dataTransfer.getData('text/plain');
+    if (!plants[val]) return;
+    const zoneId = zone.dataset.zone;
+    for (const z of ['aquatico','terrestre','semiarido']) {
+      const idx = placed[z].indexOf(val);
+      if (idx > -1) { placed[z].splice(idx, 1); renderZone(z); }
+    }
+    placed[zoneId].push(val);
+    document.getElementById('card-' + val).classList.add('used');
+    renderZone(zoneId);
+    document.getElementById('result-box').className = 'result-box';
+  });
+});
+
+function renderZone(zoneId) {
+  document.getElementById('items-' + zoneId).innerHTML = placed[zoneId].map(v =>
+    `<div class="zone-chip"><span class="zone-chip-emoji">${plants[v].emoji}</span>${plants[v].name}</div>`
+  ).join('');
+}
+
+function checkAnswer() {
+  const count = placed.aquatico.length + placed.terrestre.length + placed.semiarido.length;
+  const rb = document.getElementById('result-box');
+  if (count < total) { rb.className = 'result-box partial show'; rb.textContent = `⚠️ Ainda faltam ${total - count} planta(s)! Classifique todas antes de verificar.`; return; }
+  let correct = 0;
+  for (const z of ['aquatico','terrestre','semiarido']) placed[z].forEach(v => { if (plants[v].correct === z) correct++; });
+  if (correct === total) {
+    playSound('correct');
+    rb.className = 'result-box correct show';
+    rb.textContent = '🎉 Incrível! Você conhece todos os ambientes das plantas! Botânico(a) expert! 🌱💧🏜️🏆';
+  } else {
+    playSound('wrong');
+    rb.className = 'result-box wrong show';
+    rb.textContent = `❌ Você acertou ${correct} de ${total}. Revise e tente de novo! Lembre: aguapé e vitória-régia vivem na água, cacto e facheiro no semiárido, laranjeira e mangueira no solo.`;
+  }
+}
+
+function resetAll() {
+  placed.aquatico = []; placed.terrestre = []; placed.semiarido = [];
+  document.querySelectorAll('.plant-card').forEach(c => c.classList.remove('used'));
+  renderZone('aquatico'); renderZone('terrestre'); renderZone('semiarido');
+  document.getElementById('result-box').className = 'result-box';
+}
+</script>
+</body>
+</html>

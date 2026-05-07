@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapa Mental — Onde Vivem as Plantas | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root { --primary: #22C55E; --light: #6EE7A0; --bg: #F0FDF4; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100vh; padding-bottom: 60px; }
+.header { background: linear-gradient(135deg, #14532D, #22C55E 60%, #6EE7A0); padding: 28px 32px; color: #fff; text-align: center; }
+.header-emoji { font-size: 3rem; display: block; margin-bottom: 8px; }
+.header-title { font-family: 'Baloo 2', cursive; font-size: 1.8rem; font-weight: 900; }
+.header-sub { font-size: 1rem; opacity: 0.9; font-weight: 600; margin-top: 4px; }
+.container { max-width: 860px; margin: 0 auto; padding: 32px 20px; }
+.instruction-card { background: #fff; border-radius: 16px; padding: 20px 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); margin-bottom: 28px; border-left: 5px solid var(--primary); }
+.instruction-card p { font-size: 1.15rem; font-weight: 700; color: #334155; line-height: 1.5; }
+.word-bank { background: #fff; border-radius: 20px; padding: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); margin-bottom: 28px; }
+.wb-title { font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800; color: #475569; margin-bottom: 16px; }
+.wb-words { display: flex; gap: 10px; flex-wrap: wrap; }
+.wb-word { background: var(--bg); border: 3px solid var(--light); border-radius: 12px; padding: 10px 16px; cursor: grab; user-select: none; font-size: 1.05rem; font-weight: 800; color: #15803D; transition: all 0.18s; }
+.wb-word:hover { border-color: var(--primary); transform: scale(1.04); }
+.wb-word.dragging { opacity: 0.35; }
+.wb-word.used { display: none; }
+.map-area { background: #fff; border-radius: 20px; padding: 28px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); margin-bottom: 24px; }
+.map-center { background: linear-gradient(135deg, #14532D, #22C55E); color: #fff; border-radius: 20px; padding: 18px 24px; text-align: center; font-family: 'Baloo 2', cursive; font-size: 1.3rem; font-weight: 900; margin: 0 auto 32px; max-width: 340px; box-shadow: 0 4px 16px rgba(34,197,94,.3); }
+.branches { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.branch { border: 2px solid #E2E8F0; border-radius: 16px; padding: 18px; background: #FAFAFA; }
+.branch.aquatico { border-color: #BAE6FD; background: #F0F9FF; }
+.branch.terrestre { border-color: #BBF7D0; background: #F0FDF4; }
+.branch.semiarido { border-color: #FDE68A; background: #FFFBEB; }
+.branch-title { font-family: 'Baloo 2', cursive; font-size: 0.95rem; font-weight: 800; margin-bottom: 12px; }
+.branch.aquatico .branch-title { color: #0369A1; }
+.branch.terrestre .branch-title { color: #15803D; }
+.branch.semiarido .branch-title { color: #B45309; }
+.drop-slot { min-height: 50px; border: 2px dashed #CBD5E1; border-radius: 12px; padding: 8px 12px; margin-bottom: 8px; display: flex; align-items: center; font-size: 0.88rem; color: #94A3B8; font-weight: 600; transition: all 0.18s; background: #fff; }
+.drop-slot.drag-over { border-color: var(--primary); background: var(--bg); }
+.drop-slot.filled { border-style: solid; border-color: var(--light); color: #15803D; font-weight: 800; font-size: 0.95rem; }
+.btn-check { display: block; width: 100%; padding: 18px; border-radius: 16px; border: none; background: var(--primary); color: #fff; font-family: 'Baloo 2', cursive; font-size: 1.3rem; font-weight: 900; cursor: pointer; transition: all 0.18s; margin-bottom: 12px; }
+.btn-check:hover { background: #16A34A; transform: translateY(-2px); }
+.btn-reset { display: block; width: 100%; padding: 14px; border-radius: 14px; border: 2px solid #CBD5E1; background: #fff; color: #64748B; font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800; cursor: pointer; margin-bottom: 16px; }
+.btn-reset:hover { border-color: var(--primary); color: var(--primary); }
+.result-box { border-radius: 16px; padding: 20px 24px; font-size: 1.1rem; font-weight: 700; display: none; margin-bottom: 16px; line-height: 1.5; }
+.result-box.show { display: block; }
+.result-box.correct { background: #DCFCE7; color: #15803D; }
+.result-box.partial { background: #FEF9C3; color: #92400E; }
+.result-box.wrong { background: #FEE2E2; color: #B91C1C; }
+.back-btn { display: block; text-align: center; padding: 14px; border-radius: 14px; border: none; background: var(--primary); color: #fff; font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800; cursor: pointer; }
+.back-btn:hover { background: #16A34A; }
+@media (max-width: 620px) { .branches { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="header">
+  <span class="header-emoji">🗺️</span>
+  <div class="header-title">Mapa Mental — Onde Vivem as Plantas</div>
+  <div class="header-sub">Arraste as palavras para os lugares certos!</div>
+</div>
+<div class="container">
+  <div class="instruction-card">
+    <p>🧠 Complete o mapa mental sobre os ambientes das plantas!<br>Arraste cada palavra ou planta para o lugar correto!</p>
+  </div>
+  <div class="word-bank">
+    <div class="wb-title">📦 Banco de palavras:</div>
+    <div class="wb-words" id="word-bank">
+      <div class="wb-word" draggable="true" data-value="aguape">🌊 Aguapé</div>
+      <div class="wb-word" draggable="true" data-value="raizes">🌱 Raízes</div>
+      <div class="wb-word" draggable="true" data-value="cacto">🌵 Cacto</div>
+      <div class="wb-word" draggable="true" data-value="laranjeira">🍊 Laranjeira</div>
+      <div class="wb-word" draggable="true" data-value="espinhos">🌵 Espinhos</div>
+      <div class="wb-word" draggable="true" data-value="vitoria">🪷 Vitória-Régia</div>
+      <div class="wb-word" draggable="true" data-value="flutua">💧 Flutua</div>
+      <div class="wb-word" draggable="true" data-value="seco">🏜️ Ambiente seco</div>
+    </div>
+  </div>
+  <div class="map-area">
+    <div class="map-center">🌿 Onde Vivem as Plantas?</div>
+    <div class="branches">
+      <div class="branch aquatico">
+        <div class="branch-title">💧 Plantas Aquáticas</div>
+        <div class="drop-slot" data-correct="aguape" data-slot="s1">🌊 Exemplo de planta...</div>
+        <div class="drop-slot" data-correct="vitoria" data-slot="s2">🪷 Outra planta aquática...</div>
+        <div class="drop-slot" data-correct="flutua" data-slot="s3">💧 O aguapé ________ na água...</div>
+      </div>
+      <div class="branch terrestre">
+        <div class="branch-title">🌳 Plantas Terrestres</div>
+        <div class="drop-slot" data-correct="laranjeira" data-slot="s4">🍊 Exemplo de planta...</div>
+        <div class="drop-slot" data-correct="raizes" data-slot="s5">🌱 Fixam no solo com...</div>
+      </div>
+      <div class="branch semiarido">
+        <div class="branch-title">🏜️ Plantas do Semiárido</div>
+        <div class="drop-slot" data-correct="cacto" data-slot="s6">🌵 Exemplo de planta...</div>
+        <div class="drop-slot" data-correct="espinhos" data-slot="s7">🌵 Têm ________ em vez de folhas...</div>
+        <div class="drop-slot" data-correct="seco" data-slot="s8">🏜️ Vivem em...</div>
+      </div>
+    </div>
+  </div>
+  <button class="btn-check" onclick="checkAnswer()">Verificar minha resposta ✅</button>
+  <button class="btn-reset" onclick="resetAll()">🔄 Recomeçar</button>
+  <div class="result-box" id="result-box"></div>
+  <button class="back-btn" onclick="window.close()">🏠 Voltar ao Portal</button>
+</div>
+<script>
+let dragging = null;
+const slotValues = {};
+
+function playSound(type) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator(), g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  if (type === 'correct') {
+    o.frequency.setValueAtTime(523, ctx.currentTime); o.frequency.setValueAtTime(659, ctx.currentTime+0.1); o.frequency.setValueAtTime(784, ctx.currentTime+0.2);
+    g.gain.setValueAtTime(0.3, ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.5);
+    o.start(); o.stop(ctx.currentTime+0.5);
+  } else {
+    o.frequency.setValueAtTime(300, ctx.currentTime); o.frequency.setValueAtTime(200, ctx.currentTime+0.15);
+    g.gain.setValueAtTime(0.3, ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.4);
+    o.start(); o.stop(ctx.currentTime+0.4);
+  }
+}
+
+document.querySelectorAll('.wb-word').forEach(word => {
+  word.addEventListener('dragstart', e => { setTimeout(() => word.classList.add('dragging'), 0); e.dataTransfer.setData('text/plain', word.dataset.value); });
+  word.addEventListener('dragend', () => word.classList.remove('dragging'));
+});
+
+document.querySelectorAll('.drop-slot').forEach(slot => {
+  slot.addEventListener('dragover', e => { e.preventDefault(); slot.classList.add('drag-over'); });
+  slot.addEventListener('dragleave', () => slot.classList.remove('drag-over'));
+  slot.addEventListener('drop', e => {
+    e.preventDefault(); slot.classList.remove('drag-over');
+    const val = e.dataTransfer.getData('text/plain');
+    const srcWord = document.querySelector(`.wb-word[data-value="${val}"]`);
+    if (!srcWord) return;
+    const slotId = slot.dataset.slot;
+    if (slotValues[slotId]) {
+      const prev = document.querySelector(`.wb-word[data-value="${slotValues[slotId]}"]`);
+      if (prev) prev.classList.remove('used');
+    }
+    slotValues[slotId] = val;
+    srcWord.classList.add('used');
+    slot.textContent = srcWord.textContent;
+    slot.classList.add('filled');
+    document.getElementById('result-box').className = 'result-box';
+  });
+});
+
+function checkAnswer() {
+  const slots = document.querySelectorAll('.drop-slot');
+  let filled = 0, correct = 0;
+  slots.forEach(s => {
+    const id = s.dataset.slot;
+    if (slotValues[id]) {
+      filled++;
+      if (slotValues[id] === s.dataset.correct) correct++;
+    }
+  });
+  const total = slots.length;
+  const rb = document.getElementById('result-box');
+  if (filled < total) { rb.className = 'result-box partial show'; rb.textContent = `⚠️ Faltam ${total - filled} caixinha(s)! Complete todas antes de verificar.`; return; }
+  if (correct === total) {
+    playSound('correct');
+    rb.className = 'result-box correct show';
+    rb.textContent = '🎉 Mapa perfeito! Você conhece todos os ambientes das plantas! Botânico(a) incrível! 🌿💧🌵🏆';
+  } else {
+    playSound('wrong');
+    rb.className = 'result-box wrong show';
+    rb.textContent = `❌ Você acertou ${correct} de ${total}. Alguma planta está no lugar errado. Tente de novo!`;
+  }
+}
+
+const placeholders = {
+  s1:'🌊 Exemplo de planta...',
+  s2:'🪷 Outra planta aquática...',
+  s3:'💧 O aguapé ________ na água...',
+  s4:'🍊 Exemplo de planta...',
+  s5:'🌱 Fixam no solo com...',
+  s6:'🌵 Exemplo de planta...',
+  s7:'🌵 Têm ________ em vez de folhas...',
+  s8:'🏜️ Vivem em...'
+};
+
+function resetAll() {
+  document.querySelectorAll('.wb-word').forEach(w => w.classList.remove('used'));
+  Object.keys(slotValues).forEach(k => delete slotValues[k]);
+  document.querySelectorAll('.drop-slot').forEach(s => {
+    s.textContent = placeholders[s.dataset.slot] || 'Arraste aqui...';
+    s.classList.remove('filled');
+  });
+  document.getElementById('result-box').className = 'result-box';
+}
+</script>
+</body>
+</html>
