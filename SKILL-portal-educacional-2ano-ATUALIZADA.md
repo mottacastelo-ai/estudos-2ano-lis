@@ -465,6 +465,43 @@ Toda atividade deve respeitar obrigatoriamente:
 5. **Apelo visual alto** — emojis como apoio visual, cores vibrantes, ícones grandes
 6. **Interações intuitivas** — clicar, arrastar, selecionar — nunca digitar texto livre como atividade principal
 
+### 4.0 Regra global — Cobertura obrigatória dos termos técnicos centrais
+
+> **⚠️ Esta regra se aplica a TODAS as atividades do tema — quiz, mapa mental e variáveis.**
+
+Antes de gerar qualquer atividade, a skill deve executar o seguinte passo obrigatório:
+
+**Identificar e registrar os termos técnicos primários do tema.**
+
+Estes são os conceitos que o currículo pretende instalar como vocabulário permanente — ignorá-los em qualquer atividade invalida o objetivo pedagógico, independentemente de quão correto seja o restante do conteúdo gerado.
+
+**Exemplos:**
+- Ciclo da Vida → _vivíparo_, _ovíparo_
+- Separação de Sílabas → _sílaba_, _monossílabo_, _dissílabo_, _polissílabo_
+- Adição → _parcela_, _soma_, _total_
+- Formas Geométricas → _vértice_, _lado_, _face_
+
+**Regras de cobertura por atividade:**
+
+| Atividade | Obrigação |
+|---|---|
+| Quiz | Mínimo de 2 questões que usam o termo técnico diretamente (definição, identificação ou aplicação) |
+| Mapa Mental | Os termos técnicos centrais devem ser nós do mapa, não podem estar ausentes da estrutura |
+| Arrastar e Soltar / Classificador | Os rótulos das categorias devem usar os termos técnicos (não paráfrases) |
+| Jogo da Memória | Pelo menos um par deve parear o termo técnico com sua definição ou imagem representativa |
+| Verdadeiro ou Falso | Pelo menos 2 afirmações devem usar os termos técnicos diretamente |
+| Complete a Palavra / Ordene as Sílabas | Incluir os próprios termos técnicos como palavras a completar/montar, quando aplicável ao nível da palavra |
+| Criador de Frase | O banco de palavras deve incluir os termos técnicos para que a criança os use na frase |
+| Caça-palavras | Os termos técnicos devem estar obrigatoriamente entre as palavras a encontrar |
+
+**Checklist global antes de concluir qualquer tema:**
+- [ ] Os termos técnicos centrais foram identificados antes de gerar as atividades?
+- [ ] Cada atividade cobre pelo menos um dos termos técnicos de forma explícita?
+- [ ] Nenhuma atividade usa apenas paráfrases quando o objetivo é fixar o termo em si?
+- [ ] O conjunto de atividades do tema cobre definição, identificação e aplicação dos termos?
+
+---
+
 ### 4.1 Atividades obrigatórias (todo tema, toda disciplina)
 
 #### A) Quiz Interativo
@@ -472,6 +509,7 @@ Toda atividade deve respeitar obrigatoriamente:
 - **Estrutura:** 8 questões de múltipla escolha com 3 alternativas (não 4 — reduz a carga cognitiva para 7 anos)
 - **Feedback:** imediato por questão com som + placar final com mensagem motivacional e emoji festivo
 - **Nível Glasser:** 📖 Retrieval practice
+- **Termos técnicos:** aplicar obrigatoriamente as regras da seção 4.0 — mínimo de 2 questões com uso direto dos termos centrais do tema
 - **Card no index:**
 ```html
 <a class="act-card [disc]" href="quiz-[slug].html" target="_blank">
