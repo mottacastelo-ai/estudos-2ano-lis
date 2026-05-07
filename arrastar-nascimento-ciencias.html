@@ -122,8 +122,8 @@ body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100
       <div class="animal-card" draggable="true" data-value="gato" data-correct="barriga" id="card-gato">
         <span class="animal-emoji">🐱</span><span class="animal-name">Gato</span>
       </div>
-      <div class="animal-card" draggable="true" data-value="cobra" data-correct="ovo" id="card-cobra">
-        <span class="animal-emoji">🐍</span><span class="animal-name">Cobra</span>
+      <div class="animal-card" draggable="true" data-value="tucano" data-correct="ovo" id="card-tucano">
+        <span class="animal-emoji">🦜</span><span class="animal-name">Arara</span>
       </div>
       <div class="animal-card" draggable="true" data-value="tartaruga" data-correct="ovo" id="card-tartaruga">
         <span class="animal-emoji">🐢</span><span class="animal-name">Tartaruga</span>
@@ -164,7 +164,7 @@ const animals = {
   cachorro: { emoji: '🐶', name: 'Cachorro', correct: 'barriga' },
   pato:     { emoji: '🦆', name: 'Pato',     correct: 'ovo' },
   gato:     { emoji: '🐱', name: 'Gato',     correct: 'barriga' },
-  cobra:    { emoji: '🐍', name: 'Cobra',     correct: 'ovo' },
+  tucano:   { emoji: '🦜', name: 'Arara',    correct: 'ovo' },
   tartaruga:{ emoji: '🐢', name: 'Tartaruga', correct: 'ovo' },
   vaca:     { emoji: '🐄', name: 'Vaca',      correct: 'barriga' }
 };
@@ -251,7 +251,7 @@ function checkAnswer() {
   if (correct === 6) {
     playSound('correct');
     rb.className = 'result-box correct show';
-    rb.textContent = '🎉 Parabéns! Você classificou todos os animais corretamente! Cães, gatos e vacas nascem da barriga da mãe. Patos, cobras e tartarugas nascem de ovos! 🏆';
+    rb.textContent = '🎉 Parabéns! Você classificou todos os animais corretamente! Cães, gatos e vacas nascem da barriga da mãe. Patos, araras e tartarugas nascem de ovos! 🏆';
   } else {
     playSound('wrong');
     rb.className = 'result-box wrong show';

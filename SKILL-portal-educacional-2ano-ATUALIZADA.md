@@ -471,17 +471,19 @@ Toda atividade deve respeitar obrigatoriamente:
 
 Antes de gerar qualquer atividade, a skill deve executar o seguinte passo obrigatório:
 
-**Identificar e registrar os termos técnicos primários do tema.**
+**Identificar os termos técnicos primários do tema com base exclusivamente no material didático fornecido (fotos do livro).**
 
-Estes são os conceitos que o currículo pretende instalar como vocabulário permanente — ignorá-los em qualquer atividade invalida o objetivo pedagógico, independentemente de quão correto seja o restante do conteúdo gerado.
+Termos que aparecem apenas no roteiro da HQ, em prompts de imagem, em pesquisas complementares ou no conhecimento geral da skill **não contam** — só são válidos os termos que constam explicitamente nas páginas do livro fotografadas por Léo. Incluir vocabulário técnico não presente no material é antecipar conteúdo curricular não previsto para a faixa etária, o que é pedagogicamente inadequado.
 
-**Exemplos:**
-- Ciclo da Vida → _vivíparo_, _ovíparo_
-- Separação de Sílabas → _sílaba_, _monossílabo_, _dissílabo_, _polissílabo_
-- Adição → _parcela_, _soma_, _total_
-- Formas Geométricas → _vértice_, _lado_, _face_
+**Fontes válidas de termos técnicos:**
+- ✅ Texto do livro didático (páginas fotografadas)
+- ✅ Títulos, legendas e glossários do livro
+- ✅ Exercícios e enunciados do livro
+- ❌ Roteiro ou falas da HQ gerada pela skill
+- ❌ Conhecimento geral da skill sobre o tema
+- ❌ Materiais externos não fornecidos por Léo
 
-**Regras de cobertura por atividade:**
+**Regras de cobertura por atividade** (aplicar apenas aos termos identificados nas fontes válidas acima):
 
 | Atividade | Obrigação |
 |---|---|
@@ -490,15 +492,16 @@ Estes são os conceitos que o currículo pretende instalar como vocabulário per
 | Arrastar e Soltar / Classificador | Os rótulos das categorias devem usar os termos técnicos (não paráfrases) |
 | Jogo da Memória | Pelo menos um par deve parear o termo técnico com sua definição ou imagem representativa |
 | Verdadeiro ou Falso | Pelo menos 2 afirmações devem usar os termos técnicos diretamente |
-| Complete a Palavra / Ordene as Sílabas | Incluir os próprios termos técnicos como palavras a completar/montar, quando aplicável ao nível da palavra |
+| Complete a Palavra / Ordene as Sílabas | Incluir os próprios termos técnicos como palavras a completar/montar, quando aplicável |
 | Criador de Frase | O banco de palavras deve incluir os termos técnicos para que a criança os use na frase |
 | Caça-palavras | Os termos técnicos devem estar obrigatoriamente entre as palavras a encontrar |
 
 **Checklist global antes de concluir qualquer tema:**
-- [ ] Os termos técnicos centrais foram identificados antes de gerar as atividades?
-- [ ] Cada atividade cobre pelo menos um dos termos técnicos de forma explícita?
+- [ ] Os termos técnicos foram extraídos exclusivamente do material didático fotografado?
+- [ ] Nenhum termo foi incluído por ter aparecido apenas na HQ ou por ser vocabulário esperado do tema?
+- [ ] Cada atividade cobre pelo menos um dos termos técnicos confirmados de forma explícita?
 - [ ] Nenhuma atividade usa apenas paráfrases quando o objetivo é fixar o termo em si?
-- [ ] O conjunto de atividades do tema cobre definição, identificação e aplicação dos termos?
+- [ ] O conjunto de atividades cobre definição, identificação e aplicação dos termos presentes no livro?
 
 ---
 
@@ -509,7 +512,6 @@ Estes são os conceitos que o currículo pretende instalar como vocabulário per
 - **Estrutura:** 8 questões de múltipla escolha com 3 alternativas (não 4 — reduz a carga cognitiva para 7 anos)
 - **Feedback:** imediato por questão com som + placar final com mensagem motivacional e emoji festivo
 - **Nível Glasser:** 📖 Retrieval practice
-- **Termos técnicos:** aplicar obrigatoriamente as regras da seção 4.0 — mínimo de 2 questões com uso direto dos termos centrais do tema
 - **Card no index:**
 ```html
 <a class="act-card [disc]" href="quiz-[slug].html" target="_blank">
