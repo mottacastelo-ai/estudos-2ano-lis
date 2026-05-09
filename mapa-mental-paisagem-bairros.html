@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapa Mental — Paisagem dos Bairros</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Baloo+2:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #F59E0B;
+    --light: #FCD34D;
+    --bg: #FFFBEB;
+    --text: #1F2937;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg); color: var(--text);
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 16px 12px 40px; overflow-x: hidden;
+  }
+  header { text-align: center; margin-bottom: 12px; }
+  header h1 {
+    font-family: 'Baloo 2', cursive; font-size: 1.8rem;
+    color: var(--primary); line-height: 1.2;
+  }
+  header p { font-size: 1rem; color: #6B7280; margin-top: 3px; }
+
+  .instruction {
+    background: #fff; border-radius: var(--radius);
+    border-left: 5px solid var(--primary);
+    padding: 10px 16px; max-width: 720px; width: 100%;
+    font-size: 1.1rem; font-weight: 600; margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+
+  .top-btns {
+    display: flex; gap: 10px; flex-wrap: wrap;
+    justify-content: center; margin-bottom: 14px;
+  }
+  .btn-gabarito {
+    background: #3B82F6; color: #fff; border: none;
+    border-radius: var(--radius); padding: 12px 22px;
+    font-family: 'Baloo 2', cursive; font-size: 1.1rem;
+    font-weight: 700; cursor: pointer; transition: background 0.2s;
+  }
+  .btn-gabarito:hover { background: #2563EB; }
+  .btn-reset {
+    background: #E5E7EB; color: #374151; border: none;
+    border-radius: var(--radius); padding: 12px 22px;
+    font-family: 'Baloo 2', cursive; font-size: 1.1rem;
+    font-weight: 700; cursor: pointer;
+  }
+  .btn-back {
+    background: var(--primary); color: #fff; border: none;
+    border-radius: var(--radius); padding: 12px 22px;
+    font-family: 'Baloo 2', cursive; font-size: 1.1rem;
+    font-weight: 700; cursor: pointer;
+  }
+  .btn-back:hover { background: #D97706; }
+
+  /* LAYOUT: map + bank side by side */
+  .layout {
+    display: flex; gap: 16px; width: 100%; max-width: 880px;
+    align-items: flex-start; flex-wrap: wrap; justify-content: center;
+  }
+
+  /* MAP AREA */
+  .map-area {
+    position: relative; flex: 1 1 460px;
+    min-width: 320px; height: 520px;
+    background: #fff; border-radius: 18px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: visible;
+  }
+  .svg-lines {
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none; z-index: 0;
+  }
+  .line-path {
+    fill: none; stroke: #D1D5DB; stroke-width: 2.5;
+    stroke-dasharray: 6 4;
+    animation: dash-flow 1.5s linear infinite;
+  }
+  .line-path.connected { stroke: var(--primary); stroke-dasharray: none; stroke-width: 3; }
+  @keyframes dash-flow { to { stroke-dashoffset: -20; } }
+
+  /* CENTRAL NODE */
+  .central-node {
+    position: absolute; z-index: 10;
+    background: linear-gradient(135deg, var(--primary), var(--light));
+    border-radius: 18px; padding: 16px 18px;
+    font-family: 'Baloo 2', cursive; font-size: 1rem;
+    font-weight: 800; color: #fff; text-align: center;
+    box-shadow: 0 6px 20px rgba(245,158,11,0.4);
+    line-height: 1.3; width: 120px;
+    transform: translate(-50%, -50%);
+    left: 50%; top: 50%;
+    pointer-events: none;
+  }
+
+  /* SLOT */
+  .slot {
+    position: absolute; z-index: 5;
+    width: 118px; height: 70px;
+    background: rgba(243,244,246,0.7);
+    border: 2.5px dashed #9CA3AF;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center; font-size: 0.85rem; font-weight: 600;
+    color: #9CA3AF; transition: border-color 0.2s, background 0.2s;
+    transform: translate(-50%, -50%);
+  }
+  .slot.drag-over { border-color: var(--primary); background: #FFFDE7; color: var(--primary); }
+  .slot.filled { border-style: solid; border-color: #10B981; background: #D1FAE5; }
+  .slot.wrong-slot { animation: shake 0.5s ease; border-color: #EF4444; background: #FEE2E2; }
+
+  /* NODE CARDS (draggable) */
+  .node-card {
+    background: #fff; border: 2.5px solid #D1D5DB;
+    border-radius: 12px; padding: 10px 12px;
+    font-family: 'Baloo 2', cursive; font-size: 1rem;
+    font-weight: 700; color: var(--text);
+    cursor: grab; user-select: none;
+    text-align: center; line-height: 1.3;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: transform 0.15s, box-shadow 0.15s;
+    touch-action: none;
+  }
+  .node-card:hover { transform: scale(1.05); box-shadow: 0 6px 16px rgba(0,0,0,0.14); }
+  .node-card.placed {
+    background: #D1FAE5; border-color: #10B981;
+    cursor: default; font-size: 0.9rem;
+    animation: pop 0.4s ease;
+    width: 100%; text-align: center;
+  }
+
+  @keyframes pop {
+    0% { transform: scale(0.8); }
+    60% { transform: scale(1.08); }
+    100% { transform: scale(1); }
+  }
+
+  /* BANK */
+  .bank-panel {
+    flex: 0 0 170px; min-width: 150px;
+    background: #fff; border-radius: var(--radius);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    padding: 14px 12px;
+  }
+  .bank-title {
+    font-family: 'Baloo 2', cursive; font-size: 1.1rem;
+    font-weight: 800; color: #374151; margin-bottom: 12px;
+    text-align: center;
+  }
+  .bank-list { display: flex; flex-direction: column; gap: 8px; }
+
+  /* SCORE */
+  .score-bar {
+    display: flex; gap: 10px; align-items: center;
+    justify-content: center; margin-bottom: 12px;
+    font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 700;
+  }
+  .score-chip {
+    background: var(--primary); color: #fff;
+    padding: 5px 16px; border-radius: 999px;
+  }
+
+  /* GABARITO overlay */
+  .gabarito-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5); z-index: 100;
+    align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .gabarito-overlay.show { display: flex; }
+  .gabarito-box {
+    background: #fff; border-radius: 18px;
+    max-width: 520px; width: 100%; padding: 28px 24px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.2);
+  }
+  .gabarito-box h2 {
+    font-family: 'Baloo 2', cursive; font-size: 1.5rem;
+    color: var(--primary); margin-bottom: 16px; text-align: center;
+  }
+  .gabarito-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .gabarito-list li {
+    background: #F9FAFB; border-radius: 10px;
+    padding: 10px 14px; font-size: 1.1rem; font-weight: 600;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .gab-slot { color: #6B7280; font-size: 0.9rem; }
+  .btn-close-gab {
+    display: block; width: 100%; background: var(--primary);
+    color: #fff; border: none; border-radius: var(--radius);
+    padding: 14px; font-family: 'Baloo 2', cursive;
+    font-size: 1.2rem; font-weight: 700; cursor: pointer;
+    margin-top: 18px;
+  }
+
+  @keyframes shake {
+    0%,100% { transform: translate(-50%,-50%); }
+    20% { transform: translate(calc(-50% - 8px), -50%); }
+    40% { transform: translate(calc(-50% + 8px), -50%); }
+    60% { transform: translate(calc(-50% - 6px), -50%); }
+    80% { transform: translate(calc(-50% + 6px), -50%); }
+  }
+  @keyframes bounce {
+    0%,100% { transform: translateY(0); }
+    30% { transform: translateY(-6px); }
+  }
+
+  @media (max-width: 560px) {
+    .map-area { height: 440px; flex: 1 1 100%; }
+    .central-node { font-size: 0.85rem; width: 100px; padding: 12px 10px; }
+    .slot { width: 96px; height: 62px; font-size: 0.75rem; }
+    .bank-panel { flex: 1 1 100%; }
+    .bank-list { flex-direction: row; flex-wrap: wrap; justify-content: center; }
+    .node-card { font-size: 0.9rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🧠 Mapa Mental</h1>
+  <p>2º Ano · Geografia · Paisagem dos Bairros</p>
+</header>
+
+<div class="instruction">🖱️ <strong>Arraste os nós</strong> para os slots ao redor do tema central!</div>
+
+<div class="score-bar">
+  <span class="score-chip" id="scoreChip">✅ 0 / 6</span>
+</div>
+
+<div class="top-btns">
+  <button class="btn-gabarito" onclick="showGabarito()">📋 Ver Gabarito</button>
+  <button class="btn-reset" onclick="initGame()">🔄 Reiniciar</button>
+  <button class="btn-back" onclick="window.close()">🏠 Voltar ao Portal</button>
+</div>
+
+<div class="layout">
+  <!-- MAP -->
+  <div class="map-area" id="mapArea">
+    <svg class="svg-lines" id="svgLines"></svg>
+    <!-- Central node -->
+    <div class="central-node" id="centralNode">🏙️ PAISAGEM<br>DOS BAIRROS</div>
+    <!-- Slots: positions set by JS -->
+  </div>
+
+  <!-- BANK -->
+  <div class="bank-panel">
+    <div class="bank-title">📦 Nós para arrastar:</div>
+    <div class="bank-list" id="bankList"></div>
+  </div>
+</div>
+
+<!-- GABARITO overlay -->
+<div class="gabarito-overlay" id="gabOverlay">
+  <div class="gabarito-box">
+    <h2>📋 Gabarito</h2>
+    <ul class="gabarito-list" id="gabList"></ul>
+    <button class="btn-close-gab" onclick="closeGabarito()">✕ Fechar</button>
+  </div>
+</div>
+
+<script>
+// Slot definitions: label = hint label, position = % of map area, correct node id
+const slots = [
+  { id:'sN',  label:'Norte',     cx: 50, cy: 10, correctId:'n1' },
+  { id:'sNE', label:'Nordeste',  cx: 83, cy: 22, correctId:'n2' },
+  { id:'sSE', label:'Sudeste',   cx: 88, cy: 65, correctId:'n3' },
+  { id:'sS',  label:'Sul',       cx: 50, cy: 88, correctId:'n4' },
+  { id:'sSO', label:'Sudoeste',  cx: 12, cy: 65, correctId:'n5' },
+  { id:'sNO', label:'Noroeste',  cx: 17, cy: 22, correctId:'n6' }
+];
+
+const nodes = [
+  { id:'n1', text:'🏠 Bairro Residencial',             slotId:'sN'  },
+  { id:'n2', text:'🏪 Bairro Comercial',               slotId:'sNE' },
+  { id:'n3', text:'⚙️ Bairro Industrial',              slotId:'sSE' },
+  { id:'n4', text:'🏘️ Bairro Periférico',              slotId:'sS'  },
+  { id:'n5', text:'🔀 Bairro de Uso Misto',            slotId:'sSO' },
+  { id:'n6', text:'🌿 Elementos Naturais e Construídos', slotId:'sNO' }
+];
+
+let score = 0;
+let draggingId = null;
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playSound(correct) {
+  const freqs = correct ? [523, 659, 784] : [300, 200];
+  let t = audioCtx.currentTime;
+  freqs.forEach((f, i) => {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.frequency.value = f; osc.type = 'sine';
+    gain.gain.setValueAtTime(0.3, t + i * 0.13);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + i * 0.13 + 0.15);
+    osc.start(t + i * 0.13); osc.stop(t + i * 0.13 + 0.18);
+  });
+}
+
+function getMapDims() {
+  const map = document.getElementById('mapArea');
+  return { w: map.offsetWidth, h: map.offsetHeight };
+}
+
+function pxPos(cx, cy) {
+  const { w, h } = getMapDims();
+  return { x: (cx / 100) * w, y: (cy / 100) * h };
+}
+
+function drawLines() {
+  const svg = document.getElementById('svgLines');
+  const { w, h } = getMapDims();
+  svg.innerHTML = '';
+  svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+  const cx = w / 2, cy = h / 2;
+  slots.forEach(s => {
+    const pos = pxPos(s.cx, s.cy);
+    const slotEl = document.getElementById(s.id);
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    const d = `M ${cx} ${cy} Q ${(cx + pos.x)/2} ${(cy + pos.y)/2 - 20} ${pos.x} ${pos.y}`;
+    path.setAttribute('d', d);
+    path.setAttribute('class', 'line-path');
+    path.id = 'line-' + s.id;
+    svg.appendChild(path);
+  });
+}
+
+function buildSlots() {
+  const mapArea = document.getElementById('mapArea');
+  document.querySelectorAll('.slot').forEach(el => el.remove());
+  slots.forEach(s => {
+    const div = document.createElement('div');
+    div.className = 'slot';
+    div.id = s.id;
+    div.dataset.slotId = s.id;
+    div.innerHTML = `<span class="gab-slot">${s.label}</span>`;
+    const { w, h } = getMapDims();
+    div.style.left = (s.cx / 100 * w) + 'px';
+    div.style.top = (s.cy / 100 * h) + 'px';
+    div.addEventListener('dragover', e => { e.preventDefault(); div.classList.add('drag-over'); });
+    div.addEventListener('dragleave', () => div.classList.remove('drag-over'));
+    div.addEventListener('drop', e => { e.preventDefault(); div.classList.remove('drag-over'); attemptDrop(s.id); });
+    mapArea.appendChild(div);
+  });
+}
+
+function buildBank() {
+  const bank = document.getElementById('bankList');
+  bank.innerHTML = '';
+  nodes.forEach(n => {
+    const el = document.createElement('div');
+    el.className = 'node-card';
+    el.id = n.id;
+    el.textContent = n.text;
+    el.dataset.nodeId = n.id;
+    el.draggable = true;
+    el.addEventListener('dragstart', () => { draggingId = n.id; });
+    el.addEventListener('dragend', () => {});
+    // Touch
+    let clone = null, offX = 0, offY = 0;
+    el.addEventListener('touchstart', e => {
+      draggingId = n.id;
+      const t = e.touches[0];
+      const r = el.getBoundingClientRect();
+      offX = t.clientX - r.left; offY = t.clientY - r.top;
+      clone = el.cloneNode(true);
+      clone.style.cssText = `position:fixed;z-index:9999;opacity:0.88;pointer-events:none;left:${t.clientX-offX}px;top:${t.clientY-offY}px;width:${r.width}px`;
+      document.body.appendChild(clone);
+      el.style.opacity = '0.4';
+    }, { passive: true });
+    el.addEventListener('touchmove', e => {
+      e.preventDefault();
+      const t = e.touches[0];
+      if (clone) { clone.style.left = (t.clientX - offX) + 'px'; clone.style.top = (t.clientY - offY) + 'px'; }
+      highlightSlot(t.clientX, t.clientY);
+    }, { passive: false });
+    el.addEventListener('touchend', e => {
+      const t = e.changedTouches[0];
+      if (clone) { clone.remove(); clone = null; }
+      el.style.opacity = '1';
+      clearSlotHighlight();
+      const slotId = getSlotAt(t.clientX, t.clientY);
+      if (slotId) attemptDrop(slotId);
+      else draggingId = null;
+    });
+    bank.appendChild(el);
+  });
+}
+
+function highlightSlot(x, y) {
+  clearSlotHighlight();
+  const el = getSlotElAt(x, y);
+  if (el) el.classList.add('drag-over');
+}
+function clearSlotHighlight() {
+  document.querySelectorAll('.slot').forEach(s => s.classList.remove('drag-over'));
+}
+function getSlotElAt(x, y) {
+  for (const s of slots) {
+    const el = document.getElementById(s.id);
+    if (!el) continue;
+    const r = el.getBoundingClientRect();
+    if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) return el;
+  }
+  return null;
+}
+function getSlotAt(x, y) {
+  for (const s of slots) {
+    const el = document.getElementById(s.id);
+    if (!el) continue;
+    const r = el.getBoundingClientRect();
+    if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) return s.id;
+  }
+  return null;
+}
+
+function attemptDrop(slotId) {
+  if (!draggingId) return;
+  const nodeId = draggingId;
+  draggingId = null;
+  const node = nodes.find(n => n.id === nodeId);
+  const slot = slots.find(s => s.id === slotId);
+  if (!node || !slot) return;
+  const slotEl = document.getElementById(slotId);
+  if (slotEl.dataset.filled === 'true') return;
+  if (slot.correctId === nodeId) {
+    // correct!
+    score++;
+    slotEl.dataset.filled = 'true';
+    slotEl.classList.add('filled');
+    slotEl.innerHTML = '';
+    const nodeCard = document.getElementById(nodeId);
+    nodeCard.classList.add('placed');
+    nodeCard.style.pointerEvents = 'none';
+    nodeCard.draggable = false;
+    slotEl.appendChild(nodeCard.cloneNode(true));
+    nodeCard.style.display = 'none';
+    // update line
+    const line = document.getElementById('line-' + slotId);
+    if (line) line.classList.add('connected');
+    document.getElementById('scoreChip').textContent = `✅ ${score} / 6`;
+    playSound(true);
+    if (score === 6) setTimeout(showComplete, 600);
+  } else {
+    // wrong
+    slotEl.classList.add('wrong-slot');
+    playSound(false);
+    setTimeout(() => slotEl.classList.remove('wrong-slot'), 600);
+  }
+}
+
+function showComplete() {
+  const chip = document.getElementById('scoreChip');
+  chip.style.background = '#10B981';
+  chip.textContent = '🏆 Completo! 6 / 6';
+  playSound(true);
+}
+
+function showGabarito() {
+  const list = document.getElementById('gabList');
+  list.innerHTML = '';
+  nodes.forEach(n => {
+    const slot = slots.find(s => s.correctId === n.id);
+    const li = document.createElement('li');
+    li.innerHTML = `<span>${n.text}</span> <span class="gab-slot">→ ${slot ? slot.label : ''}</span>`;
+    list.appendChild(li);
+  });
+  document.getElementById('gabOverlay').classList.add('show');
+}
+function closeGabarito() { document.getElementById('gabOverlay').classList.remove('show'); }
+
+function initGame() {
+  score = 0;
+  document.getElementById('scoreChip').textContent = '✅ 0 / 6';
+  document.getElementById('scoreChip').style.background = '';
+  buildSlots();
+  buildBank();
+  drawLines();
+}
+
+window.addEventListener('resize', () => { buildSlots(); drawLines(); });
+initGame();
+</script>
+</body>
+</html>

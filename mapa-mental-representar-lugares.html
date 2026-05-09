@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Mapa Mental — Representar os Lugares | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #F59E0B;
+  --light: #FCD34D;
+  --bg: #FFFBEB;
+  --dark: #92400E;
+  --mid: #B45309;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  min-height: 100vh;
+  padding-bottom: 60px;
+  overflow-x: hidden;
+}
+.header {
+  background: linear-gradient(135deg, #92400E, #F59E0B 60%, #FCD34D);
+  padding: 28px 32px;
+  color: #fff;
+  text-align: center;
+}
+.header-emoji { font-size: 3rem; display: block; margin-bottom: 8px; }
+.header-title { font-family: 'Baloo 2', cursive; font-size: 1.8rem; font-weight: 900; line-height: 1.2; }
+.header-sub { font-size: 1.1rem; opacity: 0.92; font-weight: 700; margin-top: 6px; }
+.container { max-width: 860px; margin: 0 auto; padding: 28px 16px; }
+.instruction-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 18px 22px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  margin-bottom: 24px;
+  border-left: 5px solid var(--primary);
+}
+.instruction-card p { font-size: 1.2rem; font-weight: 700; color: #334155; line-height: 1.5; }
+.score-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.score-badge {
+  background: #fff;
+  border: 3px solid var(--primary);
+  border-radius: 50px;
+  padding: 8px 22px;
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: var(--dark);
+}
+.score-stars { font-size: 1.6rem; letter-spacing: 2px; }
+.map-wrapper {
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 4px 24px rgba(245,158,11,0.15);
+  padding: 24px 16px 32px;
+  margin-bottom: 24px;
+  position: relative;
+}
+.map-canvas-container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 65%;
+  min-height: 400px;
+}
+.map-svg {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+.center-node {
+  position: absolute;
+  z-index: 10;
+  background: linear-gradient(135deg, #92400E, #F59E0B);
+  color: #fff;
+  border-radius: 50%;
+  width: 130px;
+  height: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-family: 'Baloo 2', cursive;
+  font-size: 0.85rem;
+  font-weight: 900;
+  box-shadow: 0 6px 24px rgba(245,158,11,0.45);
+  padding: 10px;
+  line-height: 1.3;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  cursor: default;
+  user-select: none;
+}
+.slot {
+  position: absolute;
+  z-index: 5;
+  width: 130px;
+  min-height: 64px;
+  border: 3px dashed var(--light);
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #D97706;
+  background: rgba(252, 211, 77, 0.12);
+  transition: all 0.18s;
+  cursor: default;
+  padding: 8px 10px;
+  line-height: 1.25;
+}
+.slot.drag-over {
+  background: rgba(252, 211, 77, 0.35);
+  border-color: var(--primary);
+  transform: scale(1.06);
+}
+.slot.filled {
+  border-style: solid;
+  border-color: var(--primary);
+  background: linear-gradient(135deg, #FFFBEB, #FEF3C7);
+  color: var(--dark);
+  font-size: 0.8rem;
+  font-weight: 800;
+  box-shadow: 0 3px 12px rgba(245,158,11,0.25);
+}
+.slot.correct-slot {
+  border-color: #22C55E !important;
+  background: linear-gradient(135deg, #F0FDF4, #DCFCE7) !important;
+  color: #15803D !important;
+}
+.slot.wrong-slot {
+  border-color: #EF4444 !important;
+  background: linear-gradient(135deg, #FFF5F5, #FEE2E2) !important;
+  color: #B91C1C !important;
+  animation: shake 0.4s ease;
+}
+@keyframes shake {
+  0%,100%{transform:translateX(0) translateY(-50%)}
+  20%{transform:translateX(-8px) translateY(-50%)}
+  40%{transform:translateX(8px) translateY(-50%)}
+  60%{transform:translateX(-5px) translateY(-50%)}
+  80%{transform:translateX(5px) translateY(-50%)}
+}
+.slot-desc {
+  font-size: 0.68rem;
+  font-weight: 600;
+  opacity: 0.75;
+  display: block;
+  margin-top: 2px;
+}
+.node-bank {
+  background: #FEF3C7;
+  border: 2px solid var(--light);
+  border-radius: 20px;
+  padding: 20px 18px 18px;
+  margin-bottom: 24px;
+}
+.node-bank-title {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: var(--dark);
+  margin-bottom: 14px;
+  text-align: center;
+}
+.nodes-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+.draggable-node {
+  background: #fff;
+  border: 2.5px solid var(--primary);
+  border-radius: 50px;
+  padding: 12px 18px;
+  cursor: grab;
+  user-select: none;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--dark);
+  transition: all 0.18s;
+  touch-action: none;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(245,158,11,0.15);
+}
+.draggable-node:hover { border-color: var(--mid); transform: translateY(-2px) scale(1.03); box-shadow: 0 4px 14px rgba(245,158,11,0.25); }
+.draggable-node.dragging { opacity: 0.3; cursor: grabbing; }
+.draggable-node.used { display: none; }
+.drag-ghost {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.88;
+  transform: translate(-50%, -50%) scale(1.06);
+  background: #fff;
+  border: 2.5px solid var(--primary);
+  border-radius: 50px;
+  padding: 12px 18px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--dark);
+  white-space: nowrap;
+  box-shadow: 0 8px 24px rgba(245,158,11,0.35);
+  font-family: 'Nunito', sans-serif;
+}
+.btn-row { display: flex; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+.btn-check {
+  flex: 1;
+  min-width: 200px;
+  padding: 18px;
+  border-radius: 16px;
+  border: none;
+  background: var(--primary);
+  color: #fff;
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.3rem;
+  font-weight: 900;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.btn-check:hover { background: #D97706; transform: translateY(-2px); }
+.btn-gabarito {
+  flex: 1;
+  min-width: 180px;
+  padding: 18px;
+  border-radius: 16px;
+  border: 2.5px solid var(--primary);
+  background: #fff;
+  color: var(--dark);
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.2rem;
+  font-weight: 900;
+  cursor: pointer;
+  transition: all 0.18s;
+  display: none;
+}
+.btn-gabarito.visible { display: block; }
+.btn-gabarito:hover { background: var(--bg); }
+.btn-reset {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  border: 2px solid #CBD5E1;
+  background: #fff;
+  color: #64748B;
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  margin-bottom: 14px;
+  transition: all 0.18s;
+}
+.btn-reset:hover { border-color: var(--primary); color: var(--primary); }
+.result-box {
+  border-radius: 16px;
+  padding: 18px 22px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  display: none;
+  margin-bottom: 16px;
+  line-height: 1.5;
+  text-align: center;
+}
+.result-box.show { display: block; }
+.result-box.correct { background: #DCFCE7; color: #15803D; }
+.result-box.partial { background: #FEF9C3; color: #92400E; }
+.result-box.wrong { background: #FEE2E2; color: #B91C1C; }
+.back-btn {
+  display: block;
+  text-align: center;
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  background: var(--primary);
+  color: #fff;
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.18s;
+}
+.back-btn:hover { background: #D97706; }
+.map-line {
+  stroke: #F59E0B;
+  stroke-width: 3;
+  fill: none;
+  stroke-linecap: round;
+  stroke-dasharray: 300;
+  stroke-dashoffset: 300;
+  transition: stroke-dashoffset 0.55s ease, stroke 0.3s ease;
+}
+.map-line.drawn { stroke-dashoffset: 0; }
+.map-line.correct-line { stroke: #22C55E; }
+@media (max-width: 600px) {
+  .center-node { width: 90px; height: 90px; font-size: 0.65rem; }
+  .slot { width: 100px; min-height: 54px; font-size: 0.7rem; padding: 6px 8px; }
+  .slot-desc { font-size: 0.6rem; }
+  .draggable-node { font-size: 0.9rem; padding: 10px 14px; }
+  .header-title { font-size: 1.4rem; }
+  .map-canvas-container { padding-bottom: 70%; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="header-emoji">🗺️</span>
+  <div class="header-title">Mapa Mental: Representar os Lugares</div>
+  <div class="header-sub">Arraste cada nó para o lugar certo no mapa!</div>
+</div>
+
+<div class="container">
+
+  <div class="instruction-card">
+    <p>🧠 Arraste cada cartão do banco de nós para o slot correto ao redor do nó central.<br>Quando acertar, uma linha vai aparecer conectando ao centro! ✨</p>
+  </div>
+
+  <div class="score-bar">
+    <div class="score-badge">⭐ Acertos: <span id="score-count">0</span>/6</div>
+    <div class="score-stars" id="score-stars">⬜⬜⬜⬜⬜⬜</div>
+  </div>
+
+  <div class="map-wrapper">
+    <div class="map-canvas-container" id="map-container">
+
+      <svg class="map-svg" id="map-svg" viewBox="0 0 800 520" preserveAspectRatio="xMidYMid meet">
+        <line id="line-0" class="map-line" x1="400" y1="260" x2="400" y2="260"/>
+        <line id="line-1" class="map-line" x1="400" y1="260" x2="400" y2="260"/>
+        <line id="line-2" class="map-line" x1="400" y1="260" x2="400" y2="260"/>
+        <line id="line-3" class="map-line" x1="400" y1="260" x2="400" y2="260"/>
+        <line id="line-4" class="map-line" x1="400" y1="260" x2="400" y2="260"/>
+        <line id="line-5" class="map-line" x1="400" y1="260" x2="400" y2="260"/>
+      </svg>
+
+      <div class="center-node" id="center-node">
+        🗺️<br>REPRESENTAR<br>OS LUGARES
+      </div>
+
+      <!-- N -->
+      <div class="slot" id="slot-0" data-key="0" data-correct="visual-vertical"
+           style="top:4%; left:50%; transform:translate(-50%,0);">
+        <div><span>👁️ Visão Vertical</span><span class="slot-desc">De cima para baixo</span></div>
+      </div>
+      <!-- NE -->
+      <div class="slot" id="slot-1" data-key="1" data-correct="visual-frontal"
+           style="top:10%; right:2%; transform:none;">
+        <div><span>👁️ Visão Frontal</span><span class="slot-desc">De frente</span></div>
+      </div>
+      <!-- SE -->
+      <div class="slot" id="slot-2" data-key="2" data-correct="visual-obliqua"
+           style="bottom:10%; right:2%; transform:none;">
+        <div><span>↗️ Visão Oblíqua</span><span class="slot-desc">De cima e de lado</span></div>
+      </div>
+      <!-- S -->
+      <div class="slot" id="slot-3" data-key="3" data-correct="planta-cartografica"
+           style="bottom:4%; left:50%; transform:translate(-50%,0);">
+        <div><span>🗺️ Planta Cartográfica</span><span class="slot-desc">Representação plana (2D)</span></div>
+      </div>
+      <!-- SW -->
+      <div class="slot" id="slot-4" data-key="4" data-correct="maquete"
+           style="bottom:10%; left:2%; transform:none;">
+        <div><span>🏗️ Maquete</span><span class="slot-desc">Representação 3D</span></div>
+      </div>
+      <!-- NW -->
+      <div class="slot" id="slot-5" data-key="5" data-correct="ponto-referencia"
+           style="top:10%; left:2%; transform:none;">
+        <div><span>⭐ Ponto de Referência</span><span class="slot-desc">Lugar fixo para se orientar</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="node-bank">
+    <div class="node-bank-title">📦 Arraste os nós para o mapa:</div>
+    <div class="nodes-row" id="node-bank">
+      <div class="draggable-node" id="node-visual-vertical"    data-key="visual-vertical"    draggable="true">👁️ VISÃO VERTICAL</div>
+      <div class="draggable-node" id="node-visual-frontal"     data-key="visual-frontal"     draggable="true">👁️ VISÃO FRONTAL</div>
+      <div class="draggable-node" id="node-visual-obliqua"     data-key="visual-obliqua"     draggable="true">↗️ VISÃO OBLÍQUA</div>
+      <div class="draggable-node" id="node-planta-cartografica" data-key="planta-cartografica" draggable="true">🗺️ PLANTA CARTOGRÁFICA</div>
+      <div class="draggable-node" id="node-maquete"            data-key="maquete"            draggable="true">🏗️ MAQUETE</div>
+      <div class="draggable-node" id="node-ponto-referencia"   data-key="ponto-referencia"   draggable="true">⭐ PONTO DE REFERÊNCIA</div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn-check" id="btn-check" onclick="checkAnswers()">Verificar respostas ✅</button>
+    <button class="btn-gabarito" id="btn-gabarito" onclick="showGabarito()">🏆 Ver Gabarito</button>
+  </div>
+  <button class="btn-reset" onclick="resetAll()">🔄 Recomeçar</button>
+  <div class="result-box" id="result-box"></div>
+  <button class="back-btn" onclick="window.close()">🏠 Voltar ao Portal</button>
+
+</div>
+
+<script>
+// ─── DATA ──────────────────────────────────────────────────────────────────────
+const NODES_DATA = [
+  { key: 'visual-vertical',     label: '👁️ VISÃO VERTICAL',         desc: 'De cima para baixo' },
+  { key: 'visual-frontal',      label: '👁️ VISÃO FRONTAL',          desc: 'De frente' },
+  { key: 'visual-obliqua',      label: '↗️ VISÃO OBLÍQUA',          desc: 'De cima e de lado' },
+  { key: 'planta-cartografica', label: '🗺️ PLANTA CARTOGRÁFICA',    desc: 'Representação plana (2D)' },
+  { key: 'maquete',             label: '🏗️ MAQUETE',                desc: 'Representação 3D' },
+  { key: 'ponto-referencia',    label: '⭐ PONTO DE REFERÊNCIA',    desc: 'Lugar fixo para se orientar' },
+];
+
+// SVG endpoint for each slot (viewBox 800x520, center = 400,260)
+const SVG_ENDS = [
+  { x: 400, y:  55 },  // N   slot-0
+  { x: 695, y: 100 },  // NE  slot-1
+  { x: 695, y: 420 },  // SE  slot-2
+  { x: 400, y: 465 },  // S   slot-3
+  { x: 105, y: 420 },  // SW  slot-4
+  { x: 105, y: 100 },  // NW  slot-5
+];
+
+const SLOT_DEFAULTS = [
+  '<div><span>👁️ Visão Vertical</span><span class="slot-desc">De cima para baixo</span></div>',
+  '<div><span>👁️ Visão Frontal</span><span class="slot-desc">De frente</span></div>',
+  '<div><span>↗️ Visão Oblíqua</span><span class="slot-desc">De cima e de lado</span></div>',
+  '<div><span>🗺️ Planta Cartográfica</span><span class="slot-desc">Representação plana (2D)</span></div>',
+  '<div><span>🏗️ Maquete</span><span class="slot-desc">Representação 3D</span></div>',
+  '<div><span>⭐ Ponto de Referência</span><span class="slot-desc">Lugar fixo para se orientar</span></div>',
+];
+
+// State
+const slotContents = {}; // slotIndex(0-5) -> nodeKey
+let score = 0;
+
+// ─── SOUND ─────────────────────────────────────────────────────────────────────
+function playSound(type) {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    if (type === 'correct') {
+      o.type = 'sine';
+      o.frequency.setValueAtTime(523, ctx.currentTime);
+      o.frequency.setValueAtTime(659, ctx.currentTime+0.12);
+      o.frequency.setValueAtTime(784, ctx.currentTime+0.24);
+      g.gain.setValueAtTime(0.28, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.55);
+      o.start(); o.stop(ctx.currentTime+0.55);
+    } else if (type === 'wrong') {
+      o.type = 'sawtooth';
+      o.frequency.setValueAtTime(280, ctx.currentTime);
+      o.frequency.setValueAtTime(200, ctx.currentTime+0.18);
+      g.gain.setValueAtTime(0.25, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.4);
+      o.start(); o.stop(ctx.currentTime+0.4);
+    } else if (type === 'drop') {
+      o.type = 'sine';
+      o.frequency.setValueAtTime(440, ctx.currentTime);
+      g.gain.setValueAtTime(0.15, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.22);
+      o.start(); o.stop(ctx.currentTime+0.22);
+    } else if (type === 'win') {
+      [523,659,784,1046].forEach((f,i) => {
+        const o2 = ctx.createOscillator(), g2 = ctx.createGain();
+        o2.connect(g2); g2.connect(ctx.destination);
+        o2.frequency.value = f;
+        g2.gain.setValueAtTime(0.22, ctx.currentTime+i*0.13);
+        g2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+i*0.13+0.3);
+        o2.start(ctx.currentTime+i*0.13);
+        o2.stop(ctx.currentTime+i*0.13+0.3);
+      });
+    }
+  } catch(e) {}
+}
+
+// ─── SVG LINES ─────────────────────────────────────────────────────────────────
+function updateLine(idx, drawn, correct) {
+  const line = document.getElementById('line-'+idx);
+  const ep = SVG_ENDS[idx];
+  line.setAttribute('x2', ep.x);
+  line.setAttribute('y2', ep.y);
+  line.classList.remove('drawn','correct-line');
+  if (drawn) {
+    // force reflow to restart animation
+    line.style.strokeDashoffset = '300';
+    void line.offsetWidth;
+    line.classList.add('drawn');
+    if (correct) line.classList.add('correct-line');
+  }
+}
+function resetLine(idx) {
+  const line = document.getElementById('line-'+idx);
+  line.setAttribute('x2','400');
+  line.setAttribute('y2','260');
+  line.classList.remove('drawn','correct-line');
+}
+
+// ─── SCORE UI ──────────────────────────────────────────────────────────────────
+function updateScoreUI(n) {
+  document.getElementById('score-count').textContent = n;
+  document.getElementById('score-stars').textContent = '⭐'.repeat(n) + '⬜'.repeat(6-n);
+}
+
+// ─── DROP LOGIC ────────────────────────────────────────────────────────────────
+function dropNodeOnSlot(nodeKey, slotIndex) {
+  const slot = document.getElementById('slot-'+slotIndex);
+  const nodeEl = document.getElementById('node-'+nodeKey);
+  if (!slot || !nodeEl) return;
+
+  // Return old node to bank if slot was occupied
+  const prevKey = slotContents[slotIndex];
+  if (prevKey) {
+    const prevEl = document.getElementById('node-'+prevKey);
+    if (prevEl) prevEl.classList.remove('used');
+    resetLine(slotIndex);
+  }
+
+  slotContents[slotIndex] = nodeKey;
+  nodeEl.classList.add('used');
+
+  const nd = NODES_DATA.find(n => n.key === nodeKey);
+  slot.innerHTML = '<div><span>'+nd.label+'</span><span class="slot-desc">'+nd.desc+'</span></div>';
+  slot.classList.add('filled');
+  slot.classList.remove('correct-slot','wrong-slot');
+
+  updateLine(slotIndex, true, false);
+  playSound('drop');
+
+  // Clear result
+  document.getElementById('result-box').className = 'result-box';
+
+  // Show gabarito button after 3+ filled
+  const count = Object.values(slotContents).filter(Boolean).length;
+  if (count >= 3) document.getElementById('btn-gabarito').classList.add('visible');
+}
+
+// ─── MOUSE DRAG & DROP ─────────────────────────────────────────────────────────
+let dragKey = null;
+
+document.querySelectorAll('.draggable-node').forEach(n => {
+  n.addEventListener('dragstart', e => {
+    if (n.classList.contains('used')) { e.preventDefault(); return; }
+    dragKey = n.dataset.key;
+    e.dataTransfer.setData('text/plain', n.dataset.key);
+    e.dataTransfer.effectAllowed = 'move';
+    setTimeout(() => n.classList.add('dragging'), 0);
+  });
+  n.addEventListener('dragend', () => { n.classList.remove('dragging'); dragKey = null; });
+});
+
+document.querySelectorAll('.slot').forEach(slot => {
+  slot.addEventListener('dragover', e => { e.preventDefault(); slot.classList.add('drag-over'); });
+  slot.addEventListener('dragleave', () => slot.classList.remove('drag-over'));
+  slot.addEventListener('drop', e => {
+    e.preventDefault();
+    slot.classList.remove('drag-over');
+    const key = e.dataTransfer.getData('text/plain');
+    if (key) dropNodeOnSlot(key, parseInt(slot.dataset.key));
+  });
+});
+
+// ─── TOUCH DRAG & DROP ─────────────────────────────────────────────────────────
+let touchKey = null;
+let ghostEl = null;
+
+function makeGhost(text) {
+  ghostEl = document.createElement('div');
+  ghostEl.className = 'drag-ghost';
+  ghostEl.textContent = text;
+  document.body.appendChild(ghostEl);
+}
+function moveGhost(x, y) {
+  if (!ghostEl) return;
+  ghostEl.style.left = x+'px';
+  ghostEl.style.top = y+'px';
+}
+function killGhost() { if (ghostEl) { ghostEl.remove(); ghostEl = null; } }
+
+function slotAtPoint(x, y) {
+  for (const s of document.querySelectorAll('.slot')) {
+    const r = s.getBoundingClientRect();
+    if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) return s;
+  }
+  return null;
+}
+
+document.querySelectorAll('.draggable-node').forEach(n => {
+  n.addEventListener('touchstart', e => {
+    if (n.classList.contains('used')) return;
+    e.preventDefault();
+    touchKey = n.dataset.key;
+    n.classList.add('dragging');
+    const t = e.touches[0];
+    makeGhost(n.textContent);
+    moveGhost(t.clientX, t.clientY);
+  }, { passive: false });
+
+  n.addEventListener('touchmove', e => {
+    if (!touchKey) return;
+    e.preventDefault();
+    const t = e.touches[0];
+    moveGhost(t.clientX, t.clientY);
+    document.querySelectorAll('.slot').forEach(s => s.classList.remove('drag-over'));
+    const under = slotAtPoint(t.clientX, t.clientY);
+    if (under) under.classList.add('drag-over');
+  }, { passive: false });
+
+  n.addEventListener('touchend', e => {
+    if (!touchKey) return;
+    e.preventDefault();
+    n.classList.remove('dragging');
+    killGhost();
+    document.querySelectorAll('.slot').forEach(s => s.classList.remove('drag-over'));
+    const t = e.changedTouches[0];
+    const under = slotAtPoint(t.clientX, t.clientY);
+    if (under) dropNodeOnSlot(touchKey, parseInt(under.dataset.key));
+    touchKey = null;
+  }, { passive: false });
+});
+
+// ─── CHECK ─────────────────────────────────────────────────────────────────────
+function checkAnswers() {
+  const filled = Object.values(slotContents).filter(Boolean).length;
+  if (filled === 0) {
+    const rb = document.getElementById('result-box');
+    rb.className = 'result-box partial show';
+    rb.textContent = '⚠️ Arraste pelo menos um nó para o mapa antes de verificar!';
+    return;
+  }
+
+  let correct = 0;
+  for (let i = 0; i < 6; i++) {
+    const slot = document.getElementById('slot-'+i);
+    const expected = slot.dataset.correct;
+    const placed = slotContents[i];
+    slot.classList.remove('correct-slot','wrong-slot');
+    if (!placed) continue;
+    if (placed === expected) {
+      correct++;
+      slot.classList.add('correct-slot');
+      updateLine(i, true, true);
+    } else {
+      slot.classList.add('wrong-slot');
+      updateLine(i, true, false);
+    }
+  }
+
+  score = correct;
+  updateScoreUI(score);
+
+  const rb = document.getElementById('result-box');
+  if (correct === 6) {
+    rb.className = 'result-box correct show';
+    rb.textContent = '🎉 PERFEITO! Você montou o mapa completo! Você conhece muito bem como representar os lugares! 🗺️🏆⭐';
+    playSound('win');
+  } else if (correct >= 4) {
+    rb.className = 'result-box partial show';
+    rb.textContent = '⭐ Muito bem! Você acertou '+correct+' de 6! Os slots com borda vermelha precisam de ajuste.';
+    playSound('correct');
+  } else if (correct >= 1) {
+    rb.className = 'result-box partial show';
+    rb.textContent = '🤔 Você acertou '+correct+' de 6. Troque os nós nos slots com borda vermelha!';
+    playSound('wrong');
+  } else {
+    rb.className = 'result-box wrong show';
+    rb.textContent = '❌ Nenhum acerto ainda. Leia as dicas nos slots e tente de novo! Você consegue! 💪';
+    playSound('wrong');
+  }
+
+  document.getElementById('btn-gabarito').classList.add('visible');
+}
+
+// ─── GABARITO ──────────────────────────────────────────────────────────────────
+function showGabarito() {
+  NODES_DATA.forEach((nd, i) => {
+    const prevKey = slotContents[i];
+    if (prevKey && prevKey !== nd.key) {
+      const prev = document.getElementById('node-'+prevKey);
+      if (prev) prev.classList.remove('used');
+    }
+    slotContents[i] = nd.key;
+    const nodeEl = document.getElementById('node-'+nd.key);
+    if (nodeEl) nodeEl.classList.add('used');
+
+    const slot = document.getElementById('slot-'+i);
+    slot.innerHTML = '<div><span>'+nd.label+'</span><span class="slot-desc">'+nd.desc+'</span></div>';
+    slot.classList.add('filled','correct-slot');
+    slot.classList.remove('wrong-slot');
+    updateLine(i, true, true);
+  });
+
+  updateScoreUI(6);
+  const rb = document.getElementById('result-box');
+  rb.className = 'result-box correct show';
+  rb.textContent = '📚 Gabarito exibido! Estude as conexões e depois tente montar você mesmo clicando em Recomeçar! 🗺️';
+  playSound('win');
+}
+
+// ─── RESET ─────────────────────────────────────────────────────────────────────
+function resetAll() {
+  for (let i = 0; i < 6; i++) delete slotContents[i];
+  score = 0;
+
+  document.querySelectorAll('.draggable-node').forEach(n => n.classList.remove('used','dragging'));
+
+  for (let i = 0; i < 6; i++) {
+    const slot = document.getElementById('slot-'+i);
+    slot.innerHTML = SLOT_DEFAULTS[i];
+    slot.classList.remove('filled','correct-slot','wrong-slot','drag-over');
+    resetLine(i);
+  }
+
+  updateScoreUI(0);
+  document.getElementById('result-box').className = 'result-box';
+  document.getElementById('btn-gabarito').classList.remove('visible');
+}
+
+// Init
+for (let i = 0; i < 6; i++) resetLine(i);
+</script>
+</body>
+</html>

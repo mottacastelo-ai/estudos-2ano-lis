@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz: Representar os Lugares — Geografia 2º Ano</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Baloo+2:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #F59E0B;
+      --light: #FCD34D;
+      --bg: #FFFBEB;
+      --correct-bg: #D1FAE5;
+      --wrong-bg: #FEE2E2;
+      --text: #1F2937;
+      --muted: #6B7280;
+      --white: #FFFFFF;
+      --radius: 14px;
+      --shadow: 0 4px 16px rgba(245, 158, 11, 0.15);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, #F59E0B 0%, #FBBF24 60%, #FCD34D 100%);
+      padding: 28px 24px 24px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    }
+
+    header h1 {
+      font-family: 'Baloo 2', cursive;
+      font-size: clamp(1.6rem, 5vw, 2.4rem);
+      font-weight: 800;
+      color: #FFFFFF;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      line-height: 1.2;
+    }
+
+    header p {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.9);
+      margin-top: 6px;
+    }
+
+    /* ── Main container ── */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 28px 16px 40px;
+    }
+
+    .quiz-wrapper {
+      width: 100%;
+      max-width: 680px;
+    }
+
+    /* ── Progress bar ── */
+    .progress-section {
+      margin-bottom: 20px;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .progress-bar-track {
+      width: 100%;
+      height: 10px;
+      background: #FDE68A;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #F59E0B, #FBBF24);
+      border-radius: 99px;
+      transition: width 0.4s ease;
+    }
+
+    /* ── Question card ── */
+    .question-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 28px 28px 24px;
+      margin-bottom: 20px;
+    }
+
+    .question-number {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 10px;
+    }
+
+    .question-text {
+      font-family: 'Baloo 2', cursive;
+      font-size: clamp(1.5rem, 4vw, 1.7rem);
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.4;
+    }
+
+    /* ── Alternatives ── */
+    .alternatives {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .alt-btn {
+      background: var(--white);
+      border: 2px solid #E5E7EB;
+      border-radius: var(--radius);
+      padding: 16px 24px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text);
+      text-align: left;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s, transform 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+
+    .alt-btn:hover:not(:disabled) {
+      border-color: var(--primary);
+      background: #FFFDE7;
+      transform: translateY(-2px);
+    }
+
+    .alt-btn:disabled {
+      cursor: default;
+    }
+
+    .alt-letter {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #F3F4F6;
+      font-weight: 800;
+      font-size: 1rem;
+      flex-shrink: 0;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    /* Correct state */
+    .alt-btn.correct {
+      background: var(--correct-bg);
+      border-color: #10B981;
+      border-top: 4px solid #F59E0B;
+      animation: bounce 0.5s ease;
+    }
+
+    .alt-btn.correct .alt-letter {
+      background: #10B981;
+      color: white;
+    }
+
+    /* Wrong state */
+    .alt-btn.wrong {
+      background: var(--wrong-bg);
+      border-color: #EF4444;
+      animation: shake 0.4s ease;
+    }
+
+    .alt-btn.wrong .alt-letter {
+      background: #EF4444;
+      color: white;
+    }
+
+    /* Dimmed (other options after answering) */
+    .alt-btn.dimmed {
+      opacity: 0.45;
+    }
+
+    /* ── Feedback banner ── */
+    .feedback-banner {
+      display: none;
+      padding: 14px 20px;
+      border-radius: var(--radius);
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .feedback-banner.show { display: block; }
+    .feedback-banner.correct { background: var(--correct-bg); color: #065F46; }
+    .feedback-banner.wrong   { background: var(--wrong-bg);   color: #991B1B; }
+
+    /* ── Next button ── */
+    .next-btn {
+      display: none;
+      width: 100%;
+      padding: 16px 24px;
+      border: none;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, #F59E0B, #FBBF24);
+      color: white;
+      font-family: 'Baloo 2', cursive;
+      font-size: 1.25rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .next-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(245, 158, 11, 0.5);
+    }
+
+    .next-btn.show { display: block; }
+
+    /* ── Final screen ── */
+    .final-screen {
+      display: none;
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 36px 28px;
+      text-align: center;
+    }
+
+    .final-screen.show { display: block; }
+
+    .final-emoji {
+      font-size: 3.5rem;
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    .final-title {
+      font-family: 'Baloo 2', cursive;
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .final-score {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+
+    .final-score span {
+      color: var(--primary);
+      font-size: 2rem;
+    }
+
+    .final-message {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    .final-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .replay-btn, .back-btn {
+      padding: 16px 24px;
+      border: none;
+      border-radius: var(--radius);
+      font-family: 'Baloo 2', cursive;
+      font-size: 1.2rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .replay-btn {
+      background: linear-gradient(135deg, #F59E0B, #FBBF24);
+      color: white;
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4);
+    }
+
+    .replay-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(245, 158, 11, 0.5);
+    }
+
+    .back-btn {
+      background: #F3F4F6;
+      color: var(--muted);
+    }
+
+    .back-btn:hover {
+      background: #E5E7EB;
+      transform: translateY(-2px);
+    }
+
+    /* ── Animations ── */
+    @keyframes bounce {
+      0%   { transform: scale(1); }
+      30%  { transform: scale(1.04); }
+      60%  { transform: scale(0.97); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes shake {
+      0%   { transform: translateX(0); }
+      20%  { transform: translateX(-6px); }
+      40%  { transform: translateX(6px); }
+      60%  { transform: translateX(-4px); }
+      80%  { transform: translateX(4px); }
+      100% { transform: translateX(0); }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 480px) {
+      .question-card { padding: 20px 18px 18px; }
+      .alt-btn { padding: 14px 16px; font-size: 1.15rem; }
+      .final-screen { padding: 28px 18px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🗺️ Quiz: Representar os Lugares</h1>
+  <p>Geografia — 2º Ano</p>
+</header>
+
+<main>
+  <div class="quiz-wrapper">
+
+    <!-- Progress -->
+    <div class="progress-section" id="progress-section">
+      <div class="progress-label">
+        <span id="progress-text">Questão 1 de 8</span>
+        <span id="score-display">⭐ 0 pts</span>
+      </div>
+      <div class="progress-bar-track">
+        <div class="progress-bar-fill" id="progress-fill" style="width: 0%"></div>
+      </div>
+    </div>
+
+    <!-- Question card -->
+    <div class="question-card" id="question-card">
+      <div class="question-number" id="question-number">Questão 1</div>
+      <div class="question-text" id="question-text"></div>
+    </div>
+
+    <!-- Alternatives -->
+    <div class="alternatives" id="alternatives"></div>
+
+    <!-- Feedback -->
+    <div class="feedback-banner" id="feedback-banner"></div>
+
+    <!-- Next button -->
+    <button class="next-btn" id="next-btn" onclick="nextQuestion()">Próxima questão →</button>
+
+    <!-- Final screen -->
+    <div class="final-screen" id="final-screen">
+      <div class="final-emoji" id="final-emoji"></div>
+      <div class="final-title">Quiz concluído!</div>
+      <div class="final-score">Você acertou <span id="final-score-num"></span>/8</div>
+      <div class="final-message" id="final-message"></div>
+      <div class="final-actions">
+        <button class="replay-btn" onclick="restartQuiz()">🔄 Jogar de novo</button>
+        <button class="back-btn" onclick="goBack()">← Voltar ao Portal</button>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+  // ── Quiz data ──────────────────────────────────────────────
+  const questions = [
+    {
+      text: "Quando olhamos um objeto DE CIMA PARA BAIXO, essa visão se chama:",
+      options: ["Visão frontal", "Visão vertical", "Visão oblíqua"],
+      correct: 1
+    },
+    {
+      text: "Qual visão você usa quando olha alguém DE FRENTE?",
+      options: ["Visão vertical", "Visão oblíqua", "Visão frontal"],
+      correct: 2
+    },
+    {
+      text: "A visão oblíqua é quando vemos um objeto:",
+      options: [
+        "Só de cima para baixo",
+        "De cima e de lado ao mesmo tempo",
+        "Só de frente"
+      ],
+      correct: 1
+    },
+    {
+      text: "A PLANTA CARTOGRÁFICA de uma sala de aula é feita usando qual visão?",
+      options: ["Visão vertical", "Visão frontal", "Visão oblíqua"],
+      correct: 0
+    },
+    {
+      text: "Qual é a diferença entre a planta cartográfica e a maquete?",
+      options: [
+        "A planta é 3D e a maquete é plana",
+        "São a mesma coisa",
+        "A planta é plana e a maquete é 3D"
+      ],
+      correct: 2
+    },
+    {
+      text: "Um PONTO DE REFERÊNCIA é:",
+      options: [
+        "Um lugar que todo mundo conhece e ajuda a se localizar",
+        "O nome de uma rua qualquer",
+        "Apenas um monumento famoso"
+      ],
+      correct: 0
+    },
+    {
+      text: "Na sala de aula, se a mesa da professora é o ponto de referência, e a carteira de Carolina fica DO LADO ESQUERDO da mesa, dizemos que Carolina está:",
+      options: ["À frente", "Atrás", "À esquerda"],
+      correct: 2
+    },
+    {
+      text: "A maquete da sala de aula é uma representação:",
+      options: [
+        "Plana, em papel",
+        "Tridimensional (3D) do espaço",
+        "Feita com visão frontal"
+      ],
+      correct: 1
+    }
+  ];
+
+  const letters = ['A', 'B', 'C'];
+
+  let currentIndex = 0;
+  let score = 0;
+  let answered = false;
+
+  // ── Sound ──────────────────────────────────────────────────
+  function playSound(type) {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.connect(g);
+      g.connect(ctx.destination);
+      if (type === 'correct') {
+        o.frequency.setValueAtTime(523, ctx.currentTime);
+        o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+        o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+        g.gain.setValueAtTime(0.3, ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+        o.start();
+        o.stop(ctx.currentTime + 0.5);
+      } else {
+        o.frequency.setValueAtTime(300, ctx.currentTime);
+        o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+        g.gain.setValueAtTime(0.3, ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+        o.start();
+        o.stop(ctx.currentTime + 0.4);
+      }
+    } catch (e) {
+      // AudioContext not available — silent fallback
+    }
+  }
+
+  // ── Render question ────────────────────────────────────────
+  function renderQuestion() {
+    answered = false;
+    const q = questions[currentIndex];
+
+    // Progress
+    const progressPct = (currentIndex / questions.length) * 100;
+    document.getElementById('progress-fill').style.width = progressPct + '%';
+    document.getElementById('progress-text').textContent =
+      `Questão ${currentIndex + 1} de ${questions.length}`;
+    document.getElementById('score-display').textContent = `⭐ ${score} pts`;
+
+    // Question
+    document.getElementById('question-number').textContent = `Questão ${currentIndex + 1}`;
+    document.getElementById('question-text').textContent = q.text;
+
+    // Alternatives
+    const altContainer = document.getElementById('alternatives');
+    altContainer.innerHTML = '';
+    q.options.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'alt-btn';
+      btn.innerHTML = `<span class="alt-letter">${letters[i]}</span> ${opt}`;
+      btn.onclick = () => selectAnswer(i);
+      altContainer.appendChild(btn);
+    });
+
+    // Reset feedback & next btn
+    const fb = document.getElementById('feedback-banner');
+    fb.className = 'feedback-banner';
+    fb.textContent = '';
+
+    document.getElementById('next-btn').className = 'next-btn';
+  }
+
+  // ── Handle answer selection ────────────────────────────────
+  function selectAnswer(chosen) {
+    if (answered) return;
+    answered = true;
+
+    const q = questions[currentIndex];
+    const buttons = document.querySelectorAll('.alt-btn');
+    const isCorrect = chosen === q.correct;
+
+    buttons.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.correct) {
+        btn.classList.add('correct');
+      } else if (i === chosen && !isCorrect) {
+        btn.classList.add('wrong');
+      } else {
+        btn.classList.add('dimmed');
+      }
+    });
+
+    const fb = document.getElementById('feedback-banner');
+    if (isCorrect) {
+      score++;
+      fb.textContent = '✅ Correto! Muito bem!';
+      fb.className = 'feedback-banner correct show';
+      playSound('correct');
+    } else {
+      fb.textContent = `❌ Incorreto! A resposta certa era: ${letters[q.correct]}) ${q.options[q.correct]}`;
+      fb.className = 'feedback-banner wrong show';
+      playSound('wrong');
+    }
+
+    document.getElementById('score-display').textContent = `⭐ ${score} pts`;
+
+    const nextBtn = document.getElementById('next-btn');
+    if (currentIndex === questions.length - 1) {
+      nextBtn.textContent = 'Ver resultado 🏆';
+    } else {
+      nextBtn.textContent = 'Próxima questão →';
+    }
+    nextBtn.className = 'next-btn show';
+  }
+
+  // ── Next question ──────────────────────────────────────────
+  function nextQuestion() {
+    currentIndex++;
+    if (currentIndex >= questions.length) {
+      showFinal();
+    } else {
+      renderQuestion();
+    }
+  }
+
+  // ── Final screen ───────────────────────────────────────────
+  function showFinal() {
+    document.getElementById('progress-section').style.display = 'none';
+    document.getElementById('question-card').style.display = 'none';
+    document.getElementById('alternatives').style.display = 'none';
+    document.getElementById('feedback-banner').style.display = 'none';
+    document.getElementById('next-btn').style.display = 'none';
+
+    document.getElementById('final-score-num').textContent = score;
+
+    let emoji, msg;
+    if (score === 8) {
+      emoji = '🗺️🏆';
+      msg = 'Perfeito! Você é um cartógrafo incrível! 🗺️🏆';
+    } else if (score >= 6) {
+      emoji = '⭐🌟';
+      msg = 'Muito bem! Você está quase expert! ⭐';
+    } else if (score >= 4) {
+      emoji = '💪😊';
+      msg = 'Bom trabalho! Continue praticando! 💪';
+    } else {
+      emoji = '🌟📚';
+      msg = 'Continue tentando! Você consegue! 🌟';
+    }
+
+    document.getElementById('final-emoji').textContent = emoji;
+    document.getElementById('final-message').textContent = msg;
+    document.getElementById('final-screen').className = 'final-screen show';
+
+    // Fill progress bar to 100%
+    document.getElementById('progress-fill').style.width = '100%';
+  }
+
+  // ── Restart ────────────────────────────────────────────────
+  function restartQuiz() {
+    currentIndex = 0;
+    score = 0;
+
+    document.getElementById('progress-section').style.display = '';
+    document.getElementById('question-card').style.display = '';
+    document.getElementById('alternatives').style.display = '';
+    document.getElementById('final-screen').className = 'final-screen';
+
+    renderQuestion();
+  }
+
+  // ── Back to portal ─────────────────────────────────────────
+  function goBack() {
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      try { window.close(); } catch(e) {}
+      window.location.href = 'index.html';
+    }
+  }
+
+  // ── Init ───────────────────────────────────────────────────
+  renderQuestion();
+</script>
+
+</body>
+</html>

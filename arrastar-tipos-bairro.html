@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arrastar — Elementos da Paisagem</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Baloo+2:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #F59E0B;
+    --light: #FCD34D;
+    --bg: #FFFBEB;
+    --text: #1F2937;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg); color: var(--text);
+    min-height: 100vh; padding: 20px 16px 40px;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  header { text-align: center; margin-bottom: 20px; }
+  header h1 {
+    font-family: 'Baloo 2', cursive; font-size: 1.9rem;
+    color: var(--primary); line-height: 1.2;
+  }
+  header p { font-size: 1.1rem; color: #6B7280; margin-top: 4px; }
+  .instruction {
+    background: #fff; border-radius: var(--radius);
+    border-left: 5px solid var(--primary);
+    padding: 14px 20px; max-width: 680px; width: 100%;
+    font-size: 1.2rem; font-weight: 600; margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  }
+
+  /* BANK */
+  .bank-title {
+    font-family: 'Baloo 2', cursive; font-size: 1.2rem;
+    font-weight: 700; color: #374151; margin-bottom: 10px;
+    text-align: center;
+  }
+  .bank {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    justify-content: center; max-width: 680px; width: 100%;
+    min-height: 60px; padding: 12px;
+    background: #fff; border-radius: var(--radius);
+    border: 2px dashed #D1D5DB;
+    margin-bottom: 24px;
+  }
+
+  /* CARD */
+  .drag-card {
+    background: #fff; border: 2px solid #D1D5DB;
+    border-radius: 12px; padding: 12px 16px;
+    font-size: 1.2rem; font-weight: 700; color: var(--text);
+    cursor: grab; user-select: none;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    touch-action: none;
+  }
+  .drag-card:hover { transform: scale(1.04); box-shadow: 0 6px 18px rgba(0,0,0,0.14); }
+  .drag-card.dragging { opacity: 0.45; }
+  .drag-card.correct-placed {
+    background: #D1FAE5; border-color: #10B981;
+    animation: bounce 0.5s ease;
+  }
+  .drag-card.wrong-placed {
+    background: #FEE2E2; border-color: #EF4444;
+    animation: shake 0.5s ease;
+  }
+
+  /* ZONES */
+  .zones-wrap {
+    display: flex; gap: 16px; width: 100%; max-width: 680px;
+    flex-wrap: wrap; justify-content: center; margin-bottom: 24px;
+  }
+  .zone {
+    flex: 1; min-width: 260px;
+    background: #fff; border-radius: var(--radius);
+    border: 3px dashed #D1D5DB;
+    padding: 16px; min-height: 180px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .zone.drag-over { border-color: var(--primary); background: #FFFDE7; }
+  .zone-title {
+    font-family: 'Baloo 2', cursive; font-size: 1.3rem;
+    font-weight: 800; margin-bottom: 12px; text-align: center;
+  }
+  .zone-natural .zone-title { color: #059669; }
+  .zone-construido .zone-title { color: #3B82F6; }
+  .zone-items { display: flex; flex-wrap: wrap; gap: 8px; min-height: 40px; }
+
+  /* SCORE */
+  .score-row {
+    display: flex; gap: 12px; align-items: center;
+    font-family: 'Baloo 2', cursive; font-size: 1.2rem; font-weight: 700;
+    margin-bottom: 16px;
+  }
+  .score-chip {
+    background: var(--primary); color: #fff;
+    padding: 6px 18px; border-radius: 999px;
+  }
+
+  /* FINAL */
+  .final-screen {
+    display: none; text-align: center; background: #fff;
+    border-radius: var(--radius); box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    padding: 36px 28px; width: 100%; max-width: 600px;
+  }
+  .final-emoji { font-size: 3.5rem; display: block; margin-bottom: 10px; }
+  .final-score {
+    font-family: 'Baloo 2', cursive; font-size: 2.8rem;
+    font-weight: 800; color: var(--primary); margin-bottom: 8px;
+  }
+  .final-message { font-size: 1.4rem; font-weight: 700; margin-bottom: 24px; line-height: 1.4; }
+  .btn-restart {
+    background: var(--primary); color: #fff; border: none;
+    border-radius: var(--radius); padding: 14px 28px;
+    font-family: 'Baloo 2', cursive; font-size: 1.2rem;
+    font-weight: 700; cursor: pointer; margin: 6px;
+  }
+  .btn-restart:hover { background: #D97706; }
+  .btn-back {
+    background: #E5E7EB; color: #374151; border: none;
+    border-radius: var(--radius); padding: 14px 28px;
+    font-family: 'Baloo 2', cursive; font-size: 1.2rem;
+    font-weight: 700; cursor: pointer; margin: 6px;
+  }
+
+  @keyframes bounce {
+    0%,100% { transform: translateY(0); }
+    30% { transform: translateY(-8px); }
+    60% { transform: translateY(-4px); }
+  }
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    20% { transform: translateX(-8px); }
+    40% { transform: translateX(8px); }
+    60% { transform: translateX(-6px); }
+    80% { transform: translateX(6px); }
+  }
+  @media (max-width: 560px) {
+    header h1 { font-size: 1.5rem; }
+    .zone { min-width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🌿🏗️ Elementos da Paisagem</h1>
+  <p>2º Ano · Geografia</p>
+</header>
+
+<div class="instruction">
+  🖱️ <strong>Arraste cada elemento</strong> para a categoria correta!
+</div>
+
+<div class="score-row">
+  <span class="score-chip" id="scoreChip">⭐ 0 / 8</span>
+  <span id="statusMsg" style="font-size:1.1rem;color:#6B7280"></span>
+</div>
+
+<div class="bank-title">📦 Elementos para classificar:</div>
+<div class="bank" id="bank"></div>
+
+<div class="zones-wrap">
+  <div class="zone zone-natural" id="zone-natural"
+       ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event,'natural')">
+    <div class="zone-title">🌿 Elemento NATURAL</div>
+    <div class="zone-items" id="items-natural"></div>
+  </div>
+  <div class="zone zone-construido" id="zone-construido"
+       ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event,'construido')">
+    <div class="zone-title">🏗️ Elemento CONSTRUÍDO</div>
+    <div class="zone-items" id="items-construido"></div>
+  </div>
+</div>
+
+<div class="final-screen" id="finalScreen">
+  <span class="final-emoji" id="finalEmoji"></span>
+  <div class="final-score" id="finalScore"></div>
+  <div class="final-message" id="finalMessage"></div>
+  <button class="btn-restart" onclick="initGame()">🔄 Jogar Novamente</button>
+  <button class="btn-back" onclick="window.close()">🏠 Voltar ao Portal</button>
+</div>
+
+<script>
+const cards = [
+  { id:'c1', text:'🌳 Árvore grande',         category:'natural'   },
+  { id:'c2', text:'🌊 Rio passando pelo bairro', category:'natural' },
+  { id:'c3', text:'🌸 Flores no jardim',       category:'natural'   },
+  { id:'c4', text:'🌧️ Chuva molhando a rua',   category:'natural'   },
+  { id:'c5', text:'🏠 Casa com janelas',       category:'construido' },
+  { id:'c6', text:'🏪 Loja na esquina',        category:'construido' },
+  { id:'c7', text:'🚦 Semáforo na rua',        category:'construido' },
+  { id:'c8', text:'🛣️ Calçada de cimento',     category:'construido' }
+];
+
+let score = 0, placed = 0, draggingId = null;
+
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+function playSound(correct) {
+  const freqs = correct ? [523, 659, 784] : [300, 200];
+  let t = audioCtx.currentTime;
+  freqs.forEach((f, i) => {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.frequency.value = f; osc.type = 'sine';
+    gain.gain.setValueAtTime(0.3, t + i * 0.13);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + i * 0.13 + 0.15);
+    osc.start(t + i * 0.13); osc.stop(t + i * 0.13 + 0.18);
+  });
+}
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function makeCard(card) {
+  const el = document.createElement('div');
+  el.className = 'drag-card';
+  el.id = card.id;
+  el.textContent = card.text;
+  el.dataset.category = card.category;
+  el.draggable = true;
+  el.addEventListener('dragstart', (e) => { draggingId = card.id; el.classList.add('dragging'); });
+  el.addEventListener('dragend', () => el.classList.remove('dragging'));
+  // Touch support
+  let touchOffX = 0, touchOffY = 0, clone = null;
+  el.addEventListener('touchstart', (e) => {
+    draggingId = card.id;
+    const t = e.touches[0];
+    const rect = el.getBoundingClientRect();
+    touchOffX = t.clientX - rect.left;
+    touchOffY = t.clientY - rect.top;
+    clone = el.cloneNode(true);
+    clone.style.cssText = `position:fixed;z-index:9999;opacity:0.85;pointer-events:none;left:${t.clientX - touchOffX}px;top:${t.clientY - touchOffY}px;width:${rect.width}px`;
+    document.body.appendChild(clone);
+    el.style.opacity = '0.4';
+  }, { passive: true });
+  el.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    const t = e.touches[0];
+    if (clone) { clone.style.left = (t.clientX - touchOffX) + 'px'; clone.style.top = (t.clientY - touchOffY) + 'px'; }
+    highlightZone(t.clientX, t.clientY);
+  }, { passive: false });
+  el.addEventListener('touchend', (e) => {
+    const t = e.changedTouches[0];
+    if (clone) { clone.remove(); clone = null; }
+    el.style.opacity = '1';
+    clearZoneHighlight();
+    const target = getZoneAt(t.clientX, t.clientY);
+    if (target) dropCard(card.id, target);
+    else draggingId = null;
+  });
+  return el;
+}
+
+function highlightZone(x, y) {
+  clearZoneHighlight();
+  const z = getZoneEl(x, y);
+  if (z) z.classList.add('drag-over');
+}
+function clearZoneHighlight() {
+  document.querySelectorAll('.zone').forEach(z => z.classList.remove('drag-over'));
+}
+function getZoneEl(x, y) {
+  const zones = ['zone-natural','zone-construido'];
+  for (const id of zones) {
+    const el = document.getElementById(id);
+    const r = el.getBoundingClientRect();
+    if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) return el;
+  }
+  return null;
+}
+function getZoneAt(x, y) {
+  const zones = {natural:'zone-natural', construido:'zone-construido'};
+  for (const [cat, id] of Object.entries(zones)) {
+    const el = document.getElementById(id);
+    const r = el.getBoundingClientRect();
+    if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) return cat;
+  }
+  return null;
+}
+
+function onDragOver(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
+function onDragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
+function onDrop(e, zoneCategory) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  if (draggingId) dropCard(draggingId, zoneCategory);
+}
+
+function dropCard(cardId, zoneCategory) {
+  const card = cards.find(c => c.id === cardId);
+  if (!card) return;
+  const el = document.getElementById(cardId);
+  if (!el || el.dataset.placed === 'true') return;
+  const correct = card.category === zoneCategory;
+  placed++;
+  if (correct) {
+    score++;
+    el.classList.add('correct-placed');
+    el.dataset.placed = 'true';
+    el.draggable = false;
+    document.getElementById(`items-${zoneCategory}`).appendChild(el);
+    playSound(true);
+  } else {
+    el.classList.add('wrong-placed');
+    playSound(false);
+    setTimeout(() => { el.classList.remove('wrong-placed'); draggingId = null; }, 600);
+  }
+  document.getElementById('scoreChip').textContent = `⭐ ${score} / 8`;
+  if (placed === 8 || (correct && score + (placed - score) >= 8)) checkDone();
+  draggingId = null;
+}
+
+function checkDone() {
+  if (score === 8) setTimeout(showFinal, 700);
+  else if (placed === 8) setTimeout(showFinal, 700);
+}
+
+function showFinal() {
+  document.getElementById('bank').style.display = 'none';
+  document.querySelector('.zones-wrap').style.display = 'none';
+  document.querySelector('.score-row').style.display = 'none';
+  const f = document.getElementById('finalScreen');
+  f.style.display = 'block';
+  document.getElementById('finalScore').textContent = `${score} / 8`;
+  let emoji, msg;
+  if (score === 8) { emoji = '🌟🏆'; msg = 'Perfeito! Você classificou todos corretamente!'; }
+  else if (score >= 6) { emoji = '⭐'; msg = 'Muito bem! Quase tudo certo!'; }
+  else if (score >= 4) { emoji = '💪'; msg = 'Bom começo! Tente de novo!'; }
+  else { emoji = '🌱'; msg = 'Continue praticando! Você consegue!'; }
+  document.getElementById('finalEmoji').textContent = emoji;
+  document.getElementById('finalMessage').textContent = msg;
+  playSound(score >= 6);
+}
+
+function initGame() {
+  score = 0; placed = 0; draggingId = null;
+  document.getElementById('bank').innerHTML = '';
+  document.getElementById('items-natural').innerHTML = '';
+  document.getElementById('items-construido').innerHTML = '';
+  document.getElementById('scoreChip').textContent = '⭐ 0 / 8';
+  document.getElementById('bank').style.display = 'flex';
+  document.querySelector('.zones-wrap').style.display = 'flex';
+  document.querySelector('.score-row').style.display = 'flex';
+  document.getElementById('finalScreen').style.display = 'none';
+  const shuffled = shuffle([...cards]);
+  shuffled.forEach(c => {
+    const el = makeCard(c);
+    el.dataset.placed = 'false';
+    document.getElementById('bank').appendChild(el);
+  });
+}
+
+initGame();
+</script>
+</body>
+</html>

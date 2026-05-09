@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz — A Paisagem dos Bairros</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Baloo+2:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #F59E0B;
+    --light: #FCD34D;
+    --bg: #FFFBEB;
+    --correct: #D1FAE5;
+    --wrong: #FEE2E2;
+    --correct-border: #10B981;
+    --wrong-border: #EF4444;
+    --text: #1F2937;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 16px 40px;
+  }
+  header { text-align: center; margin-bottom: 24px; }
+  header h1 {
+    font-family: 'Baloo 2', cursive;
+    font-size: 2rem;
+    color: var(--primary);
+    line-height: 1.2;
+  }
+  header p { font-size: 1.1rem; color: #6B7280; margin-top: 4px; }
+  .progress-bar-wrap {
+    width: 100%; max-width: 600px;
+    background: #E5E7EB; border-radius: 999px;
+    height: 14px; margin-bottom: 8px; overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--light));
+    border-radius: 999px; transition: width 0.4s ease;
+  }
+  .progress-label { font-size: 1rem; color: #6B7280; margin-bottom: 20px; text-align: center; }
+  .score-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--primary); color: #fff;
+    font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 700;
+    padding: 6px 18px; border-radius: 999px; margin-bottom: 16px;
+  }
+  .card {
+    background: #fff; border-radius: var(--radius);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    padding: 28px 28px 24px; width: 100%; max-width: 600px; margin-bottom: 20px;
+  }
+  .question-text {
+    font-family: 'Baloo 2', cursive; font-size: 1.5rem; font-weight: 700;
+    line-height: 1.4; margin-bottom: 24px; color: var(--text);
+  }
+  .options { display: flex; flex-direction: column; gap: 12px; }
+  .option-btn {
+    background: #F9FAFB; border: 2px solid #E5E7EB; border-radius: var(--radius);
+    padding: 14px 20px; font-family: 'Nunito', sans-serif;
+    font-size: 1.2rem; font-weight: 600; color: var(--text);
+    cursor: pointer; text-align: left; transition: all 0.2s; line-height: 1.4;
+  }
+  .option-btn:hover:not(:disabled) {
+    border-color: var(--primary); background: #FFFDE7; transform: translateY(-1px);
+  }
+  .option-btn.correct {
+    background: var(--correct); border-color: var(--correct-border);
+    animation: bounce 0.5s ease;
+  }
+  .option-btn.wrong {
+    background: var(--wrong); border-color: var(--wrong-border);
+    animation: shake 0.5s ease;
+  }
+  .option-btn:disabled { cursor: not-allowed; }
+  .next-btn {
+    display: none; width: 100%; max-width: 600px;
+    background: var(--primary); color: #fff; border: none;
+    border-radius: var(--radius); padding: 16px 28px;
+    font-family: 'Baloo 2', cursive; font-size: 1.3rem; font-weight: 700;
+    cursor: pointer; transition: background 0.2s, transform 0.1s; margin-bottom: 12px;
+  }
+  .next-btn:hover { background: #D97706; transform: scale(1.02); }
+  .final-screen {
+    display: none; text-align: center; background: #fff;
+    border-radius: var(--radius); box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    padding: 36px 28px; width: 100%; max-width: 600px;
+  }
+  .final-emoji { font-size: 4rem; margin-bottom: 12px; display: block; }
+  .final-score {
+    font-family: 'Baloo 2', cursive; font-size: 3rem; font-weight: 800;
+    color: var(--primary); margin-bottom: 8px;
+  }
+  .final-message {
+    font-size: 1.4rem; font-weight: 700; color: var(--text);
+    margin-bottom: 24px; line-height: 1.4;
+  }
+  .btn-restart {
+    background: var(--primary); color: #fff; border: none;
+    border-radius: var(--radius); padding: 14px 28px;
+    font-family: 'Baloo 2', cursive; font-size: 1.2rem; font-weight: 700;
+    cursor: pointer; margin: 6px; transition: background 0.2s;
+  }
+  .btn-restart:hover { background: #D97706; }
+  .btn-back {
+    background: #E5E7EB; color: #374151; border: none;
+    border-radius: var(--radius); padding: 14px 28px;
+    font-family: 'Baloo 2', cursive; font-size: 1.2rem; font-weight: 700;
+    cursor: pointer; margin: 6px; transition: background 0.2s;
+  }
+  .btn-back:hover { background: #D1D5DB; }
+  @keyframes bounce {
+    0%,100% { transform: translateY(0); }
+    25% { transform: translateY(-8px); }
+    50% { transform: translateY(-4px); }
+    75% { transform: translateY(-6px); }
+  }
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    20% { transform: translateX(-8px); }
+    40% { transform: translateX(8px); }
+    60% { transform: translateX(-6px); }
+    80% { transform: translateX(6px); }
+  }
+  @media (max-width: 480px) {
+    header h1 { font-size: 1.6rem; }
+    .card { padding: 20px 16px; }
+    .question-text { font-size: 1.3rem; }
+    .option-btn { font-size: 1.1rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🏙️ Quiz — Paisagem dos Bairros</h1>
+  <p>2º Ano · Geografia</p>
+</header>
+
+<div class="progress-bar-wrap">
+  <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+</div>
+<div class="progress-label" id="progressLabel">Questão 1 de 8</div>
+
+<div class="score-badge" id="scoreBadge">⭐ Pontos: 0</div>
+
+<div class="card" id="quizCard">
+  <div class="question-text" id="questionText"></div>
+  <div class="options" id="optionsContainer"></div>
+</div>
+
+<button class="next-btn" id="nextBtn" onclick="nextQuestion()">Próxima ➡️</button>
+
+<div class="final-screen" id="finalScreen">
+  <span class="final-emoji" id="finalEmoji"></span>
+  <div class="final-score" id="finalScore"></div>
+  <div class="final-message" id="finalMessage"></div>
+  <button class="btn-restart" onclick="restartQuiz()">🔄 Jogar Novamente</button>
+  <button class="btn-back" onclick="window.close()">🏠 Voltar ao Portal</button>
+</div>
+
+<script>
+const questions = [
+  {
+    text: "O que chamamos de PAISAGEM de um bairro?",
+    options: [
+      { text: "Só as casas e prédios", correct: false },
+      { text: "Tudo que vemos naquele lugar — árvores, casas, pessoas e ruas", correct: true },
+      { text: "Apenas as plantas e árvores", correct: false }
+    ]
+  },
+  {
+    text: "Qual é o tipo de bairro onde as pessoas MORAM principalmente?",
+    options: [
+      { text: "Bairro industrial", correct: false },
+      { text: "Bairro comercial", correct: false },
+      { text: "Bairro residencial", correct: true }
+    ]
+  },
+  {
+    text: "Um bairro com muitas LOJAS, BANCOS e SUPERMERCADOS é chamado de:",
+    options: [
+      { text: "Bairro de uso misto", correct: false },
+      { text: "Bairro comercial", correct: true },
+      { text: "Bairro periférico", correct: false }
+    ]
+  },
+  {
+    text: "Onde ficam as FÁBRICAS de uma cidade?",
+    options: [
+      { text: "Bairro industrial", correct: true },
+      { text: "Bairro residencial", correct: false },
+      { text: "Bairro comercial", correct: false }
+    ]
+  },
+  {
+    text: "Os bairros PERIFÉRICOS ficam:",
+    options: [
+      { text: "No centro da cidade, perto de tudo", correct: false },
+      { text: "Longe do centro, com menos serviços públicos", correct: true },
+      { text: "Só perto de fábricas", correct: false }
+    ]
+  },
+  {
+    text: "Um bairro que tem CASAS junto com LOJAS e SERVIÇOS é chamado de:",
+    options: [
+      { text: "Bairro industrial", correct: false },
+      { text: "Bairro residencial", correct: false },
+      { text: "Bairro de uso misto", correct: true }
+    ]
+  },
+  {
+    text: "Qual destes é um elemento NATURAL da paisagem de um bairro?",
+    options: [
+      { text: "Um prédio de apartamentos", correct: false },
+      { text: "Uma árvore grande", correct: true },
+      { text: "Um semáforo", correct: false }
+    ]
+  },
+  {
+    text: "Qual é a diferença entre um elemento NATURAL e um elemento CONSTRUÍDO na paisagem?",
+    options: [
+      { text: "Os dois são feitos pelo ser humano", correct: false },
+      { text: "Naturais existem na natureza; construídos foram feitos pelo ser humano", correct: true },
+      { text: "Os naturais são mais bonitos", correct: false }
+    ]
+  }
+];
+
+let current = 0, score = 0, answered = false;
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playSound(correct) {
+  const freqs = correct ? [523, 659, 784] : [300, 200];
+  let t = audioCtx.currentTime;
+  freqs.forEach((f, i) => {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.frequency.value = f; osc.type = 'sine';
+    gain.gain.setValueAtTime(0.3, t + i * 0.13);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + i * 0.13 + 0.15);
+    osc.start(t + i * 0.13); osc.stop(t + i * 0.13 + 0.18);
+  });
+}
+
+function render() {
+  const q = questions[current];
+  document.getElementById('questionText').textContent = q.text;
+  const container = document.getElementById('optionsContainer');
+  container.innerHTML = '';
+  q.options.forEach((opt) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.textContent = opt.text;
+    btn.onclick = () => selectOption(btn, opt.correct);
+    container.appendChild(btn);
+  });
+  document.getElementById('nextBtn').style.display = 'none';
+  document.getElementById('progressFill').style.width = ((current / questions.length) * 100) + '%';
+  document.getElementById('progressLabel').textContent = `Questão ${current + 1} de ${questions.length}`;
+  answered = false;
+}
+
+function selectOption(btn, correct) {
+  if (answered) return;
+  answered = true;
+  const allBtns = document.querySelectorAll('.option-btn');
+  allBtns.forEach(b => b.disabled = true);
+  if (correct) {
+    btn.classList.add('correct');
+    score++;
+    document.getElementById('scoreBadge').textContent = `⭐ Pontos: ${score}`;
+    playSound(true);
+  } else {
+    btn.classList.add('wrong');
+    playSound(false);
+    const q = questions[current];
+    q.options.forEach((opt, i) => { if (opt.correct) allBtns[i].classList.add('correct'); });
+  }
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'block';
+  nextBtn.textContent = current === questions.length - 1 ? '🏁 Ver Resultado' : 'Próxima ➡️';
+}
+
+function nextQuestion() {
+  current++;
+  if (current >= questions.length) showFinal();
+  else render();
+}
+
+function showFinal() {
+  document.getElementById('quizCard').style.display = 'none';
+  document.getElementById('nextBtn').style.display = 'none';
+  document.getElementById('progressFill').style.width = '100%';
+  document.getElementById('progressLabel').textContent = 'Concluído! 🎉';
+  document.getElementById('scoreBadge').style.display = 'none';
+  const final = document.getElementById('finalScreen');
+  final.style.display = 'block';
+  document.getElementById('finalScore').textContent = `${score} / ${questions.length}`;
+  let emoji, msg;
+  if (score === 8) { emoji = '🏙️🏆'; msg = 'Incrível! Você conhece cada cantinho da cidade!'; }
+  else if (score >= 6) { emoji = '⭐'; msg = 'Muito bem! Você quase é um especialista!'; }
+  else if (score >= 4) { emoji = '💪'; msg = 'Bom trabalho! Continue explorando!'; }
+  else { emoji = '🌟'; msg = 'Continue tentando! Você vai conseguir!'; }
+  document.getElementById('finalEmoji').textContent = emoji;
+  document.getElementById('finalMessage').textContent = msg;
+  playSound(score >= 6);
+}
+
+function restartQuiz() {
+  current = 0; score = 0; answered = false;
+  document.getElementById('scoreBadge').textContent = '⭐ Pontos: 0';
+  document.getElementById('scoreBadge').style.display = 'inline-flex';
+  document.getElementById('quizCard').style.display = 'block';
+  document.getElementById('finalScreen').style.display = 'none';
+  render();
+}
+
+render();
+</script>
+</body>
+</html>

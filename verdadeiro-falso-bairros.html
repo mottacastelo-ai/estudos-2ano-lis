@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verdadeiro ou Falso — Bairros</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Baloo+2:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #F59E0B;
+    --light: #FCD34D;
+    --bg: #FFFBEB;
+    --text: #1F2937;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg); color: var(--text);
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 20px 16px 40px;
+  }
+  header { text-align: center; margin-bottom: 24px; }
+  header h1 {
+    font-family: 'Baloo 2', cursive; font-size: 2rem;
+    color: var(--primary); line-height: 1.2;
+  }
+  header p { font-size: 1.1rem; color: #6B7280; margin-top: 4px; }
+
+  .progress-bar-wrap {
+    width: 100%; max-width: 600px;
+    background: #E5E7EB; border-radius: 999px;
+    height: 14px; margin-bottom: 8px; overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--light));
+    border-radius: 999px; transition: width 0.4s ease;
+  }
+  .progress-label { font-size: 1rem; color: #6B7280; margin-bottom: 20px; text-align: center; }
+  .score-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--primary); color: #fff;
+    font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 700;
+    padding: 6px 18px; border-radius: 999px; margin-bottom: 16px;
+  }
+
+  .card {
+    background: #fff; border-radius: var(--radius);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    padding: 32px 28px 28px; width: 100%; max-width: 600px; margin-bottom: 20px;
+    text-align: center; min-height: 200px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    transition: background 0.3s;
+  }
+  .card.feedback-correct { background: #D1FAE5; }
+  .card.feedback-wrong { background: #FEE2E2; }
+  .card.animate-correct { animation: bounce 0.5s ease; }
+  .card.animate-wrong { animation: shake 0.5s ease; }
+
+  .statement-emoji { font-size: 2.8rem; margin-bottom: 12px; }
+  .statement-text {
+    font-family: 'Baloo 2', cursive; font-size: 1.5rem;
+    font-weight: 700; line-height: 1.45; color: var(--text); margin-bottom: 8px;
+  }
+  .feedback-msg {
+    font-size: 1.1rem; font-weight: 700; margin-top: 10px;
+    min-height: 28px; color: #374151;
+  }
+
+  .buttons-row {
+    display: flex; gap: 16px; width: 100%; max-width: 600px;
+    justify-content: center; margin-bottom: 16px; flex-wrap: wrap;
+  }
+  .btn-verdadeiro {
+    flex: 1; min-width: 160px; background: #10B981; color: #fff;
+    border: none; border-radius: var(--radius);
+    padding: 18px 24px; font-family: 'Baloo 2', cursive;
+    font-size: 1.4rem; font-weight: 800; cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .btn-verdadeiro:hover:not(:disabled) { background: #059669; transform: scale(1.03); }
+  .btn-falso {
+    flex: 1; min-width: 160px; background: #EF4444; color: #fff;
+    border: none; border-radius: var(--radius);
+    padding: 18px 24px; font-family: 'Baloo 2', cursive;
+    font-size: 1.4rem; font-weight: 800; cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .btn-falso:hover:not(:disabled) { background: #DC2626; transform: scale(1.03); }
+  .btn-verdadeiro:disabled, .btn-falso:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .next-btn {
+    display: none; width: 100%; max-width: 600px;
+    background: var(--primary); color: #fff; border: none;
+    border-radius: var(--radius); padding: 16px 28px;
+    font-family: 'Baloo 2', cursive; font-size: 1.3rem; font-weight: 700;
+    cursor: pointer; transition: background 0.2s; margin-bottom: 12px;
+  }
+  .next-btn:hover { background: #D97706; }
+
+  .final-screen {
+    display: none; text-align: center; background: #fff;
+    border-radius: var(--radius); box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    padding: 36px 28px; width: 100%; max-width: 600px;
+  }
+  .final-emoji { font-size: 3.5rem; display: block; margin-bottom: 10px; }
+  .final-score {
+    font-family: 'Baloo 2', cursive; font-size: 3rem;
+    font-weight: 800; color: var(--primary); margin-bottom: 8px;
+  }
+  .final-message { font-size: 1.4rem; font-weight: 700; margin-bottom: 24px; line-height: 1.4; }
+  .btn-restart {
+    background: var(--primary); color: #fff; border: none;
+    border-radius: var(--radius); padding: 14px 28px;
+    font-family: 'Baloo 2', cursive; font-size: 1.2rem;
+    font-weight: 700; cursor: pointer; margin: 6px;
+  }
+  .btn-restart:hover { background: #D97706; }
+  .btn-back {
+    background: #E5E7EB; color: #374151; border: none;
+    border-radius: var(--radius); padding: 14px 28px;
+    font-family: 'Baloo 2', cursive; font-size: 1.2rem;
+    font-weight: 700; cursor: pointer; margin: 6px;
+  }
+
+  @keyframes bounce {
+    0%,100% { transform: translateY(0) scale(1); }
+    30% { transform: translateY(-10px) scale(1.02); }
+    60% { transform: translateY(-4px) scale(1.01); }
+  }
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    20% { transform: translateX(-10px); }
+    40% { transform: translateX(10px); }
+    60% { transform: translateX(-7px); }
+    80% { transform: translateX(7px); }
+  }
+  @media (max-width: 480px) {
+    header h1 { font-size: 1.6rem; }
+    .statement-text { font-size: 1.3rem; }
+    .btn-verdadeiro, .btn-falso { font-size: 1.2rem; padding: 16px 18px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>✅❌ Verdadeiro ou Falso</h1>
+  <p>2º Ano · Geografia · Bairros</p>
+</header>
+
+<div class="progress-bar-wrap">
+  <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+</div>
+<div class="progress-label" id="progressLabel">Afirmação 1 de 10</div>
+
+<div class="score-badge" id="scoreBadge">⭐ Pontos: 0</div>
+
+<div class="card" id="mainCard">
+  <div class="statement-emoji" id="stmtEmoji"></div>
+  <div class="statement-text" id="stmtText"></div>
+  <div class="feedback-msg" id="feedbackMsg"></div>
+</div>
+
+<div class="buttons-row">
+  <button class="btn-verdadeiro" id="btnV" onclick="answer(true)">✅ VERDADEIRO</button>
+  <button class="btn-falso" id="btnF" onclick="answer(false)">❌ FALSO</button>
+</div>
+
+<button class="next-btn" id="nextBtn" onclick="nextStatement()">Próxima ➡️</button>
+
+<div class="final-screen" id="finalScreen">
+  <span class="final-emoji" id="finalEmoji"></span>
+  <div class="final-score" id="finalScore"></div>
+  <div class="final-message" id="finalMessage"></div>
+  <button class="btn-restart" onclick="initGame()">🔄 Jogar Novamente</button>
+  <button class="btn-back" onclick="window.close()">🏠 Voltar ao Portal</button>
+</div>
+
+<script>
+const statements = [
+  { emoji:'🏠', text:'No bairro residencial, as pessoas moram em casas e apartamentos.', answer:true,  explanation:'Correto! O bairro residencial é onde as pessoas moram.' },
+  { emoji:'🏭', text:'O bairro comercial é onde ficam as fábricas da cidade.',           answer:false, explanation:'Errado! As fábricas ficam no bairro industrial.' },
+  { emoji:'🌳', text:'A paisagem de um bairro inclui árvores, casas e pessoas.',         answer:true,  explanation:'Correto! A paisagem é tudo que vemos naquele lugar.' },
+  { emoji:'📍', text:'Os bairros periféricos ficam no centro da cidade, perto de tudo.', answer:false, explanation:'Errado! Bairros periféricos ficam longe do centro, com menos serviços.' },
+  { emoji:'🌿', text:'Uma árvore é um exemplo de elemento construído da paisagem.',      answer:false, explanation:'Errado! A árvore é um elemento NATURAL, não construído.' },
+  { emoji:'🔀', text:'O bairro de uso misto tem casas e comércio no mesmo lugar.',       answer:true,  explanation:'Correto! No bairro de uso misto há moradia e comércio juntos.' },
+  { emoji:'🚦', text:'Um semáforo é um elemento construído da paisagem.',                answer:true,  explanation:'Correto! O semáforo foi feito pelo ser humano.' },
+  { emoji:'⚙️', text:'O bairro industrial é onde as pessoas moram principalmente.',      answer:false, explanation:'Errado! O bairro onde as pessoas moram é o residencial.' },
+  { emoji:'🌊', text:'Um rio que passa pelo bairro é um elemento natural da paisagem.',  answer:true,  explanation:'Correto! O rio existe na natureza, não foi construído.' },
+  { emoji:'🌍', text:'Todos os bairros de uma cidade são iguais.',                       answer:false, explanation:'Errado! Cada bairro tem sua função e características próprias.' }
+];
+
+let current = 0, score = 0, answered = false;
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playSound(correct) {
+  const freqs = correct ? [523, 659, 784] : [300, 200];
+  let t = audioCtx.currentTime;
+  freqs.forEach((f, i) => {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.frequency.value = f; osc.type = 'sine';
+    gain.gain.setValueAtTime(0.3, t + i * 0.13);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + i * 0.13 + 0.15);
+    osc.start(t + i * 0.13); osc.stop(t + i * 0.13 + 0.18);
+  });
+}
+
+function render() {
+  const s = statements[current];
+  document.getElementById('stmtEmoji').textContent = s.emoji;
+  document.getElementById('stmtText').textContent = `"${s.text}"`;
+  document.getElementById('feedbackMsg').textContent = '';
+  const card = document.getElementById('mainCard');
+  card.className = 'card';
+  document.getElementById('btnV').disabled = false;
+  document.getElementById('btnF').disabled = false;
+  document.getElementById('nextBtn').style.display = 'none';
+  document.getElementById('progressFill').style.width = ((current / statements.length) * 100) + '%';
+  document.getElementById('progressLabel').textContent = `Afirmação ${current + 1} de ${statements.length}`;
+  answered = false;
+}
+
+function answer(userAnswer) {
+  if (answered) return;
+  answered = true;
+  const s = statements[current];
+  const correct = userAnswer === s.answer;
+  document.getElementById('btnV').disabled = true;
+  document.getElementById('btnF').disabled = true;
+  const card = document.getElementById('mainCard');
+  if (correct) {
+    score++;
+    card.classList.add('feedback-correct', 'animate-correct');
+    document.getElementById('feedbackMsg').textContent = '✅ ' + s.explanation;
+    document.getElementById('scoreBadge').textContent = `⭐ Pontos: ${score}`;
+    playSound(true);
+  } else {
+    card.classList.add('feedback-wrong', 'animate-wrong');
+    document.getElementById('feedbackMsg').textContent = '❌ ' + s.explanation;
+    playSound(false);
+  }
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = 'block';
+  nextBtn.textContent = current === statements.length - 1 ? '🏁 Ver Resultado' : 'Próxima ➡️';
+}
+
+function nextStatement() {
+  current++;
+  if (current >= statements.length) showFinal();
+  else render();
+}
+
+function showFinal() {
+  document.getElementById('mainCard').style.display = 'none';
+  document.querySelector('.buttons-row').style.display = 'none';
+  document.getElementById('nextBtn').style.display = 'none';
+  document.getElementById('progressFill').style.width = '100%';
+  document.getElementById('progressLabel').textContent = 'Concluído! 🎉';
+  document.getElementById('scoreBadge').style.display = 'none';
+  const f = document.getElementById('finalScreen');
+  f.style.display = 'block';
+  document.getElementById('finalScore').textContent = `${score} / 10`;
+  let emoji, msg;
+  if (score === 10) { emoji = '🏆🌟'; msg = 'Incrível! Acertou tudo! Você é um expert em bairros!'; }
+  else if (score >= 8) { emoji = '⭐'; msg = 'Muito bem! Você conhece bem os tipos de bairros!'; }
+  else if (score >= 6) { emoji = '💪'; msg = 'Bom trabalho! Continue estudando!'; }
+  else { emoji = '🌱'; msg = 'Continue tentando! Você vai melhorar muito!'; }
+  document.getElementById('finalEmoji').textContent = emoji;
+  document.getElementById('finalMessage').textContent = msg;
+  playSound(score >= 7);
+}
+
+function initGame() {
+  current = 0; score = 0; answered = false;
+  document.getElementById('scoreBadge').textContent = '⭐ Pontos: 0';
+  document.getElementById('scoreBadge').style.display = 'inline-flex';
+  document.getElementById('mainCard').style.display = 'flex';
+  document.querySelector('.buttons-row').style.display = 'flex';
+  document.getElementById('finalScreen').style.display = 'none';
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
