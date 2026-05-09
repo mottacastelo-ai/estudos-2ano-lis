@@ -301,7 +301,9 @@ Lis: [resumo visual compacto]. [Personagem]: [resumo visual compacto].
 
 ---
 
-## FASE 3.5 — Geração automática das imagens via Claude in Chrome
+## FASE 3.5 — Geração automática das imagens via Claude in Chrome ⛔ GATE OBRIGATÓRIO
+
+> **⛔ BLOQUEIO TOTAL:** O Cowork deve parar completamente aqui e acionar o Claude in Chrome para executar esta fase. **A Fase 4 não pode ser iniciada sob nenhuma circunstância antes de os arquivos de imagem estarem confirmados na pasta do projeto.** Não há exceção a esta regra.
 
 Esta fase é executada **integralmente pelo Claude in Chrome**, sem intervenção de Léo. Ocorre após a geração do prompt `.md` da Fase 3 e antes das atividades HTML.
 
@@ -346,9 +348,11 @@ O Claude in Chrome executa os seguintes passos em ordem, sem pausas para aprova�
 - Repetir o Passo 3 para cada página
 - Nomear os arquivos como `hq-[slug]-pg2.png`, `hq-[slug]-pg3.png`, `hq-[slug]-pg4.png`
 
-### 3.5.3 Confirmação antes de avançar
+### 3.5.3 ⛔ Confirmação obrigatória antes de avançar
 
-Verificar que os 4 arquivos existem na pasta do projeto com os nomes corretos e dimensões coerentes (largura mínima de 1024px). Somente então avançar para a Fase 4.
+Verificar que os 4 arquivos existem na pasta do projeto com os nomes corretos e dimensões coerentes (largura mínima de 1024px).
+
+**O Cowork só retoma a execução após esta confirmação. Avançar para a Fase 4 sem os arquivos de imagem presentes é uma falha crítica de execução.**
 
 ---
 
