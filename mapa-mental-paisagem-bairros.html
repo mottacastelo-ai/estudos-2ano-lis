@@ -32,7 +32,7 @@
   .instruction {
     background: #fff; border-radius: var(--radius);
     border-left: 5px solid var(--primary);
-    padding: 10px 16px; max-width: 720px; width: 100%;
+    padding: 10px 16px; max-width: 760px; width: 100%;
     font-size: 1.1rem; font-weight: 600; margin-bottom: 12px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   }
@@ -62,16 +62,16 @@
   }
   .btn-back:hover { background: #D97706; }
 
-  /* LAYOUT: map + bank side by side */
+  /* LAYOUT */
   .layout {
-    display: flex; gap: 16px; width: 100%; max-width: 880px;
+    display: flex; gap: 16px; width: 100%; max-width: 920px;
     align-items: flex-start; flex-wrap: wrap; justify-content: center;
   }
 
   /* MAP AREA */
   .map-area {
-    position: relative; flex: 1 1 460px;
-    min-width: 320px; height: 520px;
+    position: relative; flex: 1 1 480px;
+    min-width: 320px; height: 540px;
     background: #fff; border-radius: 18px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.08);
     overflow: visible;
@@ -106,14 +106,15 @@
   /* SLOT */
   .slot {
     position: absolute; z-index: 5;
-    width: 118px; height: 70px;
+    width: 138px; height: 76px;
     background: rgba(243,244,246,0.7);
     border: 2.5px dashed #9CA3AF;
     border-radius: 12px;
     display: flex; align-items: center; justify-content: center;
-    text-align: center; font-size: 0.85rem; font-weight: 600;
-    color: #9CA3AF; transition: border-color 0.2s, background 0.2s;
+    text-align: center; font-size: 0.82rem; font-weight: 700;
+    color: #6B7280; transition: border-color 0.2s, background 0.2s;
     transform: translate(-50%, -50%);
+    padding: 6px 8px; line-height: 1.25;
   }
   .slot.drag-over { border-color: var(--primary); background: #FFFDE7; color: var(--primary); }
   .slot.filled { border-style: solid; border-color: #10B981; background: #D1FAE5; }
@@ -134,7 +135,7 @@
   .node-card:hover { transform: scale(1.05); box-shadow: 0 6px 16px rgba(0,0,0,0.14); }
   .node-card.placed {
     background: #D1FAE5; border-color: #10B981;
-    cursor: default; font-size: 0.9rem;
+    cursor: default; font-size: 0.88rem;
     animation: pop 0.4s ease;
     width: 100%; text-align: center;
   }
@@ -147,7 +148,7 @@
 
   /* BANK */
   .bank-panel {
-    flex: 0 0 170px; min-width: 150px;
+    flex: 0 0 180px; min-width: 160px;
     background: #fff; border-radius: var(--radius);
     box-shadow: 0 4px 16px rgba(0,0,0,0.08);
     padding: 14px 12px;
@@ -180,8 +181,9 @@
   .gabarito-overlay.show { display: flex; }
   .gabarito-box {
     background: #fff; border-radius: 18px;
-    max-width: 520px; width: 100%; padding: 28px 24px;
+    max-width: 560px; width: 100%; padding: 28px 24px;
     box-shadow: 0 8px 40px rgba(0,0,0,0.2);
+    max-height: 90vh; overflow-y: auto;
   }
   .gabarito-box h2 {
     font-family: 'Baloo 2', cursive; font-size: 1.5rem;
@@ -190,10 +192,10 @@
   .gabarito-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
   .gabarito-list li {
     background: #F9FAFB; border-radius: 10px;
-    padding: 10px 14px; font-size: 1.1rem; font-weight: 600;
-    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; font-size: 1rem; font-weight: 600;
+    display: flex; flex-direction: column; gap: 4px;
   }
-  .gab-slot { color: #6B7280; font-size: 0.9rem; }
+  .gab-slot { color: #6B7280; font-size: 0.88rem; font-weight: 600; }
   .btn-close-gab {
     display: block; width: 100%; background: var(--primary);
     color: #fff; border: none; border-radius: var(--radius);
@@ -209,15 +211,11 @@
     60% { transform: translate(calc(-50% - 6px), -50%); }
     80% { transform: translate(calc(-50% + 6px), -50%); }
   }
-  @keyframes bounce {
-    0%,100% { transform: translateY(0); }
-    30% { transform: translateY(-6px); }
-  }
 
   @media (max-width: 560px) {
-    .map-area { height: 440px; flex: 1 1 100%; }
-    .central-node { font-size: 0.85rem; width: 100px; padding: 12px 10px; }
-    .slot { width: 96px; height: 62px; font-size: 0.75rem; }
+    .map-area { height: 460px; flex: 1 1 100%; }
+    .central-node { font-size: 0.82rem; width: 96px; padding: 10px 8px; }
+    .slot { width: 110px; height: 68px; font-size: 0.72rem; }
     .bank-panel { flex: 1 1 100%; }
     .bank-list { flex-direction: row; flex-wrap: wrap; justify-content: center; }
     .node-card { font-size: 0.9rem; }
@@ -231,7 +229,7 @@
   <p>2º Ano · Geografia · Paisagem dos Bairros</p>
 </header>
 
-<div class="instruction">🖱️ <strong>Arraste os nós</strong> para os slots ao redor do tema central!</div>
+<div class="instruction">🖱️ <strong>Arraste o tipo de bairro</strong> para a característica que melhor o descreve!</div>
 
 <div class="score-bar">
   <span class="score-chip" id="scoreChip">✅ 0 / 6</span>
@@ -247,14 +245,12 @@
   <!-- MAP -->
   <div class="map-area" id="mapArea">
     <svg class="svg-lines" id="svgLines"></svg>
-    <!-- Central node -->
     <div class="central-node" id="centralNode">🏙️ PAISAGEM<br>DOS BAIRROS</div>
-    <!-- Slots: positions set by JS -->
   </div>
 
   <!-- BANK -->
   <div class="bank-panel">
-    <div class="bank-title">📦 Nós para arrastar:</div>
+    <div class="bank-title">🃏 Tipos de bairro:</div>
     <div class="bank-list" id="bankList"></div>
   </div>
 </div>
@@ -269,36 +265,72 @@
 </div>
 
 <script>
-// Slot definitions: label = hint label, position = % of map area, correct node id
+/*
+  LÓGICA CORRIGIDA:
+  - Slots = características/descrições de cada tipo de bairro (o que a criança lê no mapa)
+  - Nodes = tipos de bairro (o que a criança arrasta para encaixar)
+  - Cada node tem exatamente um slot correto, identificado por slotId
+*/
+
 const slots = [
-  { id:'sN',  label:'Norte',     cx: 50, cy: 10, correctId:'n1' },
-  { id:'sNE', label:'Nordeste',  cx: 83, cy: 22, correctId:'n2' },
-  { id:'sSE', label:'Sudeste',   cx: 88, cy: 65, correctId:'n3' },
-  { id:'sS',  label:'Sul',       cx: 50, cy: 88, correctId:'n4' },
-  { id:'sSO', label:'Sudoeste',  cx: 12, cy: 65, correctId:'n5' },
-  { id:'sNO', label:'Noroeste',  cx: 17, cy: 22, correctId:'n6' }
+  {
+    id: 'sRes',
+    label: 'Onde as pessoas moram: casas e apartamentos',
+    cx: 50, cy: 10
+  },
+  {
+    id: 'sCom',
+    label: 'Lojas, mercados e serviços para comprar',
+    cx: 85, cy: 28
+  },
+  {
+    id: 'sInd',
+    label: 'Fábricas e indústrias que fabricam produtos',
+    cx: 85, cy: 68
+  },
+  {
+    id: 'sPer',
+    label: 'Afastado do centro, com menos serviços',
+    cx: 50, cy: 88
+  },
+  {
+    id: 'sMis',
+    label: 'Moradia e comércio no mesmo lugar',
+    cx: 15, cy: 68
+  },
+  {
+    id: 'sNat',
+    label: 'Parques, rios, praças e ruas da cidade',
+    cx: 15, cy: 28
+  }
 ];
 
 const nodes = [
-  { id:'n1', text:'🏠 Bairro Residencial',             slotId:'sN'  },
-  { id:'n2', text:'🏪 Bairro Comercial',               slotId:'sNE' },
-  { id:'n3', text:'⚙️ Bairro Industrial',              slotId:'sSE' },
-  { id:'n4', text:'🏘️ Bairro Periférico',              slotId:'sS'  },
-  { id:'n5', text:'🔀 Bairro de Uso Misto',            slotId:'sSO' },
-  { id:'n6', text:'🌿 Elementos Naturais e Construídos', slotId:'sNO' }
+  { id: 'n1', text: '🏠 Bairro Residencial',              slotId: 'sRes' },
+  { id: 'n2', text: '🏪 Bairro Comercial',                slotId: 'sCom' },
+  { id: 'n3', text: '⚙️ Bairro Industrial',               slotId: 'sInd' },
+  { id: 'n4', text: '🏘️ Bairro Periférico',               slotId: 'sPer' },
+  { id: 'n5', text: '🔀 Bairro de Uso Misto',             slotId: 'sMis' },
+  { id: 'n6', text: '🌿 Elementos Naturais e Construídos', slotId: 'sNat' }
 ];
 
 let score = 0;
 let draggingId = null;
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+let audioCtx = null;
+
+function getAudioCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
 
 function playSound(correct) {
+  const ctx = getAudioCtx();
   const freqs = correct ? [523, 659, 784] : [300, 200];
-  let t = audioCtx.currentTime;
+  let t = ctx.currentTime;
   freqs.forEach((f, i) => {
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.connect(gain); gain.connect(audioCtx.destination);
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
     osc.frequency.value = f; osc.type = 'sine';
     gain.gain.setValueAtTime(0.3, t + i * 0.13);
     gain.gain.exponentialRampToValueAtTime(0.001, t + i * 0.13 + 0.15);
@@ -321,12 +353,13 @@ function drawLines() {
   const { w, h } = getMapDims();
   svg.innerHTML = '';
   svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
-  const cx = w / 2, cy = h / 2;
+  const cxC = w / 2, cyC = h / 2;
   slots.forEach(s => {
     const pos = pxPos(s.cx, s.cy);
-    const slotEl = document.getElementById(s.id);
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    const d = `M ${cx} ${cy} Q ${(cx + pos.x)/2} ${(cy + pos.y)/2 - 20} ${pos.x} ${pos.y}`;
+    const mx = (cxC + pos.x) / 2;
+    const my = (cyC + pos.y) / 2 - 20;
+    const d = `M ${cxC} ${cyC} Q ${mx} ${my} ${pos.x} ${pos.y}`;
     path.setAttribute('d', d);
     path.setAttribute('class', 'line-path');
     path.id = 'line-' + s.id;
@@ -342,13 +375,13 @@ function buildSlots() {
     div.className = 'slot';
     div.id = s.id;
     div.dataset.slotId = s.id;
-    div.innerHTML = `<span class="gab-slot">${s.label}</span>`;
+    div.innerHTML = `<span>${s.label}</span>`;
     const { w, h } = getMapDims();
     div.style.left = (s.cx / 100 * w) + 'px';
-    div.style.top = (s.cy / 100 * h) + 'px';
-    div.addEventListener('dragover', e => { e.preventDefault(); div.classList.add('drag-over'); });
+    div.style.top  = (s.cy / 100 * h) + 'px';
+    div.addEventListener('dragover',  e => { e.preventDefault(); div.classList.add('drag-over'); });
     div.addEventListener('dragleave', () => div.classList.remove('drag-over'));
-    div.addEventListener('drop', e => { e.preventDefault(); div.classList.remove('drag-over'); attemptDrop(s.id); });
+    div.addEventListener('drop',      e => { e.preventDefault(); div.classList.remove('drag-over'); attemptDrop(s.id); });
     mapArea.appendChild(div);
   });
 }
@@ -356,7 +389,9 @@ function buildSlots() {
 function buildBank() {
   const bank = document.getElementById('bankList');
   bank.innerHTML = '';
-  nodes.forEach(n => {
+  // Embaralha a ordem dos nodes no banco
+  const shuffled = [...nodes].sort(() => Math.random() - 0.5);
+  shuffled.forEach(n => {
     const el = document.createElement('div');
     el.className = 'node-card';
     el.id = n.id;
@@ -364,8 +399,7 @@ function buildBank() {
     el.dataset.nodeId = n.id;
     el.draggable = true;
     el.addEventListener('dragstart', () => { draggingId = n.id; });
-    el.addEventListener('dragend', () => {});
-    // Touch
+    // Touch support
     let clone = null, offX = 0, offY = 0;
     el.addEventListener('touchstart', e => {
       draggingId = n.id;
@@ -373,7 +407,7 @@ function buildBank() {
       const r = el.getBoundingClientRect();
       offX = t.clientX - r.left; offY = t.clientY - r.top;
       clone = el.cloneNode(true);
-      clone.style.cssText = `position:fixed;z-index:9999;opacity:0.88;pointer-events:none;left:${t.clientX-offX}px;top:${t.clientY-offY}px;width:${r.width}px`;
+      clone.style.cssText = `position:fixed;z-index:9999;opacity:0.88;pointer-events:none;left:${t.clientX - offX}px;top:${t.clientY - offY}px;width:${r.width}px`;
       document.body.appendChild(clone);
       el.style.opacity = '0.4';
     }, { passive: true });
@@ -414,13 +448,8 @@ function getSlotElAt(x, y) {
   return null;
 }
 function getSlotAt(x, y) {
-  for (const s of slots) {
-    const el = document.getElementById(s.id);
-    if (!el) continue;
-    const r = el.getBoundingClientRect();
-    if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) return s.id;
-  }
-  return null;
+  const el = getSlotElAt(x, y);
+  return el ? el.dataset.slotId : null;
 }
 
 function attemptDrop(slotId) {
@@ -428,30 +457,29 @@ function attemptDrop(slotId) {
   const nodeId = draggingId;
   draggingId = null;
   const node = nodes.find(n => n.id === nodeId);
-  const slot = slots.find(s => s.id === slotId);
-  if (!node || !slot) return;
+  if (!node) return;
   const slotEl = document.getElementById(slotId);
-  if (slotEl.dataset.filled === 'true') return;
-  if (slot.correctId === nodeId) {
-    // correct!
+  if (!slotEl || slotEl.dataset.filled === 'true') return;
+
+  if (node.slotId === slotId) {
+    // Correto
     score++;
     slotEl.dataset.filled = 'true';
     slotEl.classList.add('filled');
     slotEl.innerHTML = '';
     const nodeCard = document.getElementById(nodeId);
-    nodeCard.classList.add('placed');
-    nodeCard.style.pointerEvents = 'none';
-    nodeCard.draggable = false;
-    slotEl.appendChild(nodeCard.cloneNode(true));
+    const placed = nodeCard.cloneNode(true);
+    placed.classList.add('placed');
+    placed.style.pointerEvents = 'none';
+    slotEl.appendChild(placed);
     nodeCard.style.display = 'none';
-    // update line
     const line = document.getElementById('line-' + slotId);
     if (line) line.classList.add('connected');
     document.getElementById('scoreChip').textContent = `✅ ${score} / 6`;
     playSound(true);
     if (score === 6) setTimeout(showComplete, 600);
   } else {
-    // wrong
+    // Errado
     slotEl.classList.add('wrong-slot');
     playSound(false);
     setTimeout(() => slotEl.classList.remove('wrong-slot'), 600);
@@ -461,7 +489,7 @@ function attemptDrop(slotId) {
 function showComplete() {
   const chip = document.getElementById('scoreChip');
   chip.style.background = '#10B981';
-  chip.textContent = '🏆 Completo! 6 / 6';
+  chip.textContent = '🏆 Parabéns! 6 / 6';
   playSound(true);
 }
 
@@ -469,9 +497,9 @@ function showGabarito() {
   const list = document.getElementById('gabList');
   list.innerHTML = '';
   nodes.forEach(n => {
-    const slot = slots.find(s => s.correctId === n.id);
+    const slot = slots.find(s => s.id === n.slotId);
     const li = document.createElement('li');
-    li.innerHTML = `<span>${n.text}</span> <span class="gab-slot">→ ${slot ? slot.label : ''}</span>`;
+    li.innerHTML = `<span>${n.text}</span><span class="gab-slot">→ ${slot ? slot.label : ''}</span>`;
     list.appendChild(li);
   });
   document.getElementById('gabOverlay').classList.add('show');
