@@ -398,6 +398,11 @@ Verificar que os 4 arquivos existem na pasta do projeto com os nomes corretos e 
 - **Conteúdo:** 5–7 nós
 - **Nível Glasser:** 🏆 Ensinar (90%)
 - **Sempre é a última atividade listada no act-grid**
+- **Regra de conteúdo obrigatória — slots e nodes:**
+  - **Slots** (receptáculos fixos no mapa) = características, definições ou exemplos extraídos do conteúdo
+  - **Nodes** (cards arrastáveis) = conceitos, termos ou categorias que a criança precisa classificar
+  - Jamais usar posição geográfica, ordem numérica, cor ou qualquer atributo de layout como label de slot
+  - Teste de validade: a correspondência slot → node deve fazer sentido como afirmação pedagógica ("Lojas e mercados → Bairro Comercial"), nunca como posição ("Norte → Bairro Residencial")
 
 ### 4.2 Atividades variáveis
 
@@ -555,6 +560,12 @@ C:\Users\wizar\OneDrive\Documentos\Projeto Estudos\estudos-2ano\index.html
 
 > Os 4 arquivos referenciados pelo componente de navegação são: `hq-[slug]-pg1.png`, `hq-[slug]-pg2.png`, `hq-[slug]-pg3.png`, `hq-[slug]-pg4.png`. Verificar que todos os 4 nomes estão corretos no código gerado.
 
+> **⚠️ Regra de estilo obrigatória — imagem da HQ:** O elemento `img` dentro do viewer deve sempre usar `object-fit: contain` — nunca `object-fit: cover`. O valor `cover` recorta as bordas da imagem para preencher o container, cortando texto e painéis das HQs. O valor `contain` preserva a imagem inteira.
+
+### 6.3 Checklist de estilo ao editar o index.html
+
+- [ ] Imagem da HQ usa `object-fit: contain` no viewer (nunca `cover`)
+
 ---
 
 ## FASE 7 — Entrega via Cowork
@@ -590,6 +601,7 @@ Todos os arquivos vão direto para a raiz do projeto — nunca em subpastas.
 - [ ] Font-size mínimo respeitado em todas as atividades
 - [ ] Função `playSound` presente em todas as atividades interativas
 - [ ] Os 4 `src` do componente de navegação usam o padrão `hq-[slug]-pg1.png` … `pg4.png`
+- [ ] Imagem da HQ usa `object-fit: contain` no viewer
 
 ### 7.3 Mensagem de conclusão
 
