@@ -13,6 +13,9 @@
   --geo-color: #F59E0B;
   --geo-light: #FCD34D;
   --geo-bg: #FFFBEB;
+  --hist-color: #A855F7;
+  --hist-light: #D08EF8;
+  --hist-bg: #FAF5FF;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; min-height: 100vh; }
@@ -141,6 +144,16 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
 .disc-nav-btn.active.geo-active { background: var(--geo-bg); color: var(--geo-color); }
 .tag-geo { background: #FEF3C7; color: #92400E; }
 .sched-row .sched-day.geo { color: var(--geo-color); }
+.disc-hero.hist { background: linear-gradient(135deg, #4A1272, #A855F7 60%, #D08EF8); }
+.disc-home-card.hist:hover { border-color: var(--hist-light); box-shadow: 0 8px 28px rgba(168,85,247,.15); }
+.disc-nav-btn.active.hist-active { background: var(--hist-bg); color: var(--hist-color); }
+.tag-hist { background: #F3E8FF; color: #6D28D9; }
+.theme-tab-btn.hist-tab:hover { border-color: var(--hist-color); color: var(--hist-color); }
+.theme-tab-btn.hist-tab.active { background: var(--hist-bg); border-color: var(--hist-color); color: var(--hist-color); }
+.act-card.hist { border-top: 4px solid var(--hist-color); }
+.act-card.hist::after { color: var(--hist-color); }
+.act-card.hist:hover { box-shadow: 0 6px 24px rgba(168,85,247,.15); transform: translateY(-3px); border-color: var(--hist-light); }
+.sched-row .sched-day.hist { color: var(--hist-color); }
 
 /* ===== THEME CONTENT ===== */
 .theme-content { display: none; }
@@ -367,6 +380,17 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
       <button class="theme-link" onclick="showTheme('geo','representar-lugares')">📐 Representar os Lugares</button>
       <button class="theme-link" onclick="showTheme('geo','paisagem-bairros')">🏙️ A Paisagem dos Bairros</button>
     </div>
+
+    <button class="disc-nav-btn hist-active" id="nav-hist" onclick="showDisc('hist')">
+      <span class="d-icon">📜</span>
+      <span class="d-name">História</span>
+      <span class="d-count" id="count-hist">3 temas</span>
+    </button>
+    <div class="theme-sub" id="sub-hist">
+      <button class="theme-link" onclick="showTheme('hist','memorias-lugares')">🏛️ Memórias dos Lugares</button>
+      <button class="theme-link" onclick="showTheme('hist','meu-lugar-viver')">🏘️ Meu Lugar de Viver</button>
+      <button class="theme-link" onclick="showTheme('hist','convivencia-pessoas')">🤝 Convivência entre as Pessoas</button>
+    </div>
   </div>
 </nav>
 
@@ -379,9 +403,9 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
       <div class="home-title">✨ Olá, Lis!</div>
       <div class="home-subtitle">Escolha uma disciplina e vamos aprender juntos! 🎉</div>
       <div class="home-stats">
-        <div class="hstat"><span class="hstat-num">2</span><span class="hstat-label">disciplinas</span></div>
-        <div class="hstat"><span class="hstat-num">6</span><span class="hstat-label">temas</span></div>
-        <div class="hstat"><span class="hstat-num">24</span><span class="hstat-label">atividades</span></div>
+        <div class="hstat"><span class="hstat-num">3</span><span class="hstat-label">disciplinas</span></div>
+        <div class="hstat"><span class="hstat-num">9</span><span class="hstat-label">temas</span></div>
+        <div class="hstat"><span class="hstat-num">36</span><span class="hstat-label">atividades</span></div>
       </div>
     </div>
     <div class="home-body">
@@ -403,6 +427,15 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
           <div class="dhc-chips">
             <span class="chip" style="background:#FEF3C7;color:#92400E">2 temas</span>
             <span class="chip" style="background:#FFFBEB;color:#78350F">8 atividades</span>
+          </div>
+        </button>
+        <button class="disc-home-card hist" onclick="showDisc('hist')">
+          <div class="dhc-icon">📜</div>
+          <div class="dhc-name">História</div>
+          <div class="dhc-desc">Memórias dos lugares, meu bairro e convivência entre as pessoas</div>
+          <div class="dhc-chips">
+            <span class="chip" style="background:#F3E8FF;color:#6D28D9">3 temas</span>
+            <span class="chip" style="background:#FAF5FF;color:#7E22CE">12 atividades</span>
           </div>
         </button>
       </div>
@@ -869,6 +902,275 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
     </div><!-- /disc-body -->
   </div><!-- /screen-geo -->
 
+  <!-- HISTÓRIA -->
+  <div class="screen" id="screen-hist">
+    <div class="disc-hero hist">
+      <div class="disc-hero-title">📜 História</div>
+      <div class="disc-hero-sub">3 temas · 12 atividades</div>
+    </div>
+    <div class="disc-body">
+
+      <div class="theme-tabs">
+        <button class="theme-tab-btn hist-tab" id="tab-hist-memorias-lugares"      onclick="showTheme('hist','memorias-lugares')">🏛️ Memórias dos Lugares</button>
+        <button class="theme-tab-btn hist-tab" id="tab-hist-meu-lugar-viver"       onclick="showTheme('hist','meu-lugar-viver')">🏘️ Meu Lugar de Viver</button>
+        <button class="theme-tab-btn hist-tab" id="tab-hist-convivencia-pessoas"   onclick="showTheme('hist','convivencia-pessoas')">🤝 Convivência entre as Pessoas</button>
+      </div>
+
+      <!-- ── TEMA 1: MEMÓRIAS DOS LUGARES ── -->
+      <div class="theme-content" id="theme-hist-memorias-lugares">
+        <div class="hq-card">
+          <div class="hq-viewer-wrap">
+            <div class="hq-viewer-title">🏛️ Onde o Tempo Guarda Histórias</div>
+            <div class="hq-viewer-sub">Aventura com Lis e Foca · 4 páginas</div>
+            <div class="hq-book-outer">
+              <div class="hq-book-shadow"></div>
+              <div class="hq-book-stack">
+                <div class="hq-page-base" id="hq-memorias-display">
+                  <img id="hq-memorias-img" src="hq-memorias-lugares-pg1.png" alt="HQ Memórias dos Lugares — Página 1" draggable="false">
+                  <div class="hq-shine"></div>
+                </div>
+              </div>
+            </div>
+            <div class="hq-controls">
+              <button class="hq-btn" id="hq-memorias-prev" onclick="hqGoTo('memorias',hqCurrent['memorias']-1)" disabled>◀ Voltar</button>
+              <div class="hq-indicator" id="hq-memorias-ind">1 / 4</div>
+              <button class="hq-btn" id="hq-memorias-next" onclick="hqGoTo('memorias',hqCurrent['memorias']+1)">Próxima ▶</button>
+            </div>
+            <div class="hq-dots" id="hq-memorias-dots">
+              <div class="hq-dot active" onclick="hqGoTo('memorias',0)"></div>
+              <div class="hq-dot" onclick="hqGoTo('memorias',1)"></div>
+              <div class="hq-dot" onclick="hqGoTo('memorias',2)"></div>
+              <div class="hq-dot" onclick="hqGoTo('memorias',3)"></div>
+            </div>
+          </div>
+          <div class="hq-caption">
+            <span>📖</span>
+            <span>Onde o Tempo Guarda Histórias — 4 páginas · Personagens: Lis e Foca (câmera antiga) · Tema: fontes históricas visual e oral, mudanças e permanências, tipos de calçamento</span>
+          </div>
+        </div>
+        <hr class="sdiv">
+        <div class="act-grid">
+          <a class="act-card hist" href="quiz-memorias-lugares.html" target="_blank">
+            <div class="act-icon">📸</div>
+            <div class="act-title">Quiz — Memórias dos Lugares</div>
+            <div class="act-desc">8 perguntas sobre fontes históricas, tipos de calçamento e mudanças nos lugares</div>
+            <div class="act-tags">
+              <span class="tag tag-hist">História</span>
+              <span class="tag tag-a">8 questões</span>
+            </div>
+            <span class="level lv4">📖 Retrieval practice</span>
+          </a>
+          <a class="act-card hist" href="arrastar-fontes-historicas.html" target="_blank">
+            <div class="act-icon">🔍</div>
+            <div class="act-title">Fontes Históricas</div>
+            <div class="act-desc">Arraste cada exemplo para a categoria certa: Fonte Visual ou Fonte Oral</div>
+            <div class="act-tags">
+              <span class="tag tag-hist">História</span>
+              <span class="tag tag-a">Arrastar</span>
+            </div>
+            <span class="level lv2">⚡ Praticar (80%)</span>
+          </a>
+          <a class="act-card hist" href="verdadeiro-falso-memorias.html" target="_blank">
+            <div class="act-icon">✅❌</div>
+            <div class="act-title">Verdadeiro ou Falso?</div>
+            <div class="act-desc">8 afirmações sobre mudanças, permanências e fontes históricas — verdadeiro ou falso?</div>
+            <div class="act-tags">
+              <span class="tag tag-hist">História</span>
+              <span class="tag tag-a">V/F</span>
+            </div>
+            <span class="level lv1">💬 Discutir (70%)</span>
+          </a>
+          <a class="act-card hist" href="mapa-mental-memorias-lugares.html" target="_blank">
+            <div class="act-icon">🗺️</div>
+            <div class="act-title">Mapa Mental</div>
+            <div class="act-desc">Monte o mapa com os conceitos de Memórias dos Lugares: fontes, calçamentos, mudança e permanência</div>
+            <div class="act-tags">
+              <span class="tag tag-hist">História</span>
+              <span class="tag tag-a">Arrastar</span>
+            </div>
+            <span class="level lv3">🏆 Ensinar (90%)</span>
+          </a>
+        </div>
+        <hr class="sdiv">
+        <div class="sched-title">📅 Sugestão de uso</div>
+        <div class="sched">
+          <div class="sched-row"><span class="sched-day hist" style="color:var(--hist-color)">Dia 1</span><span class="sched-acts">HQ + Quiz Interativo</span></div>
+          <div class="sched-row"><span class="sched-day hist" style="color:var(--hist-color)">Dia 2</span><span class="sched-acts">Fontes Históricas + Verdadeiro ou Falso?</span></div>
+          <div class="sched-row"><span class="sched-day hist" style="color:var(--hist-color)">Dia 3</span><span class="sched-acts">Mapa Mental</span></div>
+        </div>
+      </div>
+
+      <!-- ── TEMA 2: MEU LUGAR DE VIVER ── -->
+      <div class="theme-content" id="theme-hist-meu-lugar-viver">
+        <div class="hq-card">
+          <div class="hq-viewer-wrap">
+            <div class="hq-viewer-title">🏘️ O Caderno das Memórias</div>
+            <div class="hq-viewer-sub">Aventura com Lis e Cadê · 4 páginas</div>
+            <div class="hq-book-outer">
+              <div class="hq-book-shadow"></div>
+              <div class="hq-book-stack">
+                <div class="hq-page-base" id="hq-lugarviver-display">
+                  <img id="hq-lugarviver-img" src="hq-meu-lugar-viver-pg1.png" alt="HQ Meu Lugar de Viver — Página 1" draggable="false">
+                  <div class="hq-shine"></div>
+                </div>
+              </div>
+            </div>
+            <div class="hq-controls">
+              <button class="hq-btn" id="hq-lugarviver-prev" onclick="hqGoTo('lugarviver',hqCurrent['lugarviver']-1)" disabled>◀ Voltar</button>
+              <div class="hq-indicator" id="hq-lugarviver-ind">1 / 4</div>
+              <button class="hq-btn" id="hq-lugarviver-next" onclick="hqGoTo('lugarviver',hqCurrent['lugarviver']+1)">Próxima ▶</button>
+            </div>
+            <div class="hq-dots" id="hq-lugarviver-dots">
+              <div class="hq-dot active" onclick="hqGoTo('lugarviver',0)"></div>
+              <div class="hq-dot" onclick="hqGoTo('lugarviver',1)"></div>
+              <div class="hq-dot" onclick="hqGoTo('lugarviver',2)"></div>
+              <div class="hq-dot" onclick="hqGoTo('lugarviver',3)"></div>
+            </div>
+          </div>
+          <div class="hq-caption">
+            <span>📖</span>
+            <span>O Caderno das Memórias — 4 páginas · Personagens: Lis e Cadê (caderno de entrevistas) · Tema: memórias afetivas, bairro, mudanças, permanências, depoimento, investigar</span>
+          </div>
+        </div>
+        <hr class="sdiv">
+        <div class="act-grid">
+          <a class="act-card hist" href="quiz-meu-lugar-viver.html" target="_blank">
+            <div class="act-icon">🏘️</div>
+            <div class="act-title">Quiz — Meu Lugar de Viver</div>
+            <div class="act-desc">8 perguntas sobre bairro, memórias afetivas, mudanças, permanências e depoimentos</div>
+            <div class="act-tags">
+              <span class="tag tag-hist">História</span>
+              <span class="tag tag-a">8 questões</span>
+            </div>
+            <span class="level lv4">📖 Retrieval practice</span>
+          </a>
+          <a class="act-card hist" href="jogo-memoria-bairro.html" target="_blank">
+            <div class="act-icon">🧩</div>
+            <div class="act-title">Jogo da Memória</div>
+            <div class="act-desc">Encontre os pares: cada palavra do bairro com sua definição correta</div>
+            <div class="act-tags">
+              <span class="tag tag-hist">História</span>
+              <span class="tag tag-a">Memória</span>
+            </div>
+            <span class="level lv2">⚡ Praticar (80%)</span>
+          </a>
+          <a class="act-card hist" href="caca-palavras-lugar-viver.html" target="_blank">
+            <div class="act-icon">🔎</div>
+            <div class="act-title">Caça-Palavras</div>
+            <div class="act-desc">Encontre as 7 palavras escondidas na grade: bairro, memória, mudança e mais!</div>
+            <div class="act-tags">
+              <span class="tag tag-hist">História</span>
+              <span class="tag tag-a">Caça-Palavras</span>
+            </div>
+            <span class="level lv1">💬 Discutir (70%)</span>
+          </a>
+          <a class="act-card hist" href="mapa-mental-meu-lugar-viver.html" target="_blank">
+            <div class="act-icon">🗺️</div>
+            <div class="act-title">Mapa Mental</div>
+            <div class="act-desc">Monte o mapa com os conceitos: bairro, memória afetiva, mudança, permanência, depoimento, investigar</div>
+            <div class="act-tags">
+              <span class="tag tag-hist">História</span>
+              <span class="tag tag-a">Arrastar</span>
+            </div>
+            <span class="level lv3">🏆 Ensinar (90%)</span>
+          </a>
+        </div>
+        <hr class="sdiv">
+        <div class="sched-title">📅 Sugestão de uso</div>
+        <div class="sched">
+          <div class="sched-row"><span class="sched-day" style="color:var(--hist-color)">Dia 1</span><span class="sched-acts">HQ + Quiz Interativo</span></div>
+          <div class="sched-row"><span class="sched-day" style="color:var(--hist-color)">Dia 2</span><span class="sched-acts">Jogo da Memória + Caça-Palavras</span></div>
+          <div class="sched-row"><span class="sched-day" style="color:var(--hist-color)">Dia 3</span><span class="sched-acts">Mapa Mental</span></div>
+        </div>
+      </div>
+
+      <!-- ── TEMA 3: CONVIVÊNCIA ENTRE AS PESSOAS ── -->
+      <div class="theme-content" id="theme-hist-convivencia-pessoas">
+        <div class="hq-card">
+          <div class="hq-viewer-wrap">
+            <div class="hq-viewer-title">🤝 O Ritmo da Convivência</div>
+            <div class="hq-viewer-sub">Aventura com Lis e Tambô · 4 páginas</div>
+            <div class="hq-book-outer">
+              <div class="hq-book-shadow"></div>
+              <div class="hq-book-stack">
+                <div class="hq-page-base" id="hq-convivencia-display">
+                  <img id="hq-convivencia-img" src="hq-convivencia-pessoas-pg1.png" alt="HQ Convivência entre as Pessoas — Página 1" draggable="false">
+                  <div class="hq-shine"></div>
+                </div>
+              </div>
+            </div>
+            <div class="hq-controls">
+              <button class="hq-btn" id="hq-convivencia-prev" onclick="hqGoTo('convivencia',hqCurrent['convivencia']-1)" disabled>◀ Voltar</button>
+              <div class="hq-indicator" id="hq-convivencia-ind">1 / 4</div>
+              <button class="hq-btn" id="hq-convivencia-next" onclick="hqGoTo('convivencia',hqCurrent['convivencia']+1)">Próxima ▶</button>
+            </div>
+            <div class="hq-dots" id="hq-convivencia-dots">
+              <div class="hq-dot active" onclick="hqGoTo('convivencia',0)"></div>
+              <div class="hq-dot" onclick="hqGoTo('convivencia',1)"></div>
+              <div class="hq-dot" onclick="hqGoTo('convivencia',2)"></div>
+              <div class="hq-dot" onclick="hqGoTo('convivencia',3)"></div>
+            </div>
+          </div>
+          <div class="hq-caption">
+            <span>📖</span>
+            <span>O Ritmo da Convivência — 4 páginas · Personagens: Lis e Tambô (tambor de Maracatu) · Tema: convivência, espaços coletivos, vizinhos, Quintal dos Pescadores, quilombola</span>
+          </div>
+        </div>
+        <hr class="sdiv">
+        <div class="act-grid">
+          <a class="act-card hist" href="quiz-convivencia-pessoas.html" target="_blank">
+            <div class="act-icon">🥁</div>
+            <div class="act-title">Quiz — Convivência entre as Pessoas</div>
+            <div class="act-desc">8 perguntas sobre convivência, comunidade, quilombola, Quintal dos Pescadores e mais</div>
+            <div class="act-tags">
+              <span class="tag tag-hist">História</span>
+              <span class="tag tag-a">8 questões</span>
+            </div>
+            <span class="level lv4">📖 Retrieval practice</span>
+          </a>
+          <a class="act-card hist" href="ordena-silabas-convivencia.html" target="_blank">
+            <div class="act-icon">🔤</div>
+            <div class="act-title">Ordene as Sílabas!</div>
+            <div class="act-desc">Monte 5 palavras de convivência: convivência, comunidade, quilombola, vizinhos e coletivo</div>
+            <div class="act-tags">
+              <span class="tag tag-hist">História</span>
+              <span class="tag tag-a">Sílabas</span>
+            </div>
+            <span class="level lv2">⚡ Praticar (80%)</span>
+          </a>
+          <a class="act-card hist" href="criador-frase-convivencia.html" target="_blank">
+            <div class="act-icon">✍️</div>
+            <div class="act-title">Criador de Frases!</div>
+            <div class="act-desc">Monte 5 frases sobre convivência escolhendo as palavras do banco — crie e aprenda!</div>
+            <div class="act-tags">
+              <span class="tag tag-hist">História</span>
+              <span class="tag tag-a">Criar</span>
+            </div>
+            <span class="level lv3">🏆 Ensinar (90%)</span>
+          </a>
+          <a class="act-card hist" href="mapa-mental-convivencia.html" target="_blank">
+            <div class="act-icon">🗺️</div>
+            <div class="act-title">Mapa Mental</div>
+            <div class="act-desc">Complete o mapa com: Quintal dos Pescadores, Quilombola, Respeito, Comunidade e Maracatu</div>
+            <div class="act-tags">
+              <span class="tag tag-hist">História</span>
+              <span class="tag tag-a">Arrastar</span>
+            </div>
+            <span class="level lv3">🏆 Ensinar (90%)</span>
+          </a>
+        </div>
+        <hr class="sdiv">
+        <div class="sched-title">📅 Sugestão de uso</div>
+        <div class="sched">
+          <div class="sched-row"><span class="sched-day" style="color:var(--hist-color)">Dia 1</span><span class="sched-acts">HQ + Quiz Interativo</span></div>
+          <div class="sched-row"><span class="sched-day" style="color:var(--hist-color)">Dia 2</span><span class="sched-acts">Ordene as Sílabas! + Criador de Frases!</span></div>
+          <div class="sched-row"><span class="sched-day" style="color:var(--hist-color)">Dia 3</span><span class="sched-acts">Mapa Mental</span></div>
+        </div>
+      </div>
+
+    </div><!-- /disc-body -->
+  </div><!-- /screen-hist -->
+
 </main>
 
 <script>
@@ -880,10 +1182,13 @@ var hqPages = {
   ambiente:    ['hq-preservando-meio-ambiente-p1.png','hq-preservando-meio-ambiente-p2.png','hq-preservando-meio-ambiente-p3.png','hq-preservando-meio-ambiente-p4.png'],
   plantas:     ['hq-onde-vivem-plantas-p1.png','hq-onde-vivem-plantas-p2.png','hq-onde-vivem-plantas-p3.png','hq-onde-vivem-plantas-p4.png'],
   representar: ['hq-representar-lugares-p1.png','hq-representar-lugares-p2.png','hq-representar-lugares-p3.png','hq-representar-lugares-p4.png'],
-  bairros:     ['hq-paisagem-bairros-p1.png','hq-paisagem-bairros-p2.png','hq-paisagem-bairros-p3.png','hq-paisagem-bairros-p4.png']
+  bairros:     ['hq-paisagem-bairros-p1.png','hq-paisagem-bairros-p2.png','hq-paisagem-bairros-p3.png','hq-paisagem-bairros-p4.png'],
+  memorias:    ['hq-memorias-lugares-pg1.png','hq-memorias-lugares-pg2.png','hq-memorias-lugares-pg3.png','hq-memorias-lugares-pg4.png'],
+  lugarviver:  ['hq-meu-lugar-viver-pg1.png','hq-meu-lugar-viver-pg2.png','hq-meu-lugar-viver-pg3.png','hq-meu-lugar-viver-pg4.png'],
+  convivencia: ['hq-convivencia-pessoas-pg1.png','hq-convivencia-pessoas-pg2.png','hq-convivencia-pessoas-pg3.png','hq-convivencia-pessoas-pg4.png']
 };
 
-var firstTheme = { cien: 'animais-ciclo-vida', geo: 'representar-lugares' };
+var firstTheme = { cien: 'animais-ciclo-vida', geo: 'representar-lugares', hist: 'memorias-lugares' };
 
 function hqGoTo(id, target) {
   var pages = hqPages[id];

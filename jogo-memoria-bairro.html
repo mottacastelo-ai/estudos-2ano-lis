@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jogo da Memória — Meu Bairro | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root { --primary: #A855F7; --light: #D08EF8; --bg: #FAF5FF; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100vh; }
+header {
+  background: linear-gradient(135deg, #4A1272, #A855F7 60%, #D08EF8);
+  padding: 22px 24px 18px; color: #fff; text-align: center;
+}
+header h1 { font-family: 'Baloo 2', cursive; font-size: 1.7rem; font-weight: 900; }
+header p { font-size: 1rem; opacity: 0.9; font-weight: 600; margin-top: 4px; }
+.container { max-width: 780px; margin: 0 auto; padding: 24px 16px 60px; }
+.stats-bar {
+  display: flex; gap: 12px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap;
+}
+.stat-chip {
+  background: #fff; border: 2px solid #E9D5FF; border-radius: 14px;
+  padding: 10px 20px; text-align: center;
+}
+.stat-val { font-family: 'Baloo 2', cursive; font-size: 1.5rem; font-weight: 900; color: var(--primary); display: block; }
+.stat-label { font-size: 0.78rem; font-weight: 700; color: #9CA3AF; }
+.grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 10px; margin-bottom: 24px;
+}
+@media (max-width: 480px) { .grid { grid-template-columns: repeat(3, 1fr); gap: 8px; } }
+.card {
+  aspect-ratio: 1; border-radius: 14px; cursor: pointer;
+  position: relative; transition: transform 0.35s;
+  transform-style: preserve-3d;
+}
+.card.flipped { transform: rotateY(180deg); }
+.card.matched { transform: rotateY(180deg); pointer-events: none; }
+.card-front, .card-back {
+  position: absolute; inset: 0; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  backface-visibility: hidden; padding: 8px;
+}
+.card-front {
+  background: linear-gradient(135deg, #6D28D9, #A855F7);
+  font-size: 2.2rem;
+}
+.card-back {
+  background: #fff; border: 2px solid #E9D5FF;
+  transform: rotateY(180deg);
+  font-size: 0.82rem; font-weight: 800; color: #4A1272;
+  text-align: center; line-height: 1.3;
+}
+.card.matched .card-back { background: #F3E8FF; border-color: #A855F7; }
+.win-card {
+  background: #fff; border-radius: 24px; padding: 36px 28px; text-align: center;
+  box-shadow: 0 4px 28px rgba(168,85,247,0.15); border: 2px solid #E9D5FF;
+  display: none;
+}
+.win-card.show { display: block; }
+.win-emoji { font-size: 4rem; margin-bottom: 12px; }
+.win-title { font-family: 'Baloo 2', cursive; font-size: 2rem; font-weight: 900; color: #4A1272; margin-bottom: 8px; }
+.win-msg { font-size: 1.1rem; color: #6B7280; font-weight: 600; margin-bottom: 28px; line-height: 1.5; }
+.action-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.back-btn { background: #fff; border: 2px solid var(--primary); color: var(--primary); border-radius: 14px; padding: 14px 28px; font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800; cursor: pointer; }
+.retry-btn { background: var(--primary); border: none; color: #fff; border-radius: 14px; padding: 14px 28px; font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800; cursor: pointer; }
+.retry-btn:hover { background: #9333EA; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🧩 Jogo da Memória</h1>
+  <p>📒 Cadê embaralhou os cartões! Encontre os pares!</p>
+</header>
+<div class="container">
+  <div class="stats-bar">
+    <div class="stat-chip"><span class="stat-val" id="pairs-found">0</span><span class="stat-label">pares encontrados</span></div>
+    <div class="stat-chip"><span class="stat-val" id="moves">0</span><span class="stat-label">tentativas</span></div>
+    <div class="stat-chip"><span class="stat-val" id="pairs-left">5</span><span class="stat-label">faltam</span></div>
+  </div>
+  <div class="grid" id="grid"></div>
+  <div class="win-card" id="win-card">
+    <div class="win-emoji">🏆</div>
+    <div class="win-title">Parabéns, Investigadora!</div>
+    <div class="win-msg" id="win-msg"></div>
+    <div class="action-btns">
+      <button class="back-btn" onclick="window.close()">⬅️ Voltar ao Portal</button>
+      <button class="retry-btn" onclick="initGame()">🔄 Jogar de Novo</button>
+    </div>
+  </div>
+</div>
+<script>
+const pairs = [
+  { word: '🏘️ Bairro', def: 'Lugar onde as pessoas moram e convivem' },
+  { word: '💬 Depoimento', def: 'Relato de uma pessoa sobre o que viveu' },
+  { word: '🏛️ Permanência', def: 'Algo que não mudou com o tempo' },
+  { word: '🔄 Mudança', def: 'Algo que se transformou com o tempo' },
+  { word: '💜 Memória afetiva', def: 'Lembrança especial ligada a sentimentos' }
+];
+
+let cards = [], flipped = [], matched = 0, moves = 0, lock = false;
+
+function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
+
+function initGame() {
+  const deck = [];
+  pairs.forEach((p, i) => {
+    deck.push({ id: i * 2, pair: i, type: 'word', text: p.word });
+    deck.push({ id: i * 2 + 1, pair: i, type: 'def', text: p.def });
+  });
+  cards = shuffle(deck);
+  flipped = []; matched = 0; moves = 0; lock = false;
+  document.getElementById('pairs-found').textContent = '0';
+  document.getElementById('moves').textContent = '0';
+  document.getElementById('pairs-left').textContent = pairs.length;
+  document.getElementById('win-card').className = 'win-card';
+  render();
+}
+
+function render() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  cards.forEach(card => {
+    const el = document.createElement('div');
+    el.className = 'card';
+    el.dataset.id = card.id;
+    el.innerHTML = `<div class="card-front">🟣</div><div class="card-back">${card.text}</div>`;
+    el.onclick = () => flip(card.id);
+    grid.appendChild(el);
+  });
+}
+
+function flip(id) {
+  if (lock) return;
+  const el = document.querySelector(`[data-id="${id}"]`);
+  if (!el || el.classList.contains('flipped') || el.classList.contains('matched')) return;
+  el.classList.add('flipped');
+  flipped.push(id);
+  if (flipped.length === 2) {
+    moves++;
+    document.getElementById('moves').textContent = moves;
+    lock = true;
+    setTimeout(checkPair, 800);
+  }
+}
+
+function checkPair() {
+  const [a, b] = flipped.map(id => cards.find(c => c.id === id));
+  if (a.pair === b.pair && a.type !== b.type) {
+    document.querySelector(`[data-id="${a.id}"]`).classList.add('matched');
+    document.querySelector(`[data-id="${b.id}"]`).classList.add('matched');
+    matched++;
+    document.getElementById('pairs-found').textContent = matched;
+    document.getElementById('pairs-left').textContent = pairs.length - matched;
+    playSound('correct');
+    if (matched === pairs.length) setTimeout(showWin, 500);
+  } else {
+    document.querySelector(`[data-id="${a.id}"]`).classList.remove('flipped');
+    document.querySelector(`[data-id="${b.id}"]`).classList.remove('flipped');
+    playSound('wrong');
+  }
+  flipped = []; lock = false;
+}
+
+function showWin() {
+  const card = document.getElementById('win-card');
+  card.className = 'win-card show';
+  const msg = moves <= 8 ? `Você encontrou todos os ${pairs.length} pares em apenas ${moves} tentativas! Incrível memória! 🧠✨` :
+    `Você encontrou todos os ${pairs.length} pares em ${moves} tentativas! Cadê está muito orgulhoso! 📒💜`;
+  document.getElementById('win-msg').textContent = msg;
+  playSound('correct');
+}
+
+function playSound(type) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator(); const g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  if (type === 'correct') {
+    o.frequency.setValueAtTime(523, ctx.currentTime);
+    o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+    o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    o.start(); o.stop(ctx.currentTime + 0.5);
+  } else {
+    o.frequency.setValueAtTime(300, ctx.currentTime);
+    o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    o.start(); o.stop(ctx.currentTime + 0.4);
+  }
+}
+
+initGame();
+</script>
+</body>
+</html>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ordene as Sílabas — Convivência | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root { --primary: #A855F7; --light: #D08EF8; --bg: #FAF5FF; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100vh; }
+header {
+  background: linear-gradient(135deg, #4A1272, #A855F7 60%, #D08EF8);
+  padding: 22px 24px 18px; color: #fff; text-align: center;
+}
+header h1 { font-family: 'Baloo 2', cursive; font-size: 1.7rem; font-weight: 900; }
+header p { font-size: 1rem; opacity: 0.9; font-weight: 600; margin-top: 4px; }
+.container { max-width: 720px; margin: 0 auto; padding: 24px 16px 60px; }
+.score-bar {
+  display: flex; justify-content: space-between; align-items: center;
+  background: #fff; border-radius: 14px; padding: 12px 20px;
+  border: 2px solid #E9D5FF; margin-bottom: 20px;
+}
+.score-label { font-size: 0.9rem; font-weight: 800; color: #9CA3AF; }
+.score-val { font-family: 'Baloo 2', cursive; font-size: 1.4rem; font-weight: 900; color: var(--primary); }
+.card {
+  background: #fff; border-radius: 22px; padding: 28px;
+  box-shadow: 0 4px 20px rgba(168,85,247,0.1); border: 2px solid #E9D5FF; margin-bottom: 20px;
+}
+.word-num { font-size: 0.85rem; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+.hint { font-size: 1.1rem; font-weight: 700; color: #6B7280; margin-bottom: 20px; line-height: 1.4; }
+.answer-row {
+  display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+  min-height: 60px; background: #F8F4FF; border-radius: 14px; padding: 12px;
+  border: 2px dashed #D08EF8; margin-bottom: 20px;
+}
+.syl-slot {
+  min-width: 52px; min-height: 52px; border-radius: 12px;
+  background: #EDE9FE; border: 2px solid #A855F7;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Baloo 2', cursive; font-size: 1.15rem; font-weight: 900;
+  color: #4A1272; cursor: pointer; transition: all 0.15s; padding: 4px 8px;
+}
+.syl-slot:hover { background: #DDD6FE; }
+.syl-slot.correct-slot { background: #DCFCE7; border-color: #22C55E; color: #15803D; }
+.syl-slot.wrong-slot { background: #FEE2E2; border-color: #EF4444; color: #B91C1C; }
+.syl-pool {
+  display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+  margin-bottom: 20px; min-height: 60px;
+}
+.syl-btn {
+  background: linear-gradient(135deg, #6D28D9, #A855F7); color: #fff;
+  border: none; border-radius: 12px; padding: 12px 18px;
+  font-family: 'Baloo 2', cursive; font-size: 1.15rem; font-weight: 900;
+  cursor: pointer; transition: all 0.18s;
+}
+.syl-btn:hover { transform: scale(1.08); box-shadow: 0 4px 14px rgba(109,40,217,0.3); }
+.syl-btn.used { opacity: 0.25; cursor: default; transform: none; pointer-events: none; }
+.check-btn {
+  width: 100%; background: var(--primary); color: #fff; border: none;
+  border-radius: 14px; padding: 16px;
+  font-family: 'Baloo 2', cursive; font-size: 1.2rem; font-weight: 800;
+  cursor: pointer; transition: all 0.18s;
+}
+.check-btn:hover { background: #9333EA; }
+.feedback { margin-top: 16px; padding: 14px 18px; border-radius: 14px; font-size: 1.1rem; font-weight: 700; display: none; }
+.feedback.show { display: block; }
+.feedback.ok { background: #DCFCE7; color: #15803D; border: 2px solid #86EFAC; }
+.feedback.no { background: #FEE2E2; color: #B91C1C; border: 2px solid #FCA5A5; }
+.clear-btn {
+  width: 100%; background: #fff; color: #A855F7; border: 2px solid #A855F7;
+  border-radius: 14px; padding: 12px;
+  font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 800;
+  cursor: pointer; margin-top: 10px; transition: all 0.18s;
+}
+.clear-btn:hover { background: #FAF5FF; }
+.next-btn { width: 100%; background: var(--primary); color: #fff; border: none; border-radius: 14px; padding: 16px; font-family: 'Baloo 2', cursive; font-size: 1.2rem; font-weight: 800; cursor: pointer; display: none; margin-top: 10px; transition: all 0.18s; }
+.next-btn.show { display: block; }
+.next-btn:hover { background: #9333EA; }
+.result-card { background: #fff; border-radius: 24px; padding: 40px 28px; text-align: center; box-shadow: 0 4px 28px rgba(168,85,247,0.15); border: 2px solid #E9D5FF; display: none; }
+.result-card.show { display: block; }
+.result-emoji { font-size: 4rem; margin-bottom: 12px; }
+.result-title { font-family: 'Baloo 2', cursive; font-size: 2rem; font-weight: 900; color: #4A1272; margin-bottom: 8px; }
+.result-score { font-size: 1.3rem; font-weight: 800; color: var(--primary); margin-bottom: 16px; }
+.result-msg { font-size: 1.1rem; color: #6B7280; font-weight: 600; margin-bottom: 28px; }
+.action-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.back-btn { background: #fff; border: 2px solid var(--primary); color: var(--primary); border-radius: 14px; padding: 14px 28px; font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800; cursor: pointer; }
+.retry-btn { background: var(--primary); border: none; color: #fff; border-radius: 14px; padding: 14px 28px; font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800; cursor: pointer; }
+.retry-btn:hover { background: #9333EA; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🔤 Ordene as Sílabas!</h1>
+  <p>🥁 Tambô embaralhou tudo! Monte a palavra certa!</p>
+</header>
+<div class="container">
+  <div class="score-bar">
+    <span class="score-label">⭐ Acertos</span>
+    <span class="score-val" id="score-display">0 / 5</span>
+  </div>
+  <div id="game-area">
+    <div class="card" id="word-card">
+      <div class="word-num" id="word-num">Palavra 1 de 5</div>
+      <div class="hint" id="hint"></div>
+      <div class="answer-row" id="answer-row"></div>
+      <div class="syl-pool" id="syl-pool"></div>
+      <button class="check-btn" id="check-btn" onclick="checkWord()">✅ Verificar</button>
+      <div class="feedback" id="feedback"></div>
+      <button class="clear-btn" onclick="clearAnswer()">🔄 Limpar</button>
+      <button class="next-btn" id="next-btn" onclick="nextWord()">Próxima Palavra ➡️</button>
+    </div>
+  </div>
+  <div class="result-card" id="result-card">
+    <div class="result-emoji" id="result-emoji"></div>
+    <div class="result-title" id="result-title"></div>
+    <div class="result-score" id="result-score"></div>
+    <div class="result-msg" id="result-msg"></div>
+    <div class="action-btns">
+      <button class="back-btn" onclick="window.close()">⬅️ Voltar ao Portal</button>
+      <button class="retry-btn" onclick="restart()">🔄 Jogar de Novo</button>
+    </div>
+  </div>
+</div>
+<script>
+const wordData = [
+  { word: 'CONVIVÊNCIA', syllables: ['CON','VI','VÊN','CI','A'], hint: '🤝 Estar e se relacionar com outras pessoas' },
+  { word: 'COMUNIDADE', syllables: ['CO','MU','NI','DA','DE'], hint: '👨‍👩‍👧‍👦 Grupo de pessoas que vivem juntas e partilham algo' },
+  { word: 'QUILOMBOLA', syllables: ['QUI','LOM','BO','LA'], hint: '🌿 Descendente de africanos escravizados que mantém tradições' },
+  { word: 'VIZINHOS', syllables: ['VI','ZI','NHOS'], hint: '🏘️ Pessoas que moram perto de nós' },
+  { word: 'COLETIVO', syllables: ['CO','LE','TI','VO'], hint: '👥 Algo que pertence ou serve a muitas pessoas juntas' }
+];
+
+let current = 0, score = 0;
+let answer = [], shuffled = [];
+
+function loadWord() {
+  const w = wordData[current];
+  document.getElementById('word-num').textContent = `Palavra ${current + 1} de ${wordData.length}`;
+  document.getElementById('hint').textContent = w.hint;
+  answer = [];
+  shuffled = [...w.syllables].sort(() => Math.random() - 0.5);
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('next-btn').className = 'next-btn';
+  document.getElementById('check-btn').disabled = false;
+  renderAnswer();
+  renderPool();
+}
+
+function renderAnswer() {
+  const row = document.getElementById('answer-row');
+  row.innerHTML = '';
+  const w = wordData[current];
+  for (let i = 0; i < w.syllables.length; i++) {
+    const slot = document.createElement('div');
+    slot.className = 'syl-slot';
+    if (answer[i]) slot.textContent = answer[i];
+    else slot.textContent = '_';
+    slot.onclick = () => removeSyl(i);
+    row.appendChild(slot);
+  }
+}
+
+function renderPool() {
+  const pool = document.getElementById('syl-pool');
+  pool.innerHTML = '';
+  shuffled.forEach((syl, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'syl-btn' + (answer.includes(syl) && answer.indexOf(syl) !== -1 && countInArray(answer, syl) >= countInArray(shuffled.slice(0, i+1), syl) ? ' used' : '');
+    btn.textContent = syl;
+    btn.onclick = () => addSyl(syl, i);
+    pool.appendChild(btn);
+  });
+}
+
+function countInArray(arr, val) { return arr.filter(x => x === val).length; }
+
+function addSyl(syl, poolIdx) {
+  const w = wordData[current];
+  if (answer.length >= w.syllables.length) return;
+  // Check if already used enough times
+  const usedCount = countInArray(answer, syl);
+  const availCount = countInArray(shuffled, syl);
+  if (usedCount >= availCount) return;
+  answer.push(syl);
+  renderAnswer();
+  renderPool();
+}
+
+function removeSyl(i) {
+  if (answer[i]) {
+    answer.splice(i, 1);
+    renderAnswer();
+    renderPool();
+  }
+}
+
+function clearAnswer() {
+  answer = [];
+  renderAnswer();
+  renderPool();
+}
+
+function checkWord() {
+  const w = wordData[current];
+  if (answer.length < w.syllables.length) {
+    document.getElementById('feedback').textContent = '⚠️ Complete a palavra antes de verificar!';
+    document.getElementById('feedback').className = 'feedback show no';
+    return;
+  }
+  const formed = answer.join('');
+  const correct = formed === w.word;
+  const slots = document.querySelectorAll('.syl-slot');
+  slots.forEach((slot, i) => {
+    slot.classList.remove('correct-slot', 'wrong-slot');
+    if (answer[i] === w.syllables[i]) slot.classList.add('correct-slot');
+    else slot.classList.add('wrong-slot');
+  });
+  const fb = document.getElementById('feedback');
+  if (correct) {
+    score++;
+    document.getElementById('score-display').textContent = `${score} / ${wordData.length}`;
+    fb.textContent = `✅ Perfeito! A palavra é ${w.word}! 🎉`;
+    fb.className = 'feedback show ok';
+    playSound('correct');
+  } else {
+    fb.textContent = `❌ Quase! A ordem certa é: ${w.syllables.join(' · ')}`;
+    fb.className = 'feedback show no';
+    playSound('wrong');
+  }
+  document.getElementById('check-btn').disabled = true;
+  document.getElementById('next-btn').className = 'next-btn show';
+}
+
+function nextWord() {
+  current++;
+  if (current < wordData.length) loadWord();
+  else showResult();
+}
+
+function showResult() {
+  document.getElementById('game-area').style.display = 'none';
+  const card = document.getElementById('result-card');
+  card.className = 'result-card show';
+  const pct = Math.round((score / wordData.length) * 100);
+  let emoji, title, msg;
+  if (pct >= 80) { emoji = '🥁'; title = 'Campeão das Sílabas!'; msg = 'Você montou todas as palavras de convivência! Tambô está tocando de alegria! 🎵✨'; }
+  else if (pct >= 60) { emoji = '⭐'; title = 'Muito bem!'; msg = `Você acertou ${score} de ${wordData.length} palavras! Treine mais e chegue na pontuação máxima! 💪`; }
+  else { emoji = '📚'; title = 'Pratique mais!'; msg = 'Releia as palavras e tente novamente. Cada tentativa você melhora! 🌟'; }
+  document.getElementById('result-emoji').textContent = emoji;
+  document.getElementById('result-title').textContent = title;
+  document.getElementById('result-score').textContent = `${score} de ${wordData.length} palavras certas (${pct}%)`;
+  document.getElementById('result-msg').textContent = msg;
+  playSound(pct >= 60 ? 'correct' : 'wrong');
+}
+
+function restart() {
+  current = 0; score = 0;
+  document.getElementById('score-display').textContent = '0 / 5';
+  document.getElementById('result-card').className = 'result-card';
+  document.getElementById('game-area').style.display = 'block';
+  loadWord();
+}
+
+function playSound(type) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator(); const g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  if (type === 'correct') {
+    o.frequency.setValueAtTime(523, ctx.currentTime);
+    o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+    o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    o.start(); o.stop(ctx.currentTime + 0.5);
+  } else {
+    o.frequency.setValueAtTime(300, ctx.currentTime);
+    o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    o.start(); o.stop(ctx.currentTime + 0.4);
+  }
+}
+loadWord();
+</script>
+</body>
+</html>

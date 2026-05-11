@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz — Memórias dos Lugares | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root { --primary: #A855F7; --light: #D08EF8; --bg: #FAF5FF; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100vh; }
+header {
+  background: linear-gradient(135deg, #4A1272, #A855F7 60%, #D08EF8);
+  padding: 22px 24px 18px; color: #fff; text-align: center;
+}
+header h1 { font-family: 'Baloo 2', cursive; font-size: 1.7rem; font-weight: 900; }
+header p { font-size: 1rem; opacity: 0.9; font-weight: 600; margin-top: 4px; }
+.container { max-width: 720px; margin: 0 auto; padding: 28px 20px 60px; }
+.progress-bar { background: #E9D5FF; border-radius: 20px; height: 12px; margin-bottom: 24px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--primary); border-radius: 20px; transition: width 0.4s ease; }
+.progress-label { text-align: right; font-size: 0.85rem; font-weight: 700; color: var(--primary); margin-bottom: 6px; }
+.card {
+  background: #fff; border-radius: 20px; padding: 28px;
+  box-shadow: 0 4px 20px rgba(168,85,247,0.1);
+  border: 2px solid #E9D5FF;
+}
+.q-num { font-size: 0.85rem; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+.question { font-size: 1.5rem; font-weight: 800; color: #1E1B4B; line-height: 1.4; margin-bottom: 24px; }
+.options { display: flex; flex-direction: column; gap: 12px; }
+.opt-btn {
+  background: #F5F3FF; border: 2px solid #DDD6FE; border-radius: 14px;
+  padding: 16px 20px; font-family: 'Nunito', sans-serif;
+  font-size: 1.2rem; font-weight: 700; color: #3730A3;
+  cursor: pointer; text-align: left; transition: all 0.18s;
+}
+.opt-btn:hover:not(:disabled) { background: #EDE9FE; border-color: var(--primary); transform: translateX(4px); }
+.opt-btn.correct { background: #DCFCE7; border-color: #22C55E; color: #15803D; }
+.opt-btn.wrong { background: #FEE2E2; border-color: #EF4444; color: #B91C1C; }
+.opt-btn:disabled { cursor: default; }
+.feedback {
+  margin-top: 16px; padding: 14px 18px; border-radius: 14px;
+  font-size: 1.1rem; font-weight: 700; display: none;
+}
+.feedback.show { display: block; }
+.feedback.ok { background: #DCFCE7; color: #15803D; border: 2px solid #86EFAC; }
+.feedback.no { background: #FEE2E2; color: #B91C1C; border: 2px solid #FCA5A5; }
+.next-btn {
+  margin-top: 20px; width: 100%;
+  background: var(--primary); color: #fff;
+  border: none; border-radius: 14px; padding: 16px;
+  font-family: 'Baloo 2', cursive; font-size: 1.2rem; font-weight: 800;
+  cursor: pointer; display: none; transition: all 0.18s;
+}
+.next-btn.show { display: block; }
+.next-btn:hover { background: #9333EA; transform: translateY(-2px); }
+.result-card {
+  background: #fff; border-radius: 24px; padding: 40px 28px;
+  text-align: center; box-shadow: 0 4px 28px rgba(168,85,247,0.15);
+  border: 2px solid #E9D5FF; display: none;
+}
+.result-card.show { display: block; }
+.result-emoji { font-size: 4rem; margin-bottom: 12px; }
+.result-title { font-family: 'Baloo 2', cursive; font-size: 2rem; font-weight: 900; color: #4A1272; margin-bottom: 8px; }
+.result-score { font-size: 1.3rem; font-weight: 800; color: var(--primary); margin-bottom: 16px; }
+.result-msg { font-size: 1.1rem; color: #6B7280; font-weight: 600; margin-bottom: 28px; line-height: 1.5; }
+.back-btn {
+  background: #fff; border: 2px solid var(--primary); color: var(--primary);
+  border-radius: 14px; padding: 14px 28px;
+  font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800;
+  cursor: pointer; transition: all 0.18s; margin-right: 12px;
+}
+.back-btn:hover { background: var(--bg); }
+.retry-btn {
+  background: var(--primary); border: none; color: #fff;
+  border-radius: 14px; padding: 14px 28px;
+  font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800;
+  cursor: pointer; transition: all 0.18s;
+}
+.retry-btn:hover { background: #9333EA; }
+</style>
+</head>
+<body>
+<header>
+  <h1>📸 Quiz — Memórias dos Lugares</h1>
+  <p>🔍 Foca quer ver o quanto você aprendeu!</p>
+</header>
+<div class="container">
+  <div id="quiz-area">
+    <div class="progress-label" id="prog-label">Pergunta 1 de 8</div>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:12.5%"></div></div>
+    <div class="card">
+      <div class="q-num" id="q-num">Pergunta 1</div>
+      <div class="question" id="question-text"></div>
+      <div class="options" id="options"></div>
+      <div class="feedback" id="feedback"></div>
+      <button class="next-btn" id="next-btn" onclick="nextQuestion()">Próxima ➡️</button>
+    </div>
+  </div>
+  <div class="result-card" id="result-card">
+    <div class="result-emoji" id="result-emoji"></div>
+    <div class="result-title" id="result-title"></div>
+    <div class="result-score" id="result-score"></div>
+    <div class="result-msg" id="result-msg"></div>
+    <button class="back-btn" onclick="window.close()">⬅️ Voltar ao Portal</button>
+    <button class="retry-btn" onclick="restartQuiz()">🔄 Tentar de Novo</button>
+  </div>
+</div>
+<script>
+const questions = [
+  {
+    q: "O que é uma fonte histórica VISUAL? 👁️",
+    opts: ["Uma fotografia de um lugar antigo", "Um depoimento de um morador", "Uma música popular"],
+    ans: 0
+  },
+  {
+    q: "O que é uma fonte histórica ORAL? 🗣️",
+    opts: ["Uma pintura famosa de um museu", "O relato de uma pessoa que viveu num lugar", "Um mapa antigo da cidade"],
+    ans: 1
+  },
+  {
+    q: "Como era o calçamento da Avenida Paulista, segundo o depoimento do Senhor Ariosto? 🛤️",
+    opts: ["Asfalto liso e moderno", "Lajotas coloridas", "Paralelepípedos"],
+    ans: 2
+  },
+  {
+    q: "O que significa a palavra IMPREGNADO? 💬",
+    opts: ["Cheio, repleto", "Vazio, limpo", "Pequeno, estreito"],
+    ans: 0
+  },
+  {
+    q: "O que é pé-direito de uma construção? 🏠",
+    opts: ["A porta principal da casa", "A altura entre o piso e o teto", "O tipo de calçamento da rua"],
+    ans: 1
+  },
+  {
+    q: "A Rua das Calçadas fica em qual cidade? 🏙️",
+    opts: ["São Paulo", "Salvador", "Recife"],
+    ans: 2
+  },
+  {
+    q: "Quais são os três tipos de calçamento estudados? 🪨",
+    opts: ["Areia, cimento e pedra", "Asfalto, lajotas e paralelepípedos", "Terra, barro e mármore"],
+    ans: 1
+  },
+  {
+    q: "Por que guardamos fotografias de lugares antigos? 📷",
+    opts: ["Para decorar a parede de casa", "Para lembrar como os lugares eram no passado", "Para vender em lojas de arte"],
+    ans: 1
+  }
+];
+
+let current = 0;
+let score = 0;
+let answered = false;
+
+function loadQuestion() {
+  const q = questions[current];
+  document.getElementById('q-num').textContent = `Pergunta ${current + 1}`;
+  document.getElementById('question-text').textContent = q.q;
+  document.getElementById('prog-label').textContent = `Pergunta ${current + 1} de ${questions.length}`;
+  document.getElementById('prog-fill').style.width = `${((current + 1) / questions.length) * 100}%`;
+  const opts = document.getElementById('options');
+  opts.innerHTML = '';
+  q.opts.forEach((o, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.textContent = o;
+    btn.onclick = () => selectAnswer(i);
+    opts.appendChild(btn);
+  });
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('next-btn').className = 'next-btn';
+  answered = false;
+}
+
+function selectAnswer(idx) {
+  if (answered) return;
+  answered = true;
+  const q = questions[current];
+  const btns = document.querySelectorAll('.opt-btn');
+  btns.forEach(b => b.disabled = true);
+  btns[idx].classList.add(idx === q.ans ? 'correct' : 'wrong');
+  if (idx !== q.ans) btns[q.ans].classList.add('correct');
+  const fb = document.getElementById('feedback');
+  if (idx === q.ans) {
+    score++;
+    fb.textContent = '✅ Muito bem! Resposta certa!';
+    fb.className = 'feedback show ok';
+    playSound('correct');
+  } else {
+    fb.textContent = '❌ Não foi dessa vez! Veja a resposta certa em verde.';
+    fb.className = 'feedback show no';
+    playSound('wrong');
+  }
+  document.getElementById('next-btn').className = 'next-btn show';
+}
+
+function nextQuestion() {
+  current++;
+  if (current < questions.length) {
+    loadQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function showResult() {
+  document.getElementById('quiz-area').style.display = 'none';
+  const card = document.getElementById('result-card');
+  card.className = 'result-card show';
+  const pct = Math.round((score / questions.length) * 100);
+  let emoji, title, msg;
+  if (pct >= 87) { emoji = '🏆'; title = 'Incrível!'; msg = 'Você é um(a) verdadeiro(a) detetive da memória! Parabéns, Foca ficou muito orgulhosa de você! 🔍✨'; }
+  else if (pct >= 62) { emoji = '⭐'; title = 'Muito bom!'; msg = 'Você aprendeu bastante sobre fontes históricas! Revise um pouquinho e tente de novo para arrasar! 💪'; }
+  else { emoji = '📚'; title = 'Continue tentando!'; msg = 'Releia o conteúdo e tente novamente. A Foca acredita em você! Cada erro é uma chance de aprender! 🌟'; }
+  document.getElementById('result-emoji').textContent = emoji;
+  document.getElementById('result-title').textContent = title;
+  document.getElementById('result-score').textContent = `${score} de ${questions.length} certas (${pct}%)`;
+  document.getElementById('result-msg').textContent = msg;
+  playSound(pct >= 62 ? 'correct' : 'wrong');
+}
+
+function restartQuiz() {
+  current = 0; score = 0;
+  document.getElementById('result-card').className = 'result-card';
+  document.getElementById('quiz-area').style.display = 'block';
+  loadQuestion();
+}
+
+function playSound(type) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  if (type === 'correct') {
+    o.frequency.setValueAtTime(523, ctx.currentTime);
+    o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+    o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    o.start(); o.stop(ctx.currentTime + 0.5);
+  } else {
+    o.frequency.setValueAtTime(300, ctx.currentTime);
+    o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    o.start(); o.stop(ctx.currentTime + 0.4);
+  }
+}
+
+loadQuestion();
+</script>
+</body>
+</html>

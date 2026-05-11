@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verdadeiro ou Falso — Memórias | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root { --primary: #A855F7; --light: #D08EF8; --bg: #FAF5FF; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100vh; }
+header {
+  background: linear-gradient(135deg, #4A1272, #A855F7 60%, #D08EF8);
+  padding: 22px 24px 18px; color: #fff; text-align: center;
+}
+header h1 { font-family: 'Baloo 2', cursive; font-size: 1.7rem; font-weight: 900; }
+header p { font-size: 1rem; opacity: 0.9; font-weight: 600; margin-top: 4px; }
+.container { max-width: 680px; margin: 0 auto; padding: 28px 20px 60px; }
+.score-bar {
+  background: #fff; border-radius: 14px; padding: 14px 20px;
+  border: 2px solid #E9D5FF; margin-bottom: 20px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.score-label { font-size: 0.9rem; font-weight: 800; color: #6B7280; }
+.score-val { font-family: 'Baloo 2', cursive; font-size: 1.4rem; font-weight: 900; color: var(--primary); }
+.card {
+  background: #fff; border-radius: 22px; padding: 32px 28px;
+  box-shadow: 0 4px 24px rgba(168,85,247,0.1);
+  border: 2px solid #E9D5FF; margin-bottom: 20px;
+  text-align: center;
+}
+.char-emoji { font-size: 3.5rem; margin-bottom: 12px; }
+.statement {
+  font-size: 1.45rem; font-weight: 800; color: #1E1B4B;
+  line-height: 1.45; margin-bottom: 28px; min-height: 80px;
+  display: flex; align-items: center; justify-content: center;
+}
+.vf-btns { display: flex; gap: 16px; justify-content: center; }
+.vf-btn {
+  flex: 1; max-width: 200px; padding: 20px 16px;
+  border: 3px solid; border-radius: 18px;
+  font-family: 'Baloo 2', cursive; font-size: 1.5rem; font-weight: 900;
+  cursor: pointer; transition: all 0.18s;
+}
+.vf-btn.true-btn { background: #DCFCE7; border-color: #22C55E; color: #15803D; }
+.vf-btn.false-btn { background: #FEE2E2; border-color: #EF4444; color: #B91C1C; }
+.vf-btn:hover:not(:disabled) { transform: scale(1.06); box-shadow: 0 6px 20px rgba(0,0,0,0.12); }
+.vf-btn:disabled { opacity: 0.5; cursor: default; transform: none; }
+.vf-btn.selected-correct { background: #DCFCE7; border-color: #16A34A; color: #15803D; box-shadow: 0 0 0 4px rgba(34,197,94,0.3); }
+.vf-btn.selected-wrong { background: #FEE2E2; border-color: #DC2626; color: #B91C1C; box-shadow: 0 0 0 4px rgba(239,68,68,0.3); }
+.feedback {
+  margin-top: 18px; padding: 14px 18px; border-radius: 14px;
+  font-size: 1.1rem; font-weight: 700; display: none;
+}
+.feedback.show { display: block; }
+.feedback.ok { background: #DCFCE7; color: #15803D; border: 2px solid #86EFAC; }
+.feedback.no { background: #FEE2E2; color: #B91C1C; border: 2px solid #FCA5A5; }
+.next-btn {
+  width: 100%; background: var(--primary); color: #fff;
+  border: none; border-radius: 14px; padding: 16px;
+  font-family: 'Baloo 2', cursive; font-size: 1.2rem; font-weight: 800;
+  cursor: pointer; display: none; margin-top: 16px; transition: all 0.18s;
+}
+.next-btn.show { display: block; }
+.next-btn:hover { background: #9333EA; }
+.q-counter { font-size: 0.88rem; font-weight: 700; color: #9CA3AF; margin-bottom: 12px; }
+.result-card {
+  background: #fff; border-radius: 24px; padding: 40px 28px;
+  text-align: center; box-shadow: 0 4px 28px rgba(168,85,247,0.15);
+  border: 2px solid #E9D5FF; display: none;
+}
+.result-card.show { display: block; }
+.result-emoji { font-size: 4rem; margin-bottom: 12px; }
+.result-title { font-family: 'Baloo 2', cursive; font-size: 2rem; font-weight: 900; color: #4A1272; margin-bottom: 8px; }
+.result-score { font-size: 1.3rem; font-weight: 800; color: var(--primary); margin-bottom: 16px; }
+.result-msg { font-size: 1.1rem; color: #6B7280; font-weight: 600; margin-bottom: 28px; line-height: 1.5; }
+.action-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.back-btn {
+  background: #fff; border: 2px solid var(--primary); color: var(--primary);
+  border-radius: 14px; padding: 14px 28px;
+  font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800; cursor: pointer;
+}
+.retry-btn {
+  background: var(--primary); border: none; color: #fff;
+  border-radius: 14px; padding: 14px 28px;
+  font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800; cursor: pointer;
+}
+.retry-btn:hover { background: #9333EA; }
+</style>
+</head>
+<body>
+<header>
+  <h1>✅❌ Verdadeiro ou Falso?</h1>
+  <p>📸 Foca quer saber: você lembra ou não lembra?</p>
+</header>
+<div class="container">
+  <div class="score-bar">
+    <span class="score-label">⭐ Pontuação</span>
+    <span class="score-val" id="score-display">0 / 8</span>
+  </div>
+  <div id="game-area">
+    <div class="card">
+      <div class="char-emoji">📸</div>
+      <div class="q-counter" id="q-counter">Afirmação 1 de 8</div>
+      <div class="statement" id="statement"></div>
+      <div class="vf-btns">
+        <button class="vf-btn true-btn" id="btn-true" onclick="answer(true)">✅ Verdadeiro</button>
+        <button class="vf-btn false-btn" id="btn-false" onclick="answer(false)">❌ Falso</button>
+      </div>
+      <div class="feedback" id="feedback"></div>
+      <button class="next-btn" id="next-btn" onclick="nextQ()">Próxima ➡️</button>
+    </div>
+  </div>
+  <div class="result-card" id="result-card">
+    <div class="result-emoji" id="result-emoji"></div>
+    <div class="result-title" id="result-title"></div>
+    <div class="result-score" id="result-score"></div>
+    <div class="result-msg" id="result-msg"></div>
+    <div class="action-btns">
+      <button class="back-btn" onclick="window.close()">⬅️ Voltar ao Portal</button>
+      <button class="retry-btn" onclick="restart()">🔄 Jogar de Novo</button>
+    </div>
+  </div>
+</div>
+<script>
+const statements = [
+  { text: "Uma fotografia antiga de uma rua é uma fonte histórica visual.", ans: true, explain: "✅ Correto! Fotografias são fontes históricas visuais porque nos mostram como os lugares eram." },
+  { text: "O depoimento de uma pessoa que morou em um lugar é uma fonte histórica oral.", ans: true, explain: "✅ Correto! Relatos e depoimentos de pessoas são fontes históricas orais." },
+  { text: "Paralelepípedos, lajotas e asfalto são três tipos de calçamento.", ans: true, explain: "✅ Correto! O livro apresenta esses três tipos de calçamento de ruas." },
+  { text: "Pé-direito é o nome da porta principal de uma construção.", ans: false, explain: "❌ Falso! Pé-direito é a altura entre o piso e o teto de uma construção." },
+  { text: "Mudança é quando algo permanece igual ao longo do tempo.", ans: false, explain: "❌ Falso! Mudança é quando algo se transforma. O que fica igual é chamado de permanência." },
+  { text: "A Rua das Calçadas fica na cidade do Recife, em Pernambuco.", ans: true, explain: "✅ Correto! A Rua das Calçadas está localizada no município do Recife, no estado de Pernambuco." },
+  { text: "Uma fonte histórica oral só pode ser usada se a pessoa tiver mais de 100 anos.", ans: false, explain: "❌ Falso! Qualquer pessoa que viveu num lugar pode ser uma fonte oral, não importa a idade." },
+  { text: "Guardar fotografias de lugares ajuda a preservar a memória do passado.", ans: true, explain: "✅ Correto! Fotografias são fontes históricas visuais que guardam como os lugares eram no passado." }
+];
+
+let current = 0, score = 0;
+
+function loadQ() {
+  const s = statements[current];
+  document.getElementById('statement').textContent = `"${s.text}"`;
+  document.getElementById('q-counter').textContent = `Afirmação ${current + 1} de ${statements.length}`;
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('next-btn').className = 'next-btn';
+  document.getElementById('btn-true').disabled = false;
+  document.getElementById('btn-false').disabled = false;
+  document.getElementById('btn-true').className = 'vf-btn true-btn';
+  document.getElementById('btn-false').className = 'vf-btn false-btn';
+}
+
+function answer(resp) {
+  const s = statements[current];
+  document.getElementById('btn-true').disabled = true;
+  document.getElementById('btn-false').disabled = true;
+  const correct = resp === s.ans;
+  if (correct) score++;
+  document.getElementById('score-display').textContent = `${score} / ${statements.length}`;
+  if (resp === true) document.getElementById('btn-true').className = `vf-btn true-btn ${correct ? 'selected-correct' : 'selected-wrong'}`;
+  else document.getElementById('btn-false').className = `vf-btn false-btn ${correct ? 'selected-correct' : 'selected-wrong'}`;
+  const fb = document.getElementById('feedback');
+  fb.textContent = s.explain;
+  fb.className = `feedback show ${correct ? 'ok' : 'no'}`;
+  document.getElementById('next-btn').className = 'next-btn show';
+  playSound(correct ? 'correct' : 'wrong');
+}
+
+function nextQ() {
+  current++;
+  if (current < statements.length) { loadQ(); }
+  else { showResult(); }
+}
+
+function showResult() {
+  document.getElementById('game-area').style.display = 'none';
+  const card = document.getElementById('result-card');
+  card.className = 'result-card show';
+  const pct = Math.round((score / statements.length) * 100);
+  let emoji, title, msg;
+  if (pct >= 87) { emoji = '🏆'; title = 'Expert das Memórias!'; msg = 'Você conhece muito bem as fontes históricas e as mudanças nos lugares! A Foca está muito orgulhosa! 📸✨'; }
+  else if (pct >= 62) { emoji = '⭐'; title = 'Muito bom!'; msg = 'Você acertou bastante! Revise as afirmações falsas e tente de novo para chegar na pontuação máxima! 💪'; }
+  else { emoji = '📚'; title = 'Continue estudando!'; msg = 'Releia o capítulo e tente de novo. Cada tentativa te deixa mais esperto(a)! 🌟'; }
+  document.getElementById('result-emoji').textContent = emoji;
+  document.getElementById('result-title').textContent = title;
+  document.getElementById('result-score').textContent = `${score} de ${statements.length} certas (${pct}%)`;
+  document.getElementById('result-msg').textContent = msg;
+  playSound(pct >= 62 ? 'correct' : 'wrong');
+}
+
+function restart() {
+  current = 0; score = 0;
+  document.getElementById('score-display').textContent = '0 / 8';
+  document.getElementById('result-card').className = 'result-card';
+  document.getElementById('game-area').style.display = 'block';
+  loadQ();
+}
+
+function playSound(type) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator(); const g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  if (type === 'correct') {
+    o.frequency.setValueAtTime(523, ctx.currentTime);
+    o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+    o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    o.start(); o.stop(ctx.currentTime + 0.5);
+  } else {
+    o.frequency.setValueAtTime(300, ctx.currentTime);
+    o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    o.start(); o.stop(ctx.currentTime + 0.4);
+  }
+}
+
+loadQ();
+</script>
+</body>
+</html>

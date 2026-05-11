@@ -13,12 +13,13 @@ Dado um conjunto de fotos de conteúdo escolar, esta skill executa o seguinte pi
 FOTOS → [FASE 0] Análise de escopo → Proposta estrutural → ⏸ AGUARDAR APROVAÇÃO DE LÉO
          ↓ (após aprovação)
          Separação por tema → Para cada tema:
-           1. Prompt HQ (.md)
-           2. Geração automática das imagens via Claude in Chrome + ChatGPT
-           3. Atividades HTML (Quiz + variáveis + Mapa Mental)
-           4. Atualização do index.html
-           5. Entrega via Cowork
+           1. Prompt HQ (.md)                   ← entregue para uso externo por Léo
+           2. Atividades HTML (Quiz + variáveis + Mapa Mental)
+           3. Atualização do index.html
+           4. Entrega via Cowork
 ```
+
+> **Nota:** A geração das imagens de HQ (ChatGPT) é uma etapa externa à skill, executada por Léo com a skill dedicada de HQ. A skill do portal entrega o prompt `.md` e segue direto para as atividades — os 4 arquivos `hq-[slug]-pg1.png` … `pg4.png` devem ser copiados manualmente por Léo para a raiz do projeto antes do deploy.
 
 > **Regra absoluta:** Nenhum arquivo é gerado antes da aprovação explícita de Léo na Fase 0.
 
@@ -128,7 +129,7 @@ Para novas disciplinas não listadas, proponha uma paleta ao usuário antes de c
 
 ### Personagem principal (sempre presente)
 
-- **Lis** — menina de 7 anos, cabelos castanhos longos e ondulados, sorriso expressivo e aberto, estilo despojado. Protagonista de todas as HQs. Curiosa, animada, levemente atrevida. **Imagem de referência canônica:** `ref-lis.png` na raiz do projeto (`C:\Users\wizar\OneDrive\Documentos\Projeto Estudos\estudos-2ano\ref-lis.png`). Usada como âncora visual em toda geração no ChatGPT.
+- **Lis** — menina de 7 anos, cabelos castanhos longos e ondulados, sorriso expressivo e aberto, estilo despojado. Protagonista de todas as HQs. Curiosa, animada, levemente atrevida.
 
 ### Personagens de suporte já criados
 
@@ -153,7 +154,7 @@ Para novas disciplinas não listadas, proponha uma paleta ao usuário antes de c
 
 > **⚠️ Padrão de qualidade obrigatório:** Mínimo de 300 linhas. Cada painel descrito com precisão cirúrgica: posição na grade, cenário completo, posição corporal dos personagens, expressão facial, ação em curso, objetos em cena, falas nos balões.
 
-O arquivo `.md` é processado automaticamente pelo Claude in Chrome — deve poder ser usado sem edição adicional.
+O arquivo `.md` gerado deve poder ser usado por Léo diretamente na ferramenta de geração, sem edição adicional.
 
 ### Critérios obrigatórios
 
@@ -161,7 +162,7 @@ O arquivo `.md` é processado automaticamente pelo Claude in Chrome — deve pod
 - Prompts das páginas em **inglês**
 - Cada página com seu próprio bloco de prompt pronto para colar, entre três backticks
 - **Bloco de estilo visual global** separado e reutilizável
-- **Folha de personagens** gerada primeiro para ancorar o novo personagem na sessão (não baixada)
+- **Folha de personagens** gerada primeiro para estabelecer referência visual do novo personagem
 - Falas dos personagens em **português** dentro dos prompts em inglês, entre aspas
 - **Adaptação ao 2º ano:** balões com no máximo 8 palavras por fala
 
@@ -198,8 +199,7 @@ Panel N (posição na grade):
 
 ## INSTRUÇÕES DE USO
 
-Este arquivo é processado automaticamente pelo Claude in Chrome.
-Ferramenta: ChatGPT com Images 2.0 (GPT-4o).
+Cole o bloco de cada página diretamente no ChatGPT (Images 2.0) ou outra ferramenta de geração.
 Gere uma página por vez, na ordem definida abaixo.
 
 ---
@@ -225,7 +225,7 @@ Character design must remain consistent across all pages.
 
 | Personagem | Descrição visual completa |
 |---|---|
-| **Lis** | 7-year-old Brazilian girl, warm light skin tone, long wavy chestnut-brown hair reaching her shoulders, large expressive brown eyes, wide open smile sometimes showing teeth, small stature. Outfit: [roupa específica do tema]. [Referência primária: ref-lis.png] |
+| **Lis** | 7-year-old Brazilian girl, warm light skin tone, long wavy chestnut-brown hair reaching her shoulders, large expressive brown eyes, wide open smile sometimes showing teeth, small stature. Outfit: [roupa específica do tema]. |
 | **[Personagem de suporte]** | [Descrição visual detalhada — tamanho relativo à Lis, cores, traços distintivos, acessórios] |
 
 ---
@@ -277,7 +277,7 @@ Lis: [resumo visual compacto]. [Personagem]: [resumo visual compacto].
 
 ---
 
-## FOLHA DE PERSONAGENS (gerada primeiro para ancorar a sessão — não baixar)
+## FOLHA DE PERSONAGENS (gere primeiro)
 
 \`\`\`
 [Prompt completo da folha conforme estrutura obrigatória da Fase 3]
@@ -287,7 +287,7 @@ Lis: [resumo visual compacto]. [Personagem]: [resumo visual compacto].
 
 ## ORDEM DE GERAÇÃO
 
-1. Folha de personagens (ancoragem visual — não baixar)
+1. Folha de personagens
 2. Página 1 — [título]
 3. Página 2 — [título]
 4. Página 3 — [título]
@@ -298,61 +298,6 @@ Lis: [resumo visual compacto]. [Personagem]: [resumo visual compacto].
 *Conteúdo baseado em: [livro didático, páginas referenciadas]*
 *Tema: [descrição resumida do conteúdo pedagógico]*
 ```
-
----
-
-## FASE 3.5 — Geração automática das imagens via Claude in Chrome ⛔ GATE OBRIGATÓRIO
-
-> **⛔ BLOQUEIO TOTAL:** O Cowork deve parar completamente aqui e acionar o Claude in Chrome para executar esta fase. **A Fase 4 não pode ser iniciada sob nenhuma circunstância antes de os arquivos de imagem estarem confirmados na pasta do projeto.** Não há exceção a esta regra.
-
-Esta fase é executada **integralmente pelo Claude in Chrome**, sem intervenção de Léo. Ocorre após a geração do prompt `.md` da Fase 3 e antes das atividades HTML.
-
-### Diferença fundamental em relação ao portal do 5º ano
-
-| | Portal 5º ano (André) | Portal 2º ano (Lis) |
-|---|---|---|
-| Formato final das imagens | 1 arquivo único colado (`hq-[slug].png`) | 4 arquivos separados (`hq-[slug]-pg1.png` … `pg4.png`) |
-| Exibição no portal | Scroll vertical contínuo | Navegação página a página com botões ◀ ▶ |
-| Passo de colagem | Obrigatório | **Não existe** |
-
-### 3.5.1 Pré-requisitos
-
-- Claude in Chrome conectado e ativo
-- `ref-lis.png` presente em `C:\Users\wizar\OneDrive\Documentos\Projeto Estudos\estudos-2ano\ref-lis.png`
-- Arquivo de prompt `.md` do tema já gerado (Fase 3)
-- Pasta de destino acessível: `C:\Users\wizar\OneDrive\Documentos\Projeto Estudos\estudos-2ano\`
-
-### 3.5.2 Sequência de automação — passo a passo
-
-O Claude in Chrome executa os seguintes passos em ordem, sem pausas para aprovação:
-
-**Passo 1 — Abrir nova conversa no GPT customizado**
-- Navegar para `https://chatgpt.com/g/g-69ff2b40169881918c5f75a8d9767f30-gpt-quadrinhos-sabendo`
-- Confirmar que o GPT carregou corretamente antes de prosseguir
-
-**Passo 2 — Ancorar a personagem de referência com imagem canônica**
-- Anexar ao campo de mensagem o arquivo:
-  - `C:\Users\wizar\OneDrive\Documentos\Projeto Estudos\estudos-2ano\ref-lis.png`
-- Colar o bloco **FOLHA DE PERSONAGENS** do arquivo `.md` na mesma mensagem e enviar tudo junto
-- Aguardar a geração completa da folha de personagens
-- **Não baixar** — serve apenas para ancorar o estilo dos personagens na sessão
-
-**Passo 3 — Gerar Página 1**
-- Colar o bloco **PROMPT da PÁGINA 1** do arquivo `.md`
-- Aguardar a geração completa da imagem
-- Clicar no botão de download da imagem gerada
-- Aguardar o arquivo aparecer em `C:\Users\wizar\Downloads\`
-- Mover o arquivo para a pasta do projeto com o nome `hq-[slug]-pg1.png`
-
-**Passo 4 — Gerar Páginas 2, 3 e 4**
-- Repetir o Passo 3 para cada página
-- Nomear os arquivos como `hq-[slug]-pg2.png`, `hq-[slug]-pg3.png`, `hq-[slug]-pg4.png`
-
-### 3.5.3 ⛔ Confirmação obrigatória antes de avançar
-
-Verificar que os 4 arquivos existem na pasta do projeto com os nomes corretos e dimensões coerentes (largura mínima de 1024px).
-
-**O Cowork só retoma a execução após esta confirmação. Avançar para a Fase 4 sem os arquivos de imagem presentes é uma falha crítica de execução.**
 
 ---
 
@@ -576,22 +521,19 @@ C:\Users\wizar\OneDrive\Documentos\Projeto Estudos\estudos-2ano\index.html
 C:\Users\wizar\OneDrive\Documentos\Projeto Estudos\estudos-2ano\
 ├── index.html                         ← editado diretamente (Fase 6)
 ├── hq-[slug]-prompt.md                ← criado (Fase 3)
-├── hq-[slug]-pg1.png                  ← criado automaticamente (Fase 3.5)
-├── hq-[slug]-pg2.png                  ← criado automaticamente (Fase 3.5)
-├── hq-[slug]-pg3.png                  ← criado automaticamente (Fase 3.5)
-├── hq-[slug]-pg4.png                  ← criado automaticamente (Fase 3.5)
 ├── quiz-[slug].html                   ← criado (Fase 5)
 ├── mapa-mental-[slug].html            ← criado (Fase 5)
 ├── [atividade-variavel-1]-[slug].html ← criado (Fase 5)
 └── [atividade-variavel-2]-[slug].html ← criado (Fase 5)
 ```
 
+> **Nota:** os 4 arquivos `hq-[slug]-pg1.png` … `pg4.png` **não são gerados por esta skill** — Léo os gera externamente (skill de HQ) e os copia manualmente para a raiz do projeto antes do deploy.
+
 Todos os arquivos vão direto para a raiz do projeto — nunca em subpastas.
 
 ### 7.2 Checklist antes de concluir
 
 - [ ] `index.html` salvo com todas as alterações da Fase 6
-- [ ] Os 4 arquivos `hq-[slug]-pg1.png` … `pg4.png` presentes na raiz do projeto
 - [ ] Todos os arquivos HTML das atividades na raiz da pasta
 - [ ] Todos os `href` dos `act-card` batem com os nomes dos arquivos criados
 - [ ] O `id` do `theme-content` bate com o `onclick` do tab e do sidebar
@@ -602,6 +544,7 @@ Todos os arquivos vão direto para a raiz do projeto — nunca em subpastas.
 - [ ] Função `playSound` presente em todas as atividades interativas
 - [ ] Os 4 `src` do componente de navegação usam o padrão `hq-[slug]-pg1.png` … `pg4.png`
 - [ ] Imagem da HQ usa `object-fit: contain` no viewer
+- [ ] Léo foi informado de que precisa copiar manualmente os 4 arquivos `hq-[slug]-pgN.png` para a pasta antes do deploy
 
 ### 7.3 Mensagem de conclusão
 
@@ -610,7 +553,8 @@ Ao finalizar, informar Léo:
 2. Quais atividades variáveis foram escolhidas e **por que** (justificativa pedagógica)
 3. O personagem de suporte criado com breve descrição visual
 4. Se algum conceito da Fase 0 ficou sem cobertura nas atividades geradas
-5. Próximo passo: commit + push no GitHub Desktop → GitHub Pages publica automaticamente
+5. Lembrete para gerar as imagens de HQ com a skill dedicada e copiar os 4 arquivos `hq-[slug]-pgN.png` para a raiz do projeto
+6. Próximo passo: commit + push no GitHub Desktop → GitHub Pages publica automaticamente
 
 ### 7.4 Fallback — quando executado fora do Cowork
 
@@ -629,4 +573,3 @@ O `index.html` completo exige que Léo forneça o arquivo atual no início da co
 - `references/atividades-por-disciplina.md` — catálogo de tipos de atividade com critérios de escolha
 - `references/index-template-snippets.md` — snippets HTML prontos para copiar ao atualizar o index
 - Projeto irmão (referência de arquitetura): `github.com/mottacastelo-ai/estudos`
-- `ref-lis.png` — imagem de referência canônica da Lis (raiz do projeto)

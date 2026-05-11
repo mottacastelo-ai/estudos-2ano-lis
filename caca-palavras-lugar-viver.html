@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caça-Palavras — Meu Lugar de Viver | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root { --primary: #A855F7; --light: #D08EF8; --bg: #FAF5FF; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100vh; }
+header {
+  background: linear-gradient(135deg, #4A1272, #A855F7 60%, #D08EF8);
+  padding: 22px 24px 18px; color: #fff; text-align: center;
+}
+header h1 { font-family: 'Baloo 2', cursive; font-size: 1.7rem; font-weight: 900; }
+header p { font-size: 1rem; opacity: 0.9; font-weight: 600; margin-top: 4px; }
+.container { max-width: 820px; margin: 0 auto; padding: 24px 16px 60px; }
+.word-list {
+  background: #fff; border-radius: 16px; padding: 18px 22px;
+  border: 2px solid #E9D5FF; margin-bottom: 20px;
+}
+.wl-title { font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 900; color: var(--primary); margin-bottom: 12px; }
+.words { display: flex; flex-wrap: wrap; gap: 8px; }
+.word-chip {
+  padding: 8px 14px; border-radius: 20px; font-size: 0.95rem; font-weight: 800;
+  background: #F3E8FF; color: #6D28D9; border: 2px solid #DDD6FE;
+  transition: all 0.2s;
+}
+.word-chip.found { background: #DCFCE7; color: #15803D; border-color: #86EFAC; text-decoration: line-through; }
+.progress-info {
+  text-align: center; font-size: 1rem; font-weight: 800; color: var(--primary);
+  margin-bottom: 16px;
+}
+.grid-wrap { overflow-x: auto; margin-bottom: 24px; }
+.letter-grid {
+  display: inline-grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 2px; background: #fff;
+  border-radius: 16px; padding: 16px;
+  border: 2px solid #E9D5FF;
+  box-shadow: 0 4px 20px rgba(168,85,247,0.08);
+  min-width: 340px;
+}
+.cell {
+  width: 38px; height: 38px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 900;
+  color: #4A1272; cursor: pointer; transition: all 0.15s;
+  user-select: none; border: 2px solid transparent;
+}
+.cell:hover { background: #EDE9FE; }
+.cell.selected { background: #DDD6FE; border-color: var(--primary); color: var(--primary); }
+.cell.found { background: #D8B4FE; color: #4A1272; border-color: #A855F7; }
+.cell.found-final { background: #DCFCE7; color: #15803D; border-color: #86EFAC; }
+@media (max-width: 480px) {
+  .letter-grid { grid-template-columns: repeat(10, 1fr); }
+  .cell { width: 30px; height: 30px; font-size: 0.9rem; }
+}
+.win-card {
+  background: #fff; border-radius: 24px; padding: 36px 28px; text-align: center;
+  box-shadow: 0 4px 28px rgba(168,85,247,0.15); border: 2px solid #E9D5FF; display: none;
+}
+.win-card.show { display: block; }
+.win-emoji { font-size: 4rem; margin-bottom: 12px; }
+.win-title { font-family: 'Baloo 2', cursive; font-size: 2rem; font-weight: 900; color: #4A1272; margin-bottom: 8px; }
+.win-msg { font-size: 1.1rem; color: #6B7280; font-weight: 600; margin-bottom: 28px; }
+.action-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.back-btn { background: #fff; border: 2px solid var(--primary); color: var(--primary); border-radius: 14px; padding: 14px 28px; font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800; cursor: pointer; }
+.retry-btn { background: var(--primary); border: none; color: #fff; border-radius: 14px; padding: 14px 28px; font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800; cursor: pointer; }
+.retry-btn:hover { background: #9333EA; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🔍 Caça-Palavras</h1>
+  <p>📒 Encontre as palavras escondidas na grade!</p>
+</header>
+<div class="container">
+  <div class="word-list">
+    <div class="wl-title">📋 Palavras para encontrar:</div>
+    <div class="words" id="word-list"></div>
+  </div>
+  <div class="progress-info" id="progress-info">Encontradas: 0 / 7</div>
+  <div class="grid-wrap">
+    <div class="letter-grid" id="letter-grid"></div>
+  </div>
+  <div class="win-card" id="win-card">
+    <div class="win-emoji">🏆</div>
+    <div class="win-title">Todas encontradas!</div>
+    <div class="win-msg">Você encontrou todas as 7 palavras! Cadê está muito orgulhoso! 📒✨</div>
+    <div class="action-btns">
+      <button class="back-btn" onclick="window.close()">⬅️ Voltar ao Portal</button>
+      <button class="retry-btn" onclick="initGame()">🔄 Jogar de Novo</button>
+    </div>
+  </div>
+</div>
+<script>
+// Words and their placements in the 10x10 grid
+// Grid is row-major, 0-indexed
+const WORDS = ['BAIRRO','MEMORIA','MUDANCA','BAIRRO','INVESTIGAR','PRACA','DEPOIMENTO'];
+const UNIQUE_WORDS = ['BAIRRO','MEMORIA','MUDANCA','INVESTIGAR','PRACA','DEPOIMENTO','PERMANENCIA'];
+
+// 10x10 grid definition with words placed
+// BAIRRO: row0, col0, horizontal
+// MEMORIA: row1, col0, horizontal
+// MUDANCA: row2, col0, horizontal
+// INVESTIGAR: row3, col0, horizontal
+// PRACA: row4, col0, horizontal
+// DEPOIMENTO: row5, col0, horizontal
+// PERMANENCIA: row6, col0, horizontal
+
+const placements = [
+  { word: 'BAIRRO',      row: 0, col: 0, dir: 'H' },
+  { word: 'MEMORIA',     row: 1, col: 1, dir: 'H' },
+  { word: 'MUDANCA',     row: 2, col: 2, dir: 'H' },
+  { word: 'INVESTIGAR',  row: 3, col: 0, dir: 'H' },
+  { word: 'PRACA',       row: 4, col: 4, dir: 'H' },
+  { word: 'DEPOIMENTO',  row: 0, col: 0, dir: 'V' },
+  { word: 'PERMANENCIA', row: 5, col: 0, dir: 'H' }
+];
+
+const ROWS = 10, COLS = 10;
+let grid = [];
+let cellElements = [];
+let selecting = false;
+let selStart = null, selCurrent = null;
+let foundWords = new Set();
+let foundCells = new Set();
+
+function cellKey(r, c) { return `${r},${c}`; }
+
+function initGame() {
+  foundWords = new Set();
+  foundCells = new Set();
+  grid = Array.from({length: ROWS}, () => Array(COLS).fill(''));
+
+  // Place words
+  placements.forEach(({word, row, col, dir}) => {
+    for (let i = 0; i < word.length; i++) {
+      const r = dir === 'H' ? row : row + i;
+      const c = dir === 'H' ? col + i : col;
+      if (r < ROWS && c < COLS) grid[r][c] = word[i];
+    }
+  });
+
+  // Fill empty cells with random letters
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  for (let r = 0; r < ROWS; r++)
+    for (let c = 0; c < COLS; c++)
+      if (!grid[r][c]) grid[r][c] = letters[Math.floor(Math.random() * letters.length)];
+
+  document.getElementById('win-card').className = 'win-card';
+  updateWordList();
+  updateProgress();
+  renderGrid();
+}
+
+function renderGrid() {
+  const container = document.getElementById('letter-grid');
+  container.innerHTML = '';
+  cellElements = [];
+  for (let r = 0; r < ROWS; r++) {
+    cellElements[r] = [];
+    for (let c = 0; c < COLS; c++) {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      cell.textContent = grid[r][c];
+      cell.dataset.r = r;
+      cell.dataset.c = c;
+      if (foundCells.has(cellKey(r, c))) cell.classList.add('found-final');
+      // Mouse events
+      cell.onmousedown = (e) => { e.preventDefault(); startSelect(r, c); };
+      cell.onmouseover = () => { if (selecting) updateSelect(r, c); };
+      // Touch events
+      cell.ontouchstart = (e) => { e.preventDefault(); startSelect(r, c); };
+      cell.ontouchmove = (e) => {
+        e.preventDefault();
+        const t = e.touches[0];
+        const el = document.elementFromPoint(t.clientX, t.clientY);
+        if (el && el.dataset.r !== undefined) updateSelect(+el.dataset.r, +el.dataset.c);
+      };
+      cell.ontouchend = () => endSelect();
+      container.appendChild(cell);
+      cellElements[r][c] = cell;
+    }
+  }
+  document.onmouseup = endSelect;
+}
+
+function startSelect(r, c) {
+  selecting = true;
+  selStart = {r, c};
+  selCurrent = {r, c};
+  highlightSelection();
+}
+
+function updateSelect(r, c) {
+  selCurrent = {r, c};
+  highlightSelection();
+}
+
+function highlightSelection() {
+  // Clear previous selection highlights (not found ones)
+  for (let r = 0; r < ROWS; r++)
+    for (let c = 0; c < COLS; c++) {
+      const cell = cellElements[r][c];
+      if (!foundCells.has(cellKey(r, c)))
+        cell.classList.remove('selected', 'found');
+    }
+  if (!selStart || !selCurrent) return;
+  const cells = getSelectionCells(selStart, selCurrent);
+  cells.forEach(({r, c}) => {
+    if (!foundCells.has(cellKey(r, c)))
+      cellElements[r][c].classList.add('selected');
+  });
+}
+
+function getSelectionCells(start, end) {
+  const cells = [];
+  const dr = end.r - start.r, dc = end.c - start.c;
+  const len = Math.max(Math.abs(dr), Math.abs(dc));
+  if (len === 0) return [{r: start.r, c: start.c}];
+  // Only horizontal, vertical, diagonal
+  const sr = dr === 0 ? 0 : dr / Math.abs(dr);
+  const sc = dc === 0 ? 0 : dc / Math.abs(dc);
+  // Determine dominant direction
+  let steps;
+  if (Math.abs(dr) === 0) steps = Math.abs(dc);
+  else if (Math.abs(dc) === 0) steps = Math.abs(dr);
+  else steps = Math.max(Math.abs(dr), Math.abs(dc));
+  for (let i = 0; i <= steps; i++) cells.push({r: start.r + i * sr, c: start.c + i * sc});
+  return cells;
+}
+
+function endSelect() {
+  if (!selecting || !selStart || !selCurrent) { selecting = false; return; }
+  selecting = false;
+  const cells = getSelectionCells(selStart, selCurrent);
+  const word = cells.map(({r,c}) => grid[r][c]).join('');
+  const wordRev = word.split('').reverse().join('');
+  let found = null;
+  UNIQUE_WORDS.forEach(w => {
+    if (!foundWords.has(w) && (word === w || wordRev === w)) found = w;
+  });
+  if (found) {
+    foundWords.add(found);
+    cells.forEach(({r,c}) => {
+      foundCells.add(cellKey(r,c));
+      cellElements[r][c].classList.remove('selected');
+      cellElements[r][c].classList.add('found-final');
+    });
+    updateWordList();
+    updateProgress();
+    playSound('correct');
+    if (foundWords.size === UNIQUE_WORDS.length) setTimeout(() => {
+      document.getElementById('win-card').className = 'win-card show';
+      playSound('correct');
+    }, 400);
+  } else {
+    highlightSelection();
+    setTimeout(() => {
+      for (let r = 0; r < ROWS; r++)
+        for (let c = 0; c < COLS; c++)
+          if (!foundCells.has(cellKey(r, c))) cellElements[r][c].classList.remove('selected', 'found');
+    }, 300);
+  }
+  selStart = selCurrent = null;
+}
+
+function updateWordList() {
+  const container = document.getElementById('word-list');
+  container.innerHTML = '';
+  UNIQUE_WORDS.forEach(w => {
+    const chip = document.createElement('div');
+    chip.className = 'word-chip' + (foundWords.has(w) ? ' found' : '');
+    chip.textContent = w.charAt(0) + w.slice(1).toLowerCase();
+    container.appendChild(chip);
+  });
+}
+
+function updateProgress() {
+  document.getElementById('progress-info').textContent = `Encontradas: ${foundWords.size} / ${UNIQUE_WORDS.length}`;
+}
+
+function playSound(type) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator(); const g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  if (type === 'correct') {
+    o.frequency.setValueAtTime(523, ctx.currentTime);
+    o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+    o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    o.start(); o.stop(ctx.currentTime + 0.5);
+  }
+}
+
+initGame();
+</script>
+</body>
+</html>

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Criador de Frase — Convivência | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root { --primary: #A855F7; --light: #D08EF8; --bg: #FAF5FF; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100vh; }
+header {
+  background: linear-gradient(135deg, #4A1272, #A855F7 60%, #D08EF8);
+  padding: 22px 24px 18px; color: #fff; text-align: center;
+}
+header h1 { font-family: 'Baloo 2', cursive; font-size: 1.7rem; font-weight: 900; }
+header p { font-size: 1rem; opacity: 0.9; font-weight: 600; margin-top: 4px; }
+.container { max-width: 720px; margin: 0 auto; padding: 24px 16px 60px; }
+.score-bar {
+  display: flex; justify-content: space-between; align-items: center;
+  background: #fff; border-radius: 14px; padding: 12px 20px;
+  border: 2px solid #E9D5FF; margin-bottom: 20px;
+}
+.score-label { font-size: 0.9rem; font-weight: 800; color: #9CA3AF; }
+.score-val { font-family: 'Baloo 2', cursive; font-size: 1.4rem; font-weight: 900; color: var(--primary); }
+.card {
+  background: #fff; border-radius: 22px; padding: 28px;
+  box-shadow: 0 4px 20px rgba(168,85,247,0.1); border: 2px solid #E9D5FF;
+}
+.phrase-num { font-size: 0.85rem; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+.phrase-task { font-size: 1.25rem; font-weight: 800; color: #1E1B4B; margin-bottom: 6px; line-height: 1.4; }
+.phrase-clue { font-size: 0.95rem; font-weight: 700; color: #9CA3AF; margin-bottom: 20px; font-style: italic; }
+.answer-area {
+  display: flex; flex-wrap: wrap; gap: 6px; min-height: 60px;
+  background: #F8F4FF; border-radius: 14px; padding: 14px;
+  border: 2px dashed #D08EF8; margin-bottom: 18px; align-items: center;
+}
+.placed-word {
+  background: linear-gradient(135deg, #6D28D9, #A855F7);
+  color: #fff; border: none; border-radius: 10px; padding: 10px 14px;
+  font-family: 'Baloo 2', cursive; font-size: 1rem; font-weight: 800;
+  cursor: pointer; transition: all 0.15s;
+}
+.placed-word:hover { opacity: 0.8; transform: scale(0.96); }
+.answer-placeholder { font-size: 1rem; font-weight: 700; color: #C4B5FD; font-style: italic; }
+.word-bank {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; justify-content: center;
+}
+.word-btn {
+  background: #EDE9FE; border: 2px solid #A855F7; border-radius: 10px;
+  padding: 10px 16px; font-family: 'Baloo 2', cursive; font-size: 1rem; font-weight: 800;
+  color: #4A1272; cursor: pointer; transition: all 0.18s;
+}
+.word-btn:hover { background: #DDD6FE; transform: scale(1.05); }
+.word-btn.used { opacity: 0.25; pointer-events: none; }
+.action-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+.check-btn {
+  flex: 1; background: var(--primary); color: #fff; border: none;
+  border-radius: 14px; padding: 14px;
+  font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800;
+  cursor: pointer; min-width: 140px; transition: all 0.18s;
+}
+.check-btn:hover { background: #9333EA; }
+.clear-btn {
+  background: #fff; border: 2px solid #A855F7; color: var(--primary);
+  border-radius: 14px; padding: 14px 20px;
+  font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 800;
+  cursor: pointer; transition: all 0.18s;
+}
+.clear-btn:hover { background: var(--bg); }
+.feedback { padding: 14px 18px; border-radius: 14px; font-size: 1.1rem; font-weight: 700; display: none; }
+.feedback.show { display: block; }
+.feedback.ok { background: #DCFCE7; color: #15803D; border: 2px solid #86EFAC; }
+.feedback.partial { background: #FEF9C3; color: #92400E; border: 2px solid #FDE68A; }
+.feedback.no { background: #FEE2E2; color: #B91C1C; border: 2px solid #FCA5A5; }
+.next-btn { width: 100%; background: var(--primary); color: #fff; border: none; border-radius: 14px; padding: 14px; font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800; cursor: pointer; display: none; margin-top: 10px; transition: all 0.18s; }
+.next-btn.show { display: block; }
+.next-btn:hover { background: #9333EA; }
+.result-card { background: #fff; border-radius: 24px; padding: 40px 28px; text-align: center; box-shadow: 0 4px 28px rgba(168,85,247,0.15); border: 2px solid #E9D5FF; display: none; }
+.result-card.show { display: block; }
+.result-emoji { font-size: 4rem; margin-bottom: 12px; }
+.result-title { font-family: 'Baloo 2', cursive; font-size: 2rem; font-weight: 900; color: #4A1272; margin-bottom: 8px; }
+.result-score { font-size: 1.3rem; font-weight: 800; color: var(--primary); margin-bottom: 16px; }
+.result-msg { font-size: 1.1rem; color: #6B7280; font-weight: 600; margin-bottom: 28px; line-height: 1.5; }
+.action-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.back-btn { background: #fff; border: 2px solid var(--primary); color: var(--primary); border-radius: 14px; padding: 14px 28px; font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800; cursor: pointer; }
+.retry-btn { background: var(--primary); border: none; color: #fff; border-radius: 14px; padding: 14px 28px; font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800; cursor: pointer; }
+.retry-btn:hover { background: #9333EA; }
+</style>
+</head>
+<body>
+<header>
+  <h1>✍️ Criador de Frases!</h1>
+  <p>🥁 Monte frases sobre convivência com as palavras abaixo!</p>
+</header>
+<div class="container">
+  <div class="score-bar">
+    <span class="score-label">⭐ Pontos</span>
+    <span class="score-val" id="score-display">0 / 5</span>
+  </div>
+  <div id="game-area">
+    <div class="card">
+      <div class="phrase-num" id="phrase-num">Frase 1 de 5</div>
+      <div class="phrase-task" id="phrase-task"></div>
+      <div class="phrase-clue" id="phrase-clue"></div>
+      <div class="answer-area" id="answer-area">
+        <span class="answer-placeholder">Clique nas palavras abaixo para montar a frase...</span>
+      </div>
+      <div class="word-bank" id="word-bank"></div>
+      <div class="action-row">
+        <button class="check-btn" id="check-btn" onclick="checkPhrase()">✅ Verificar Frase</button>
+        <button class="clear-btn" onclick="clearPhrase()">🗑️ Limpar</button>
+      </div>
+      <div class="feedback" id="feedback"></div>
+      <button class="next-btn" id="next-btn" onclick="nextPhrase()">Próxima Frase ➡️</button>
+    </div>
+  </div>
+  <div class="result-card" id="result-card">
+    <div class="result-emoji" id="result-emoji"></div>
+    <div class="result-title" id="result-title"></div>
+    <div class="result-score" id="result-score"></div>
+    <div class="result-msg" id="result-msg"></div>
+    <div class="action-btns">
+      <button class="back-btn" onclick="window.close()">⬅️ Voltar ao Portal</button>
+      <button class="retry-btn" onclick="restart()">🔄 Jogar de Novo</button>
+    </div>
+  </div>
+</div>
+<script>
+const phrases = [
+  {
+    task: "Monte uma frase sobre o que é convivência:",
+    clue: "💡 Dica: convivência é estar com outras pessoas",
+    correct: ["A","convivência","é","estar","com","outras","pessoas."],
+    extra: ["sozinho","nunca","difícil"]
+  },
+  {
+    task: "Monte uma frase sobre o Quintal dos Pescadores:",
+    clue: "💡 Dica: é um espaço de convivência em Niterói",
+    correct: ["O","Quintal","dos","Pescadores","é","um","espaço","de","convivência."],
+    extra: ["medo","trabalho","ruim"]
+  },
+  {
+    task: "Monte uma frase sobre o que fazemos para conviver bem:",
+    clue: "💡 Dica: respeitar e ajudar os outros",
+    correct: ["Para","conviver","bem,","devemos","respeitar","e","ajudar","os","outros."],
+    extra: ["ignorar","brigar","sempre"]
+  },
+  {
+    task: "Monte uma frase sobre a comunidade quilombola:",
+    clue: "💡 Dica: famílias que mantêm tradições africanas",
+    correct: ["A","comunidade","quilombola","mantém","tradições","africanas","vivas."],
+    extra: ["esquece","destrói","apaga"]
+  },
+  {
+    task: "Monte uma frase sobre o que é um local de convivência:",
+    clue: "💡 Dica: é um lugar onde a comunidade se encontra",
+    correct: ["O","local","de","convivência","é","onde","a","comunidade","se","encontra."],
+    extra: ["esconde","foge","separa"]
+  }
+];
+
+let current = 0, score = 0;
+let placed = [];
+
+function loadPhrase() {
+  const p = phrases[current];
+  document.getElementById('phrase-num').textContent = `Frase ${current + 1} de ${phrases.length}`;
+  document.getElementById('phrase-task').textContent = p.task;
+  document.getElementById('phrase-clue').textContent = p.clue;
+  placed = [];
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('next-btn').className = 'next-btn';
+  document.getElementById('check-btn').disabled = false;
+  renderBank();
+  renderAnswer();
+}
+
+function renderBank() {
+  const p = phrases[current];
+  const allWords = [...p.correct, ...p.extra].sort(() => Math.random() - 0.5);
+  const bank = document.getElementById('word-bank');
+  bank.innerHTML = '';
+  allWords.forEach((w, i) => {
+    const btn = document.createElement('button');
+    const usedCount = placed.filter(x => x === w).length;
+    const availCount = allWords.filter(x => x === w).length;
+    btn.className = 'word-btn' + (usedCount >= availCount ? ' used' : '');
+    btn.textContent = w;
+    btn.onclick = () => addWord(w);
+    bank.appendChild(btn);
+  });
+}
+
+function addWord(w) {
+  placed.push(w);
+  renderAnswer();
+  renderBank();
+}
+
+function renderAnswer() {
+  const area = document.getElementById('answer-area');
+  if (placed.length === 0) {
+    area.innerHTML = '<span class="answer-placeholder">Clique nas palavras abaixo para montar a frase...</span>';
+    return;
+  }
+  area.innerHTML = '';
+  placed.forEach((w, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'placed-word';
+    btn.textContent = w;
+    btn.onclick = () => removeWord(i);
+    area.appendChild(btn);
+  });
+}
+
+function removeWord(i) {
+  placed.splice(i, 1);
+  renderAnswer();
+  renderBank();
+}
+
+function clearPhrase() {
+  placed = [];
+  renderAnswer();
+  renderBank();
+}
+
+function checkPhrase() {
+  const p = phrases[current];
+  const formed = placed.join(' ');
+  const correct = placed.join(' ') === p.correct.join(' ');
+  const fb = document.getElementById('feedback');
+  // Check if all required words are present (partial credit)
+  const hasKeyWords = p.correct.filter(w => w.length > 3).every(w => placed.includes(w));
+  if (correct) {
+    score++;
+    document.getElementById('score-display').textContent = `${score} / ${phrases.length}`;
+    fb.textContent = `✅ Perfeito! Frase correta! 🎉`;
+    fb.className = 'feedback show ok';
+    playSound('correct');
+  } else if (hasKeyWords && placed.length >= p.correct.length - 2) {
+    score++;
+    document.getElementById('score-display').textContent = `${score} / ${phrases.length}`;
+    fb.innerHTML = `⭐ Muito bem! Você usou as palavras certas!<br><small>Frase modelo: "${p.correct.join(' ')}"</small>`;
+    fb.className = 'feedback show partial';
+    playSound('correct');
+  } else {
+    fb.innerHTML = `❌ Tente de novo! Frase modelo:<br>"${p.correct.join(' ')}"`;
+    fb.className = 'feedback show no';
+    playSound('wrong');
+  }
+  document.getElementById('check-btn').disabled = true;
+  document.getElementById('next-btn').className = 'next-btn show';
+}
+
+function nextPhrase() {
+  current++;
+  if (current < phrases.length) loadPhrase();
+  else showResult();
+}
+
+function showResult() {
+  document.getElementById('game-area').style.display = 'none';
+  const card = document.getElementById('result-card');
+  card.className = 'result-card show';
+  const pct = Math.round((score / phrases.length) * 100);
+  let emoji, title, msg;
+  if (pct >= 80) { emoji = '🥁'; title = 'Escritor(a) Incrível!'; msg = 'Você criou frases incríveis sobre convivência! Tambô está super orgulhoso de você! 🎵✨'; }
+  else if (pct >= 60) { emoji = '⭐'; title = 'Muito bem!'; msg = `Você acertou ${score} de ${phrases.length} frases! Continue praticando! 💪`; }
+  else { emoji = '📚'; title = 'Continue praticando!'; msg = 'Releia as frases modelo e tente novamente. A escrita melhora com a prática! 🌟'; }
+  document.getElementById('result-emoji').textContent = emoji;
+  document.getElementById('result-title').textContent = title;
+  document.getElementById('result-score').textContent = `${score} de ${phrases.length} frases certas (${pct}%)`;
+  document.getElementById('result-msg').textContent = msg;
+  playSound(pct >= 60 ? 'correct' : 'wrong');
+}
+
+function restart() {
+  current = 0; score = 0;
+  document.getElementById('score-display').textContent = '0 / 5';
+  document.getElementById('result-card').className = 'result-card';
+  document.getElementById('game-area').style.display = 'block';
+  loadPhrase();
+}
+
+function playSound(type) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator(); const g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  if (type === 'correct') {
+    o.frequency.setValueAtTime(523, ctx.currentTime);
+    o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+    o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    o.start(); o.stop(ctx.currentTime + 0.5);
+  } else {
+    o.frequency.setValueAtTime(300, ctx.currentTime);
+    o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    o.start(); o.stop(ctx.currentTime + 0.4);
+  }
+}
+loadPhrase();
+</script>
+</body>
+</html>
