@@ -276,19 +276,13 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
   border: 3px solid #1a1a1a;
   box-shadow: inset -4px 0 16px rgba(0,0,0,0.12), 4px 0 0 rgba(0,0,0,0.06);
   overflow: hidden;
-  touch-action: pan-y pinch-zoom;
+  touch-action: auto;
 }
 .hq-page-base img {
   width: 100%; display: block;
-  touch-action: pan-y pinch-zoom;
+  touch-action: auto;
 }
-.hq-page-base::before {
-  content: '';
-  position: absolute;
-  left: 0; top: 0; bottom: 0; width: 14px;
-  background: linear-gradient(to right, #b0a898, #e8e4dc 40%, #ccc8be 70%, #d8d4cc);
-  z-index: 5; border-right: 1px solid #999;
-}
+
 .hq-shine {
   position: absolute;
   top: 0; left: 14px; right: 0; bottom: 0;
