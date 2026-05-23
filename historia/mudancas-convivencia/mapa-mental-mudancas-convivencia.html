@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapa Mental — Mudanças na Convivência | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #A855F7;
+  --light: #D08EF8;
+  --bg: #FAF5FF;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  background: linear-gradient(135deg, #4A1272, #A855F7 60%, #D08EF8);
+  color: white;
+  padding: 24px 20px 20px;
+  text-align: center;
+}
+
+.header-emoji {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.header h1 {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  margin-bottom: 4px;
+}
+
+.header p { font-size: 1rem; opacity: 0.9; }
+
+.badge {
+  display: inline-block;
+  background: rgba(255,255,255,0.2);
+  border-radius: 20px;
+  padding: 4px 14px;
+  font-size: 0.9rem;
+  margin-top: 8px;
+}
+
+main {
+  flex: 1;
+  padding: 24px 16px;
+  max-width: 860px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.instrucoes {
+  background: white;
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  border: 2px solid #E9D5FF;
+  font-size: 1.2rem;
+  color: #3B1B6E;
+  font-weight: 600;
+}
+
+.instrucoes strong { color: var(--primary); }
+
+/* --- NODES POOL --- */
+.nodes-pool {
+  background: white;
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  border: 2px solid #E9D5FF;
+}
+
+.nodes-pool h2 {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--primary);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.pool-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.node-card {
+  background: linear-gradient(135deg, #F3E8FF, #EDE9FE);
+  border: 2px solid var(--light);
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #3B1B6E;
+  cursor: grab;
+  user-select: none;
+  transition: all 0.2s ease;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  touch-action: none;
+}
+
+.node-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(168,85,247,0.25); }
+.node-card:active { cursor: grabbing; }
+.node-card.dragging { opacity: 0.4; }
+.node-card.placed { display: none; }
+
+/* --- CENTRAL NODE --- */
+.central-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.central-node {
+  background: linear-gradient(135deg, #4A1272, #A855F7);
+  color: white;
+  border-radius: 20px;
+  padding: 16px 28px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 900;
+  text-align: center;
+  box-shadow: 0 6px 24px rgba(168,85,247,0.35);
+}
+
+/* --- SLOTS GRID --- */
+.slots-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.slot-column {
+  background: white;
+  border-radius: 16px;
+  padding: 16px;
+  border: 2px solid #E9D5FF;
+}
+
+.slot-label {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--primary);
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 2px dashed #E9D5FF;
+  line-height: 1.3;
+}
+
+.drop-zone {
+  min-height: 54px;
+  border: 2.5px dashed #C4B5FD;
+  border-radius: 12px;
+  padding: 8px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  background: var(--bg);
+  font-size: 1rem;
+  color: #A78BFA;
+  font-weight: 600;
+}
+
+.drop-zone.drag-over {
+  border-color: var(--primary);
+  background: #F3E8FF;
+  transform: scale(1.02);
+}
+
+.drop-zone.filled {
+  border-style: solid;
+  border-color: var(--primary);
+  background: linear-gradient(135deg, #F3E8FF, #EDE9FE);
+  justify-content: flex-start;
+}
+
+.drop-zone .placed-node {
+  background: linear-gradient(135deg, #A855F7, #7C3AED);
+  color: white;
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  border: none;
+  font-family: 'Nunito', sans-serif;
+}
+
+.drop-zone .placeholder-text {
+  font-size: 0.95rem;
+  color: #C4B5FD;
+  font-style: italic;
+}
+
+/* --- ACTIONS --- */
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.btn-check {
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 16px 32px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.2s;
+  min-height: 54px;
+}
+
+.btn-check:hover { background: #9333EA; }
+
+.btn-reset {
+  background: white;
+  color: var(--primary);
+  border: 3px solid var(--primary);
+  border-radius: 14px;
+  padding: 14px 24px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-height: 54px;
+}
+
+.btn-reset:hover { background: var(--primary); color: white; }
+
+/* --- RESULT PANEL --- */
+.result-panel {
+  display: none;
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  border: 3px solid var(--primary);
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.result-panel.show { display: block; }
+
+.result-emoji { font-size: 3.5rem; margin-bottom: 8px; }
+
+.result-title {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+
+.result-detail {
+  font-size: 1.2rem;
+  color: #3B1B6E;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.slot-result {
+  text-align: left;
+  margin-bottom: 8px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.slot-result.ok { background: #D1FAE5; color: #065F46; border: 2px solid #10B981; }
+.slot-result.nok { background: #FEE2E2; color: #991B1B; border: 2px solid #EF4444; }
+.slot-result.partial { background: #FEF3C7; color: #92400E; border: 2px solid #F59E0B; }
+
+footer {
+  text-align: center;
+  padding: 20px;
+  border-top: 2px solid #E9D5FF;
+}
+
+.btn-back {
+  background: white;
+  color: var(--primary);
+  border: 3px solid var(--primary);
+  border-radius: 14px;
+  padding: 14px 28px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-height: 48px;
+}
+
+.btn-back:hover { background: var(--primary); color: white; }
+
+@media (max-width: 600px) {
+  .slots-grid { grid-template-columns: 1fr; }
+  .header h1 { font-size: 1.3rem; }
+  .central-node { font-size: 1.1rem; padding: 12px 18px; }
+  .pool-grid { gap: 8px; }
+  .node-card { font-size: 1rem; padding: 10px 12px; }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <span class="header-emoji">⏳</span>
+  <h1>Mapa Mental — Mudanças na Convivência</h1>
+  <p>Arraste cada ideia para o lugar certo!</p>
+  <span class="badge">🏆 Ensinar (90%)</span>
+</header>
+
+<main>
+  <div class="instrucoes">
+    <strong>Como jogar:</strong> arraste os cards roxos para o grupo correto no mapa. Quando terminar, clique em "Verificar"!
+  </div>
+
+  <div class="nodes-pool">
+    <h2>Cards para classificar</h2>
+    <div class="pool-grid" id="pool">
+      <div class="node-card" data-id="calcada" data-slot="passado" draggable="true">🏘️ Reunião nas calçadas</div>
+      <div class="node-card" data-id="circo" data-slot="passado" draggable="true">🎪 O Circo (pintura de 1942)</div>
+      <div class="node-card" data-id="lazer" data-slot="passado" draggable="true">🎶 Lazer coletivo na rua</div>
+      <div class="node-card" data-id="areas" data-slot="presente" draggable="true">🏢 Áreas de convivência em prédios</div>
+      <div class="node-card" data-id="parques" data-slot="presente" draggable="true">🌳 Parques modernos</div>
+      <div class="node-card" data-id="imagem" data-slot="fonte" draggable="true">🖼️ Imagem que conta sobre o passado</div>
+      <div class="node-card" data-id="necessidade" data-slot="naomudou" draggable="true">❤️ A necessidade de conviver</div>
+    </div>
+  </div>
+
+  <div class="central-wrap">
+    <div class="central-node">⏳ MUDANÇAS NA CONVIVÊNCIA</div>
+  </div>
+
+  <div class="slots-grid" id="slots-grid">
+
+    <div class="slot-column">
+      <div class="slot-label">🕰️ Convivência no passado (há cem anos)</div>
+      <div class="drop-zone" data-slot="passado" data-index="0">
+        <span class="placeholder-text">Arraste aqui...</span>
+      </div>
+      <div class="drop-zone" data-slot="passado" data-index="1">
+        <span class="placeholder-text">Arraste aqui...</span>
+      </div>
+      <div class="drop-zone" data-slot="passado" data-index="2">
+        <span class="placeholder-text">Arraste aqui...</span>
+      </div>
+    </div>
+
+    <div class="slot-column">
+      <div class="slot-label">🏙️ Convivência no presente</div>
+      <div class="drop-zone" data-slot="presente" data-index="0">
+        <span class="placeholder-text">Arraste aqui...</span>
+      </div>
+      <div class="drop-zone" data-slot="presente" data-index="1">
+        <span class="placeholder-text">Arraste aqui...</span>
+      </div>
+    </div>
+
+    <div class="slot-column">
+      <div class="slot-label">🖼️ O que é uma fonte histórica visual</div>
+      <div class="drop-zone" data-slot="fonte" data-index="0">
+        <span class="placeholder-text">Arraste aqui...</span>
+      </div>
+    </div>
+
+    <div class="slot-column">
+      <div class="slot-label">💫 O que não mudou</div>
+      <div class="drop-zone" data-slot="naomudou" data-index="0">
+        <span class="placeholder-text">Arraste aqui...</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="actions">
+    <button class="btn-reset" onclick="resetAll()">↩ Recomeçar</button>
+    <button class="btn-check" onclick="checkAnswers()">Verificar Mapa ✓</button>
+  </div>
+
+  <div class="result-panel" id="result-panel">
+    <div class="result-emoji" id="result-emoji"></div>
+    <div class="result-title" id="result-title"></div>
+    <div class="result-detail" id="result-detail"></div>
+    <div id="slot-results"></div>
+  </div>
+</main>
+
+<footer>
+  <button class="btn-back" onclick="window.close()">← Voltar ao Portal</button>
+</footer>
+
+<script>
+// Gabarito: node-id → slot-id
+const gabarito = {
+  calcada: 'passado',
+  circo: 'passado',
+  lazer: 'passado',
+  areas: 'presente',
+  parques: 'presente',
+  imagem: 'fonte',
+  necessidade: 'naomudou'
+};
+
+const slotLabels = {
+  passado: 'Convivência no passado',
+  presente: 'Convivência no presente',
+  fonte: 'O que é uma fonte histórica visual',
+  naomudou: 'O que não mudou'
+};
+
+let draggedId = null;
+
+function playSound(type) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  if (type === 'correct') {
+    o.frequency.setValueAtTime(523, ctx.currentTime);
+    o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+    o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    o.start(); o.stop(ctx.currentTime + 0.5);
+  } else {
+    o.frequency.setValueAtTime(300, ctx.currentTime);
+    o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    o.start(); o.stop(ctx.currentTime + 0.4);
+  }
+}
+
+// --- DRAG AND DROP (desktop) ---
+
+document.querySelectorAll('.node-card').forEach(card => {
+  card.addEventListener('dragstart', e => {
+    draggedId = card.dataset.id;
+    card.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+  });
+  card.addEventListener('dragend', () => {
+    card.classList.remove('dragging');
+  });
+});
+
+document.querySelectorAll('.drop-zone').forEach(zone => {
+  zone.addEventListener('dragover', e => {
+    e.preventDefault();
+    zone.classList.add('drag-over');
+  });
+  zone.addEventListener('dragleave', () => {
+    zone.classList.remove('drag-over');
+  });
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
+    zone.classList.remove('drag-over');
+    if (!draggedId) return;
+
+    // Se zone já tem um node, devolve ao pool
+    if (zone.classList.contains('filled')) {
+      const existingId = zone.dataset.nodeId;
+      returnToPool(existingId);
+    }
+
+    placeNode(draggedId, zone);
+    draggedId = null;
+  });
+});
+
+function placeNode(nodeId, zone) {
+  const card = document.querySelector(`.node-card[data-id="${nodeId}"]`);
+  if (!card) return;
+
+  card.classList.add('placed');
+
+  zone.classList.add('filled');
+  zone.dataset.nodeId = nodeId;
+  zone.innerHTML = `<button class="placed-node" onclick="returnToPool('${nodeId}')" title="Clique para remover">${card.innerHTML} ✕</button>`;
+}
+
+function returnToPool(nodeId) {
+  const card = document.querySelector(`.node-card[data-id="${nodeId}"]`);
+  if (!card) return;
+
+  card.classList.remove('placed');
+
+  // Limpar a drop-zone que continha esse node
+  document.querySelectorAll('.drop-zone').forEach(zone => {
+    if (zone.dataset.nodeId === nodeId) {
+      zone.classList.remove('filled');
+      delete zone.dataset.nodeId;
+      zone.innerHTML = '<span class="placeholder-text">Arraste aqui...</span>';
+    }
+  });
+}
+
+// --- TOUCH SUPPORT ---
+let touchDragId = null;
+let touchClone = null;
+
+document.querySelectorAll('.node-card').forEach(card => {
+  card.addEventListener('touchstart', e => {
+    touchDragId = card.dataset.id;
+    card.classList.add('dragging');
+
+    touchClone = card.cloneNode(true);
+    touchClone.style.cssText = `
+      position: fixed; z-index: 1000; opacity: 0.85; pointer-events: none;
+      width: ${card.offsetWidth}px; transform: scale(1.05);
+    `;
+    document.body.appendChild(touchClone);
+
+    const touch = e.touches[0];
+    touchClone.style.left = (touch.clientX - card.offsetWidth / 2) + 'px';
+    touchClone.style.top = (touch.clientY - 20) + 'px';
+  }, { passive: true });
+
+  card.addEventListener('touchmove', e => {
+    if (!touchClone) return;
+    e.preventDefault();
+    const touch = e.touches[0];
+    touchClone.style.left = (touch.clientX - touchClone.offsetWidth / 2) + 'px';
+    touchClone.style.top = (touch.clientY - 30) + 'px';
+
+    document.querySelectorAll('.drop-zone').forEach(z => z.classList.remove('drag-over'));
+    const el = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (el) {
+      const zone = el.closest('.drop-zone');
+      if (zone) zone.classList.add('drag-over');
+    }
+  }, { passive: false });
+
+  card.addEventListener('touchend', e => {
+    if (touchClone) { touchClone.remove(); touchClone = null; }
+
+    const origCard = document.querySelector(`.node-card[data-id="${touchDragId}"]`);
+    if (origCard) origCard.classList.remove('dragging');
+
+    const touch = e.changedTouches[0];
+    const el = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (el) {
+      const zone = el.closest('.drop-zone');
+      if (zone) {
+        zone.classList.remove('drag-over');
+        if (zone.classList.contains('filled')) {
+          returnToPool(zone.dataset.nodeId);
+        }
+        placeNode(touchDragId, zone);
+      }
+    }
+
+    touchDragId = null;
+  });
+});
+
+// --- CHECK ---
+function checkAnswers() {
+  const allPlaced = document.querySelectorAll('.drop-zone.filled');
+  if (allPlaced.length < 7) {
+    alert('Coloque todos os 7 cards antes de verificar!');
+    return;
+  }
+
+  let correct = 0;
+  const slotResults = {};
+
+  allPlaced.forEach(zone => {
+    const nodeId = zone.dataset.nodeId;
+    const slotId = zone.dataset.slot;
+    const isCorrect = gabarito[nodeId] === slotId;
+    if (isCorrect) correct++;
+
+    if (!slotResults[slotId]) slotResults[slotId] = { correct: 0, wrong: 0 };
+    if (isCorrect) slotResults[slotId].correct++; else slotResults[slotId].wrong++;
+  });
+
+  const panel = document.getElementById('result-panel');
+  const emoji = document.getElementById('result-emoji');
+  const title = document.getElementById('result-title');
+  const detail = document.getElementById('result-detail');
+  const slotResultsDiv = document.getElementById('slot-results');
+
+  panel.classList.add('show');
+
+  if (correct === 7) {
+    emoji.textContent = '🏆';
+    title.textContent = 'Mapa perfeito!';
+    detail.textContent = 'Você classificou tudo certinho! A Tempa está muito orgulhosa de você!';
+    playSound('correct');
+  } else if (correct >= 5) {
+    emoji.textContent = '🎉';
+    title.textContent = `${correct} de 7 corretos!`;
+    detail.textContent = 'Quase lá! Revise os grupos marcados em vermelho.';
+    playSound('correct');
+  } else {
+    emoji.textContent = '💪';
+    title.textContent = `${correct} de 7 corretos`;
+    detail.textContent = 'Continue tentando! Revise os grupos e tente de novo.';
+    playSound('wrong');
+  }
+
+  // Slot-by-slot feedback
+  slotResultsDiv.innerHTML = '';
+  Object.entries(slotLabels).forEach(([slotId, label]) => {
+    const r = slotResults[slotId] || { correct: 0, wrong: 0 };
+    const hasWrong = r.wrong > 0;
+    const div = document.createElement('div');
+    div.className = 'slot-result ' + (hasWrong ? 'nok' : 'ok');
+    div.textContent = (hasWrong ? '❌ ' : '✅ ') + label + ': ' + (hasWrong ? 'Tem algo errado aqui!' : 'Correto!');
+    slotResultsDiv.appendChild(div);
+  });
+
+  panel.scrollIntoView({ behavior: 'smooth' });
+}
+
+function resetAll() {
+  document.querySelectorAll('.node-card').forEach(c => c.classList.remove('placed', 'dragging'));
+  document.querySelectorAll('.drop-zone').forEach(z => {
+    z.classList.remove('filled', 'drag-over');
+    delete z.dataset.nodeId;
+    z.innerHTML = '<span class="placeholder-text">Arraste aqui...</span>';
+  });
+  document.getElementById('result-panel').classList.remove('show');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Interativo — Mudanças na Convivência | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #A855F7;
+  --light: #D08EF8;
+  --bg: #FAF5FF;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  background: linear-gradient(135deg, #4A1272, #A855F7 60%, #D08EF8);
+  color: white;
+  padding: 24px 20px 20px;
+  text-align: center;
+}
+
+.header-emoji {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.header h1 {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  margin-bottom: 4px;
+}
+
+.header p {
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+.badge {
+  display: inline-block;
+  background: rgba(255,255,255,0.2);
+  border-radius: 20px;
+  padding: 4px 14px;
+  font-size: 0.9rem;
+  margin-top: 8px;
+}
+
+main {
+  flex: 1;
+  padding: 24px 16px;
+  max-width: 700px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.progress-bar-wrap {
+  background: #E9D5FF;
+  border-radius: 20px;
+  height: 12px;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 20px;
+  transition: width 0.4s ease;
+}
+
+.progress-label {
+  text-align: right;
+  font-size: 0.9rem;
+  color: #7E22CE;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.question-card {
+  background: white;
+  border-radius: 20px;
+  padding: 28px 24px;
+  box-shadow: 0 4px 20px rgba(168,85,247,0.12);
+  margin-bottom: 20px;
+}
+
+.question-number {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 10px;
+}
+
+.question-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #3B1B6E;
+  line-height: 1.4;
+  margin-bottom: 24px;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.option-btn {
+  background: var(--bg);
+  border: 3px solid #E9D5FF;
+  border-radius: 14px;
+  padding: 16px 20px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #3B1B6E;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+  min-height: 54px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.option-btn:hover:not(:disabled) {
+  border-color: var(--primary);
+  background: #F3E8FF;
+  transform: translateY(-2px);
+}
+
+.option-btn.correct {
+  background: #D1FAE5;
+  border-color: #10B981;
+  color: #065F46;
+}
+
+.option-btn.wrong {
+  background: #FEE2E2;
+  border-color: #EF4444;
+  color: #991B1B;
+}
+
+.option-btn:disabled {
+  cursor: not-allowed;
+}
+
+.option-letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: white;
+  font-size: 0.95rem;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+
+.option-btn.correct .option-letter {
+  background: #10B981;
+}
+
+.option-btn.wrong .option-letter {
+  background: #EF4444;
+}
+
+.feedback-box {
+  margin-top: 16px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  display: none;
+}
+
+.feedback-box.show { display: block; }
+
+.feedback-box.correct {
+  background: #D1FAE5;
+  color: #065F46;
+  border: 2px solid #10B981;
+}
+
+.feedback-box.wrong {
+  background: #FEE2E2;
+  color: #991B1B;
+  border: 2px solid #EF4444;
+}
+
+.btn-next {
+  width: 100%;
+  margin-top: 16px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 16px 24px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  display: none;
+  min-height: 54px;
+}
+
+.btn-next:hover { background: #9333EA; }
+.btn-next.show { display: block; }
+
+.result-screen {
+  display: none;
+  text-align: center;
+  padding: 20px;
+}
+
+.result-screen.show { display: block; }
+
+.result-emoji {
+  font-size: 5rem;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.result-score {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+
+.result-msg {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #3B1B6E;
+  margin-bottom: 24px;
+  line-height: 1.4;
+}
+
+.stars {
+  font-size: 2.2rem;
+  margin-bottom: 24px;
+  letter-spacing: 4px;
+}
+
+.btn-retry {
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 16px 32px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.2s;
+  min-height: 54px;
+}
+
+.btn-retry:hover { background: #9333EA; }
+
+footer {
+  text-align: center;
+  padding: 20px;
+  border-top: 2px solid #E9D5FF;
+}
+
+.btn-back {
+  background: white;
+  color: var(--primary);
+  border: 3px solid var(--primary);
+  border-radius: 14px;
+  padding: 14px 28px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-height: 48px;
+}
+
+.btn-back:hover {
+  background: var(--primary);
+  color: white;
+}
+
+@media (max-width: 480px) {
+  body { font-size: 1.15rem; }
+  .header h1 { font-size: 1.3rem; }
+  .question-text { font-size: 1.3rem; }
+  .option-btn { font-size: 1.1rem; padding: 14px 14px; }
+  .result-score { font-size: 2.4rem; }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <span class="header-emoji">⏳</span>
+  <h1>Quiz — Mudanças na Convivência</h1>
+  <p>Teste seus conhecimentos com a Tempa!</p>
+  <span class="badge">📖 Retrieval Practice</span>
+</header>
+
+<main>
+  <div id="quiz-area">
+    <div class="progress-bar-wrap">
+      <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
+    </div>
+    <div class="progress-label" id="progress-label">Questão 1 de 8</div>
+
+    <div class="question-card" id="question-card">
+      <div class="question-number" id="question-number">Questão 1</div>
+      <div class="question-text" id="question-text"></div>
+      <div class="options" id="options-container"></div>
+      <div class="feedback-box" id="feedback-box"></div>
+      <button class="btn-next" id="btn-next" onclick="nextQuestion()">Próxima Questão →</button>
+    </div>
+  </div>
+
+  <div class="result-screen" id="result-screen">
+    <span class="result-emoji" id="result-emoji"></span>
+    <div class="result-score" id="result-score"></div>
+    <div class="stars" id="result-stars"></div>
+    <div class="result-msg" id="result-msg"></div>
+    <button class="btn-retry" onclick="restartQuiz()">Tentar novamente!</button>
+  </div>
+</main>
+
+<footer>
+  <button class="btn-back" onclick="window.close()">← Voltar ao Portal</button>
+</footer>
+
+<script>
+const questions = [
+  {
+    text: "O que significa dizer que algo aconteceu 'há cem anos'?",
+    options: ["No passado, muito tempo atrás", "Ontem", "Daqui a cem anos"],
+    correct: 0,
+    feedback_correct: "Isso mesmo! 'Há cem anos' significa no passado, bem longe do presente!",
+    feedback_wrong: "Opa! 'Há cem anos' fala do passado — muito tempo atrás do nosso presente."
+  },
+  {
+    text: "Onde as pessoas se reuniam para conversar há cem anos?",
+    options: ["Nas calçadas", "No shopping", "No cinema"],
+    correct: 0,
+    feedback_correct: "Correto! As calçadas eram o principal local de convivência no passado!",
+    feedback_wrong: "Não era bem assim! As pessoas se reuniam nas calçadas — o shopping e o cinema são invenções mais modernas."
+  },
+  {
+    text: "O que é uma fonte histórica visual?",
+    options: ["Uma imagem que nos conta sobre o passado", "Um texto escrito", "Um vídeo moderno"],
+    correct: 0,
+    feedback_correct: "Muito bem! Uma fonte histórica visual é uma imagem que nos ajuda a entender o passado!",
+    feedback_wrong: "Quase! Fonte histórica visual é uma imagem — como a pintura 'O Circo' — que nos conta sobre o passado."
+  },
+  {
+    text: "O que as mudanças na convivência mostram?",
+    options: ["Como as formas de se reunir mudaram ao longo do tempo", "Que as pessoas não se reúnem mais", "Que o passado era melhor"],
+    correct: 0,
+    feedback_correct: "Excelente! As mudanças na convivência mostram que as formas de se reunir foram se transformando!",
+    feedback_wrong: "Vamos pensar juntos! As mudanças na convivência mostram como as formas de se reunir foram mudando com o tempo."
+  },
+  {
+    text: "Como se chamam os espaços coletivos usados por moradores de um prédio?",
+    options: ["Áreas de convivência", "Quartos", "Calçadas"],
+    correct: 0,
+    feedback_correct: "Perfeito! Áreas de convivência são os espaços coletivos dos prédios modernos!",
+    feedback_wrong: "Não é isso! Os espaços coletivos dos prédios se chamam áreas de convivência."
+  },
+  {
+    text: "O que a pintura 'O Circo' representa?",
+    options: ["Uma forma de lazer coletivo no passado", "Um circo atual", "Uma escola"],
+    correct: 0,
+    feedback_correct: "Ótimo! 'O Circo' é uma fonte histórica visual que mostra o lazer coletivo no passado!",
+    feedback_wrong: "Pense bem! A pintura 'O Circo' é uma fonte histórica visual — ela representa o lazer coletivo no passado."
+  },
+  {
+    text: "Como podemos aprender sobre a convivência no passado?",
+    options: ["Estudando fontes históricas", "Inventando histórias", "Perguntando apenas para crianças"],
+    correct: 0,
+    feedback_correct: "Arrasou! As fontes históricas são a melhor forma de aprender sobre o passado!",
+    feedback_wrong: "Não é bem assim! Para aprender sobre o passado, estudamos fontes históricas — imagens, relatos e documentos."
+  },
+  {
+    text: "O que mudou e o que permaneceu nas formas de convivência?",
+    options: ["Os locais mudaram, mas a necessidade de conviver permaneceu", "Tudo mudou completamente", "Nada mudou"],
+    correct: 0,
+    feedback_correct: "Incrível! Muito bem! Os locais mudaram, mas as pessoas sempre precisaram conviver!",
+    feedback_wrong: "Pense novamente! Os locais de convivência mudaram com o tempo, mas a necessidade de se reunir com outras pessoas sempre existiu!"
+  }
+];
+
+let current = 0;
+let score = 0;
+let answered = false;
+
+function playSound(type) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  if (type === 'correct') {
+    o.frequency.setValueAtTime(523, ctx.currentTime);
+    o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+    o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    o.start(); o.stop(ctx.currentTime + 0.5);
+  } else {
+    o.frequency.setValueAtTime(300, ctx.currentTime);
+    o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    o.start(); o.stop(ctx.currentTime + 0.4);
+  }
+}
+
+function loadQuestion() {
+  answered = false;
+  const q = questions[current];
+  const letters = ['A', 'B', 'C'];
+
+  document.getElementById('question-number').textContent = `Questão ${current + 1}`;
+  document.getElementById('question-text').textContent = q.text;
+  document.getElementById('progress-label').textContent = `Questão ${current + 1} de ${questions.length}`;
+  document.getElementById('progress-bar').style.width = `${(current / questions.length) * 100}%`;
+
+  const feedback = document.getElementById('feedback-box');
+  feedback.className = 'feedback-box';
+  feedback.textContent = '';
+
+  document.getElementById('btn-next').classList.remove('show');
+
+  const container = document.getElementById('options-container');
+  container.innerHTML = '';
+  q.options.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="option-letter">${letters[idx]}</span> ${opt}`;
+    btn.onclick = () => selectAnswer(idx);
+    container.appendChild(btn);
+  });
+}
+
+function selectAnswer(idx) {
+  if (answered) return;
+  answered = true;
+
+  const q = questions[current];
+  const buttons = document.querySelectorAll('.option-btn');
+  const feedback = document.getElementById('feedback-box');
+  const btnNext = document.getElementById('btn-next');
+
+  buttons.forEach(btn => btn.disabled = true);
+
+  if (idx === q.correct) {
+    score++;
+    buttons[idx].classList.add('correct');
+    feedback.textContent = '✅ ' + q.feedback_correct;
+    feedback.className = 'feedback-box show correct';
+    playSound('correct');
+    btnNext.textContent = current < questions.length - 1 ? 'Próxima Questão →' : 'Ver Resultado!';
+  } else {
+    buttons[idx].classList.add('wrong');
+    buttons[q.correct].classList.add('correct');
+    feedback.textContent = '❌ ' + q.feedback_wrong;
+    feedback.className = 'feedback-box show wrong';
+    playSound('wrong');
+    btnNext.textContent = current < questions.length - 1 ? 'Próxima Questão →' : 'Ver Resultado!';
+  }
+
+  btnNext.classList.add('show');
+}
+
+function nextQuestion() {
+  current++;
+  if (current >= questions.length) {
+    showResult();
+  } else {
+    loadQuestion();
+  }
+}
+
+function showResult() {
+  document.getElementById('quiz-area').style.display = 'none';
+  const rs = document.getElementById('result-screen');
+  rs.classList.add('show');
+
+  const pct = score / questions.length;
+  let emoji, msg, stars;
+
+  if (pct === 1) {
+    emoji = '🏆'; stars = '⭐⭐⭐⭐⭐';
+    msg = 'Uau! Perfeito! Você é um historiador incrível, Lis! A Tempa ficou muito orgulhosa!';
+  } else if (pct >= 0.75) {
+    emoji = '🎉'; stars = '⭐⭐⭐⭐';
+    msg = 'Muito bem! Você aprendeu muito sobre as mudanças na convivência!';
+  } else if (pct >= 0.5) {
+    emoji = '😊'; stars = '⭐⭐⭐';
+    msg = 'Bom trabalho! Que tal revisar o conteúdo e tentar de novo?';
+  } else {
+    emoji = '💪'; stars = '⭐⭐';
+    msg = 'Continue estudando! Cada tentativa te deixa mais esperto sobre o passado e o presente!';
+  }
+
+  document.getElementById('result-emoji').textContent = emoji;
+  document.getElementById('result-score').textContent = `${score} de ${questions.length} acertos`;
+  document.getElementById('result-stars').textContent = stars;
+  document.getElementById('result-msg').textContent = msg;
+
+  document.getElementById('progress-bar').style.width = '100%';
+}
+
+function restartQuiz() {
+  current = 0;
+  score = 0;
+  document.getElementById('quiz-area').style.display = 'block';
+  document.getElementById('result-screen').classList.remove('show');
+  loadQuestion();
+}
+
+loadQuestion();
+</script>
+</body>
+</html>

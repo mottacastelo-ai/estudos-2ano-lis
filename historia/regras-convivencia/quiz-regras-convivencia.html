@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz — Regras de Convivência | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #A855F7;
+  --light: #D08EF8;
+  --bg: #FAF5FF;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  background: linear-gradient(135deg, #4A1272, #A855F7 60%, #D08EF8);
+  color: white;
+  padding: 24px 20px;
+  text-align: center;
+}
+
+header .personagem {
+  font-size: 3rem;
+  margin-bottom: 8px;
+}
+
+header h1 {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+header p {
+  font-size: 1rem;
+  opacity: 0.9;
+  margin-top: 4px;
+}
+
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 32px 20px;
+  flex: 1;
+  width: 100%;
+}
+
+.progresso-bar {
+  background: #E9D5FF;
+  border-radius: 99px;
+  height: 10px;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+
+.progresso-fill {
+  background: var(--primary);
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+
+.progresso-texto {
+  font-size: 0.95rem;
+  color: #7C3AED;
+  font-weight: 700;
+  margin-bottom: 24px;
+  text-align: right;
+}
+
+.card-questao {
+  background: white;
+  border-radius: 20px;
+  padding: 28px 28px 24px;
+  box-shadow: 0 4px 20px rgba(168, 85, 247, 0.12);
+  margin-bottom: 24px;
+}
+
+.numero-questao {
+  display: inline-block;
+  background: var(--primary);
+  color: white;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 800;
+  padding: 4px 14px;
+  border-radius: 99px;
+  margin-bottom: 16px;
+}
+
+.enunciado {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #3B1060;
+  line-height: 1.4;
+  margin-bottom: 24px;
+}
+
+.opcoes {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.opcao-btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #F5F0FF;
+  border: 3px solid transparent;
+  border-radius: 14px;
+  padding: 16px 20px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #4A1272;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+  min-height: 56px;
+  width: 100%;
+}
+
+.opcao-btn:hover:not(:disabled) {
+  border-color: var(--primary);
+  background: #EDE9FE;
+  transform: translateX(4px);
+}
+
+.opcao-btn .letra {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  background: var(--primary);
+  color: white;
+  border-radius: 50%;
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.opcao-btn.correta {
+  background: #D1FAE5;
+  border-color: #10B981;
+  color: #065F46;
+}
+
+.opcao-btn.correta .letra {
+  background: #10B981;
+}
+
+.opcao-btn.errada {
+  background: #FEE2E2;
+  border-color: #EF4444;
+  color: #7F1D1D;
+}
+
+.opcao-btn.errada .letra {
+  background: #EF4444;
+}
+
+.opcao-btn:disabled {
+  cursor: default;
+}
+
+.feedback {
+  display: none;
+  margin-top: 16px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.feedback.show { display: flex; align-items: flex-start; gap: 10px; }
+
+.feedback.ok {
+  background: #D1FAE5;
+  color: #065F46;
+}
+
+.feedback.nao {
+  background: #FEE2E2;
+  color: #7F1D1D;
+}
+
+.btn-avancar {
+  display: none;
+  margin-top: 20px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 16px 32px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.2s;
+}
+
+.btn-avancar:hover { background: #9333EA; }
+.btn-avancar.show { display: block; }
+
+/* Tela final */
+.tela-final {
+  display: none;
+  text-align: center;
+  padding: 20px;
+}
+
+.tela-final .emoji-final {
+  font-size: 5rem;
+  margin-bottom: 16px;
+}
+
+.tela-final h2 {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 2rem;
+  color: #4A1272;
+  margin-bottom: 12px;
+}
+
+.tela-final .placar {
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--primary);
+  margin: 16px 0;
+}
+
+.tela-final .mensagem {
+  font-size: 1.3rem;
+  color: #5B21B6;
+  margin-bottom: 28px;
+  line-height: 1.5;
+}
+
+.btn-reiniciar {
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 16px 36px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-reiniciar:hover { background: #9333EA; }
+
+footer {
+  background: white;
+  border-top: 2px solid #E9D5FF;
+  padding: 16px 20px;
+  text-align: center;
+}
+
+.btn-voltar {
+  background: transparent;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  border-radius: 12px;
+  padding: 10px 24px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-voltar:hover {
+  background: var(--primary);
+  color: white;
+}
+
+@media (max-width: 480px) {
+  body { font-size: 1.15rem; }
+  header h1 { font-size: 1.4rem; }
+  .container { padding: 20px 14px; }
+  .card-questao { padding: 20px 16px; }
+  .enunciado { font-size: 1.3rem; }
+  .opcao-btn { font-size: 1.1rem; padding: 14px 14px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="personagem">📋</div>
+  <h1>Quiz — Regras de Convivência</h1>
+  <p>Veja o que você aprendeu sobre convivência e combinados!</p>
+</header>
+
+<div class="container">
+
+  <div id="area-quiz">
+    <div class="progresso-bar">
+      <div class="progresso-fill" id="progresso-fill" style="width: 0%"></div>
+    </div>
+    <div class="progresso-texto" id="progresso-texto">Questão 1 de 8</div>
+
+    <div class="card-questao">
+      <div class="numero-questao" id="num-questao">Questão 1</div>
+      <div class="enunciado" id="enunciado"></div>
+      <div class="opcoes" id="opcoes"></div>
+      <div class="feedback" id="feedback"></div>
+      <button class="btn-avancar" id="btn-avancar" onclick="proxima()">Próxima ➜</button>
+    </div>
+  </div>
+
+  <div class="tela-final" id="tela-final">
+    <div class="emoji-final" id="emoji-final">🎉</div>
+    <h2 id="titulo-final">Incrível, Lis!</h2>
+    <div class="placar" id="placar-final">0/8</div>
+    <div class="mensagem" id="mensagem-final"></div>
+    <button class="btn-reiniciar" onclick="reiniciar()">Tentar de novo 🔄</button>
+  </div>
+
+</div>
+
+<footer>
+  <button class="btn-voltar" onclick="window.close()">← Voltar ao Portal</button>
+</footer>
+
+<script>
+const questoes = [
+  {
+    enunciado: "O que é convivência?",
+    opcoes: ["Viver junto com outras pessoas", "Estudar sozinho em casa", "Brincar sem companhia"],
+    correta: 0,
+    feedback_ok: "Isso mesmo! Convivência é viver junto com outras pessoas. 🤝",
+    feedback_nao: "Não é bem isso. Convivência é viver junto com outras pessoas!"
+  },
+  {
+    enunciado: "Como chamamos as regras que a turma cria junto?",
+    opcoes: ["Combinados", "Deveres", "Contas"],
+    correta: 0,
+    feedback_ok: "Perfeito! Os combinados são as regras criadas por todos juntos. 📋",
+    feedback_nao: "Hmm, não! O livro chama essas regras de combinados!"
+  },
+  {
+    enunciado: "Qual é a primeira etapa para criar os combinados?",
+    opcoes: ["O aluno dá uma sugestão", "A professora escreve", "Todos votam"],
+    correta: 0,
+    feedback_ok: "Ótimo! Primeiro o aluno sugere uma ideia. 💡",
+    feedback_nao: "Não exatamente. A primeira etapa é o aluno dar uma sugestão!"
+  },
+  {
+    enunciado: "Qual atitude ajuda na boa convivência na sala?",
+    opcoes: ["Levantar a mão para falar", "Gritar a resposta", "Ignorar o colega"],
+    correta: 0,
+    feedback_ok: "Arrasou! Levantar a mão para falar é uma atitude de boa convivência. 🙋",
+    feedback_nao: "Hmm, não! Levantar a mão para falar é a atitude certa."
+  },
+  {
+    enunciado: "Qual é um local de convivência coletiva na comunidade?",
+    opcoes: ["A praça", "O quarto", "O armário"],
+    correta: 0,
+    feedback_ok: "Muito bem! A praça é um local de convivência coletiva. 🌳",
+    feedback_nao: "Não é esse. A praça é um local onde todos convivem juntos!"
+  },
+  {
+    enunciado: "O que significa cuidar do material coletivo?",
+    opcoes: ["Zelar pelo que é de todos", "Guardar só o seu lápis", "Deixar o material no chão"],
+    correta: 0,
+    feedback_ok: "Excelente! Cuidar do material coletivo é zelar pelo que é de todos. 🎒",
+    feedback_nao: "Hmm, não! Cuidar do material coletivo significa zelar pelo que é de todos."
+  },
+  {
+    enunciado: "Por que as regras são importantes?",
+    opcoes: ["Ajudam todos a viver melhor juntos", "São obrigatórias por lei", "Só valem dentro da escola"],
+    correta: 0,
+    feedback_ok: "Perfeito! As regras ajudam todos a viver melhor juntos. 🌟",
+    feedback_nao: "Não é bem isso. As regras existem para ajudar todos a viver melhor juntos!"
+  },
+  {
+    enunciado: "O que é necessário para ter educação de qualidade?",
+    opcoes: ["Boa convivência entre todos", "Muitos livros na sala", "Uma escola muito grande"],
+    correta: 0,
+    feedback_ok: "Incrível! A boa convivência entre todos é o que garante educação de qualidade. 🎓",
+    feedback_nao: "Hmm, não! O livro diz que a boa convivência entre todos é necessária para a educação de qualidade."
+  }
+];
+
+let indice = 0;
+let acertos = 0;
+let respondida = false;
+
+function playSound(type) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  if (type === 'correct') {
+    o.frequency.setValueAtTime(523, ctx.currentTime);
+    o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+    o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    o.start(); o.stop(ctx.currentTime + 0.5);
+  } else {
+    o.frequency.setValueAtTime(300, ctx.currentTime);
+    o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    o.start(); o.stop(ctx.currentTime + 0.4);
+  }
+}
+
+function renderQuestao() {
+  respondida = false;
+  const q = questoes[indice];
+  document.getElementById('num-questao').textContent = 'Questão ' + (indice + 1);
+  document.getElementById('enunciado').textContent = q.enunciado;
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('feedback').innerHTML = '';
+  document.getElementById('btn-avancar').className = 'btn-avancar';
+  document.getElementById('progresso-texto').textContent = 'Questão ' + (indice + 1) + ' de ' + questoes.length;
+  document.getElementById('progresso-fill').style.width = (indice / questoes.length * 100) + '%';
+
+  const letras = ['A', 'B', 'C'];
+  const opcDiv = document.getElementById('opcoes');
+  opcDiv.innerHTML = '';
+  q.opcoes.forEach((texto, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opcao-btn';
+    btn.innerHTML = '<span class="letra">' + letras[i] + '</span>' + texto;
+    btn.onclick = () => responder(i);
+    opcDiv.appendChild(btn);
+  });
+}
+
+function responder(escolha) {
+  if (respondida) return;
+  respondida = true;
+  const q = questoes[indice];
+  const btns = document.querySelectorAll('.opcao-btn');
+  btns.forEach(b => b.disabled = true);
+
+  const feedbackEl = document.getElementById('feedback');
+
+  if (escolha === q.correta) {
+    btns[escolha].classList.add('correta');
+    acertos++;
+    playSound('correct');
+    feedbackEl.className = 'feedback ok show';
+    feedbackEl.innerHTML = '<span>✅</span><span>' + q.feedback_ok + '</span>';
+  } else {
+    btns[escolha].classList.add('errada');
+    btns[q.correta].classList.add('correta');
+    playSound('wrong');
+    feedbackEl.className = 'feedback nao show';
+    feedbackEl.innerHTML = '<span>❌</span><span>' + q.feedback_nao + '</span>';
+  }
+
+  const btnAv = document.getElementById('btn-avancar');
+  if (indice === questoes.length - 1) {
+    btnAv.textContent = 'Ver resultado 🎉';
+  }
+  btnAv.className = 'btn-avancar show';
+}
+
+function proxima() {
+  indice++;
+  if (indice >= questoes.length) {
+    mostrarFinal();
+  } else {
+    renderQuestao();
+  }
+}
+
+function mostrarFinal() {
+  document.getElementById('area-quiz').style.display = 'none';
+  const tela = document.getElementById('tela-final');
+  tela.style.display = 'block';
+
+  document.getElementById('placar-final').textContent = acertos + '/' + questoes.length;
+
+  let emoji, titulo, msg;
+  if (acertos === 8) {
+    emoji = '🏆'; titulo = 'Nota 10, Lis!';
+    msg = 'Você acertou tudo! Você sabe muito sobre convivência e combinados. Que incrível!';
+  } else if (acertos >= 6) {
+    emoji = '🌟'; titulo = 'Muito bem, Lis!';
+    msg = 'Você foi ótima! Estuda mais um pouquinho e vai acertar tudo!';
+  } else if (acertos >= 4) {
+    emoji = '😊'; titulo = 'Bom esforço, Lis!';
+    msg = 'Você está aprendendo muito sobre regras de convivência. Continue praticando!';
+  } else {
+    emoji = '💪'; titulo = 'Não desista, Lis!';
+    msg = 'A convivência tem muitos segredos. Tente de novo e você vai melhorar!';
+  }
+
+  document.getElementById('emoji-final').textContent = emoji;
+  document.getElementById('titulo-final').textContent = titulo;
+  document.getElementById('mensagem-final').textContent = msg;
+}
+
+function reiniciar() {
+  indice = 0;
+  acertos = 0;
+  document.getElementById('tela-final').style.display = 'none';
+  document.getElementById('area-quiz').style.display = 'block';
+  renderQuestao();
+}
+
+renderQuestao();
+</script>
+</body>
+</html>

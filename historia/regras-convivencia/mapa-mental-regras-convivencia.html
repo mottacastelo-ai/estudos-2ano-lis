@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapa Mental — Regras de Convivência | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #A855F7;
+  --light: #D08EF8;
+  --bg: #FAF5FF;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  background: linear-gradient(135deg, #4A1272, #A855F7 60%, #D08EF8);
+  color: white;
+  padding: 24px 20px;
+  text-align: center;
+}
+
+header .personagem { font-size: 3rem; margin-bottom: 8px; }
+
+header h1 {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+header p { font-size: 1rem; opacity: 0.9; margin-top: 4px; }
+
+.instrucao {
+  background: white;
+  border-left: 5px solid var(--primary);
+  margin: 24px auto;
+  max-width: 720px;
+  padding: 16px 20px;
+  border-radius: 0 14px 14px 0;
+  font-size: 1.15rem;
+  color: #4A1272;
+  font-weight: 700;
+  width: calc(100% - 40px);
+}
+
+.container {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 20px 32px;
+  flex: 1;
+  width: 100%;
+}
+
+/* Banco de nodes */
+.banco-titulo {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #5B21B6;
+  margin-bottom: 12px;
+}
+
+.banco {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  background: white;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 2px 12px rgba(168,85,247,0.1);
+  min-height: 64px;
+  margin-bottom: 28px;
+}
+
+/* Nó arrastável */
+.node {
+  background: var(--primary);
+  color: white;
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: grab;
+  user-select: none;
+  transition: transform 0.15s, box-shadow 0.15s;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  touch-action: none;
+}
+
+.node:active { cursor: grabbing; transform: scale(1.06); box-shadow: 0 6px 20px rgba(168,85,247,0.35); }
+.node.dragging { opacity: 0.5; }
+.node.encaixado { display: none; }
+
+/* Slots */
+.slots-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.slot-card {
+  background: white;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 2px 12px rgba(168,85,247,0.1);
+}
+
+.slot-label {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #4A1272;
+  margin-bottom: 10px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+
+.slot-label .icone { font-size: 1.4rem; margin-right: 8px; flex-shrink: 0; }
+
+.slot-area {
+  background: #F5F0FF;
+  border: 3px dashed #C084FC;
+  border-radius: 12px;
+  min-height: 80px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.slot-area.drag-over {
+  background: #EDE9FE;
+  border-color: var(--primary);
+}
+
+.slot-area.correto { border-color: #10B981; background: #D1FAE5; }
+.slot-area.errado { border-color: #EF4444; background: #FEE2E2; }
+
+.node-encaixado {
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.node-encaixado.aguardando { background: #C4B5FD; color: #4A1272; }
+.node-encaixado.ok { background: #6EE7B7; color: #065F46; }
+.node-encaixado.nao-ok { background: #FCA5A5; color: #7F1D1D; }
+
+/* Nó central */
+.no-central {
+  text-align: center;
+  margin: 0 auto 24px;
+  background: linear-gradient(135deg, #4A1272, #A855F7);
+  color: white;
+  border-radius: 20px;
+  padding: 18px 28px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  max-width: 320px;
+  box-shadow: 0 6px 24px rgba(168,85,247,0.3);
+}
+
+.no-central .sub { font-size: 0.85rem; font-weight: 700; opacity: 0.85; margin-top: 4px; }
+
+/* Botoes */
+.acoes {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-verificar {
+  flex: 1;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 16px 24px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  min-height: 54px;
+  transition: background 0.2s;
+}
+
+.btn-verificar:hover { background: #9333EA; }
+
+.btn-limpar {
+  flex: 1;
+  background: white;
+  color: var(--primary);
+  border: 3px solid var(--primary);
+  border-radius: 14px;
+  padding: 16px 24px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  min-height: 54px;
+  transition: all 0.2s;
+}
+
+.btn-limpar:hover { background: var(--primary); color: white; }
+
+/* Resultado */
+.resultado {
+  display: none;
+  margin-top: 24px;
+  background: white;
+  border-radius: 20px;
+  padding: 24px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(168,85,247,0.15);
+}
+
+.resultado.show { display: block; }
+
+.resultado .emoji-res { font-size: 3.5rem; margin-bottom: 12px; }
+.resultado h3 {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.6rem;
+  color: #4A1272;
+  margin-bottom: 8px;
+}
+
+.resultado p { font-size: 1.2rem; color: #5B21B6; }
+
+.gabarito-lista {
+  margin-top: 20px;
+  text-align: left;
+  display: none;
+}
+
+.gabarito-lista.show { display: block; }
+.gabarito-lista h4 {
+  font-family: 'Baloo 2', sans-serif;
+  color: #4A1272;
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+}
+
+.gabarito-item {
+  background: #F5F0FF;
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 8px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #3B1060;
+}
+
+.gabarito-item strong { color: var(--primary); }
+
+footer {
+  background: white;
+  border-top: 2px solid #E9D5FF;
+  padding: 16px 20px;
+  text-align: center;
+}
+
+.btn-voltar {
+  background: transparent;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  border-radius: 12px;
+  padding: 10px 24px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-voltar:hover { background: var(--primary); color: white; }
+
+@media (max-width: 540px) {
+  body { font-size: 1.15rem; }
+  header h1 { font-size: 1.4rem; }
+  .slots-grid { grid-template-columns: 1fr; }
+  .slot-label { font-size: 0.95rem; }
+  .no-central { font-size: 1.3rem; padding: 14px 18px; }
+  .acoes { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="personagem">📋</div>
+  <h1>Mapa Mental — Regras de Convivência</h1>
+  <p>Arraste cada ideia para o lugar certo no mapa!</p>
+</header>
+
+<div class="instrucao">
+  💡 Arraste as ideias do banco para a categoria certa. Depois clique em <strong>Verificar</strong>!
+</div>
+
+<div class="container">
+
+  <div class="banco-titulo">Banco de ideias — arraste para classificar:</div>
+  <div class="banco" id="banco">
+    <div class="node" draggable="true" data-id="n1" data-slot="s1">🌳 Praça</div>
+    <div class="node" draggable="true" data-id="n2" data-slot="s1">🎡 Parque</div>
+    <div class="node" draggable="true" data-id="n3" data-slot="s1">⚽ Quadra esportiva</div>
+    <div class="node" draggable="true" data-id="n4" data-slot="s2">🙋 Levantar a mão</div>
+    <div class="node" draggable="true" data-id="n5" data-slot="s2">👂 Ouvir os colegas</div>
+    <div class="node" draggable="true" data-id="n6" data-slot="s2">🎒 Cuidar do material</div>
+    <div class="node" draggable="true" data-id="n7" data-slot="s3">O aluno sugere → todos decidem → professora escreve</div>
+    <div class="node" draggable="true" data-id="n8" data-slot="s4">🤝 Para todos se entenderem bem</div>
+  </div>
+
+  <div class="no-central">
+    📋 CONVIVÊNCIA
+    <div class="sub">Nó central do mapa</div>
+  </div>
+
+  <div class="slots-grid">
+
+    <div class="slot-card">
+      <div class="slot-label"><span class="icone">🏙️</span>Locais de convivência coletiva</div>
+      <div class="slot-area" id="slot-s1" data-slot="s1"></div>
+    </div>
+
+    <div class="slot-card">
+      <div class="slot-label"><span class="icone">✅</span>Atitudes de boa convivência</div>
+      <div class="slot-area" id="slot-s2" data-slot="s2"></div>
+    </div>
+
+    <div class="slot-card">
+      <div class="slot-label"><span class="icone">📝</span>Como os combinados são criados</div>
+      <div class="slot-area" id="slot-s3" data-slot="s3"></div>
+    </div>
+
+    <div class="slot-card">
+      <div class="slot-label"><span class="icone">💬</span>Por que as regras existem</div>
+      <div class="slot-area" id="slot-s4" data-slot="s4"></div>
+    </div>
+
+  </div>
+
+  <div class="acoes">
+    <button class="btn-verificar" onclick="verificar()">Verificar 🔍</button>
+    <button class="btn-limpar" onclick="reiniciar()">Recomeçar 🔄</button>
+  </div>
+
+  <div class="resultado" id="resultado">
+    <div class="emoji-res" id="emoji-res">🎉</div>
+    <h3 id="titulo-res">Mapa completo!</h3>
+    <p id="msg-res"></p>
+    <div class="gabarito-lista" id="gabarito">
+      <h4>Gabarito completo:</h4>
+      <div class="gabarito-item"><strong>Locais de convivência coletiva:</strong> Praça, Parque, Quadra esportiva</div>
+      <div class="gabarito-item"><strong>Atitudes de boa convivência:</strong> Levantar a mão, Ouvir os colegas, Cuidar do material</div>
+      <div class="gabarito-item"><strong>Como os combinados são criados:</strong> O aluno sugere → todos decidem → professora escreve</div>
+      <div class="gabarito-item"><strong>Por que as regras existem:</strong> Para todos se entenderem bem</div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <button class="btn-voltar" onclick="window.close()">← Voltar ao Portal</button>
+</footer>
+
+<script>
+function playSound(type) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  if (type === 'correct') {
+    o.frequency.setValueAtTime(523, ctx.currentTime);
+    o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+    o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    o.start(); o.stop(ctx.currentTime + 0.5);
+  } else {
+    o.frequency.setValueAtTime(300, ctx.currentTime);
+    o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    o.start(); o.stop(ctx.currentTime + 0.4);
+  }
+}
+
+// Estado: { nodeId -> slotId } para encaixes feitos
+const encaixes = {};
+
+// Drag and drop — desktop
+let dragId = null;
+
+document.querySelectorAll('.node').forEach(node => {
+  node.addEventListener('dragstart', e => {
+    dragId = node.dataset.id;
+    setTimeout(() => node.classList.add('dragging'), 0);
+  });
+  node.addEventListener('dragend', () => {
+    node.classList.remove('dragging');
+    dragId = null;
+  });
+});
+
+document.querySelectorAll('.slot-area').forEach(slot => {
+  slot.addEventListener('dragover', e => {
+    e.preventDefault();
+    slot.classList.add('drag-over');
+  });
+  slot.addEventListener('dragleave', () => slot.classList.remove('drag-over'));
+  slot.addEventListener('drop', e => {
+    e.preventDefault();
+    slot.classList.remove('drag-over');
+    if (dragId) encaixarNode(dragId, slot.dataset.slot);
+  });
+});
+
+// Suporte touch
+let touchNode = null;
+let touchClone = null;
+
+document.querySelectorAll('.node').forEach(node => {
+  node.addEventListener('touchstart', e => {
+    touchNode = node;
+    const t = e.touches[0];
+    touchClone = node.cloneNode(true);
+    touchClone.style.position = 'fixed';
+    touchClone.style.opacity = '0.8';
+    touchClone.style.pointerEvents = 'none';
+    touchClone.style.zIndex = 9999;
+    touchClone.style.left = (t.clientX - 60) + 'px';
+    touchClone.style.top = (t.clientY - 20) + 'px';
+    touchClone.style.margin = '0';
+    document.body.appendChild(touchClone);
+    node.classList.add('dragging');
+  }, { passive: true });
+
+  node.addEventListener('touchmove', e => {
+    if (!touchClone) return;
+    e.preventDefault();
+    const t = e.touches[0];
+    touchClone.style.left = (t.clientX - 60) + 'px';
+    touchClone.style.top = (t.clientY - 20) + 'px';
+  }, { passive: false });
+
+  node.addEventListener('touchend', e => {
+    if (!touchNode || !touchClone) return;
+    touchClone.remove();
+    touchClone = null;
+    touchNode.classList.remove('dragging');
+
+    const t = e.changedTouches[0];
+    const el = document.elementFromPoint(t.clientX, t.clientY);
+    const slotArea = el ? el.closest('.slot-area') : null;
+    if (slotArea) {
+      encaixarNode(touchNode.dataset.id, slotArea.dataset.slot);
+    }
+    touchNode = null;
+  });
+});
+
+function encaixarNode(nodeId, slotId) {
+  // Se o node ja estava em outro slot, remover de la
+  if (encaixes[nodeId]) {
+    removerDoSlot(nodeId, encaixes[nodeId]);
+  }
+
+  encaixes[nodeId] = slotId;
+  const nodeEl = document.querySelector('[data-id="' + nodeId + '"]');
+  nodeEl.classList.add('encaixado');
+
+  const slotEl = document.getElementById('slot-' + slotId);
+  const copia = document.createElement('div');
+  copia.className = 'node-encaixado aguardando';
+  copia.dataset.nodeId = nodeId;
+  copia.innerHTML = '🔵 ' + nodeEl.textContent.trim();
+  copia.addEventListener('click', () => devolverAoBanco(nodeId, slotId));
+  copia.title = 'Clique para devolver ao banco';
+  slotEl.appendChild(copia);
+
+  // Limpar marcacoes anteriores
+  slotEl.classList.remove('correto', 'errado');
+
+  // Limpar resultado se havia
+  document.getElementById('resultado').className = 'resultado';
+}
+
+function removerDoSlot(nodeId, slotId) {
+  const slotEl = document.getElementById('slot-' + slotId);
+  const copia = slotEl.querySelector('[data-node-id="' + nodeId + '"]');
+  if (copia) copia.remove();
+}
+
+function devolverAoBanco(nodeId, slotId) {
+  removerDoSlot(nodeId, slotId);
+  delete encaixes[nodeId];
+  const nodeEl = document.querySelector('[data-id="' + nodeId + '"]');
+  nodeEl.classList.remove('encaixado');
+  document.getElementById('slot-' + slotId).classList.remove('correto', 'errado');
+}
+
+function verificar() {
+  // Verificar se tem ao menos algum encaixe
+  if (Object.keys(encaixes).length === 0) {
+    alert('Arraste as ideias para os slots antes de verificar!');
+    return;
+  }
+
+  let acertos = 0;
+  const total = document.querySelectorAll('.node').length;
+
+  // Verificar cada encaixe
+  Object.entries(encaixes).forEach(([nodeId, slotId]) => {
+    const nodeEl = document.querySelector('[data-id="' + nodeId + '"]');
+    const correto = nodeEl.dataset.slot === slotId;
+    const copia = document.querySelector('[data-node-id="' + nodeId + '"]');
+    if (correto) {
+      acertos++;
+      copia.className = 'node-encaixado ok';
+      copia.innerHTML = '✅ ' + nodeEl.textContent.trim();
+    } else {
+      copia.className = 'node-encaixado nao-ok';
+      copia.innerHTML = '❌ ' + nodeEl.textContent.trim();
+    }
+  });
+
+  // Marcar slots com ao menos um correto/errado
+  document.querySelectorAll('.slot-area').forEach(slot => {
+    const slotId = slot.dataset.slot;
+    const nodesDentro = Object.entries(encaixes).filter(([, s]) => s === slotId);
+    if (nodesDentro.length === 0) return;
+    const todosOk = nodesDentro.every(([nId]) => {
+      const nEl = document.querySelector('[data-id="' + nId + '"]');
+      return nEl.dataset.slot === slotId;
+    });
+    slot.classList.remove('correto', 'errado');
+    slot.classList.add(todosOk ? 'correto' : 'errado');
+  });
+
+  const resultado = document.getElementById('resultado');
+  resultado.className = 'resultado show';
+
+  let emoji, titulo, msg;
+  if (acertos === total) {
+    emoji = '🏆'; titulo = 'Mapa perfeito!';
+    msg = 'Você classificou tudo certo! Você entende muito bem sobre convivência e combinados!';
+    playSound('correct');
+  } else if (acertos >= total * 0.6) {
+    emoji = '🌟'; titulo = 'Quase lá!';
+    msg = 'Você acertou ' + acertos + ' de ' + total + ' ideias. Veja os erros em vermelho e tente de novo!';
+    playSound('correct');
+  } else {
+    emoji = '💪'; titulo = 'Continue tentando!';
+    msg = 'Você acertou ' + acertos + ' de ' + total + ' ideias. Olhe as ideias em vermelho e tente outra vez!';
+    playSound('wrong');
+  }
+
+  document.getElementById('emoji-res').textContent = emoji;
+  document.getElementById('titulo-res').textContent = titulo;
+  document.getElementById('msg-res').textContent = msg;
+  document.getElementById('gabarito').className = 'gabarito-lista show';
+
+  resultado.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function reiniciar() {
+  // Devolver todos os nodes ao banco
+  Object.keys(encaixes).forEach(nodeId => {
+    const slotId = encaixes[nodeId];
+    removerDoSlot(nodeId, slotId);
+    const nodeEl = document.querySelector('[data-id="' + nodeId + '"]');
+    nodeEl.classList.remove('encaixado');
+  });
+
+  // Limpar estado
+  for (const key in encaixes) delete encaixes[key];
+
+  // Limpar marcacoes de slots
+  document.querySelectorAll('.slot-area').forEach(slot => {
+    slot.classList.remove('correto', 'errado');
+  });
+
+  // Limpar resultado
+  document.getElementById('resultado').className = 'resultado';
+  document.getElementById('gabarito').className = 'gabarito-lista';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ilustrador — Regras de Convivência | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #A855F7;
+  --light: #D08EF8;
+  --bg: #FAF5FF;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  background: linear-gradient(135deg, #4A1272, #A855F7 60%, #D08EF8);
+  color: white;
+  padding: 24px 20px;
+  text-align: center;
+}
+
+header .personagem { font-size: 3rem; margin-bottom: 8px; }
+
+header h1 {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+header p { font-size: 1rem; opacity: 0.9; margin-top: 4px; }
+
+.container {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 24px 20px 32px;
+  flex: 1;
+  width: 100%;
+}
+
+/* Navegação entre cenas */
+.cenas-nav {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.cena-tab {
+  flex-shrink: 0;
+  background: white;
+  border: 3px solid #E9D5FF;
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #5B21B6;
+  cursor: pointer;
+  min-height: 44px;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.cena-tab.ativa {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.cena-tab.concluida {
+  border-color: #10B981;
+  color: #065F46;
+}
+
+.cena-tab.concluida.ativa {
+  background: #10B981;
+  border-color: #10B981;
+  color: white;
+}
+
+/* Cartao da cena */
+.cena-card {
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(168, 85, 247, 0.12);
+  margin-bottom: 20px;
+}
+
+.cena-titulo {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: #4A1272;
+  margin-bottom: 6px;
+}
+
+.cena-descricao {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #5B21B6;
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  background: #F5F0FF;
+  border-radius: 12px;
+  border-left: 4px solid var(--primary);
+  line-height: 1.5;
+}
+
+/* Canvas de desenho */
+.canvas-wrapper {
+  position: relative;
+  border: 4px solid #E9D5FF;
+  border-radius: 16px;
+  overflow: hidden;
+  background: white;
+  margin-bottom: 16px;
+  cursor: crosshair;
+}
+
+canvas {
+  display: block;
+  touch-action: none;
+}
+
+/* Toolbar de desenho */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+  align-items: center;
+}
+
+.toolbar-grupo {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.toolbar-separador {
+  width: 2px;
+  height: 32px;
+  background: #E9D5FF;
+  flex-shrink: 0;
+}
+
+.cor-btn {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  min-height: 34px;
+  border-radius: 50%;
+  border: 3px solid white;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.cor-btn:hover, .cor-btn.ativa {
+  transform: scale(1.2);
+  box-shadow: 0 0 0 3px var(--primary);
+}
+
+.espessura-btn {
+  background: #EDE9FE;
+  border: 2px solid #C4B5FD;
+  border-radius: 10px;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #4A1272;
+  cursor: pointer;
+  min-height: 36px;
+  transition: all 0.15s;
+}
+
+.espessura-btn.ativa, .espessura-btn:hover {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.ferramenta-btn {
+  background: #EDE9FE;
+  border: 2px solid #C4B5FD;
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #4A1272;
+  cursor: pointer;
+  min-height: 40px;
+  min-width: 44px;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ferramenta-btn.ativa, .ferramenta-btn:hover {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+/* Botoes de acao */
+.acoes {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-limpar {
+  flex: 1;
+  background: white;
+  color: #EF4444;
+  border: 3px solid #FCA5A5;
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  min-height: 50px;
+  transition: all 0.2s;
+}
+
+.btn-limpar:hover { background: #FEE2E2; }
+
+.btn-salvar-cena {
+  flex: 2;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 14px 20px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  min-height: 50px;
+  transition: background 0.2s;
+}
+
+.btn-salvar-cena:hover { background: #9333EA; }
+
+/* Galeria de cenas concluidas */
+.galeria-titulo {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: #4A1272;
+  margin: 24px 0 12px;
+}
+
+.galeria {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.galeria-item {
+  background: white;
+  border-radius: 14px;
+  padding: 10px;
+  box-shadow: 0 2px 10px rgba(168,85,247,0.1);
+  text-align: center;
+}
+
+.galeria-item img {
+  width: 100%;
+  border-radius: 8px;
+  border: 2px solid #E9D5FF;
+  margin-bottom: 6px;
+}
+
+.galeria-item .galeria-label {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #5B21B6;
+}
+
+/* Modal de parabens */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(74, 18, 114, 0.6);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-overlay.show { display: flex; }
+
+.modal {
+  background: white;
+  border-radius: 24px;
+  padding: 32px 28px;
+  text-align: center;
+  max-width: 440px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(74,18,114,0.3);
+}
+
+.modal .emoji-grande { font-size: 4rem; margin-bottom: 16px; }
+
+.modal h2 {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.8rem;
+  color: #4A1272;
+  margin-bottom: 12px;
+}
+
+.modal p {
+  font-size: 1.2rem;
+  color: #5B21B6;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.modal .btn-modal {
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 14px 28px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 800;
+  cursor: pointer;
+  min-height: 50px;
+  width: 100%;
+  transition: background 0.2s;
+}
+
+.modal .btn-modal:hover { background: #9333EA; }
+
+footer {
+  background: white;
+  border-top: 2px solid #E9D5FF;
+  padding: 16px 20px;
+  text-align: center;
+}
+
+.btn-voltar {
+  background: transparent;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  border-radius: 12px;
+  padding: 10px 24px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-voltar:hover { background: var(--primary); color: white; }
+
+@media (max-width: 480px) {
+  body { padding: 0; font-size: 1.15rem; }
+  header h1 { font-size: 1.4rem; }
+  .container { padding: 16px 12px 24px; }
+  .galeria { grid-template-columns: 1fr 1fr; }
+  .acoes { flex-direction: column; }
+  .btn-limpar, .btn-salvar-cena { width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="personagem">📋</div>
+  <h1>Ilustrador de Convivência</h1>
+  <p>Desenhe cenas sobre os combinados e a boa convivência!</p>
+</header>
+
+<div class="container">
+
+  <!-- Tabs das cenas -->
+  <div class="cenas-nav" id="cenas-nav"></div>
+
+  <!-- Cartao da cena atual -->
+  <div class="cena-card" id="cena-card">
+    <div class="cena-titulo" id="cena-titulo"></div>
+    <div class="cena-descricao" id="cena-descricao"></div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="toolbar-grupo" id="paleta-cores"></div>
+      <div class="toolbar-separador"></div>
+      <div class="toolbar-grupo">
+        <button class="espessura-btn ativa" data-esp="4" onclick="setEspessura(4, this)">P</button>
+        <button class="espessura-btn" data-esp="9" onclick="setEspessura(9, this)">M</button>
+        <button class="espessura-btn" data-esp="18" onclick="setEspessura(18, this)">G</button>
+      </div>
+      <div class="toolbar-separador"></div>
+      <div class="toolbar-grupo">
+        <button class="ferramenta-btn ativa" id="btn-pincel" title="Pincel" onclick="setFerramenta('pincel', this)">✏️</button>
+        <button class="ferramenta-btn" id="btn-borracha" title="Borracha" onclick="setFerramenta('borracha', this)">🧹</button>
+      </div>
+    </div>
+
+    <!-- Canvas -->
+    <div class="canvas-wrapper">
+      <canvas id="canvas-desenho" width="680" height="340"></canvas>
+    </div>
+
+    <!-- Acoes -->
+    <div class="acoes">
+      <button class="btn-limpar" onclick="limparCanvas()">🗑️ Apagar tudo</button>
+      <button class="btn-salvar-cena" onclick="salvarCena()">✅ Salvar cena</button>
+    </div>
+  </div>
+
+  <!-- Galeria -->
+  <div id="area-galeria" style="display:none">
+    <div class="galeria-titulo">Minhas ilustrações 🖼️</div>
+    <div class="galeria" id="galeria"></div>
+  </div>
+
+</div>
+
+<!-- Modal de parabens -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <div class="emoji-grande">🎨</div>
+    <h2>Galeria completa!</h2>
+    <p>Você ilustrou todas as cenas de convivência! Que artista incrível, Lis! 🌟</p>
+    <button class="btn-modal" onclick="fecharModal()">Ver minha galeria!</button>
+  </div>
+</div>
+
+<footer>
+  <button class="btn-voltar" onclick="window.close()">← Voltar ao Portal</button>
+</footer>
+
+<script>
+function playSound(type) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  if (type === 'correct') {
+    o.frequency.setValueAtTime(523, ctx.currentTime);
+    o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+    o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    o.start(); o.stop(ctx.currentTime + 0.5);
+  } else {
+    o.frequency.setValueAtTime(300, ctx.currentTime);
+    o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    o.start(); o.stop(ctx.currentTime + 0.4);
+  }
+}
+
+const cenas = [
+  {
+    titulo: "Cena 1 — A Sala de Aula",
+    descricao: "Desenhe uma criança levantando a mão para falar. Essa é uma atitude de boa convivência na sala! 🙋",
+    label: "Levantar a mão"
+  },
+  {
+    titulo: "Cena 2 — Os Combinados",
+    descricao: "Desenhe um quadro de combinados na sala, com as regras que a turma criou junto com a professora. 📋",
+    label: "Quadro de combinados"
+  },
+  {
+    titulo: "Cena 3 — O Material Coletivo",
+    descricao: "Desenhe crianças cuidando do material coletivo da sala — livros, lápis, tesouras. 🎒",
+    label: "Cuidar do material"
+  },
+  {
+    titulo: "Cena 4 — A Praça",
+    descricao: "Desenhe uma praça — local de convivência coletiva da comunidade, com pessoas juntas. 🌳",
+    label: "Praça — convivência"
+  }
+];
+
+// Estado
+let cenaAtual = 0;
+const cenasConcluidas = {}; // index -> dataURL
+const desenhosEmAndamento = {}; // index -> ImageData
+
+// Canvas
+const canvas = document.getElementById('canvas-desenho');
+const ctx = canvas.getContext('2d');
+
+// Ajustar resolucao do canvas ao tamanho real
+function ajustarCanvas() {
+  const wrapper = canvas.parentElement;
+  const w = wrapper.clientWidth;
+  const ratio = window.devicePixelRatio || 1;
+  const displayW = Math.min(w, 680);
+  const displayH = Math.round(displayW * 0.5);
+
+  canvas.style.width = displayW + 'px';
+  canvas.style.height = displayH + 'px';
+  canvas.width = displayW * ratio;
+  canvas.height = displayH * ratio;
+  ctx.scale(ratio, ratio);
+  ctx.fillStyle = '#FAFAFA';
+  ctx.fillRect(0, 0, displayW, displayH);
+}
+
+ajustarCanvas();
+window.addEventListener('resize', () => {
+  salvarEstadoAtual();
+  ajustarCanvas();
+  restaurarEstadoAtual();
+});
+
+// Ferramenta e configuracoes
+let desenhando = false;
+let ferramentaAtual = 'pincel';
+let corAtual = '#4A1272';
+let espessuraAtual = 4;
+let ultimoX = 0, ultimoY = 0;
+
+// Paleta de cores
+const cores = [
+  '#4A1272', '#A855F7', '#D08EF8',
+  '#10B981', '#3B82F6', '#F59E0B',
+  '#EF4444', '#F97316', '#EC4899',
+  '#000000', '#6B7280', '#FFFFFF'
+];
+
+function buildPaleta() {
+  const div = document.getElementById('paleta-cores');
+  cores.forEach((cor, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'cor-btn' + (i === 0 ? ' ativa' : '');
+    btn.style.background = cor;
+    btn.title = cor;
+    btn.onclick = () => setCor(cor, btn);
+    if (cor === '#FFFFFF') btn.style.border = '3px solid #C4B5FD';
+    div.appendChild(btn);
+  });
+}
+
+function setCor(cor, btn) {
+  corAtual = cor;
+  document.querySelectorAll('.cor-btn').forEach(b => b.classList.remove('ativa'));
+  btn.classList.add('ativa');
+  if (ferramentaAtual === 'borracha') setFerramenta('pincel', document.getElementById('btn-pincel'));
+}
+
+function setEspessura(val, btn) {
+  espessuraAtual = val;
+  document.querySelectorAll('.espessura-btn').forEach(b => b.classList.remove('ativa'));
+  btn.classList.add('ativa');
+}
+
+function setFerramenta(nome, btn) {
+  ferramentaAtual = nome;
+  document.querySelectorAll('.ferramenta-btn').forEach(b => b.classList.remove('ativa'));
+  btn.classList.add('ativa');
+}
+
+// Posicao relativa ao canvas
+function getPosicao(e) {
+  const rect = canvas.getBoundingClientRect();
+  const ratio = window.devicePixelRatio || 1;
+  const scaleX = (canvas.width / ratio) / rect.width;
+  const scaleY = (canvas.height / ratio) / rect.height;
+  let x, y;
+  if (e.touches) {
+    x = (e.touches[0].clientX - rect.left) * scaleX;
+    y = (e.touches[0].clientY - rect.top) * scaleY;
+  } else {
+    x = (e.clientX - rect.left) * scaleX;
+    y = (e.clientY - rect.top) * scaleY;
+  }
+  return { x, y };
+}
+
+function iniciarDesenho(e) {
+  desenhando = true;
+  const pos = getPosicao(e);
+  ultimoX = pos.x;
+  ultimoY = pos.y;
+  ctx.beginPath();
+  ctx.arc(pos.x, pos.y, (ferramentaAtual === 'borracha' ? espessuraAtual * 3 : espessuraAtual) / 2, 0, Math.PI * 2);
+  ctx.fillStyle = ferramentaAtual === 'borracha' ? '#FAFAFA' : corAtual;
+  ctx.fill();
+}
+
+function desenhar(e) {
+  if (!desenhando) return;
+  if (e.cancelable) e.preventDefault();
+  const pos = getPosicao(e);
+  ctx.beginPath();
+  ctx.moveTo(ultimoX, ultimoY);
+  ctx.lineTo(pos.x, pos.y);
+  ctx.strokeStyle = ferramentaAtual === 'borracha' ? '#FAFAFA' : corAtual;
+  ctx.lineWidth = ferramentaAtual === 'borracha' ? espessuraAtual * 3 : espessuraAtual;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.stroke();
+  ultimoX = pos.x;
+  ultimoY = pos.y;
+}
+
+function pararDesenho() { desenhando = false; }
+
+canvas.addEventListener('mousedown', iniciarDesenho);
+canvas.addEventListener('mousemove', desenhar);
+canvas.addEventListener('mouseup', pararDesenho);
+canvas.addEventListener('mouseleave', pararDesenho);
+
+canvas.addEventListener('touchstart', e => { e.preventDefault(); iniciarDesenho(e); }, { passive: false });
+canvas.addEventListener('touchmove', e => { e.preventDefault(); desenhar(e); }, { passive: false });
+canvas.addEventListener('touchend', pararDesenho);
+
+function limparCanvas() {
+  const w = canvas.width / (window.devicePixelRatio || 1);
+  const h = canvas.height / (window.devicePixelRatio || 1);
+  ctx.fillStyle = '#FAFAFA';
+  ctx.fillRect(0, 0, w, h);
+}
+
+function salvarEstadoAtual() {
+  try {
+    desenhosEmAndamento[cenaAtual] = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  } catch(e) {}
+}
+
+function restaurarEstadoAtual() {
+  limparCanvas();
+  if (cenasConcluidas[cenaAtual]) {
+    const img = new Image();
+    img.onload = () => {
+      const w = canvas.width / (window.devicePixelRatio || 1);
+      const h = canvas.height / (window.devicePixelRatio || 1);
+      ctx.drawImage(img, 0, 0, w, h);
+    };
+    img.src = cenasConcluidas[cenaAtual];
+  } else if (desenhosEmAndamento[cenaAtual]) {
+    try { ctx.putImageData(desenhosEmAndamento[cenaAtual], 0, 0); } catch(e) {}
+  }
+}
+
+function salvarCena() {
+  const dataURL = canvas.toDataURL('image/png');
+  cenasConcluidas[cenaAtual] = dataURL;
+  playSound('correct');
+  renderTabs();
+  renderGaleria();
+
+  // Verificar se todas concluidas
+  if (Object.keys(cenasConcluidas).length === cenas.length) {
+    setTimeout(() => document.getElementById('modal-overlay').classList.add('show'), 400);
+  } else {
+    // Avancar para proxima cena nao concluida
+    let proxima = -1;
+    for (let i = 0; i < cenas.length; i++) {
+      if (!cenasConcluidas[i]) { proxima = i; break; }
+    }
+    if (proxima !== -1) mudarCena(proxima);
+  }
+}
+
+function mudarCena(i) {
+  salvarEstadoAtual();
+  cenaAtual = i;
+  renderCenaAtual();
+  restaurarEstadoAtual();
+  renderTabs();
+}
+
+function renderCenaAtual() {
+  document.getElementById('cena-titulo').textContent = cenas[cenaAtual].titulo;
+  document.getElementById('cena-descricao').textContent = cenas[cenaAtual].descricao;
+}
+
+function renderTabs() {
+  const nav = document.getElementById('cenas-nav');
+  nav.innerHTML = '';
+  cenas.forEach((c, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'cena-tab' +
+      (i === cenaAtual ? ' ativa' : '') +
+      (cenasConcluidas[i] ? ' concluida' : '');
+    btn.textContent = (cenasConcluidas[i] ? '✅ ' : '') + 'Cena ' + (i + 1);
+    btn.onclick = () => mudarCena(i);
+    nav.appendChild(btn);
+  });
+}
+
+function renderGaleria() {
+  const area = document.getElementById('area-galeria');
+  const galeria = document.getElementById('galeria');
+  const entradas = Object.entries(cenasConcluidas);
+  if (entradas.length === 0) { area.style.display = 'none'; return; }
+  area.style.display = 'block';
+  galeria.innerHTML = '';
+  entradas.forEach(([idx, dataURL]) => {
+    const item = document.createElement('div');
+    item.className = 'galeria-item';
+    const img = document.createElement('img');
+    img.src = dataURL;
+    img.alt = cenas[idx].label;
+    const label = document.createElement('div');
+    label.className = 'galeria-label';
+    label.textContent = cenas[idx].label;
+    item.appendChild(img);
+    item.appendChild(label);
+    galeria.appendChild(item);
+  });
+}
+
+function fecharModal() {
+  document.getElementById('modal-overlay').classList.remove('show');
+  renderGaleria();
+  document.getElementById('area-galeria').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Inicializar
+buildPaleta();
+renderTabs();
+renderCenaAtual();
+limparCanvas();
+</script>
+</body>
+</html>

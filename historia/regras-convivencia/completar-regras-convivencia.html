@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Complete a Palavra — Regras de Convivência | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #A855F7;
+  --light: #D08EF8;
+  --bg: #FAF5FF;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  background: linear-gradient(135deg, #4A1272, #A855F7 60%, #D08EF8);
+  color: white;
+  padding: 24px 20px;
+  text-align: center;
+}
+
+header .personagem { font-size: 3rem; margin-bottom: 8px; }
+
+header h1 {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+header p { font-size: 1rem; opacity: 0.9; margin-top: 4px; }
+
+.container {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 28px 20px 32px;
+  flex: 1;
+  width: 100%;
+}
+
+.progresso-bar {
+  background: #E9D5FF;
+  border-radius: 99px;
+  height: 10px;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+
+.progresso-fill {
+  background: var(--primary);
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+
+.progresso-texto {
+  font-size: 0.95rem;
+  color: #7C3AED;
+  font-weight: 700;
+  margin-bottom: 24px;
+  text-align: right;
+}
+
+.card-palavra {
+  background: white;
+  border-radius: 20px;
+  padding: 28px 24px 24px;
+  box-shadow: 0 4px 20px rgba(168, 85, 247, 0.12);
+  margin-bottom: 20px;
+}
+
+.dica {
+  font-size: 1rem;
+  color: #7C3AED;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.frase-contexto {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #3B1060;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.frase-contexto .lacuna {
+  display: inline-block;
+  border-bottom: 4px solid var(--primary);
+  min-width: 130px;
+  color: var(--primary);
+  font-style: italic;
+}
+
+/* Letras embaralhadas para selecionar */
+.letras-banco {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.letra-btn {
+  width: 52px;
+  height: 52px;
+  min-width: 44px;
+  min-height: 44px;
+  background: #EDE9FE;
+  border: 3px solid var(--light);
+  border-radius: 12px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #4A1272;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.letra-btn:hover:not(:disabled) {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+  transform: scale(1.1);
+}
+
+.letra-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.letra-btn.usada {
+  opacity: 0.3;
+  cursor: default;
+}
+
+/* Montagem da palavra */
+.montagem {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 20px;
+  min-height: 56px;
+  align-items: center;
+  background: #F5F0FF;
+  border-radius: 14px;
+  padding: 10px 14px;
+}
+
+.letra-montada {
+  width: 44px;
+  height: 44px;
+  background: var(--primary);
+  color: white;
+  border-radius: 10px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+
+.letra-montada:hover { transform: scale(0.92); }
+
+.montagem-vazia {
+  color: #C4B5FD;
+  font-weight: 700;
+  font-style: italic;
+  font-size: 1rem;
+}
+
+/* Acoes da palavra */
+.acoes-palavra {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-confirmar {
+  flex: 2;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 14px 20px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 800;
+  cursor: pointer;
+  min-height: 50px;
+  transition: background 0.2s;
+}
+
+.btn-confirmar:hover { background: #9333EA; }
+
+.btn-apagar {
+  flex: 1;
+  background: white;
+  color: var(--primary);
+  border: 3px solid var(--primary);
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 800;
+  cursor: pointer;
+  min-height: 50px;
+  transition: all 0.2s;
+}
+
+.btn-apagar:hover { background: var(--primary); color: white; }
+
+.feedback {
+  display: none;
+  margin-top: 16px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.4;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.feedback.show { display: flex; }
+.feedback.ok { background: #D1FAE5; color: #065F46; }
+.feedback.nao { background: #FEE2E2; color: #7F1D1D; }
+
+.btn-proxima {
+  display: none;
+  margin-top: 16px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 16px 32px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.2s;
+}
+
+.btn-proxima:hover { background: #9333EA; }
+.btn-proxima.show { display: block; }
+
+/* Tela final */
+.tela-final {
+  display: none;
+  text-align: center;
+  padding: 20px;
+}
+
+.tela-final .emoji-final { font-size: 5rem; margin-bottom: 16px; }
+
+.tela-final h2 {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 2rem;
+  color: #4A1272;
+  margin-bottom: 12px;
+}
+
+.tela-final .placar {
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--primary);
+  margin: 16px 0;
+}
+
+.tela-final .mensagem {
+  font-size: 1.3rem;
+  color: #5B21B6;
+  margin-bottom: 28px;
+  line-height: 1.5;
+}
+
+.btn-reiniciar {
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 16px 36px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-reiniciar:hover { background: #9333EA; }
+
+footer {
+  background: white;
+  border-top: 2px solid #E9D5FF;
+  padding: 16px 20px;
+  text-align: center;
+}
+
+.btn-voltar {
+  background: transparent;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  border-radius: 12px;
+  padding: 10px 24px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-voltar:hover { background: var(--primary); color: white; }
+
+@media (max-width: 480px) {
+  body { font-size: 1.15rem; }
+  header h1 { font-size: 1.4rem; }
+  .container { padding: 20px 14px; }
+  .frase-contexto { font-size: 1.2rem; }
+  .letra-btn { width: 46px; height: 46px; font-size: 1.3rem; }
+  .btn-confirmar, .btn-apagar { font-size: 1rem; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="personagem">📋</div>
+  <h1>Complete a Palavra</h1>
+  <p>Regras de Convivência — monte as palavras do tema!</p>
+</header>
+
+<div class="container">
+
+  <div id="area-atividade">
+    <div class="progresso-bar">
+      <div class="progresso-fill" id="progresso-fill" style="width: 0%"></div>
+    </div>
+    <div class="progresso-texto" id="progresso-texto">Palavra 1 de 7</div>
+
+    <div class="card-palavra">
+      <div class="dica" id="dica"></div>
+      <div class="frase-contexto" id="frase-contexto"></div>
+
+      <div class="montagem" id="montagem">
+        <span class="montagem-vazia">Clique nas letras abaixo...</span>
+      </div>
+
+      <div class="letras-banco" id="letras-banco"></div>
+
+      <div class="acoes-palavra">
+        <button class="btn-apagar" onclick="apagarUltima()">⌫ Apagar</button>
+        <button class="btn-confirmar" onclick="confirmar()">Confirmar ✔</button>
+      </div>
+
+      <div class="feedback" id="feedback"></div>
+      <button class="btn-proxima" id="btn-proxima" onclick="proxima()">Próxima ➜</button>
+    </div>
+  </div>
+
+  <div class="tela-final" id="tela-final">
+    <div class="emoji-final" id="emoji-final">🎉</div>
+    <h2 id="titulo-final">Parabéns!</h2>
+    <div class="placar" id="placar-final">0/7</div>
+    <div class="mensagem" id="mensagem-final"></div>
+    <button class="btn-reiniciar" onclick="reiniciar()">Jogar de novo 🔄</button>
+  </div>
+
+</div>
+
+<footer>
+  <button class="btn-voltar" onclick="window.close()">← Voltar ao Portal</button>
+</footer>
+
+<script>
+function playSound(type) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  if (type === 'correct') {
+    o.frequency.setValueAtTime(523, ctx.currentTime);
+    o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+    o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    o.start(); o.stop(ctx.currentTime + 0.5);
+  } else {
+    o.frequency.setValueAtTime(300, ctx.currentTime);
+    o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    o.start(); o.stop(ctx.currentTime + 0.4);
+  }
+}
+
+// Cada desafio: palavra a completar + contexto para exibir + dica
+const desafios = [
+  {
+    palavra: "CONVIVENCIA",
+    dica: "💡 Dica: é o que fazemos quando estamos junto com outras pessoas",
+    frase: "Viver junto com outras pessoas é ter boa ___________.",
+    feedback_ok: "Ótimo! CONVIVÊNCIA é viver junto com outras pessoas. 🤝",
+    feedback_nao: "Quase! A palavra é CONVIVÊNCIA."
+  },
+  {
+    palavra: "COMBINADOS",
+    dica: "💡 Dica: são as regras que a turma cria junto com a professora",
+    frase: "As regras criadas por todos juntos se chamam ___________.",
+    feedback_ok: "Arrasou! Os COMBINADOS são as regras da turma. 📋",
+    feedback_nao: "Hmm! A palavra é COMBINADOS."
+  },
+  {
+    palavra: "REGRAS",
+    dica: "💡 Dica: são os combinados que ajudam todos a se entender",
+    frase: "Os combinados também chamamos de ___________.",
+    feedback_ok: "Perfeito! As REGRAS ajudam na boa convivência. ✅",
+    feedback_nao: "Não é essa. A palavra é REGRAS!"
+  },
+  {
+    palavra: "PRACA",
+    dica: "💡 Dica: local de convivência coletiva ao ar livre, com bancos e árvores",
+    frase: "A ___________ é um local de convivência coletiva na comunidade.",
+    feedback_ok: "Muito bem! A PRAÇA é um local de convivência coletiva. 🌳",
+    feedback_nao: "Tente de novo! A palavra é PRAÇA."
+  },
+  {
+    palavra: "LIMPEZA",
+    dica: "💡 Dica: manter a sala assim é uma atitude de boa convivência",
+    frase: "Manter a ___________ da sala é importante para todos.",
+    feedback_ok: "Ótimo! Manter a LIMPEZA é uma atitude de boa convivência. 🧹",
+    feedback_nao: "Hmm! A palavra é LIMPEZA."
+  },
+  {
+    palavra: "CUIDAR",
+    dica: "💡 Dica: o que fazemos com o material coletivo para preservá-lo",
+    frase: "___________ do material coletivo é uma atitude de boa convivência.",
+    feedback_ok: "Excelente! CUIDAR do material coletivo ajuda a todos. 🎒",
+    feedback_nao: "Não é essa! A palavra é CUIDAR."
+  },
+  {
+    palavra: "OUVIR",
+    dica: "💡 Dica: o que fazemos com as ideias dos nossos colegas",
+    frase: "___________ as ideias dos colegas é muito importante na sala.",
+    feedback_ok: "Perfeito! OUVIR os colegas é uma atitude de boa convivência. 👂",
+    feedback_nao: "Tente de novo! A palavra é OUVIR."
+  }
+];
+
+// Embaralhar letras de forma visual (adiciona letras distratoras)
+function embaralharLetras(palavra) {
+  const letras = palavra.split('');
+  // Adicionar 2 a 3 letras distratoras
+  const distratoras = ['X', 'Z', 'W', 'Y', 'K', 'Q', 'J'];
+  const qtdDist = palavra.length > 5 ? 3 : 2;
+  for (let i = 0; i < qtdDist; i++) {
+    letras.push(distratoras[Math.floor(Math.random() * distratoras.length)]);
+  }
+  // Embaralhar
+  for (let i = letras.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [letras[i], letras[j]] = [letras[j], letras[i]];
+  }
+  return letras;
+}
+
+let indice = 0;
+let acertos = 0;
+let montagem = []; // {letra, btnIndex}
+let letrasEmbaralhadas = [];
+let confirmada = false;
+
+function renderDesafio() {
+  confirmada = false;
+  montagem = [];
+  const d = desafios[indice];
+  letrasEmbaralhadas = embaralharLetras(d.palavra);
+
+  document.getElementById('dica').textContent = d.dica;
+
+  // Substituir a palavra oculta por underline proporcional
+  const palavraEspacos = '_'.repeat(d.palavra.length);
+  document.getElementById('frase-contexto').innerHTML =
+    d.frase.replace('___________', '<span class="lacuna">' + palavraEspacos + '</span>');
+
+  renderMontagem();
+  renderBanco();
+
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('btn-proxima').className = 'btn-proxima';
+  document.getElementById('progresso-texto').textContent = 'Palavra ' + (indice + 1) + ' de ' + desafios.length;
+  document.getElementById('progresso-fill').style.width = (indice / desafios.length * 100) + '%';
+}
+
+function renderBanco() {
+  const banco = document.getElementById('letras-banco');
+  banco.innerHTML = '';
+  letrasEmbaralhadas.forEach((letra, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'letra-btn';
+    btn.textContent = letra;
+    btn.dataset.idx = i;
+    const jaUsada = montagem.some(m => m.btnIndex === i);
+    if (jaUsada) btn.classList.add('usada'), btn.disabled = true;
+    btn.onclick = () => selecionarLetra(i, letra, btn);
+    banco.appendChild(btn);
+  });
+}
+
+function renderMontagem() {
+  const div = document.getElementById('montagem');
+  if (montagem.length === 0) {
+    div.innerHTML = '<span class="montagem-vazia">Clique nas letras abaixo...</span>';
+    return;
+  }
+  div.innerHTML = '';
+  montagem.forEach((m, pos) => {
+    const el = document.createElement('div');
+    el.className = 'letra-montada';
+    el.textContent = m.letra;
+    el.title = 'Clique para remover';
+    el.onclick = () => removerLetra(pos);
+    div.appendChild(el);
+  });
+}
+
+function selecionarLetra(idx, letra, btn) {
+  if (confirmada) return;
+  montagem.push({ letra, btnIndex: idx });
+  btn.classList.add('usada');
+  btn.disabled = true;
+  renderMontagem();
+}
+
+function removerLetra(pos) {
+  if (confirmada) return;
+  const removida = montagem.splice(pos, 1)[0];
+  renderMontagem();
+  // Reabilitar botao correspondente
+  const btn = document.querySelector('[data-idx="' + removida.btnIndex + '"]');
+  if (btn) { btn.classList.remove('usada'); btn.disabled = false; }
+}
+
+function apagarUltima() {
+  if (confirmada || montagem.length === 0) return;
+  const removida = montagem.pop();
+  renderMontagem();
+  const btn = document.querySelector('[data-idx="' + removida.btnIndex + '"]');
+  if (btn) { btn.classList.remove('usada'); btn.disabled = false; }
+}
+
+function confirmar() {
+  if (confirmada) return;
+  if (montagem.length === 0) {
+    alert('Monte a palavra primeiro!');
+    return;
+  }
+  confirmada = true;
+  const tentativa = montagem.map(m => m.letra).join('').toUpperCase();
+  const alvo = desafios[indice].palavra.toUpperCase();
+  const feedbackEl = document.getElementById('feedback');
+  const btnProx = document.getElementById('btn-proxima');
+
+  // Desabilitar banco
+  document.querySelectorAll('.letra-btn').forEach(b => b.disabled = true);
+
+  if (tentativa === alvo) {
+    acertos++;
+    playSound('correct');
+    feedbackEl.className = 'feedback ok show';
+    feedbackEl.innerHTML = '<span>✅</span><span>' + desafios[indice].feedback_ok + '</span>';
+  } else {
+    playSound('wrong');
+    feedbackEl.className = 'feedback nao show';
+    feedbackEl.innerHTML = '<span>❌</span><span>' + desafios[indice].feedback_nao + '</span>';
+  }
+
+  btnProx.textContent = indice === desafios.length - 1 ? 'Ver resultado 🎉' : 'Próxima ➜';
+  btnProx.className = 'btn-proxima show';
+}
+
+function proxima() {
+  indice++;
+  if (indice >= desafios.length) {
+    mostrarFinal();
+  } else {
+    renderDesafio();
+  }
+}
+
+function mostrarFinal() {
+  document.getElementById('area-atividade').style.display = 'none';
+  const tela = document.getElementById('tela-final');
+  tela.style.display = 'block';
+  document.getElementById('placar-final').textContent = acertos + '/' + desafios.length;
+
+  let emoji, titulo, msg;
+  if (acertos === desafios.length) {
+    emoji = '🏆'; titulo = 'Nota 10, Lis!';
+    msg = 'Você completou todas as palavras certas! Você é expert em convivência!';
+  } else if (acertos >= 5) {
+    emoji = '🌟'; titulo = 'Muito bem!';
+    msg = 'Você foi ótima! Pratique mais um pouquinho para acertar tudo!';
+  } else if (acertos >= 3) {
+    emoji = '😊'; titulo = 'Bom esforço!';
+    msg = 'Você está aprendendo! Continue praticando as palavras do tema.';
+  } else {
+    emoji = '💪'; titulo = 'Não desista!';
+    msg = 'Tente de novo! Com mais prática você vai completar todas!';
+  }
+
+  document.getElementById('emoji-final').textContent = emoji;
+  document.getElementById('titulo-final').textContent = titulo;
+  document.getElementById('mensagem-final').textContent = msg;
+}
+
+function reiniciar() {
+  indice = 0;
+  acertos = 0;
+  document.getElementById('tela-final').style.display = 'none';
+  document.getElementById('area-atividade').style.display = 'block';
+  renderDesafio();
+}
+
+renderDesafio();
+</script>
+</body>
+</html>

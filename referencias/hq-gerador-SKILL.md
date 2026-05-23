@@ -232,7 +232,32 @@ Adicionar o file ID recém-baixado ao conjunto de `ids_conhecidos` antes de pass
 
 ---
 
-## Fase 2 — Verificação final das páginas
+## Fase 2 — Copiar chars para pasta de personagens (somente estudos-2ano)
+
+**Esta fase só é executada quando `PASTA_PROJETO` aponta para o projeto da Lis (`estudos-2ano`). Para o projeto do André (`estudos`), pular.**
+
+Após salvar o `hq-[slug]-chars.png`, copiar o arquivo para a pasta de referência de personagens usando o **nome do personagem de suporte** (não o slug do tema):
+
+```python
+import shutil
+
+PASTA_PERSONAGENS = r'C:\Users\wizar\OneDrive\Documentos\Projeto Estudos\Personagens\2o ano'
+NOME_PERSONAGEM = '[NomeDoPersonagem]'  # ex: 'Combi', 'Tempa', 'Foca' — sem extensão
+
+src = os.path.join(PASTA_PROJETO, SUBFOLDER, f'hq-{SLUG}-chars.png') if SUBFOLDER else os.path.join(PASTA_PROJETO, f'hq-{SLUG}-chars.png')
+dst = os.path.join(PASTA_PERSONAGENS, f'{NOME_PERSONAGEM}.png')
+
+shutil.copy2(src, dst)
+print(f"Personagem copiado: {dst}")
+```
+
+> **Regra:** o nome do arquivo é o nome do personagem (ex: `Combi.png`, `Tempa.png`), não o slug do tema.
+> Esta pasta **não faz parte do site** — é arquivo de referência local para uso futuro como canônica.
+> O parâmetro `NOME_PERSONAGEM` deve ser fornecido por quem invoca a skill (portal-educacional-2ano).
+
+---
+
+## Fase 3 — Verificação final das páginas
 
 ```python
 sufixos = ['chars', 'pg1', 'pg2', 'pg3', 'pg4']

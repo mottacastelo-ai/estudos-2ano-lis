@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jogo da Memória — Mudanças na Convivência | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #A855F7;
+  --light: #D08EF8;
+  --bg: #FAF5FF;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  background: linear-gradient(135deg, #4A1272, #A855F7 60%, #D08EF8);
+  color: white;
+  padding: 24px 20px 20px;
+  text-align: center;
+}
+
+.header-emoji {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.header h1 {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  margin-bottom: 4px;
+}
+
+.header p { font-size: 1rem; opacity: 0.9; }
+
+.badge {
+  display: inline-block;
+  background: rgba(255,255,255,0.2);
+  border-radius: 20px;
+  padding: 4px 14px;
+  font-size: 0.9rem;
+  margin-top: 8px;
+}
+
+main {
+  flex: 1;
+  padding: 24px 16px;
+  max-width: 780px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.instrucoes {
+  background: white;
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  border: 2px solid #E9D5FF;
+  font-size: 1.2rem;
+  color: #3B1B6E;
+  font-weight: 600;
+}
+
+.instrucoes strong { color: var(--primary); }
+
+/* Legenda */
+.legend {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #3B1B6E;
+}
+
+.legend-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+}
+
+.legend-dot.passado { background: #7C3AED; }
+.legend-dot.presente { background: #A855F7; }
+
+/* Placar */
+.score-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  border-radius: 14px;
+  padding: 12px 20px;
+  border: 2px solid #E9D5FF;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.score-item {
+  text-align: center;
+}
+
+.score-label {
+  font-size: 0.85rem;
+  color: #7E22CE;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.score-value {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--primary);
+}
+
+/* Grade de cards */
+.memory-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.mem-card {
+  aspect-ratio: 1;
+  cursor: pointer;
+  perspective: 600px;
+  min-height: 100px;
+  min-width: 44px;
+}
+
+.mem-card-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.4s ease;
+  border-radius: 14px;
+}
+
+.mem-card.flipped .mem-card-inner,
+.mem-card.matched .mem-card-inner {
+  transform: rotateY(180deg);
+}
+
+.mem-card-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  text-align: center;
+  border: 3px solid transparent;
+}
+
+/* Verso */
+.mem-card-back {
+  background: linear-gradient(135deg, #4A1272, #A855F7);
+  color: white;
+  font-size: 2rem;
+}
+
+/* Frente — passado */
+.mem-card-front.passado {
+  background: linear-gradient(135deg, #EDE9FE, #DDD6FE);
+  border-color: #7C3AED;
+  transform: rotateY(180deg);
+}
+
+/* Frente — presente */
+.mem-card-front.presente {
+  background: linear-gradient(135deg, #F3E8FF, #EDE9FE);
+  border-color: var(--light);
+  transform: rotateY(180deg);
+}
+
+.mem-card.matched .mem-card-front {
+  border-color: #10B981;
+  background: linear-gradient(135deg, #D1FAE5, #A7F3D0);
+}
+
+.card-emoji {
+  font-size: 2rem;
+  margin-bottom: 4px;
+  line-height: 1;
+}
+
+.card-text {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #3B1B6E;
+  line-height: 1.2;
+}
+
+.mem-card.matched .card-text { color: #065F46; }
+
+/* Shake para erro */
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+
+.mem-card.shake { animation: shake 0.35s ease; }
+
+/* Vitória */
+.win-screen {
+  display: none;
+  text-align: center;
+  background: white;
+  border-radius: 20px;
+  padding: 32px 24px;
+  border: 3px solid var(--primary);
+  margin-bottom: 20px;
+}
+
+.win-screen.show { display: block; }
+.win-emoji { font-size: 5rem; margin-bottom: 12px; display: block; }
+
+.win-title {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+
+.win-msg {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #3B1B6E;
+  margin-bottom: 20px;
+  line-height: 1.4;
+}
+
+.win-stats {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.win-stat {
+  background: var(--bg);
+  border-radius: 12px;
+  padding: 12px 20px;
+  text-align: center;
+}
+
+.win-stat-val {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: var(--primary);
+}
+
+.win-stat-label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #7E22CE;
+}
+
+.btn-retry {
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 16px 32px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.2s;
+  min-height: 54px;
+}
+
+.btn-retry:hover { background: #9333EA; }
+
+footer {
+  text-align: center;
+  padding: 20px;
+  border-top: 2px solid #E9D5FF;
+}
+
+.btn-back {
+  background: white;
+  color: var(--primary);
+  border: 3px solid var(--primary);
+  border-radius: 14px;
+  padding: 14px 28px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-height: 48px;
+}
+
+.btn-back:hover { background: var(--primary); color: white; }
+
+@media (max-width: 480px) {
+  .memory-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  .mem-card { min-height: 72px; }
+  .card-emoji { font-size: 1.5rem; }
+  .card-text { font-size: 0.72rem; }
+  .header h1 { font-size: 1.3rem; }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <span class="header-emoji">⏳</span>
+  <h1>Jogo da Memória</h1>
+  <p>Passado e Presente — encontre os pares!</p>
+  <span class="badge">⚡ Praticar (80%)</span>
+</header>
+
+<main>
+  <div class="instrucoes">
+    <strong>Como jogar:</strong> vire dois cards por vez. Cada forma de convivência do <strong>passado</strong> tem um par equivalente no <strong>presente</strong>. Encontre todos os pares!
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot passado"></div> Passado</div>
+    <div class="legend-item"><div class="legend-dot presente"></div> Presente</div>
+  </div>
+
+  <div class="score-bar">
+    <div class="score-item">
+      <div class="score-label">Pares encontrados</div>
+      <div class="score-value" id="score-matches">0 / 4</div>
+    </div>
+    <div class="score-item">
+      <div class="score-label">Tentativas</div>
+      <div class="score-value" id="score-tries">0</div>
+    </div>
+    <div class="score-item">
+      <div class="score-label">Erros</div>
+      <div class="score-value" id="score-errors">0</div>
+    </div>
+  </div>
+
+  <div class="memory-grid" id="memory-grid"></div>
+
+  <div class="win-screen" id="win-screen">
+    <span class="win-emoji">🏆</span>
+    <div class="win-title">Todos os pares encontrados!</div>
+    <div class="win-msg" id="win-msg"></div>
+    <div class="win-stats">
+      <div class="win-stat">
+        <div class="win-stat-val" id="ws-tries">0</div>
+        <div class="win-stat-label">Tentativas</div>
+      </div>
+      <div class="win-stat">
+        <div class="win-stat-val" id="ws-errors">0</div>
+        <div class="win-stat-label">Erros</div>
+      </div>
+    </div>
+    <button class="btn-retry" onclick="initGame()">Jogar de novo!</button>
+  </div>
+</main>
+
+<footer>
+  <button class="btn-back" onclick="window.close()">← Voltar ao Portal</button>
+</footer>
+
+<script>
+// Pares: cada par tem um card "passado" e um card "presente"
+const pairs = [
+  {
+    id: 'p1',
+    passado: { emoji: '🏘️', text: 'Reunião na calçada', era: 'passado' },
+    presente: { emoji: '🏢', text: 'Área de convivência no prédio', era: 'presente' }
+  },
+  {
+    id: 'p2',
+    passado: { emoji: '🎪', text: 'Circo na praça', era: 'passado' },
+    presente: { emoji: '🎬', text: 'Cinema ou show moderno', era: 'presente' }
+  },
+  {
+    id: 'p3',
+    passado: { emoji: '🎶', text: 'Festa na rua', era: 'passado' },
+    presente: { emoji: '🎉', text: 'Salão de festas', era: 'presente' }
+  },
+  {
+    id: 'p4',
+    passado: { emoji: '🖼️', text: 'Fonte histórica visual', era: 'passado' },
+    presente: { emoji: '🌳', text: 'Parque moderno de lazer', era: 'presente' }
+  }
+];
+
+let cards = [];
+let flipped = [];
+let matched = 0;
+let tries = 0;
+let errors = 0;
+let locked = false;
+
+function playSound(type) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  if (type === 'correct') {
+    o.frequency.setValueAtTime(523, ctx.currentTime);
+    o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+    o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    o.start(); o.stop(ctx.currentTime + 0.5);
+  } else {
+    o.frequency.setValueAtTime(300, ctx.currentTime);
+    o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    o.start(); o.stop(ctx.currentTime + 0.4);
+  }
+}
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function initGame() {
+  flipped = [];
+  matched = 0;
+  tries = 0;
+  errors = 0;
+  locked = false;
+
+  updateScore();
+  document.getElementById('win-screen').classList.remove('show');
+
+  // Montar deck: 8 cards (4 passado + 4 presente), cada card tem pairId + era
+  const deck = [];
+  pairs.forEach(p => {
+    deck.push({ pairId: p.id, emoji: p.passado.emoji, text: p.passado.text, era: 'passado' });
+    deck.push({ pairId: p.id, emoji: p.presente.emoji, text: p.presente.text, era: 'presente' });
+  });
+
+  cards = shuffle(deck);
+
+  const grid = document.getElementById('memory-grid');
+  grid.innerHTML = '';
+
+  cards.forEach((card, idx) => {
+    const el = document.createElement('div');
+    el.className = 'mem-card';
+    el.dataset.idx = idx;
+    el.innerHTML = `
+      <div class="mem-card-inner">
+        <div class="mem-card-face mem-card-back">⏳</div>
+        <div class="mem-card-face mem-card-front ${card.era}">
+          <div class="card-emoji">${card.emoji}</div>
+          <div class="card-text">${card.text}</div>
+        </div>
+      </div>
+    `;
+    el.addEventListener('click', () => flipCard(idx, el));
+    grid.appendChild(el);
+  });
+}
+
+function flipCard(idx, el) {
+  if (locked) return;
+  if (el.classList.contains('flipped') || el.classList.contains('matched')) return;
+  if (flipped.length >= 2) return;
+
+  el.classList.add('flipped');
+  flipped.push({ idx, el });
+
+  if (flipped.length === 2) {
+    tries++;
+    updateScore();
+    checkPair();
+  }
+}
+
+function checkPair() {
+  locked = true;
+  const [a, b] = flipped;
+  const cardA = cards[a.idx];
+  const cardB = cards[b.idx];
+
+  const isMatch = cardA.pairId === cardB.pairId && cardA.era !== cardB.era;
+
+  setTimeout(() => {
+    if (isMatch) {
+      a.el.classList.add('matched');
+      b.el.classList.add('matched');
+      matched++;
+      updateScore();
+      playSound('correct');
+
+      if (matched === pairs.length) {
+        setTimeout(showWin, 500);
+      }
+    } else {
+      errors++;
+      updateScore();
+      a.el.classList.add('shake');
+      b.el.classList.add('shake');
+      playSound('wrong');
+      setTimeout(() => {
+        a.el.classList.remove('flipped', 'shake');
+        b.el.classList.remove('flipped', 'shake');
+      }, 600);
+    }
+    flipped = [];
+    locked = false;
+  }, 900);
+}
+
+function updateScore() {
+  document.getElementById('score-matches').textContent = `${matched} / ${pairs.length}`;
+  document.getElementById('score-tries').textContent = tries;
+  document.getElementById('score-errors').textContent = errors;
+}
+
+function showWin() {
+  const ws = document.getElementById('win-screen');
+  ws.classList.add('show');
+  document.getElementById('ws-tries').textContent = tries;
+  document.getElementById('ws-errors').textContent = errors;
+
+  let msg;
+  if (errors === 0) {
+    msg = 'Perfeito! Zero erros! Você é uma expert em passado e presente! A Tempa ficou impressionada!';
+  } else if (errors <= 3) {
+    msg = 'Muito bem! Você encontrou todos os pares com poucos erros. Ótima memória!';
+  } else {
+    msg = 'Parabéns! Você encontrou todos os pares! Tente de novo para melhorar sua pontuação!';
+  }
+
+  document.getElementById('win-msg').textContent = msg;
+  playSound('correct');
+  ws.scrollIntoView({ behavior: 'smooth' });
+}
+
+initGame();
+</script>
+</body>
+</html>

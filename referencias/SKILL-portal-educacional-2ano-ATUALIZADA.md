@@ -567,6 +567,8 @@ Ao finalizar, informar Léo:
 
 Após salvar todos os arquivos na pasta local, acionar automaticamente a skill **hq-generator** para cada tema gerado, na sequência.
 
+> **Regra obrigatória — pasta de personagens:** após a geração das imagens de HQ, o arquivo `hq-[slug]-chars.png` deve ser copiado para `C:\Users\wizar\OneDrive\Documentos\Projeto Estudos\Personagens\2o ano\[NomePersonagem].png`, usando o nome do personagem de suporte (ex: `Combi.png`, `Tempa.png`). Esta pasta **não faz parte do site** — é arquivo de referência local. Passar o nome do personagem como parâmetro `NOME_PERSONAGEM` para a skill hq-generator.
+
 **Parâmetros passados pela skill do portal:**
 
 | Parâmetro | Valor |

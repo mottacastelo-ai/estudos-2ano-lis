@@ -378,12 +378,14 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
     <button class="disc-nav-btn hist-active" id="nav-hist" onclick="showDisc('hist')">
       <span class="d-icon">📜</span>
       <span class="d-name">História</span>
-      <span class="d-count" id="count-hist">3 temas</span>
+      <span class="d-count" id="count-hist">5 temas</span>
     </button>
     <div class="theme-sub" id="sub-hist">
       <button class="theme-link" onclick="showTheme('hist','memorias-lugares')">🏛️ Memórias dos Lugares</button>
       <button class="theme-link" onclick="showTheme('hist','meu-lugar-viver')">🏘️ Meu Lugar de Viver</button>
       <button class="theme-link" onclick="showTheme('hist','convivencia-pessoas')">🤝 Convivência entre as Pessoas</button>
+      <button class="theme-link" onclick="showTheme('hist','regras-convivencia')">📋 Regras de Convivência</button>
+      <button class="theme-link" onclick="showTheme('hist','mudancas-convivencia')">⏳ Mudanças na Convivência</button>
     </div>
   </div>
 </nav>
@@ -398,8 +400,8 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
       <div class="home-subtitle">Escolha uma disciplina e vamos aprender juntos! 🎉</div>
       <div class="home-stats">
         <div class="hstat"><span class="hstat-num">3</span><span class="hstat-label">disciplinas</span></div>
-        <div class="hstat"><span class="hstat-num">9</span><span class="hstat-label">temas</span></div>
-        <div class="hstat"><span class="hstat-num">36</span><span class="hstat-label">atividades</span></div>
+        <div class="hstat"><span class="hstat-num">11</span><span class="hstat-label">temas</span></div>
+        <div class="hstat"><span class="hstat-num">44</span><span class="hstat-label">atividades</span></div>
       </div>
     </div>
     <div class="home-body">
@@ -428,8 +430,8 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
           <div class="dhc-name">História</div>
           <div class="dhc-desc">Memórias dos lugares, meu bairro e convivência entre as pessoas</div>
           <div class="dhc-chips">
-            <span class="chip" style="background:#F3E8FF;color:#6D28D9">3 temas</span>
-            <span class="chip" style="background:#FAF5FF;color:#7E22CE">12 atividades</span>
+            <span class="chip" style="background:#F3E8FF;color:#6D28D9">5 temas</span>
+            <span class="chip" style="background:#FAF5FF;color:#7E22CE">20 atividades</span>
           </div>
         </button>
       </div>
@@ -900,7 +902,7 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
   <div class="screen" id="screen-hist">
     <div class="disc-hero hist">
       <div class="disc-hero-title">📜 História</div>
-      <div class="disc-hero-sub">3 temas · 12 atividades</div>
+      <div class="disc-hero-sub">5 temas · 20 atividades</div>
     </div>
     <div class="disc-body">
 
@@ -908,6 +910,8 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
         <button class="theme-tab-btn hist-tab" id="tab-hist-memorias-lugares"      onclick="showTheme('hist','memorias-lugares')">🏛️ Memórias dos Lugares</button>
         <button class="theme-tab-btn hist-tab" id="tab-hist-meu-lugar-viver"       onclick="showTheme('hist','meu-lugar-viver')">🏘️ Meu Lugar de Viver</button>
         <button class="theme-tab-btn hist-tab" id="tab-hist-convivencia-pessoas"   onclick="showTheme('hist','convivencia-pessoas')">🤝 Convivência entre as Pessoas</button>
+        <button class="theme-tab-btn hist-tab" id="tab-hist-regras-convivencia"    onclick="showTheme('hist','regras-convivencia')">📋 Regras de Convivência</button>
+        <button class="theme-tab-btn hist-tab" id="tab-hist-mudancas-convivencia"  onclick="showTheme('hist','mudancas-convivencia')">⏳ Mudanças na Convivência</button>
       </div>
 
       <!-- ── TEMA 1: MEMÓRIAS DOS LUGARES ── -->
@@ -1162,6 +1166,174 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
         </div>
       </div>
 
+      <!-- ── TEMA 4: REGRAS DE CONVIVÊNCIA ── -->
+      <div class="theme-content" id="theme-hist-regras-convivencia">
+        <div class="hq-card">
+          <div class="hq-viewer-wrap">
+            <div class="hq-viewer-title">📋 Regras de Convivência</div>
+            <div class="hq-viewer-sub">Aventura com Lis e Combi · 4 páginas</div>
+            <div class="hq-book-outer">
+              <div class="hq-book-shadow"></div>
+              <div class="hq-book-stack">
+                <div class="hq-page-base" id="hq-regrasconv-display">
+                  <img id="hq-regrasconv-img" src="historia/regras-convivencia/hq-regras-convivencia-pg1.png" alt="HQ Regras de Convivência — Página 1" draggable="false" style="object-fit:contain; touch-action:auto;">
+                  <div class="hq-shine"></div>
+                </div>
+              </div>
+            </div>
+            <div class="hq-controls">
+              <button class="hq-btn" id="hq-regrasconv-prev" onclick="hqGoTo('regrasconv',hqCurrent['regrasconv']-1)" disabled>◀ Voltar</button>
+              <div class="hq-indicator" id="hq-regrasconv-ind">1 / 4</div>
+              <button class="hq-btn" id="hq-regrasconv-next" onclick="hqGoTo('regrasconv',hqCurrent['regrasconv']+1)">Próxima ▶</button>
+            </div>
+            <div class="hq-dots" id="hq-regrasconv-dots">
+              <div class="hq-dot active" onclick="hqGoTo('regrasconv',0)"></div>
+              <div class="hq-dot" onclick="hqGoTo('regrasconv',1)"></div>
+              <div class="hq-dot" onclick="hqGoTo('regrasconv',2)"></div>
+              <div class="hq-dot" onclick="hqGoTo('regrasconv',3)"></div>
+            </div>
+          </div>
+          <div class="hq-caption">
+            <span>📖</span>
+            <span>Regras de Convivência — 4 páginas · Personagens: Lis e Combi · Tema: Convivência e combinados coletivos</span>
+          </div>
+        </div>
+        <hr class="sdiv">
+        <div class="act-grid">
+          <a class="act-card hist" href="historia/regras-convivencia/quiz-regras-convivencia.html" target="_blank">
+            <div class="act-icon">❓</div>
+            <div class="act-title">Quiz Interativo</div>
+            <div class="act-desc">Perguntas sobre regras de convivência e combinados coletivos com feedback imediato.</div>
+            <div class="act-tags">
+              <span class="tag tag-hist">História</span>
+              <span class="tag tag-a">Ativo</span>
+            </div>
+            <span class="level lv4">📖 Retrieval practice</span>
+          </a>
+          <a class="act-card hist" href="historia/regras-convivencia/completar-regras-convivencia.html" target="_blank">
+            <div class="act-icon">🔤</div>
+            <div class="act-title">Complete a Palavra</div>
+            <div class="act-desc">Complete os nomes das palavras sobre regras e convivência!</div>
+            <div class="act-tags">
+              <span class="tag tag-hist">História</span>
+              <span class="tag tag-a">Prática</span>
+            </div>
+            <span class="level lv2">⚡ Praticar (80%)</span>
+          </a>
+          <a class="act-card hist" href="historia/regras-convivencia/ilustrador-regras-convivencia.html" target="_blank">
+            <div class="act-icon">🎨</div>
+            <div class="act-title">Ilustrador de Convivência</div>
+            <div class="act-desc">Ilustre situações de convivência e combinados coletivos!</div>
+            <div class="act-tags">
+              <span class="tag tag-hist">História</span>
+              <span class="tag tag-a">Criação</span>
+            </div>
+            <span class="level lv3">🏆 Ensinar (90%)</span>
+          </a>
+          <a class="act-card hist" href="historia/regras-convivencia/mapa-mental-regras-convivencia.html" target="_blank">
+            <div class="act-icon">🗺️</div>
+            <div class="act-title">Mapa Mental</div>
+            <div class="act-desc">Monte o mapa com os conceitos de regras e convivência coletiva.</div>
+            <div class="act-tags">
+              <span class="tag tag-hist">História</span>
+              <span class="tag tag-a">Arrastar</span>
+            </div>
+            <span class="level lv3">🏆 Ensinar (90%)</span>
+          </a>
+        </div>
+        <hr class="sdiv">
+        <div class="sched-title">📅 Sugestão de uso</div>
+        <div class="sched">
+          <div class="sched-row"><span class="sched-day" style="color:var(--hist-color)">Dia 1</span><span class="sched-acts">HQ + Quiz Interativo</span></div>
+          <div class="sched-row"><span class="sched-day" style="color:var(--hist-color)">Dia 2</span><span class="sched-acts">Complete a Palavra + Ilustrador de Convivência</span></div>
+          <div class="sched-row"><span class="sched-day" style="color:var(--hist-color)">Dia 3</span><span class="sched-acts">Mapa Mental</span></div>
+        </div>
+      </div>
+
+      <!-- ── TEMA 5: MUDANÇAS NA CONVIVÊNCIA ── -->
+      <div class="theme-content" id="theme-hist-mudancas-convivencia">
+        <div class="hq-card">
+          <div class="hq-viewer-wrap">
+            <div class="hq-viewer-title">⏳ Mudanças na Convivência</div>
+            <div class="hq-viewer-sub">Aventura com Lis e Tempa · 4 páginas</div>
+            <div class="hq-book-outer">
+              <div class="hq-book-shadow"></div>
+              <div class="hq-book-stack">
+                <div class="hq-page-base" id="hq-mudancasconv-display">
+                  <img id="hq-mudancasconv-img" src="historia/mudancas-convivencia/hq-mudancas-convivencia-pg1.png" alt="HQ Mudanças na Convivência — Página 1" draggable="false" style="object-fit:contain; touch-action:auto;">
+                  <div class="hq-shine"></div>
+                </div>
+              </div>
+            </div>
+            <div class="hq-controls">
+              <button class="hq-btn" id="hq-mudancasconv-prev" onclick="hqGoTo('mudancasconv',hqCurrent['mudancasconv']-1)" disabled>◀ Voltar</button>
+              <div class="hq-indicator" id="hq-mudancasconv-ind">1 / 4</div>
+              <button class="hq-btn" id="hq-mudancasconv-next" onclick="hqGoTo('mudancasconv',hqCurrent['mudancasconv']+1)">Próxima ▶</button>
+            </div>
+            <div class="hq-dots" id="hq-mudancasconv-dots">
+              <div class="hq-dot active" onclick="hqGoTo('mudancasconv',0)"></div>
+              <div class="hq-dot" onclick="hqGoTo('mudancasconv',1)"></div>
+              <div class="hq-dot" onclick="hqGoTo('mudancasconv',2)"></div>
+              <div class="hq-dot" onclick="hqGoTo('mudancasconv',3)"></div>
+            </div>
+          </div>
+          <div class="hq-caption">
+            <span>📖</span>
+            <span>Mudanças na Convivência — 4 páginas · Personagens: Lis e Tempa · Tema: Como a convivência mudou ao longo do tempo</span>
+          </div>
+        </div>
+        <hr class="sdiv">
+        <div class="act-grid">
+          <a class="act-card hist" href="historia/mudancas-convivencia/quiz-mudancas-convivencia.html" target="_blank">
+            <div class="act-icon">❓</div>
+            <div class="act-title">Quiz Interativo</div>
+            <div class="act-desc">Perguntas sobre as mudanças na convivência ao longo do tempo.</div>
+            <div class="act-tags">
+              <span class="tag tag-hist">História</span>
+              <span class="tag tag-a">Ativo</span>
+            </div>
+            <span class="level lv4">📖 Retrieval practice</span>
+          </a>
+          <a class="act-card hist" href="historia/mudancas-convivencia/memoria-mudancas-convivencia.html" target="_blank">
+            <div class="act-icon">🧠</div>
+            <div class="act-title">Jogo da Memória</div>
+            <div class="act-desc">Encontre os pares: cada termo sobre mudanças na convivência com sua definição!</div>
+            <div class="act-tags">
+              <span class="tag tag-hist">História</span>
+              <span class="tag tag-a">Memória</span>
+            </div>
+            <span class="level lv2">⚡ Praticar (80%)</span>
+          </a>
+          <a class="act-card hist" href="historia/mudancas-convivencia/silabas-mudancas-convivencia.html" target="_blank">
+            <div class="act-icon">🔤</div>
+            <div class="act-title">Ordene as Sílabas</div>
+            <div class="act-desc">Monte as palavras sobre mudanças e convivência organizando as sílabas!</div>
+            <div class="act-tags">
+              <span class="tag tag-hist">História</span>
+              <span class="tag tag-a">Sílabas</span>
+            </div>
+            <span class="level lv2">⚡ Praticar (80%)</span>
+          </a>
+          <a class="act-card hist" href="historia/mudancas-convivencia/mapa-mental-mudancas-convivencia.html" target="_blank">
+            <div class="act-icon">🗺️</div>
+            <div class="act-title">Mapa Mental</div>
+            <div class="act-desc">Monte o mapa com os conceitos de mudança, permanência e convivência ao longo do tempo.</div>
+            <div class="act-tags">
+              <span class="tag tag-hist">História</span>
+              <span class="tag tag-a">Arrastar</span>
+            </div>
+            <span class="level lv3">🏆 Ensinar (90%)</span>
+          </a>
+        </div>
+        <hr class="sdiv">
+        <div class="sched-title">📅 Sugestão de uso</div>
+        <div class="sched">
+          <div class="sched-row"><span class="sched-day" style="color:var(--hist-color)">Dia 1</span><span class="sched-acts">HQ + Quiz Interativo</span></div>
+          <div class="sched-row"><span class="sched-day" style="color:var(--hist-color)">Dia 2</span><span class="sched-acts">Jogo da Memória + Ordene as Sílabas</span></div>
+          <div class="sched-row"><span class="sched-day" style="color:var(--hist-color)">Dia 3</span><span class="sched-acts">Mapa Mental</span></div>
+        </div>
+      </div>
+
     </div><!-- /disc-body -->
   </div><!-- /screen-hist -->
 
@@ -1179,7 +1351,9 @@ var hqPages = {
   bairros:     ['geografia/paisagem-bairros/hq-paisagem-bairros-p1.png','geografia/paisagem-bairros/hq-paisagem-bairros-p2.png','geografia/paisagem-bairros/hq-paisagem-bairros-p3.png','geografia/paisagem-bairros/hq-paisagem-bairros-p4.png'],
   memorias:    ['historia/memorias-lugares/hq-memorias-lugares-pg1.png','historia/memorias-lugares/hq-memorias-lugares-pg2.png','historia/memorias-lugares/hq-memorias-lugares-pg3.png','historia/memorias-lugares/hq-memorias-lugares-pg4.png'],
   lugarviver:  ['historia/meu-lugar-viver/hq-meu-lugar-viver-pg1.png','historia/meu-lugar-viver/hq-meu-lugar-viver-pg2.png','historia/meu-lugar-viver/hq-meu-lugar-viver-pg3.png','historia/meu-lugar-viver/hq-meu-lugar-viver-pg4.png'],
-  convivencia: ['historia/convivencia-pessoas/hq-convivencia-pessoas-pg1.png','historia/convivencia-pessoas/hq-convivencia-pessoas-pg2.png','historia/convivencia-pessoas/hq-convivencia-pessoas-pg3.png','historia/convivencia-pessoas/hq-convivencia-pessoas-pg4.png']
+  convivencia:   ['historia/convivencia-pessoas/hq-convivencia-pessoas-pg1.png','historia/convivencia-pessoas/hq-convivencia-pessoas-pg2.png','historia/convivencia-pessoas/hq-convivencia-pessoas-pg3.png','historia/convivencia-pessoas/hq-convivencia-pessoas-pg4.png'],
+  regrasconv:    ['historia/regras-convivencia/hq-regras-convivencia-pg1.png','historia/regras-convivencia/hq-regras-convivencia-pg2.png','historia/regras-convivencia/hq-regras-convivencia-pg3.png','historia/regras-convivencia/hq-regras-convivencia-pg4.png'],
+  mudancasconv:  ['historia/mudancas-convivencia/hq-mudancas-convivencia-pg1.png','historia/mudancas-convivencia/hq-mudancas-convivencia-pg2.png','historia/mudancas-convivencia/hq-mudancas-convivencia-pg3.png','historia/mudancas-convivencia/hq-mudancas-convivencia-pg4.png']
 };
 
 var firstTheme = { cien: 'animais-ciclo-vida', geo: 'representar-lugares', hist: 'memorias-lugares' };

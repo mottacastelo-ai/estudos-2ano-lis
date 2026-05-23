@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/wizar/.claude/agents\" 2>/dev/**)",
+      "Read(//c/Users/wizar/OneDrive/Documentos/Projeto Estudos/estudos-2ano/.claude\" 2>/dev/**)",
+      "Bash(ls -la \"C:\\\\Users\\\\wizar\\\\.claude\\\\agents\\\\\" 2>&1; echo \"---\"; ls -la \"C:\\\\Users\\\\wizar\\\\OneDrive\\\\Documentos\\\\Projeto Estudos\\\\estudos-2ano\\\\.claude\\\\\" 2>&1)",
+      "Bash(ls -la \"C:/Users/wizar/OneDrive/Documentos/Projeto Estudos/estudos-2ano/\" 2>&1 | head -30)"
+    ]
+  }
+}

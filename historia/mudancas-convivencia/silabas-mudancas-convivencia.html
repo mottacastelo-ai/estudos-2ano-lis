@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ordene as Sílabas — Mudanças na Convivência | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #A855F7;
+  --light: #D08EF8;
+  --bg: #FAF5FF;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  background: linear-gradient(135deg, #4A1272, #A855F7 60%, #D08EF8);
+  color: white;
+  padding: 24px 20px 20px;
+  text-align: center;
+}
+
+.header-emoji {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.header h1 {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  margin-bottom: 4px;
+}
+
+.header p { font-size: 1rem; opacity: 0.9; }
+
+.badge {
+  display: inline-block;
+  background: rgba(255,255,255,0.2);
+  border-radius: 20px;
+  padding: 4px 14px;
+  font-size: 0.9rem;
+  margin-top: 8px;
+}
+
+main {
+  flex: 1;
+  padding: 24px 16px;
+  max-width: 700px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.instrucoes {
+  background: white;
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  border: 2px solid #E9D5FF;
+  font-size: 1.2rem;
+  color: #3B1B6E;
+  font-weight: 600;
+}
+
+.instrucoes strong { color: var(--primary); }
+
+/* Progresso */
+.progress-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.progress-bar-bg {
+  flex: 1;
+  height: 12px;
+  background: #E9D5FF;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 20px;
+  transition: width 0.4s ease;
+}
+
+.progress-label {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #7E22CE;
+  white-space: nowrap;
+}
+
+/* Card da palavra */
+.word-card {
+  background: white;
+  border-radius: 20px;
+  padding: 28px 24px;
+  box-shadow: 0 4px 20px rgba(168,85,247,0.12);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.word-hint {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #7E22CE;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
+}
+
+.word-definition {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #3B1B6E;
+  margin-bottom: 24px;
+  line-height: 1.4;
+}
+
+.word-emoji {
+  font-size: 3.5rem;
+  margin-bottom: 16px;
+  display: block;
+}
+
+/* Zona de resposta */
+.answer-zone {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 60px;
+  padding: 12px;
+  background: #F3E8FF;
+  border-radius: 14px;
+  border: 2.5px dashed #C4B5FD;
+  margin-bottom: 20px;
+  transition: background 0.2s;
+}
+
+.answer-zone.drag-over {
+  background: #EDE9FE;
+  border-color: var(--primary);
+}
+
+.answer-zone.correct {
+  background: #D1FAE5;
+  border-color: #10B981;
+  border-style: solid;
+}
+
+.answer-zone.wrong {
+  background: #FEE2E2;
+  border-color: #EF4444;
+  border-style: solid;
+}
+
+.answer-zone-label {
+  font-size: 1rem;
+  color: #C4B5FD;
+  font-weight: 600;
+  font-style: italic;
+  align-self: center;
+}
+
+/* Sílabas */
+.silaba-btn {
+  background: linear-gradient(135deg, #A855F7, #7C3AED);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 18px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 900;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 54px;
+  min-width: 54px;
+  touch-action: manipulation;
+  box-shadow: 0 3px 10px rgba(168,85,247,0.3);
+}
+
+.silaba-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(168,85,247,0.4); }
+.silaba-btn:active { transform: scale(0.95); }
+.silaba-btn.used { opacity: 0.3; pointer-events: none; }
+
+/* Pool de sílabas */
+.silabas-pool {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+  padding: 16px;
+  background: white;
+  border-radius: 16px;
+  border: 2px solid #E9D5FF;
+}
+
+/* Sílaba na resposta */
+.silaba-answer {
+  background: linear-gradient(135deg, #7C3AED, #6D28D9);
+  color: white;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 900;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-height: 50px;
+  min-width: 50px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  box-shadow: 0 2px 8px rgba(109,40,217,0.3);
+}
+
+.silaba-answer:hover { background: #EF4444; transform: scale(0.95); }
+
+/* Acerto */
+.answer-zone.correct .silaba-answer {
+  background: linear-gradient(135deg, #10B981, #059669);
+  cursor: default;
+}
+
+.answer-zone.correct .silaba-answer:hover {
+  background: linear-gradient(135deg, #10B981, #059669);
+  transform: none;
+}
+
+/* Feedback */
+.feedback-box {
+  padding: 14px 18px;
+  border-radius: 12px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 16px;
+  display: none;
+}
+
+.feedback-box.show { display: block; }
+.feedback-box.correct { background: #D1FAE5; color: #065F46; border: 2px solid #10B981; }
+.feedback-box.wrong { background: #FEE2E2; color: #991B1B; border: 2px solid #EF4444; }
+
+/* Ações */
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.btn-check {
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 16px 32px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.2s;
+  min-height: 54px;
+}
+
+.btn-check:hover { background: #9333EA; }
+.btn-check:disabled { background: #C4B5FD; cursor: not-allowed; }
+
+.btn-clear {
+  background: white;
+  color: var(--primary);
+  border: 3px solid var(--primary);
+  border-radius: 14px;
+  padding: 14px 20px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-height: 54px;
+}
+
+.btn-clear:hover { background: var(--primary); color: white; }
+
+.btn-next {
+  width: 100%;
+  background: #10B981;
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 16px 24px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-bottom: 16px;
+  min-height: 54px;
+  display: none;
+}
+
+.btn-next:hover { background: #059669; }
+.btn-next.show { display: block; }
+
+/* Tela final */
+.final-screen {
+  display: none;
+  text-align: center;
+  background: white;
+  border-radius: 20px;
+  padding: 32px 24px;
+  border: 3px solid var(--primary);
+  margin-bottom: 20px;
+}
+
+.final-screen.show { display: block; }
+.final-emoji { font-size: 4.5rem; margin-bottom: 12px; display: block; }
+
+.final-title {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+
+.final-msg {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #3B1B6E;
+  margin-bottom: 20px;
+  line-height: 1.4;
+}
+
+.btn-restart {
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 16px 32px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.2s;
+  min-height: 54px;
+}
+
+.btn-restart:hover { background: #9333EA; }
+
+footer {
+  text-align: center;
+  padding: 20px;
+  border-top: 2px solid #E9D5FF;
+}
+
+.btn-back {
+  background: white;
+  color: var(--primary);
+  border: 3px solid var(--primary);
+  border-radius: 14px;
+  padding: 14px 28px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-height: 48px;
+}
+
+.btn-back:hover { background: var(--primary); color: white; }
+
+@media (max-width: 480px) {
+  .word-definition { font-size: 1.3rem; }
+  .silaba-btn { font-size: 1.3rem; padding: 10px 14px; }
+  .silaba-answer { font-size: 1.2rem; padding: 8px 12px; }
+  .header h1 { font-size: 1.3rem; }
+  .btn-check, .btn-next { font-size: 1.1rem; }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <span class="header-emoji">⏳</span>
+  <h1>Ordene as Sílabas</h1>
+  <p>Monte as palavras do tema com a Tempa!</p>
+  <span class="badge">⚡ Praticar (80%)</span>
+</header>
+
+<main>
+  <div class="instrucoes">
+    <strong>Como jogar:</strong> toque nas sílabas na <strong>ordem certa</strong> para montar a palavra. Se errar, clique na sílaba na zona de resposta para removê-la!
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-bar-bg">
+      <div class="progress-bar" id="progress-bar" style="width:0%"></div>
+    </div>
+    <div class="progress-label" id="progress-label">1 / 4</div>
+  </div>
+
+  <div id="game-area">
+    <div class="word-card">
+      <span class="word-emoji" id="word-emoji"></span>
+      <div class="word-hint" id="word-hint"></div>
+      <div class="word-definition" id="word-definition"></div>
+    </div>
+
+    <div class="answer-zone" id="answer-zone">
+      <span class="answer-zone-label" id="answer-placeholder">Toque nas sílabas abaixo...</span>
+    </div>
+
+    <div class="feedback-box" id="feedback-box"></div>
+
+    <div class="silabas-pool" id="silabas-pool"></div>
+
+    <div class="actions">
+      <button class="btn-clear" onclick="clearAnswer()">↩ Limpar</button>
+      <button class="btn-check" id="btn-check" onclick="checkAnswer()">Verificar</button>
+    </div>
+
+    <button class="btn-next show" id="btn-next" onclick="nextWord()" style="display:none">Próxima Palavra →</button>
+  </div>
+
+  <div class="final-screen" id="final-screen">
+    <span class="final-emoji" id="final-emoji"></span>
+    <div class="final-title">Parabéns!</div>
+    <div class="final-msg" id="final-msg"></div>
+    <button class="btn-restart" onclick="initGame()">Jogar de novo!</button>
+  </div>
+</main>
+
+<footer>
+  <button class="btn-back" onclick="window.close()">← Voltar ao Portal</button>
+</footer>
+
+<script>
+const words = [
+  {
+    word: 'CONVIVÊNCIA',
+    silabas: ['CON', 'VI', 'VÊN', 'CIA'],
+    emoji: '🤝',
+    hint: 'Palavra do tema',
+    definition: 'É quando as pessoas vivem e se relacionam juntas em um mesmo espaço.'
+  },
+  {
+    word: 'MUDANÇA',
+    silabas: ['MU', 'DAN', 'ÇA'],
+    emoji: '🔄',
+    hint: 'Palavra do tema',
+    definition: 'Quando algo se transforma e fica diferente do que era antes.'
+  },
+  {
+    word: 'PASSADO',
+    silabas: ['PAS', 'SA', 'DO'],
+    emoji: '🕰️',
+    hint: 'Palavra do tema',
+    definition: 'O tempo que já aconteceu — pode ser ontem, anos atrás ou há cem anos!'
+  },
+  {
+    word: 'CALÇADA',
+    silabas: ['CAL', 'ÇA', 'DA'],
+    emoji: '🏘️',
+    hint: 'Local de convivência no passado',
+    definition: 'Espaço da rua onde as pessoas caminhavam e se reuniam para conversar há cem anos.'
+  }
+];
+
+let current = 0;
+let score = 0;
+let answered = false;
+let selectedSilabas = [];
+let shuffledSilabas = [];
+
+function playSound(type) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  if (type === 'correct') {
+    o.frequency.setValueAtTime(523, ctx.currentTime);
+    o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+    o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    o.start(); o.stop(ctx.currentTime + 0.5);
+  } else {
+    o.frequency.setValueAtTime(300, ctx.currentTime);
+    o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    o.start(); o.stop(ctx.currentTime + 0.4);
+  }
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function initGame() {
+  current = 0;
+  score = 0;
+  document.getElementById('final-screen').classList.remove('show');
+  document.getElementById('game-area').style.display = 'block';
+  loadWord();
+}
+
+function loadWord() {
+  answered = false;
+  selectedSilabas = [];
+
+  const w = words[current];
+  shuffledSilabas = shuffle(w.silabas);
+
+  document.getElementById('word-emoji').textContent = w.emoji;
+  document.getElementById('word-hint').textContent = w.hint;
+  document.getElementById('word-definition').textContent = w.definition;
+  document.getElementById('progress-label').textContent = `${current + 1} / ${words.length}`;
+  document.getElementById('progress-bar').style.width = `${(current / words.length) * 100}%`;
+
+  const feedback = document.getElementById('feedback-box');
+  feedback.className = 'feedback-box';
+  feedback.textContent = '';
+
+  const btnNext = document.getElementById('btn-next');
+  btnNext.style.display = 'none';
+
+  document.getElementById('btn-check').disabled = false;
+
+  renderAnswerZone();
+  renderPool();
+}
+
+function renderPool() {
+  const pool = document.getElementById('silabas-pool');
+  pool.innerHTML = '';
+  shuffledSilabas.forEach((sil, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'silaba-btn';
+    btn.textContent = sil;
+    btn.dataset.idx = idx;
+    if (selectedSilabas.includes(idx)) btn.classList.add('used');
+    btn.onclick = () => selectSilaba(idx, sil);
+    pool.appendChild(btn);
+  });
+}
+
+function renderAnswerZone() {
+  const zone = document.getElementById('answer-zone');
+  zone.className = 'answer-zone';
+
+  if (selectedSilabas.length === 0) {
+    zone.innerHTML = '<span class="answer-zone-label" id="answer-placeholder">Toque nas sílabas abaixo...</span>';
+    return;
+  }
+
+  zone.innerHTML = '';
+  selectedSilabas.forEach(idx => {
+    const sil = shuffledSilabas[idx];
+    const btn = document.createElement('button');
+    btn.className = 'silaba-answer';
+    btn.textContent = sil;
+    btn.title = 'Clique para remover';
+    btn.onclick = () => removeSilaba(idx);
+    zone.appendChild(btn);
+  });
+}
+
+function selectSilaba(idx, sil) {
+  if (answered) return;
+  if (selectedSilabas.includes(idx)) return;
+
+  selectedSilabas.push(idx);
+  renderAnswerZone();
+  renderPool();
+}
+
+function removeSilaba(idx) {
+  if (answered) return;
+  selectedSilabas = selectedSilabas.filter(i => i !== idx);
+  renderAnswerZone();
+  renderPool();
+}
+
+function clearAnswer() {
+  if (answered) return;
+  selectedSilabas = [];
+  renderAnswerZone();
+  renderPool();
+}
+
+function checkAnswer() {
+  if (answered) return;
+  if (selectedSilabas.length === 0) {
+    alert('Selecione as sílabas antes de verificar!');
+    return;
+  }
+
+  const w = words[current];
+  const built = selectedSilabas.map(i => shuffledSilabas[i]).join('');
+  const isCorrect = built === w.word;
+
+  answered = true;
+  document.getElementById('btn-check').disabled = true;
+
+  const zone = document.getElementById('answer-zone');
+  const feedback = document.getElementById('feedback-box');
+  const btnNext = document.getElementById('btn-next');
+
+  // Desabilitar remoção de sílabas
+  document.querySelectorAll('.silaba-answer').forEach(b => {
+    b.onclick = null;
+    b.style.cursor = 'default';
+  });
+
+  if (isCorrect) {
+    score++;
+    zone.classList.add('correct');
+    feedback.textContent = `✅ Perfeito! A palavra é ${w.word}!`;
+    feedback.className = 'feedback-box show correct';
+    playSound('correct');
+  } else {
+    zone.classList.add('wrong');
+    feedback.textContent = `❌ Quase! A ordem certa é: ${w.silabas.join(' - ')} = ${w.word}`;
+    feedback.className = 'feedback-box show wrong';
+    playSound('wrong');
+
+    // Mostrar resposta correta na pool
+    const pool = document.getElementById('silabas-pool');
+    pool.innerHTML = '';
+    w.silabas.forEach(sil => {
+      const span = document.createElement('span');
+      span.className = 'silaba-btn';
+      span.textContent = sil;
+      span.style.cursor = 'default';
+      span.style.background = 'linear-gradient(135deg, #10B981, #059669)';
+      pool.appendChild(span);
+    });
+  }
+
+  btnNext.style.display = 'block';
+  btnNext.textContent = current < words.length - 1 ? 'Próxima Palavra →' : 'Ver Resultado!';
+}
+
+function nextWord() {
+  current++;
+  if (current >= words.length) {
+    showFinal();
+  } else {
+    loadWord();
+  }
+}
+
+function showFinal() {
+  document.getElementById('game-area').style.display = 'none';
+  const fs = document.getElementById('final-screen');
+  fs.classList.add('show');
+
+  document.getElementById('progress-bar').style.width = '100%';
+  document.getElementById('progress-label').textContent = `${words.length} / ${words.length}`;
+
+  const pct = score / words.length;
+  let emoji, msg;
+
+  if (pct === 1) {
+    emoji = '🏆';
+    msg = 'Incrível! Você montou todas as palavras sem errar nenhuma! A Tempa está orgulhosa de você!';
+  } else if (pct >= 0.75) {
+    emoji = '🎉';
+    msg = `${score} de ${words.length} palavras certas! Muito bem! Você está dominando o vocabulário do tema!`;
+  } else if (pct >= 0.5) {
+    emoji = '😊';
+    msg = `${score} de ${words.length} palavras certas! Bom trabalho! Que tal tentar de novo?`;
+  } else {
+    emoji = '💪';
+    msg = `Continue praticando! Você vai arrasar na próxima tentativa!`;
+  }
+
+  document.getElementById('final-emoji').textContent = emoji;
+  document.getElementById('final-msg').textContent = msg;
+  playSound('correct');
+  fs.scrollIntoView({ behavior: 'smooth' });
+}
+
+initGame();
+</script>
+</body>
+</html>
