@@ -3,398 +3,202 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pódio da Corrida — Números Ordinais | Portal da Lis</title>
+<title>Corrida Ordenada — Números Ordinais | Portal da Lis</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
 :root {
   --primary: #0AACE8;
   --light: #5AC8FB;
   --bg: #EFF9FF;
-  --dark: #044A7A;
-  --correct: #22C55E;
-  --wrong: #EF4444;
 }
-
 * { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
 
-body {
-  font-family: 'Nunito', sans-serif;
-  background: var(--bg);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  user-select: none;
-}
-
-header {
+.header {
+  width: 100%;
   background: linear-gradient(135deg, #044A7A, #0AACE8 60%, #5AC8FB);
   color: white;
-  padding: 24px 20px;
   text-align: center;
+  padding: 20px 16px 24px;
 }
+.header h1 { font-family: 'Baloo 2', sans-serif; font-size: 1.8rem; font-weight: 900; }
+.header p { font-size: 1.1rem; margin-top: 6px; opacity: 0.92; }
 
-header .emoji { font-size: 2.8rem; display: block; margin-bottom: 8px; }
-
-header h1 {
-  font-family: 'Baloo 2', cursive;
-  font-size: 1.8rem;
-  font-weight: 900;
-  line-height: 1.2;
-}
-
-header p { font-size: 1rem; opacity: 0.9; margin-top: 4px; }
-
-main {
-  flex: 1;
-  padding: 20px 16px;
-  max-width: 700px;
-  margin: 0 auto;
-  width: 100%;
-}
-
-.instruction {
+.instrucao {
   background: white;
   border-radius: 16px;
-  padding: 16px 20px;
-  box-shadow: 0 3px 12px rgba(10,172,232,0.12);
-  margin-bottom: 20px;
-  font-size: 1.2rem;
+  padding: 16px 24px;
+  margin: 20px 16px 0;
+  font-size: 1.3rem;
   font-weight: 700;
-  color: var(--dark);
+  color: #044A7A;
   text-align: center;
+  box-shadow: 0 2px 12px rgba(10,172,232,0.12);
+  max-width: 620px;
+  width: calc(100% - 32px);
 }
 
-/* Pista de corrida — slots */
+.progress-bar-wrap {
+  width: calc(100% - 32px);
+  max-width: 620px;
+  margin: 14px 16px 0;
+}
+.progress-bar { height: 10px; background: #BFDBFE; border-radius: 999px; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, #0AACE8, #5AC8FB); border-radius: 999px; transition: width 0.4s; width: 0%; }
+.progress-label { text-align: right; font-size: 0.95rem; font-weight: 700; color: #0AACE8; margin-top: 4px; }
+
+/* PISTA */
+.section { width: calc(100% - 32px); max-width: 620px; margin: 16px 16px 0; }
+.section-label { font-family: 'Baloo 2', sans-serif; font-size: 1.05rem; font-weight: 800; color: #0AACE8; margin-bottom: 8px; text-align: center; }
+
 .track {
-  background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+  background: #C8E6F5;
   border-radius: 20px;
-  padding: 20px 16px;
-  margin-bottom: 20px;
-  position: relative;
-  overflow: hidden;
-}
-
-.track-line {
-  position: absolute;
-  left: 0; right: 0;
-  top: 50%;
-  height: 3px;
-  background: repeating-linear-gradient(90deg, #FFD700 0px, #FFD700 20px, transparent 20px, transparent 40px);
-  opacity: 0.3;
-}
-
-.track-title {
-  color: #FFD700;
-  font-family: 'Baloo 2', cursive;
-  font-size: 1rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  text-align: center;
-  margin-bottom: 16px;
-  text-shadow: 0 0 8px rgba(255,215,0,0.5);
-}
-
-.slots-row {
+  padding: 14px 10px;
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   justify-content: center;
-  flex-wrap: nowrap;
+  border: 3px dashed #0AACE8;
+  min-height: 108px;
 }
 
 .slot {
-  flex: 1;
-  min-width: 80px;
-  max-width: 120px;
-  background: rgba(255,255,255,0.08);
-  border: 2px dashed rgba(255,255,255,0.3);
+  width: 88px; height: 88px;
+  background: white;
   border-radius: 14px;
-  padding: 10px 6px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  min-height: 100px;
-  transition: all 0.2s ease;
+  border: 2.5px dashed #5AC8FB;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  transition: border-color 0.2s, background 0.2s;
   position: relative;
 }
+.slot.over { border-color: #F5C518; background: #FFFBEB; }
+.slot.correct { border-color: #22C55E; background: #F0FDF4; border-style: solid; }
+.slot.wrong { border-color: #EF4444; background: #FEF2F2; animation: shake 0.35s; }
+@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+.slot-pos { font-family: 'Baloo 2', sans-serif; font-size: 1.15rem; font-weight: 900; color: #0AACE8; }
+.slot-nome { font-size: 0.78rem; font-weight: 700; color: #5AC8FB; }
+.slot-filled-emoji { font-size: 2rem; line-height: 1; }
+.slot-filled-ord { font-family: 'Baloo 2', sans-serif; font-size: 1rem; font-weight: 900; color: #16A34A; margin-top: 2px; }
 
-.slot.drag-over {
-  background: rgba(90,200,251,0.25);
-  border-color: var(--light);
-  box-shadow: 0 0 16px rgba(90,200,251,0.4);
-}
-
-.slot.correct { border-color: var(--correct); background: rgba(34,197,94,0.2); }
-.slot.wrong { border-color: var(--wrong); background: rgba(239,68,68,0.15); }
-
-.slot-label {
-  color: #FFD700;
-  font-family: 'Baloo 2', cursive;
-  font-size: 1.1rem;
-  font-weight: 900;
-  text-shadow: 0 0 4px rgba(255,215,0,0.4);
-}
-
-.slot-sublabel {
-  color: rgba(255,255,255,0.6);
-  font-size: 0.75rem;
-  font-weight: 700;
-}
-
-.slot-car-area {
-  width: 100%;
-  min-height: 52px;
+/* GARAGEM */
+.garage {
+  background: white;
+  border-radius: 20px;
+  padding: 14px 10px;
   display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Carros arrastáveis */
-.cars-area {
-  margin-bottom: 20px;
-}
-
-.cars-title {
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: var(--dark);
-  margin-bottom: 12px;
-  text-align: center;
-}
-
-.cars-row {
-  display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   justify-content: center;
-  flex-wrap: wrap;
+  box-shadow: 0 2px 12px rgba(10,172,232,0.10);
+  min-height: 108px;
 }
 
-.car {
-  width: 70px;
-  height: 52px;
-  border-radius: 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+.car-card {
+  width: 88px; height: 88px;
+  border-radius: 14px;
+  border: 3px solid transparent;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
   cursor: grab;
-  font-size: 1.6rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-  border: 3px solid rgba(255,255,255,0.4);
-  position: relative;
-  min-height: 44px;
-  min-width: 44px;
+  user-select: none;
+  touch-action: none;
+  transition: transform 0.15s, opacity 0.2s;
 }
+.car-card:active { cursor: grabbing; }
+.car-card.dragging { opacity: 0.35; transform: scale(0.92); }
+.car-emoji { font-size: 2.2rem; line-height: 1; }
+.car-ordinal { font-family: 'Baloo 2', sans-serif; font-size: 1.05rem; font-weight: 900; margin-top: 2px; }
 
-.car:hover { transform: scale(1.08) translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.25); }
-.car.dragging { opacity: 0.5; cursor: grabbing; transform: scale(1.1); }
-.car.placed { opacity: 0.3; pointer-events: none; }
+.car-1  { background:#FEE2E2; border-color:#EF4444; }  .car-1  .car-ordinal { color:#DC2626; }
+.car-2  { background:#FEF3C7; border-color:#F59E0B; }  .car-2  .car-ordinal { color:#D97706; }
+.car-3  { background:#D1FAE5; border-color:#22C55E; }  .car-3  .car-ordinal { color:#16A34A; }
+.car-4  { background:#EFF9FF; border-color:#0AACE8; }  .car-4  .car-ordinal { color:#044A7A; }
+.car-5  { background:#F5F3FF; border-color:#A855F7; }  .car-5  .car-ordinal { color:#7C3AED; }
+.car-6  { background:#FFF7ED; border-color:#F97316; }  .car-6  .car-ordinal { color:#EA580C; }
+.car-7  { background:#FCE7F3; border-color:#EC4899; }  .car-7  .car-ordinal { color:#DB2777; }
+.car-8  { background:#ECFDF5; border-color:#34D399; }  .car-8  .car-ordinal { color:#059669; }
+.car-9  { background:#FEF9C3; border-color:#EAB308; }  .car-9  .car-ordinal { color:#CA8A04; }
 
-.car-label {
-  font-size: 0.7rem;
-  font-weight: 900;
-  color: rgba(255,255,255,0.9);
-  font-family: 'Baloo 2', cursive;
-  margin-top: 2px;
+/* RESULTADO */
+.resultado { display:none; flex-direction:column; align-items:center; margin:20px 16px 0; width:calc(100% - 32px); max-width:620px; }
+.resultado.show { display:flex; }
+.resultado-msg {
+  background: linear-gradient(135deg,#22C55E,#16A34A);
+  color:white; font-family:'Baloo 2',sans-serif; font-size:1.5rem; font-weight:900;
+  padding:18px 32px; border-radius:20px; text-align:center;
+  animation: pop 0.4s ease;
 }
+@keyframes pop { 0%{transform:scale(0.8);opacity:0} 100%{transform:scale(1);opacity:1} }
 
-.car-red    { background: linear-gradient(135deg, #DC2626, #EF4444); }
-.car-green  { background: linear-gradient(135deg, #15803D, #22C55E); }
-.car-blue   { background: linear-gradient(135deg, #1D4ED8, #3B82F6); }
-.car-yellow { background: linear-gradient(135deg, #D97706, #F59E0B); }
-.car-orange { background: linear-gradient(135deg, #C2410C, #F97316); }
+.btns { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin:20px 16px 32px; }
+.btn { font-family:'Baloo 2',sans-serif; font-size:1.1rem; font-weight:800; padding:14px 28px; border:none; border-radius:14px; cursor:pointer; transition:transform 0.1s; }
+.btn:active { transform:scale(0.97); }
+.btn-primary { background:var(--primary); color:white; box-shadow:0 4px 12px rgba(10,172,232,0.3); }
+.btn-back { background:white; color:#044A7A; border:2.5px solid #0AACE8; }
 
-.placed-car {
-  width: 56px;
-  height: 44px;
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.3rem;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
-  border: 2px solid rgba(255,255,255,0.4);
-  cursor: default;
-}
-
-.result-banner {
-  display: none;
-  background: white;
-  border-radius: 18px;
-  padding: 24px;
-  text-align: center;
-  box-shadow: 0 4px 20px rgba(10,172,232,0.2);
-  margin-bottom: 16px;
-}
-
-.result-banner.show { display: block; }
-
-.result-banner .emoji { font-size: 3rem; margin-bottom: 8px; }
-.result-banner h2 {
-  font-family: 'Baloo 2', cursive;
-  font-size: 1.6rem;
-  color: var(--dark);
-  margin-bottom: 8px;
-}
-.result-banner p { font-size: 1.15rem; color: #555; font-weight: 700; }
-
-.controls {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-bottom: 16px;
-}
-
-.btn-check {
-  background: linear-gradient(135deg, var(--primary), var(--light));
-  color: white;
-  border: none;
-  border-radius: 14px;
-  padding: 14px 28px;
-  font-family: 'Nunito', sans-serif;
-  font-size: 1.1rem;
-  font-weight: 800;
-  cursor: pointer;
-  transition: transform 0.15s ease;
-  min-height: 52px;
-}
-
-.btn-check:hover { transform: scale(1.04); }
-
-.btn-reset {
-  background: white;
-  border: 3px solid var(--primary);
-  color: var(--primary);
-  border-radius: 14px;
-  padding: 14px 28px;
-  font-family: 'Nunito', sans-serif;
-  font-size: 1.1rem;
-  font-weight: 800;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  min-height: 52px;
-}
-
-.btn-reset:hover { background: var(--primary); color: white; }
-
-footer {
-  text-align: center;
-  padding: 20px 16px;
-}
-
-.btn-back {
-  background: white;
-  border: 3px solid var(--primary);
-  color: var(--primary);
-  border-radius: 14px;
-  padding: 14px 28px;
-  font-family: 'Nunito', sans-serif;
-  font-size: 1.1rem;
-  font-weight: 800;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  min-height: 48px;
-}
-
-.btn-back:hover { background: var(--primary); color: white; }
-
-/* Confete */
-.confetti-wrap {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  overflow: hidden;
-  z-index: 200;
-}
-
-.confetti-piece {
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  top: -20px;
-  animation: fall linear forwards;
-  border-radius: 2px;
-}
-
-@keyframes fall {
-  to { transform: translateY(110vh) rotate(720deg); opacity: 0; }
-}
-
-@media (max-width: 480px) {
-  .slot { min-width: 56px; min-height: 88px; padding: 8px 4px; }
-  .slot-label { font-size: 1rem; }
-  .slots-row { gap: 5px; }
-  .car { width: 58px; height: 46px; font-size: 1.4rem; }
-  header h1 { font-size: 1.4rem; }
-  .placed-car { width: 46px; height: 38px; font-size: 1.1rem; }
+@media (max-width:480px) {
+  .header h1 { font-size:1.4rem; }
+  .instrucao { font-size:1.1rem; }
+  .car-card, .slot { width:74px; height:74px; }
+  .car-emoji { font-size:1.9rem; }
+  .car-ordinal { font-size:0.9rem; }
 }
 </style>
 </head>
 <body>
 
-<header>
-  <span class="emoji">🏆</span>
-  <h1>Pódio da Corrida</h1>
-  <p>Arraste cada carro para a sua posição!</p>
-</header>
+<div class="header">
+  <h1>🏎️ Corrida Ordenada!</h1>
+  <p>Organize os carros do 1º ao 9º lugar! 🏆</p>
+</div>
 
-<main>
-  <div class="instruction">
-    Coloque os carros em ordem: 1º ao 5º lugar! 🚗💨
-  </div>
+<div class="instrucao">
+  Arraste cada carro para o slot certo na pista —<br>do <strong>1º (primeiro)</strong> ao <strong>9º (nono)</strong>!
+</div>
 
-  <div class="cars-area">
-    <div class="cars-title">Carros para posicionar:</div>
-    <div class="cars-row" id="cars-row"></div>
-  </div>
+<div class="progress-bar-wrap">
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="progress-label" id="progressLabel">0 de 9 no lugar certo</div>
+</div>
 
-  <div class="track">
-    <div class="track-title">🏁 PISTA DE CORRIDA 🏁</div>
-    <div class="slots-row" id="slots-row"></div>
-  </div>
+<div class="section">
+  <div class="section-label">🏁 Pista de chegada — arraste para cá</div>
+  <div class="track" id="track"></div>
+</div>
 
-  <div class="result-banner" id="result-banner">
-    <div class="emoji" id="result-emoji"></div>
-    <h2 id="result-title"></h2>
-    <p id="result-text"></p>
-  </div>
+<div class="section">
+  <div class="section-label">🔧 Garagem — carros embaralhados</div>
+  <div class="garage" id="garage"></div>
+</div>
 
-  <div class="controls">
-    <button class="btn-check" onclick="checkAnswer()">Verificar 🏁</button>
-    <button class="btn-reset" onclick="resetGame()">Nova corrida 🔀</button>
-  </div>
-</main>
+<div class="resultado" id="resultado">
+  <div class="resultado-msg">🎉 Incrível! Você colocou todos em ordem! 🥇🥈🥉</div>
+</div>
 
-<footer>
-  <button class="btn-back" onclick="window.location.href='../../index.html'">← Voltar ao Portal</button>
-</footer>
-
-<div class="confetti-wrap" id="confetti-wrap"></div>
+<div class="btns">
+  <button class="btn btn-primary" onclick="embaralhar()">🔀 Nova corrida</button>
+  <button class="btn btn-back" onclick="window.location.href='../../index.html'">⬅️ Voltar ao Portal</button>
+</div>
 
 <script>
-const carsData = [
-  { id: 'red',    emoji: '🚗', label: 'Vermelho', colorClass: 'car-red',    correctSlot: 0 },
-  { id: 'green',  emoji: '🚙', label: 'Verde',    colorClass: 'car-green',  correctSlot: 1 },
-  { id: 'blue',   emoji: '🚕', label: 'Azul',     colorClass: 'car-blue',   correctSlot: 2 },
-  { id: 'yellow', emoji: '🚌', label: 'Amarelo',  colorClass: 'car-yellow', correctSlot: 3 },
-  { id: 'orange', emoji: '🚐', label: 'Laranja',  colorClass: 'car-orange', correctSlot: 4 },
+const CARROS = [
+  { pos:1, emoji:'🏎️', ordinal:'1º', nome:'primeiro', classe:'car-1' },
+  { pos:2, emoji:'🚗', ordinal:'2º', nome:'segundo',  classe:'car-2' },
+  { pos:3, emoji:'🚕', ordinal:'3º', nome:'terceiro', classe:'car-3' },
+  { pos:4, emoji:'🚙', ordinal:'4º', nome:'quarto',   classe:'car-4' },
+  { pos:5, emoji:'🚌', ordinal:'5º', nome:'quinto',   classe:'car-5' },
+  { pos:6, emoji:'🚐', ordinal:'6º', nome:'sexto',    classe:'car-6' },
+  { pos:7, emoji:'🛻', ordinal:'7º', nome:'sétimo',  classe:'car-7' },
+  { pos:8, emoji:'🚑', ordinal:'8º', nome:'oitavo',  classe:'car-8' },
+  { pos:9, emoji:'🚒', ordinal:'9º', nome:'nono',    classe:'car-9' },
 ];
 
-const slotLabels = ['1º lugar', '2º lugar', '3º lugar', '4º lugar', '5º lugar'];
-const slotSublabels = ['primeiro', 'segundo', 'terceiro', 'quarto', 'quinto'];
-
-let slotContents = [null, null, null, null, null];
-let draggedCarId = null;
-let touchDraggedEl = null;
-let touchDragClone = null;
+let acertos = 0;
+let draggingCar = null;
 
 function playSound(type) {
   const ctx = new (window.AudioContext || window.webkitAudioContext)();
-  const o = ctx.createOscillator();
-  const g = ctx.createGain();
+  const o = ctx.createOscillator(), g = ctx.createGain();
   o.connect(g); g.connect(ctx.destination);
   if (type === 'correct') {
     o.frequency.setValueAtTime(523, ctx.currentTime);
@@ -412,235 +216,110 @@ function playSound(type) {
   }
 }
 
+function playVictory() {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  [523,659,784,1047].forEach((freq,i) => {
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.frequency.value = freq;
+    g.gain.setValueAtTime(0.25, ctx.currentTime + i*0.15);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i*0.15 + 0.4);
+    o.start(ctx.currentTime + i*0.15);
+    o.stop(ctx.currentTime + i*0.15 + 0.4);
+  });
+}
+
 function shuffle(arr) {
   const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
+  for (let i = a.length-1; i>0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
   }
-  return a;
+  // garante que nunca sai na ordem certa
+  const emOrdem = a.every((c,i) => c.pos === i+1);
+  return emOrdem ? shuffle(arr) : a;
 }
 
-function buildCars(order) {
-  const row = document.getElementById('cars-row');
-  row.innerHTML = '';
-  order.forEach(car => {
-    const el = document.createElement('div');
-    el.className = `car ${car.colorClass}`;
-    el.id = `car-${car.id}`;
-    el.dataset.carid = car.id;
-    el.innerHTML = `<span>${car.emoji}</span><span class="car-label">${car.label}</span>`;
-    el.draggable = true;
-
-    // Desktop drag
-    el.addEventListener('dragstart', e => {
-      draggedCarId = car.id;
-      e.dataTransfer.effectAllowed = 'move';
-      setTimeout(() => el.classList.add('dragging'), 0);
-    });
-    el.addEventListener('dragend', () => el.classList.remove('dragging'));
-
-    // Touch drag
-    el.addEventListener('touchstart', onTouchStart, { passive: true });
-    el.addEventListener('touchmove', onTouchMove, { passive: false });
-    el.addEventListener('touchend', onTouchEnd);
-
-    row.appendChild(el);
-  });
+function updateProgress() {
+  document.getElementById('progressFill').style.width = (acertos/9*100)+'%';
+  document.getElementById('progressLabel').textContent = acertos+' de 9 no lugar certo';
 }
 
-function buildSlots() {
-  const row = document.getElementById('slots-row');
-  row.innerHTML = '';
-  slotLabels.forEach((label, i) => {
+function buildTrack() {
+  const track = document.getElementById('track');
+  track.innerHTML = '';
+  CARROS.forEach(c => {
     const slot = document.createElement('div');
     slot.className = 'slot';
-    slot.id = `slot-${i}`;
-    slot.dataset.slotindex = i;
-    slot.innerHTML = `
-      <div class="slot-label">${label}</div>
-      <div class="slot-sublabel">${slotSublabels[i]}</div>
-      <div class="slot-car-area" id="slot-car-${i}"></div>
-    `;
+    slot.dataset.pos = c.pos;
+    slot.innerHTML = `<div class="slot-pos">${c.ordinal}</div><div class="slot-nome">${c.nome}</div>`;
 
-    slot.addEventListener('dragover', e => { e.preventDefault(); slot.classList.add('drag-over'); });
-    slot.addEventListener('dragleave', () => slot.classList.remove('drag-over'));
-    slot.addEventListener('drop', e => {
-      e.preventDefault();
-      slot.classList.remove('drag-over');
-      placeCar(draggedCarId, i);
-    });
+    slot.addEventListener('dragover', e => { e.preventDefault(); if (!slot.dataset.filled) slot.classList.add('over'); });
+    slot.addEventListener('dragleave', () => slot.classList.remove('over'));
+    slot.addEventListener('drop', e => { e.preventDefault(); slot.classList.remove('over'); drop(slot); });
+    slot.addEventListener('touchend', () => drop(slot), { passive: true });
 
-    row.appendChild(slot);
+    track.appendChild(slot);
   });
 }
 
-function placeCar(carId, slotIndex) {
-  if (!carId) return;
-  const car = carsData.find(c => c.id === carId);
-  if (!car) return;
-
-  // Remove from previous slot
-  slotContents.forEach((c, i) => {
-    if (c === carId) {
-      slotContents[i] = null;
-      document.getElementById(`slot-car-${i}`).innerHTML = '';
-      const slot = document.getElementById(`slot-${i}`);
-      slot.classList.remove('correct', 'wrong');
-    }
-  });
-
-  // Clear target slot
-  if (slotContents[slotIndex]) {
-    const prevCarId = slotContents[slotIndex];
-    const prevCarEl = document.getElementById(`car-${prevCarId}`);
-    if (prevCarEl) prevCarEl.classList.remove('placed');
-    slotContents[slotIndex] = null;
-    document.getElementById(`slot-car-${slotIndex}`).innerHTML = '';
-  }
-
-  slotContents[slotIndex] = carId;
-
-  // Mark car as placed in source row (dim it)
-  const carEl = document.getElementById(`car-${carId}`);
-  if (carEl) carEl.classList.add('placed');
-
-  // Render placed car in slot
-  const slotCarArea = document.getElementById(`slot-car-${slotIndex}`);
-  slotCarArea.innerHTML = `
-    <div class="placed-car ${car.colorClass}">
-      <span>${car.emoji}</span>
-    </div>
-  `;
-
-  // Clear result state
-  document.getElementById(`slot-${slotIndex}`).classList.remove('correct', 'wrong');
-  document.getElementById('result-banner').classList.remove('show');
+function buildGarage(shuffled) {
+  const garage = document.getElementById('garage');
+  garage.innerHTML = '';
+  shuffled.forEach(c => garage.appendChild(makeCard(c)));
 }
 
-// Touch support
-function onTouchStart(e) {
-  const el = e.currentTarget;
-  touchDraggedEl = el;
-  draggedCarId = el.dataset.carid;
+function makeCard(c) {
+  const card = document.createElement('div');
+  card.className = `car-card ${c.classe}`;
+  card.draggable = true;
+  card.dataset.pos = c.pos;
+  card.innerHTML = `<div class="car-emoji">${c.emoji}</div><div class="car-ordinal">${c.ordinal}</div>`;
 
-  touchDragClone = el.cloneNode(true);
-  touchDragClone.style.position = 'fixed';
-  touchDragClone.style.pointerEvents = 'none';
-  touchDragClone.style.zIndex = '999';
-  touchDragClone.style.opacity = '0.85';
-  touchDragClone.style.transform = 'scale(1.1)';
-  touchDragClone.style.width = el.offsetWidth + 'px';
-  touchDragClone.style.height = el.offsetHeight + 'px';
-  document.body.appendChild(touchDragClone);
+  card.addEventListener('dragstart', () => { draggingCar = c; card.classList.add('dragging'); });
+  card.addEventListener('dragend',   () => card.classList.remove('dragging'));
+  card.addEventListener('touchstart',() => { draggingCar = c; }, { passive:true });
 
-  const t = e.touches[0];
-  moveTouchClone(t.clientX, t.clientY);
+  return card;
 }
 
-function onTouchMove(e) {
-  e.preventDefault();
-  if (!touchDragClone) return;
-  const t = e.touches[0];
-  moveTouchClone(t.clientX, t.clientY);
+function drop(slot) {
+  if (!draggingCar || slot.dataset.filled) return;
+  const c = draggingCar;
+  const slotPos = parseInt(slot.dataset.pos);
 
-  // Highlight slot under finger
-  document.querySelectorAll('.slot').forEach(s => s.classList.remove('drag-over'));
-  const target = document.elementFromPoint(t.clientX, t.clientY);
-  const slot = target && target.closest('.slot');
-  if (slot) slot.classList.add('drag-over');
-}
-
-function onTouchEnd(e) {
-  if (!touchDragClone) return;
-  const t = e.changedTouches[0];
-  const target = document.elementFromPoint(t.clientX, t.clientY);
-  const slot = target && target.closest('.slot');
-
-  if (slot) {
-    const idx = parseInt(slot.dataset.slotindex);
-    placeCar(draggedCarId, idx);
-  }
-
-  document.body.removeChild(touchDragClone);
-  touchDragClone = null;
-  document.querySelectorAll('.slot').forEach(s => s.classList.remove('drag-over'));
-  draggedCarId = null;
-  touchDraggedEl = null;
-}
-
-function moveTouchClone(x, y) {
-  if (!touchDragClone) return;
-  touchDragClone.style.left = (x - touchDragClone.offsetWidth / 2) + 'px';
-  touchDragClone.style.top = (y - touchDragClone.offsetHeight / 2) + 'px';
-}
-
-function checkAnswer() {
-  if (slotContents.some(c => c === null)) {
-    alert('Coloque todos os carros nos slots antes de verificar!');
-    return;
-  }
-
-  let allCorrect = true;
-  slotContents.forEach((carId, slotIdx) => {
-    const car = carsData.find(c => c.id === carId);
-    const slotEl = document.getElementById(`slot-${slotIdx}`);
-    if (car.correctSlot === slotIdx) {
-      slotEl.classList.add('correct');
-      slotEl.classList.remove('wrong');
-    } else {
-      slotEl.classList.add('wrong');
-      slotEl.classList.remove('correct');
-      allCorrect = false;
-    }
-  });
-
-  const banner = document.getElementById('result-banner');
-  banner.classList.add('show');
-
-  if (allCorrect) {
+  if (c.pos === slotPos) {
+    // Acerto
+    slot.innerHTML = `<div class="slot-filled-emoji">${c.emoji}</div><div class="slot-filled-ord">${c.ordinal}</div>`;
+    slot.classList.add('correct');
+    slot.dataset.filled = '1';
+    document.querySelectorAll(`.car-card[data-pos="${c.pos}"]`).forEach(el => el.remove());
+    acertos++;
     playSound('correct');
-    document.getElementById('result-emoji').textContent = '🥇';
-    document.getElementById('result-title').textContent = 'Corrida perfeita!';
-    document.getElementById('result-text').textContent = 'Você colocou todos os carros na posição correta! Campeão de ordinais!';
-    launchConfetti();
+    updateProgress();
+    if (acertos === 9) setTimeout(() => { document.getElementById('resultado').classList.add('show'); playVictory(); }, 350);
   } else {
+    // Erro
+    slot.classList.add('wrong');
+    setTimeout(() => slot.classList.remove('wrong'), 600);
     playSound('wrong');
-    document.getElementById('result-emoji').textContent = '🤔';
-    document.getElementById('result-title').textContent = 'Quase lá!';
-    document.getElementById('result-text').textContent = 'Alguns carros estão fora de ordem. Os slots vermelhos precisam de ajuste!';
   }
+  draggingCar = null;
 }
 
-function launchConfetti() {
-  const wrap = document.getElementById('confetti-wrap');
-  wrap.innerHTML = '';
-  const colors = ['#0AACE8', '#5AC8FB', '#FFD700', '#22C55E', '#F97316', '#A855F7'];
-  for (let i = 0; i < 60; i++) {
-    const piece = document.createElement('div');
-    piece.className = 'confetti-piece';
-    piece.style.left = Math.random() * 100 + 'vw';
-    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
-    piece.style.animationDuration = (1.5 + Math.random() * 2) + 's';
-    piece.style.animationDelay = Math.random() * 0.8 + 's';
-    piece.style.width = (8 + Math.random() * 8) + 'px';
-    piece.style.height = (8 + Math.random() * 8) + 'px';
-    wrap.appendChild(piece);
-  }
-  setTimeout(() => { wrap.innerHTML = ''; }, 4000);
+// Impede scroll durante drag no touch
+document.addEventListener('touchmove', e => { if (draggingCar) e.preventDefault(); }, { passive:false });
+
+function embaralhar() {
+  acertos = 0;
+  draggingCar = null;
+  document.getElementById('resultado').classList.remove('show');
+  updateProgress();
+  buildTrack();
+  buildGarage(shuffle(CARROS));
 }
 
-function resetGame() {
-  slotContents = [null, null, null, null, null];
-  draggedCarId = null;
-  document.getElementById('result-banner').classList.remove('show');
-  buildSlots();
-  buildCars(shuffle([...carsData]));
-}
-
-// Init
-buildSlots();
-buildCars(shuffle([...carsData]));
+embaralhar();
 </script>
 </body>
 </html>
