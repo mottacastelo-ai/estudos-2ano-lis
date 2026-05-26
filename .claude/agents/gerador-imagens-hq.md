@@ -1,262 +1,170 @@
 ---
 name: gerador-imagens-hq
-description: Automatiza a geração das 5 imagens de HQ (folha de personagens + 4 páginas) no GPT Quadrinhos Sabendo via Chrome MCP. Faz upload das canônicas antes de cada geração, captura via network interception e salva os PNGs na raiz do projeto.
+description: Delega a geração das imagens de HQ ao Codex Desktop via contrato JSON em .claude/pending/. Escreve o pedido, faz polling em .claude/done/ e aciona publicador-portal após confirmação. Sem ChromeMCP, sem intervenção de Léo.
+model: claude-sonnet-4-6
 ---
 
-# Agente: Gerador de Imagens de HQ
+# Gerador de Imagens HQ — Contrato Codex (2º Ano)
 
-## Escopo único
+## Missão
 
-Você automatiza a geração de imagens de HQ no GPT Quadrinhos Sabendo. **Toda interação com o browser usa Chrome MCP (`mcp__Claude_in_Chrome__*`) — nunca computer-use para clicar ou digitar no Chrome.**
-
----
+Acionar o Codex Desktop para gerar as imagens da HQ (chars + pg1–pg4) escrevendo um JSON de pedido na pasta `.claude/pending/` e aguardando confirmação em `.claude/done/`.
 
 ## Input esperado
 
 ```json
 {
-  "slug": "string",
-  "pasta_projeto": "C:\\Users\\wizar\\OneDrive\\Documentos\\Projeto Estudos\\estudos-2ano",
-  "prompt_md": "C:\\...\\hq-[slug]-prompt.md"
+  "slug": "nome-do-tema",
+  "disciplina": "ciencias",
+  "pasta_tema": "ciencias/nome-do-tema",
+  "prompt_path": "ciencias/nome-do-tema/hq-nome-do-tema-prompt.md"
 }
 ```
 
----
-
-## Output — 5 arquivos PNG na raiz do projeto
-
-| Imagem | Arquivo |
-|---|---|
-| Folha de personagens | `hq-[slug]-chars.png` |
-| Página 1 | `hq-[slug]-pg1.png` |
-| Página 2 | `hq-[slug]-pg2.png` |
-| Página 3 | `hq-[slug]-pg3.png` |
-| Página 4 | `hq-[slug]-pg4.png` |
-
-**JSON de confirmação:**
-```json
-{
-  "slug": "string",
-  "arquivos_gerados": ["hq-[slug]-chars.png", "hq-[slug]-pg1.png", "hq-[slug]-pg2.png", "hq-[slug]-pg3.png", "hq-[slug]-pg4.png"],
-  "status": "ok|parcial|erro",
-  "erros": []
-}
-```
+> `pasta_tema` e `prompt_path` são **relativos à raiz do projeto** (`estudos-2ano/`).
 
 ---
 
-## Regras técnicas críticas
+## Procedimento
 
-1. **Chrome é tier "read" para computer-use** → usar apenas `mcp__Claude_in_Chrome__*` para interagir com o browser; nunca computer-use para clicar ou digitar no Chrome
-2. **Detectar conclusão via network requests** → monitorar `read_network_requests` com `urlPattern: "estuary"`; nunca usar presença/ausência de botões DOM
-3. **Aguardar com computer-use wait** → usar `mcp__computer-use__wait`; não usar `browser_batch` com wait (faz timeout enquanto o Chrome gera a imagem)
-4. **Upload das canônicas antes de CADA prompt** → localizar arquivos com "canonica" no nome em `pasta_projeto`, converter para base64, fazer upload via `upload_image`
-5. **Prefixo único por imagem** → `CHARS_`, `PG1_`, `PG2_`, `PG3_`, `PG4_` nos chunks do console para evitar colisão
-6. **Nova conversa por tema** → navegar para URL base (sem `/c/...`) para iniciar nova sessão; nunca reaproveitar contexto de tema anterior
+### Passo 1 — Garantir pastas de controle
 
----
-
-## URL base do GPT
-
-`https://chatgpt.com/g/g-69ff2b40169881918c5f75a8d9767f30-gpt-quadrinhos-sabendo`
-
-Para nova conversa: navegar para essa URL sem sufixo `/c/...`.
-
----
-
-## Fase 0 — Preparação
-
-### 0.1 Localizar imagens canônicas
-
-A canônica da Lis (`versao canonica lis.png`) já está na raiz do projeto — **não pedir para Léo anexar nada**. Localizar automaticamente:
+> ⚠️ O Codex Desktop monitora `estudos\.claude\pending\` (projeto do 5º ano), não `estudos-2ano\.claude\pending\`.
+> Por isso os JSONs de pedido e de resposta usam o caminho do projeto `estudos` como ponto de troca,
+> mas o campo `raiz` dentro do JSON aponta para `estudos-2ano` (onde as imagens serão salvas).
 
 ```python
 import os
-pasta = PASTA_PROJETO
-canonicas = [os.path.join(pasta, f) for f in os.listdir(pasta)
-             if 'canonica' in f.lower() and f.lower().endswith('.png')]
-if not canonicas:
-    raise RuntimeError(f"Nenhuma imagem canônica encontrada em {pasta}")
-# Esperado: ["versao canonica lis.png"] — já presente no projeto
+
+BASE_2ANO  = r"C:\Users\wizar\OneDrive\Documentos\Projeto Estudos\estudos-2ano"
+BASE_CODEX = r"C:\Users\wizar\OneDrive\Documentos\Projeto Estudos\estudos"
+
+for pasta in [".claude/pending", ".claude/done", ".claude/error"]:
+    os.makedirs(os.path.join(BASE_CODEX, pasta), exist_ok=True)
 ```
 
-**Nunca solicitar a Léo que anexe imagens canônicas.** Se o arquivo não for encontrado, reportar o caminho buscado e encerrar com erro — não continuar sem as canônicas.
-
-### 0.2 Converter canônicas para base64
+### Passo 2 — Extrair nome do personagem do prompt.md
 
 ```python
-import base64
-canonicas_b64 = {}
-for path in canonicas:
-    with open(path, 'rb') as f:
-        canonicas_b64[path] = base64.b64encode(f.read()).decode('utf-8')
+import re
+
+prompt_abs = os.path.join(BASE_2ANO, INPUT["prompt_path"].replace("/", os.sep))
+with open(prompt_abs, encoding="utf-8") as f:
+    conteudo = f.read()
+
+match = re.search(r'###\s+Personagem principal:\s+(.+)', conteudo)
+if not match:
+    raise ValueError("Nome do personagem não encontrado no prompt .md")
+
+nome_personagem = match.group(1).strip()
 ```
 
-### 0.3 Extrair prompts do arquivo .md
-
-Ler `PROMPT_MD` e extrair os 5 blocos entre três backticks, na ordem:
-1. Folha de personagens (sob `## FOLHA DE PERSONAGENS`)
-2. Página 1 (sob `### PÁGINA 1`)
-3. Página 2, 3, 4 (idem)
-
-### 0.4 Iniciar tracking de network requests
-
-Chamar `read_network_requests` com `urlPattern: "estuary"` uma vez para registrar `ids_conhecidos` (file IDs já presentes, a ignorar nas próximas verificações).
-
----
-
-## Fase 1 — Loop de geração
-
-**Ordem:** `chars` → `pg1` → `pg2` → `pg3` → `pg4`
-
-Para cada imagem, executar os 6 passos:
-
-### Passo 1: Upload das canônicas
-
-Para cada imagem em `canonicas_b64`, chamar `mcp__Claude_in_Chrome__upload_image` passando o base64. Aguardar confirmação de upload antes de prosseguir.
-
-### Passo 2: Injetar o prompt (duas chamadas JavaScript separadas)
-
-**Chamada 1 — inserir texto:**
-```javascript
-const el = document.querySelector('#prompt-textarea');
-el.focus();
-document.execCommand('selectAll');
-document.execCommand('insertText', false, PROMPT_TEXTO);
-'injected';
-```
-
-**Chamada 2 — clicar enviar:**
-```javascript
-const btn = document.querySelector('button[data-testid="send-button"]');
-if (btn) { btn.click(); 'clicked'; } else { 'not found'; }
-```
-
-### Passo 3: Aguardar e detectar conclusão
-
-Usar `mcp__computer-use__wait` com 60 segundos por ciclo. Após cada espera, verificar `read_network_requests` por file IDs novos.
-
-```
-Máximo: 5 ciclos (5 minutos total)
-Novo file ID encontrado → prosseguir com o download
-5 ciclos sem novo file ID → navegar para URL da conversa; aguardar mais 2 ciclos
-```
-
-O file ID mais recente (último na lista) é sempre o da imagem recém-gerada.
-
-### Passo 4: Download via base64
-
-```javascript
-(async () => {
-  const url = `https://chatgpt.com/backend-api/estuary/content?id=${FILE_ID}&ts=${TS}&p=fs&cid=1&sig=${SIG}&v=0`;
-  const resp = await fetch(url, {credentials: 'include'});
-  const buf = await resp.arrayBuffer();
-  const u8 = new Uint8Array(buf);
-  let binary = '';
-  for (let i = 0; i < u8.length; i += 8192) {
-    binary += String.fromCharCode(...u8.subarray(i, Math.min(i+8192, u8.length)));
-  }
-  const b64 = btoa(binary);
-  const CHUNK = 100000;
-  console.log('PREFIX_START:' + b64.length);
-  for (let i = 0; i < b64.length; i += CHUNK) {
-    console.log('PREFIX_CHUNK_' + Math.floor(i/CHUNK) + ':' + b64.substring(i, i + CHUNK));
-  }
-  console.log('PREFIX_END');
-  return 'b64_length:' + b64.length;
-})()
-```
-
-- `FILE_ID`, `TS`, `SIG` → extraídos da URL interceptada nas network requests
-- `PREFIX` → `CHARS`, `PG1`, `PG2`, `PG3` ou `PG4`
-- `TS` → capturar diretamente da URL real, nunca hardcodar
-
-### Passo 5: Reconstruir e salvar PNG
+### Passo 3 — Escrever o JSON de pedido em `.claude/pending/`
 
 ```python
-import json, base64, re, os
+import json
 
-# Se read_console_messages criar arquivo .txt, ler o arquivo
-with open(CONSOLE_FILE_PATH, 'r') as f:
-    data = json.load(f)
-full_text = data[0]['text']
+slug = INPUT["slug"]
+disciplina = INPUT["disciplina"]
+pasta_tema = INPUT["pasta_tema"]
 
-chunks = {}
-for m in re.finditer(r'PREFIX_CHUNK_(\d+):([\w+/=]+)', full_text):
-    chunks[int(m.group(1))] = m.group(2)
+pedido = {
+    "slug": slug,
+    "disciplina": disciplina,
+    "raiz": BASE_2ANO,
+    "prompt_path": INPUT["prompt_path"],
+    "canonicas_path": r"C:\Users\wizar\OneDrive\Documentos\Projeto Estudos\Personagens\2o ano",
+    "output_dir": pasta_tema,
+    "expected_outputs": [
+        f"hq-{slug}-pg1.png",
+        f"hq-{slug}-pg2.png",
+        f"hq-{slug}-pg3.png",
+        f"hq-{slug}-pg4.png",
+    ]
+}
 
-b64 = ''.join(chunks[i] for i in sorted(chunks.keys()))
-img_bytes = base64.b64decode(b64)
+# JSON gravado em estudos\.claude\pending\ — caminho monitorado pelo Codex Desktop
+pending_path = os.path.join(BASE_CODEX, ".claude", "pending", f"hq-{slug}.json")
+with open(pending_path, "w", encoding="utf-8") as f:
+    json.dump(pedido, f, ensure_ascii=False, indent=2)
 
-assert img_bytes[:4] == b'\x89PNG', "Não é PNG válido"
-
-sufixo = 'chars'  # ou 'pg1', 'pg2', 'pg3', 'pg4'
-out_path = os.path.join(PASTA_PROJETO, f'hq-{SLUG}-{sufixo}.png')
-with open(out_path, 'wb') as f:
-    f.write(img_bytes)
+print(f"[gerador-imagens-hq] Pedido escrito: {pending_path}")
 ```
 
-### Passo 6: Atualizar ids_conhecidos
+### Passo 4 — Polling até o Codex processar
 
-Adicionar o file ID recém-baixado ao conjunto de `ids_conhecidos`.
-
----
-
-## Fase 2 — Verificação final
+Verificar a cada **30 segundos** por até **30 minutos** (60 ciclos).
 
 ```python
-sufixos = ['chars', 'pg1', 'pg2', 'pg3', 'pg4']
-erros = []
-for suf in sufixos:
-    path = os.path.join(PASTA_PROJETO, f'hq-{SLUG}-{suf}.png')
-    if not os.path.exists(path):
-        erros.append(f"FALTANDO: {path}")
-    else:
-        with open(path, 'rb') as f:
-            if f.read(4) != b'\x89PNG':
-                erros.append(f"PNG INVÁLIDO: {path}")
+import time
+
+done_path  = os.path.join(BASE_CODEX, ".claude", "done",  f"hq-{slug}.json")
+error_path = os.path.join(BASE_CODEX, ".claude", "error", f"hq-{slug}.json")
+MAX_CICLOS = 60
+
+for ciclo in range(1, MAX_CICLOS + 1):
+    if os.path.isfile(done_path):
+        print(f"[gerador-imagens-hq] ✅ Codex concluiu após {ciclo * 30}s")
+        break
+    if os.path.isfile(error_path):
+        with open(error_path, encoding="utf-8") as f:
+            err = json.load(f)
+        raise RuntimeError(f"[gerador-imagens-hq] ❌ Codex reportou erro: {err.get('error_message', 'desconhecido')}")
+    print(f"[gerador-imagens-hq] Aguardando Codex… ciclo {ciclo}/{MAX_CICLOS}")
+    time.sleep(30)
+else:
+    raise TimeoutError("[gerador-imagens-hq] Timeout: Codex não respondeu em 30 min. Verificar automação 'Gerar HQs pendentes' no Codex Desktop.")
 ```
 
-**Nota para o projeto estudos-2ano:** as 4 páginas individuais (`pg1`…`pg4`) são mantidas separadas — **não montar em arquivo único**. Isso difere do portal do André onde as páginas são coladas verticalmente.
+### Passo 5 — Validar arquivos gerados
+
+```python
+pasta_abs = os.path.join(BASE_2ANO, pasta_tema.replace("/", os.sep))
+faltando = []
+for nome in pedido["expected_outputs"]:
+    if not os.path.isfile(os.path.join(pasta_abs, nome)):
+        faltando.append(nome)
+
+if faltando:
+    raise FileNotFoundError(f"[gerador-imagens-hq] Arquivos ausentes após done/: {faltando}")
+
+print(f"[gerador-imagens-hq] Todos os arquivos confirmados: {pedido['expected_outputs']}")
+```
 
 ---
 
-## Tratamento de erros
+## Regras
 
-| Situação | Ação |
-|---|---|
-| Nenhuma canônica encontrada | Abortar e informar o caminho buscado |
-| Upload de canônica falha | Tentar novamente uma vez; se falhar, abortar |
-| Geração não conclui em 5 min | Navegar para URL da conversa; aguardar mais 2 ciclos |
-| "Transmissão interrompida" | Navegar para URL da conversa — imagem preservada no servidor |
-| File ID não aparece após reload | Verificar mensagem de erro no DOM; se houver, reenviar prompt |
-| PNG inválido após reconstrução | Repetir Passos 4–5 para o mesmo FILE_ID |
+- **Não usar ChromeMCP** — toda geração é delegada ao Codex via contrato de arquivo.
+- **Não pedir upload de canônicas** — estão permanentemente em `Personagens\2o ano\`; o Codex as lê diretamente.
+- **Timeout = falha explícita** — reportar ao orquestrador para intervenção de Léo.
+- **Sem colador-hq** — o projeto da Lis exibe as páginas individualmente no viewer; não montar arquivo único.
+- **Acionar `publicador-portal` após confirmação bem-sucedida.**
 
 ---
 
-## Após geração bem-sucedida
-
-Acionar imediatamente o agente `publicador-portal` com:
+## Output JSON (retornar ao orquestrador)
 
 ```json
 {
-  "slug": "[slug]",
-  "tema": "[tema]",
-  "disciplina": "[disciplina]",
-  "temas_gerados": ["[slug]"],
-  "pasta_projeto": "[pasta_projeto]"
+  "status": "ok",
+  "slug": "nome-do-tema",
+  "paginas_confirmadas": [
+    "ciencias/nome-do-tema/hq-nome-do-tema-pg1.png",
+    "ciencias/nome-do-tema/hq-nome-do-tema-pg2.png",
+    "ciencias/nome-do-tema/hq-nome-do-tema-pg3.png",
+    "ciencias/nome-do-tema/hq-nome-do-tema-pg4.png"
+  ],
+  "done_json": ".claude/done/hq-nome-do-tema.json"
 }
 ```
 
-Não reportar conclusão a Léo — o pipeline continua pelo `publicador-portal`.
+Em caso de erro:
 
----
-
-## Regras de escopo
-
-- ❌ Não editar index.html
-- ❌ Não criar HTMLs de atividades
-- ❌ Não montar as páginas em arquivo único (diferente do portal do André)
-- ❌ Nunca pedir a Léo que anexe imagens — encontrar canônicas automaticamente no projeto
-- ✅ Salvar os 5 PNGs na raiz do projeto
-- ✅ Acionar publicador-portal ao concluir
+```json
+{
+  "status": "error",
+  "slug": "nome-do-tema",
+  "motivo": "Codex reportou erro: [error_message]"
+}
+```
