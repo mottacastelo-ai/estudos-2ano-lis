@@ -76,6 +76,7 @@ pedido = {
     "canonicas_path": r"C:\Users\wizar\OneDrive\Documentos\Projeto Estudos\Personagens\2o ano",
     "output_dir": pasta_tema,
     "expected_outputs": [
+        f"hq-{slug}-chars.png",
         f"hq-{slug}-pg1.png",
         f"hq-{slug}-pg2.png",
         f"hq-{slug}-pg3.png",
@@ -149,7 +150,8 @@ print(f"[gerador-imagens-hq] Todos os arquivos confirmados: {pedido['expected_ou
 {
   "status": "ok",
   "slug": "nome-do-tema",
-  "paginas_confirmadas": [
+  "arquivos_confirmados": [
+    "ciencias/nome-do-tema/hq-nome-do-tema-chars.png",
     "ciencias/nome-do-tema/hq-nome-do-tema-pg1.png",
     "ciencias/nome-do-tema/hq-nome-do-tema-pg2.png",
     "ciencias/nome-do-tema/hq-nome-do-tema-pg3.png",
