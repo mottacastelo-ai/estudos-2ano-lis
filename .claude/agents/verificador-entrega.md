@@ -135,6 +135,21 @@ Para o index.html:
 - [ ] Há pelo menos uma atividade de criação/produção (90%)
 - [ ] Há pelo menos uma atividade predominantemente visual
 
+### Coerência das atividades interativas (verificação crítica)
+
+Para cada atividade de arrastar, ordenar ou parear, ler o HTML e responder:
+
+- [ ] O enunciado declara explicitamente o critério de acerto?
+- [ ] A resposta correta pode ser determinada **exclusivamente** pelo que está visível na tela (sem livro, sem HQ, sem contexto externo)?
+- [ ] Nenhum par/posição é atribuído arbitrariamente por cor, formato ou posição geográfica sem label explicativo?
+
+**Exemplos de FALHA que bloqueiam aprovação (`aprovado: false`):**
+- Atividade de arrastar onde a ordem correta só é sabida por quem leu o livro
+- Jogo da memória onde a relação entre os pares não está declarada no enunciado
+- Ordenação onde elementos são identificados apenas por cor (sem label/número visível)
+
+Se qualquer item falhar, classificar como problema crítico, indicar o arquivo e descrever o que está errado para que o `gerador-atividades` possa redesenhar.
+
 ---
 
 ## Comportamento após validação

@@ -229,6 +229,37 @@ Alternativa aceitável: substituir drag-and-drop por tap-to-select + tap-to-plac
 
 ---
 
+## Teste de Coerência — obrigatório antes de gerar qualquer HTML
+
+**Para cada atividade planejada, escreva internamente uma linha de spec e aplique o teste antes de codar:**
+
+> **Spec:** "A criança vê [X] e deve fazer [Y] porque [Z]."
+> **Teste:** "A resposta correta pode ser determinada exclusivamente pelo que está visível na tela, sem depender do livro, da HQ ou de qualquer contexto externo?"
+
+### Exemplos de aprovação ✅
+- Arrastar o card "3º" para o slot com label "3º (terceiro)" → critério visível nos próprios elementos
+- Parear "1º" com "primeiro" → relação explícita e declarada no enunciado
+- Ordenar ordinais embaralhados (1º…9º) em sequência crescente → regra matemática universal
+
+### Exemplos de reprovação ❌ — redesenhar antes de codar
+- Arrastar o carro vermelho para 1º lugar porque no livro ele chegou primeiro → critério externo
+- Atribuir posições arbitrárias a elementos por cor ou forma (vermelho=1º, verde=2º) sem justificativa visível
+- Slot com label de posição geográfica ou numérica usada como categoria pedagógica
+
+### Regras específicas por tipo de atividade
+
+| Tipo | Regra obrigatória |
+|---|---|
+| Arrastar / Ordenar | O critério de ordem deve estar declarado no enunciado **e** visível nos próprios elementos (labels, números, símbolos). Nunca atribuir posição por cor. |
+| Jogo da Memória | Os pares devem ter relação semântica declarada no enunciado (ex: "Parear o símbolo com o nome por extenso"). |
+| Mapa Mental | Slots = categorias/características (nunca posições). Nodes = conceitos a classificar. |
+| Complete a Palavra / Caça-palavras | As palavras-alvo devem aparecer explicitamente nos termos técnicos do input. |
+| Verdadeiro ou Falso | Cada afirmação deve ter sua resposta determinável pelo conteúdo exibido na própria atividade ou pelo conhecimento ensinado no enunciado. |
+
+**Se o teste falhar para qualquer atividade planejada: redesenhar o conceito antes de gerar o HTML.**
+
+---
+
 ## Regras de conteúdo — obrigatórias
 
 - ✅ Usar termos técnicos **exatamente** como aparecem no JSON de input
