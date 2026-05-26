@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jogo da Memória — Números Ordinais | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #0AACE8;
+  --light: #5AC8FB;
+  --bg: #EFF9FF;
+  --dark: #044A7A;
+  --correct: #22C55E;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  background: linear-gradient(135deg, #044A7A, #0AACE8 60%, #5AC8FB);
+  color: white;
+  padding: 24px 20px;
+  text-align: center;
+}
+
+header .emoji { font-size: 2.8rem; display: block; margin-bottom: 8px; }
+
+header h1 {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.8rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+header p { font-size: 1rem; opacity: 0.9; margin-top: 4px; }
+
+main {
+  flex: 1;
+  padding: 20px 16px;
+  max-width: 700px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.scoreboard {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.score-card {
+  background: white;
+  border-radius: 14px;
+  padding: 12px 20px;
+  text-align: center;
+  box-shadow: 0 3px 12px rgba(10,172,232,0.12);
+  min-width: 100px;
+}
+
+.score-label {
+  font-size: 0.85rem;
+  color: var(--primary);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.score-value {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: var(--dark);
+}
+
+.memory-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.card {
+  aspect-ratio: 3/4;
+  cursor: pointer;
+  perspective: 800px;
+  position: relative;
+  border-radius: 14px;
+  min-height: 80px;
+  min-width: 44px;
+}
+
+.card-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.5s cubic-bezier(0.4, 0.2, 0.2, 1);
+  border-radius: 14px;
+}
+
+.card.flipped .card-inner { transform: rotateY(180deg); }
+.card.matched .card-inner { transform: rotateY(180deg); }
+
+.card-front, .card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+
+.card-back {
+  background: linear-gradient(135deg, var(--primary), var(--light));
+  border: 3px solid white;
+  box-shadow: 0 3px 10px rgba(10,172,232,0.3);
+  font-size: 1.8rem;
+}
+
+.card-front {
+  transform: rotateY(180deg);
+  border: 3px solid var(--primary);
+  box-shadow: 0 3px 10px rgba(10,172,232,0.2);
+}
+
+.card-front.symbol {
+  background: var(--primary);
+}
+
+.card-front.word {
+  background: white;
+}
+
+.card-front.symbol .card-text {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: white;
+  text-align: center;
+  line-height: 1.1;
+}
+
+.card-front.word .card-text {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--dark);
+  text-align: center;
+  line-height: 1.2;
+}
+
+.card.matched .card-front {
+  border-color: var(--correct);
+  box-shadow: 0 0 0 3px var(--correct);
+}
+
+.card.matched .card-front.symbol { background: #15803D; }
+
+.btn-reset {
+  background: linear-gradient(135deg, var(--primary), var(--light));
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 14px 28px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: block;
+  margin: 0 auto 16px;
+  transition: transform 0.15s ease;
+  min-height: 48px;
+}
+
+.btn-reset:hover { transform: scale(1.04); }
+
+.win-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(4,74,122,0.85);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+  text-align: center;
+  padding: 24px;
+}
+
+.win-overlay.show { display: flex; }
+
+.win-emoji { font-size: 5rem; animation: pop 0.5s ease; }
+
+@keyframes pop {
+  0% { transform: scale(0.5); opacity: 0; }
+  80% { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.win-title {
+  font-family: 'Baloo 2', cursive;
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: white;
+}
+
+.win-msg {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #B3E8FB;
+}
+
+.btn-play-again {
+  background: white;
+  color: var(--primary);
+  border: none;
+  border-radius: 14px;
+  padding: 16px 36px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 900;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+  min-height: 56px;
+}
+
+.btn-play-again:hover { transform: scale(1.05); }
+
+footer {
+  text-align: center;
+  padding: 20px 16px;
+}
+
+.btn-back {
+  background: white;
+  border: 3px solid var(--primary);
+  color: var(--primary);
+  border-radius: 14px;
+  padding: 14px 28px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 48px;
+}
+
+.btn-back:hover { background: var(--primary); color: white; }
+
+@media (max-width: 480px) {
+  .memory-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 7px;
+  }
+  .card-front.symbol .card-text { font-size: 1.3rem; }
+  .card-front.word .card-text { font-size: 0.85rem; }
+  main { padding: 14px 10px; }
+  header h1 { font-size: 1.4rem; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="emoji">🏆</span>
+  <h1>Jogo da Memória — Números Ordinais</h1>
+  <p>Una o símbolo com o nome por extenso!</p>
+</header>
+
+<main>
+  <div class="scoreboard">
+    <div class="score-card">
+      <div class="score-label">Pares</div>
+      <div class="score-value" id="pairs-found">0/8</div>
+    </div>
+    <div class="score-card">
+      <div class="score-label">Tentativas</div>
+      <div class="score-value" id="attempts">0</div>
+    </div>
+  </div>
+
+  <div class="memory-grid" id="memory-grid"></div>
+
+  <button class="btn-reset" onclick="initGame()">Embaralhar 🔀</button>
+</main>
+
+<footer>
+  <button class="btn-back" onclick="window.location.href='../../index.html'">← Voltar ao Portal</button>
+</footer>
+
+<div class="win-overlay" id="win-overlay">
+  <div class="win-emoji">🥇</div>
+  <div class="win-title">Parabéns!</div>
+  <div class="win-msg" id="win-msg"></div>
+  <button class="btn-play-again" onclick="initGame(); document.getElementById('win-overlay').classList.remove('show')">
+    Jogar de novo 🔄
+  </button>
+</div>
+
+<script>
+const pairs = [
+  { symbol: '1º', word: 'primeiro' },
+  { symbol: '2º', word: 'segundo' },
+  { symbol: '3º', word: 'terceiro' },
+  { symbol: '4º', word: 'quarto' },
+  { symbol: '5º', word: 'quinto' },
+  { symbol: '6º', word: 'sexto' },
+  { symbol: '7º', word: 'sétimo' },
+  { symbol: '8º', word: 'oitavo' },
+];
+
+let flipped = [];
+let matched = 0;
+let attempts = 0;
+let locked = false;
+
+function playSound(type) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  if (type === 'correct') {
+    o.frequency.setValueAtTime(523, ctx.currentTime);
+    o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+    o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    o.start(); o.stop(ctx.currentTime + 0.5);
+  } else {
+    o.frequency.setValueAtTime(300, ctx.currentTime);
+    o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    o.start(); o.stop(ctx.currentTime + 0.4);
+  }
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function initGame() {
+  flipped = [];
+  matched = 0;
+  attempts = 0;
+  locked = false;
+  updateScore();
+
+  const cards = [];
+  pairs.forEach((p, i) => {
+    cards.push({ id: i, type: 'symbol', content: p.symbol });
+    cards.push({ id: i, type: 'word', content: p.word });
+  });
+
+  const shuffled = shuffle(cards);
+  const grid = document.getElementById('memory-grid');
+  grid.innerHTML = '';
+
+  shuffled.forEach((card, index) => {
+    const el = document.createElement('div');
+    el.className = 'card';
+    el.dataset.id = card.id;
+    el.dataset.type = card.type;
+    el.dataset.index = index;
+
+    el.innerHTML = `
+      <div class="card-inner">
+        <div class="card-back">🏆</div>
+        <div class="card-front ${card.type}">
+          <span class="card-text">${card.content}</span>
+        </div>
+      </div>
+    `;
+
+    el.addEventListener('click', () => flipCard(el));
+    grid.appendChild(el);
+  });
+}
+
+function flipCard(el) {
+  if (locked) return;
+  if (el.classList.contains('flipped') || el.classList.contains('matched')) return;
+
+  el.classList.add('flipped');
+  flipped.push(el);
+
+  if (flipped.length === 2) {
+    locked = true;
+    attempts++;
+    updateScore();
+    checkMatch();
+  }
+}
+
+function checkMatch() {
+  const [a, b] = flipped;
+  const sameId = a.dataset.id === b.dataset.id;
+  const differentType = a.dataset.type !== b.dataset.type;
+
+  if (sameId && differentType) {
+    matched++;
+    a.classList.add('matched');
+    b.classList.add('matched');
+    playSound('correct');
+    flipped = [];
+    locked = false;
+    updateScore();
+
+    if (matched === pairs.length) {
+      setTimeout(showWin, 500);
+    }
+  } else {
+    playSound('wrong');
+    setTimeout(() => {
+      a.classList.remove('flipped');
+      b.classList.remove('flipped');
+      flipped = [];
+      locked = false;
+    }, 900);
+  }
+}
+
+function updateScore() {
+  document.getElementById('pairs-found').textContent = `${matched}/8`;
+  document.getElementById('attempts').textContent = attempts;
+}
+
+function showWin() {
+  const overlay = document.getElementById('win-overlay');
+  overlay.classList.add('show');
+
+  let msg;
+  if (attempts <= 10) {
+    msg = `Incrível! Você encontrou todos os pares em apenas ${attempts} tentativas! Memória de campeão!`;
+  } else if (attempts <= 16) {
+    msg = `Muito bem! ${attempts} tentativas para 8 pares — você conhece os ordinais!`;
+  } else {
+    msg = `Conseguiu! ${attempts} tentativas. Jogue de novo para melhorar!`;
+  }
+  document.getElementById('win-msg').textContent = msg;
+  playSound('correct');
+}
+
+initGame();
+</script>
+</body>
+</html>

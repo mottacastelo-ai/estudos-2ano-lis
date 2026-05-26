@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Criador de Frase — Números Ordinais | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #0AACE8;
+  --light: #5AC8FB;
+  --bg: #EFF9FF;
+  --dark: #044A7A;
+  --correct: #22C55E;
+  --wrong: #EF4444;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  background: linear-gradient(135deg, #044A7A, #0AACE8 60%, #5AC8FB);
+  color: white;
+  padding: 24px 20px;
+  text-align: center;
+}
+
+header .emoji { font-size: 2.8rem; display: block; margin-bottom: 8px; }
+
+header h1 {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.8rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+header p { font-size: 1rem; opacity: 0.9; margin-top: 4px; }
+
+main {
+  flex: 1;
+  padding: 20px 16px;
+  max-width: 700px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Progresso das frases */
+.phrase-progress {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.progress-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #D0EEFA;
+  border: 3px solid #B3DDF7;
+  transition: all 0.3s ease;
+}
+
+.progress-dot.done { background: var(--correct); border-color: #15803D; }
+.progress-dot.active { background: var(--primary); border-color: var(--dark); transform: scale(1.2); }
+
+/* Card principal */
+.activity-card {
+  background: white;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(10,172,232,0.15);
+  margin-bottom: 16px;
+}
+
+.phrase-number {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 10px;
+}
+
+.task-label {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--dark);
+  margin-bottom: 20px;
+  line-height: 1.4;
+}
+
+/* Área de construção da frase */
+.sentence-area {
+  background: var(--bg);
+  border: 3px dashed #B3DDF7;
+  border-radius: 14px;
+  min-height: 64px;
+  padding: 12px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 20px;
+  transition: border-color 0.3s ease;
+}
+
+.sentence-area.correct-state { border-color: var(--correct); background: #F0FDF4; }
+.sentence-area.wrong-state { border-color: var(--wrong); background: #FEF2F2; }
+
+.sentence-placeholder {
+  color: #9CC7E0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  font-style: italic;
+}
+
+/* Palavras na frase (clicáveis para remover) */
+.word-in-sentence {
+  background: var(--primary);
+  color: white;
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border: none;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+.word-in-sentence:hover {
+  background: var(--dark);
+  transform: scale(1.05);
+}
+
+/* Banco de palavras */
+.bank-label {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--dark);
+  margin-bottom: 10px;
+}
+
+.word-bank {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.word-btn {
+  background: white;
+  border: 3px solid var(--light);
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--dark);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  min-height: 44px;
+}
+
+.word-btn:hover:not(:disabled) {
+  background: var(--light);
+  border-color: var(--primary);
+  transform: scale(1.04);
+}
+
+.word-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+  transform: none;
+}
+
+/* Decoy words — cor levemente diferente */
+.word-btn.decoy {
+  border-color: #F9A8D4;
+}
+
+/* Feedback */
+.feedback-box {
+  display: none;
+  border-radius: 14px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.feedback-box.show { display: flex; gap: 12px; align-items: flex-start; }
+.feedback-box.correct-fb { background: #DCFCE7; border-left: 5px solid var(--correct); color: #166534; }
+.feedback-box.wrong-fb { background: #FEE2E2; border-left: 5px solid var(--wrong); color: #991B1B; }
+
+.fb-icon { font-size: 1.6rem; flex-shrink: 0; }
+
+/* Botões de controle */
+.controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-check {
+  background: linear-gradient(135deg, var(--primary), var(--light));
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 14px 24px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+  min-height: 52px;
+  flex: 1;
+}
+
+.btn-check:hover { transform: scale(1.03); }
+
+.btn-clear {
+  background: white;
+  border: 3px solid var(--primary);
+  color: var(--primary);
+  border-radius: 14px;
+  padding: 14px 20px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 52px;
+}
+
+.btn-clear:hover { background: var(--bg); }
+
+.btn-show {
+  background: white;
+  border: 3px solid #A855F7;
+  color: #7C3AED;
+  border-radius: 14px;
+  padding: 14px 20px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 52px;
+}
+
+.btn-show:hover { background: #FAF5FF; }
+
+.btn-next {
+  background: linear-gradient(135deg, var(--correct), #16A34A);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 14px 28px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+  min-height: 52px;
+  width: 100%;
+  margin-top: 8px;
+  display: none;
+}
+
+.btn-next:hover { transform: scale(1.03); }
+
+/* Tela de conclusão */
+.finish-screen {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 20px;
+  padding: 30px 0;
+}
+
+.finish-screen.show { display: flex; }
+
+.finish-trophy { font-size: 5rem; animation: bounce 0.8s infinite alternate; }
+
+@keyframes bounce {
+  from { transform: translateY(0); }
+  to { transform: translateY(-12px); }
+}
+
+.finish-title {
+  font-family: 'Baloo 2', cursive;
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--dark);
+}
+
+.finish-msg {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #555;
+  max-width: 380px;
+  line-height: 1.5;
+}
+
+.btn-restart {
+  background: linear-gradient(135deg, var(--primary), var(--light));
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 16px 36px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+  min-height: 56px;
+}
+
+.btn-restart:hover { transform: scale(1.05); }
+
+footer {
+  text-align: center;
+  padding: 20px 16px;
+}
+
+.btn-back {
+  background: white;
+  border: 3px solid var(--primary);
+  color: var(--primary);
+  border-radius: 14px;
+  padding: 14px 28px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 48px;
+}
+
+.btn-back:hover { background: var(--primary); color: white; }
+
+@media (max-width: 480px) {
+  .task-label { font-size: 1.3rem; }
+  .word-btn { font-size: 1rem; padding: 10px 12px; }
+  .word-in-sentence { font-size: 1rem; padding: 8px 10px; }
+  .controls { flex-direction: column; }
+  .btn-check, .btn-clear, .btn-show { width: 100%; }
+  header h1 { font-size: 1.4rem; }
+  main { padding: 14px 12px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="emoji">🏆</span>
+  <h1>Criador de Frase</h1>
+  <p>Monte frases sobre números ordinais clicando nas palavras!</p>
+</header>
+
+<main>
+  <div id="activity-area">
+    <div class="phrase-progress" id="phrase-progress"></div>
+
+    <div class="activity-card">
+      <div class="phrase-number" id="phrase-number">Frase 1 de 3</div>
+      <div class="task-label" id="task-label"></div>
+
+      <div class="sentence-area" id="sentence-area">
+        <span class="sentence-placeholder" id="placeholder">Clique nas palavras abaixo para montar a frase...</span>
+      </div>
+
+      <div class="bank-label">Banco de palavras:</div>
+      <div class="word-bank" id="word-bank"></div>
+
+      <div class="feedback-box" id="feedback-box">
+        <span class="fb-icon" id="fb-icon"></span>
+        <span id="fb-text"></span>
+      </div>
+
+      <div class="controls">
+        <button class="btn-check" id="btn-check" onclick="checkSentence()">Verificar frase ✅</button>
+        <button class="btn-clear" onclick="clearSentence()">Limpar 🗑️</button>
+        <button class="btn-show" onclick="showAnswer()">Ver resposta 💡</button>
+      </div>
+
+      <button class="btn-next" id="btn-next" onclick="nextPhrase()">Próxima frase →</button>
+    </div>
+  </div>
+
+  <div class="finish-screen" id="finish-screen">
+    <div class="finish-trophy">🏆</div>
+    <div class="finish-title">Muito bem!</div>
+    <div class="finish-msg">Você montou todas as frases sobre números ordinais! Você é um(a) campeão(ã)!</div>
+    <button class="btn-restart" onclick="restartActivity()">Jogar de novo 🔄</button>
+  </div>
+</main>
+
+<footer>
+  <button class="btn-back" onclick="window.location.href='../../index.html'">← Voltar ao Portal</button>
+</footer>
+
+<script>
+const phrases = [
+  {
+    task: 'Monte a frase sobre a corrida de carros:',
+    correct: ['O', 'carro', 'vermelho', 'ficou', 'em', 'primeiro', 'lugar.'],
+    bank: [
+      { word: 'O', decoy: false },
+      { word: 'carro', decoy: false },
+      { word: 'vermelho', decoy: false },
+      { word: 'ficou', decoy: false },
+      { word: 'em', decoy: false },
+      { word: 'primeiro', decoy: false },
+      { word: 'lugar.', decoy: false },
+      { word: 'segundo', decoy: true },
+      { word: 'terceiro', decoy: true },
+      { word: 'azul', decoy: true },
+      { word: 'verde', decoy: true },
+    ]
+  },
+  {
+    task: 'Monte a frase sobre a medalha de ouro:',
+    correct: ['A', 'medalha', 'de', 'ouro', 'é', 'para', 'o', 'primeiro', 'colocado.'],
+    bank: [
+      { word: 'A', decoy: false },
+      { word: 'medalha', decoy: false },
+      { word: 'de', decoy: false },
+      { word: 'ouro', decoy: false },
+      { word: 'é', decoy: false },
+      { word: 'para', decoy: false },
+      { word: 'o', decoy: false },
+      { word: 'primeiro', decoy: false },
+      { word: 'colocado.', decoy: false },
+      { word: 'prata', decoy: true },
+      { word: 'segundo', decoy: true },
+      { word: 'bronze', decoy: true },
+    ]
+  },
+  {
+    task: 'Monte a frase sobre a fila do ônibus:',
+    correct: ['Na', 'fila,', 'o', 'décimo segundo', 'está', 'atrás', 'do', 'décimo primeiro.'],
+    bank: [
+      { word: 'Na', decoy: false },
+      { word: 'fila,', decoy: false },
+      { word: 'o', decoy: false },
+      { word: 'décimo segundo', decoy: false },
+      { word: 'está', decoy: false },
+      { word: 'atrás', decoy: false },
+      { word: 'do', decoy: false },
+      { word: 'décimo primeiro.', decoy: false },
+      { word: 'antes', decoy: true },
+      { word: 'frente', decoy: true },
+      { word: 'décimo', decoy: true },
+    ]
+  }
+];
+
+let currentPhrase = 0;
+let sentenceWords = [];
+let usedIndices = new Set();
+let alreadyChecked = false;
+let correctCount = 0;
+
+function playSound(type) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  if (type === 'correct') {
+    o.frequency.setValueAtTime(523, ctx.currentTime);
+    o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+    o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    o.start(); o.stop(ctx.currentTime + 0.5);
+  } else {
+    o.frequency.setValueAtTime(300, ctx.currentTime);
+    o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    o.start(); o.stop(ctx.currentTime + 0.4);
+  }
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function buildProgress() {
+  const container = document.getElementById('phrase-progress');
+  container.innerHTML = '';
+  phrases.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'progress-dot' + (i < currentPhrase ? ' done' : i === currentPhrase ? ' active' : '');
+    container.appendChild(dot);
+  });
+}
+
+function renderPhrase() {
+  const p = phrases[currentPhrase];
+  alreadyChecked = false;
+  sentenceWords = [];
+  usedIndices = new Set();
+
+  document.getElementById('phrase-number').textContent = `Frase ${currentPhrase + 1} de ${phrases.length}`;
+  document.getElementById('task-label').textContent = p.task;
+  document.getElementById('btn-next').style.display = 'none';
+
+  const fb = document.getElementById('feedback-box');
+  fb.className = 'feedback-box';
+
+  const sa = document.getElementById('sentence-area');
+  sa.className = 'sentence-area';
+
+  renderSentenceArea();
+
+  const bank = document.getElementById('word-bank');
+  bank.innerHTML = '';
+  const shuffled = shuffle(p.bank.map((b, i) => ({ ...b, origIndex: i })));
+  shuffled.forEach(item => {
+    const btn = document.createElement('button');
+    btn.className = 'word-btn' + (item.decoy ? ' decoy' : '');
+    btn.textContent = item.word;
+    btn.dataset.origindex = item.origIndex;
+    btn.addEventListener('click', () => addWord(item.word, item.origIndex, btn));
+    bank.appendChild(btn);
+  });
+
+  buildProgress();
+}
+
+function renderSentenceArea() {
+  const sa = document.getElementById('sentence-area');
+  const placeholder = document.getElementById('placeholder');
+
+  // Remove existing word chips (keep placeholder span)
+  sa.querySelectorAll('.word-in-sentence').forEach(el => el.remove());
+
+  if (sentenceWords.length === 0) {
+    placeholder.style.display = 'inline';
+  } else {
+    placeholder.style.display = 'none';
+    sentenceWords.forEach((w, pos) => {
+      const chip = document.createElement('button');
+      chip.className = 'word-in-sentence';
+      chip.textContent = w.word;
+      chip.title = 'Clique para remover';
+      chip.addEventListener('click', () => removeWord(pos));
+      sa.appendChild(chip);
+    });
+  }
+}
+
+function addWord(word, origIndex, btn) {
+  if (usedIndices.has(origIndex)) return;
+  if (alreadyChecked) return;
+
+  usedIndices.add(origIndex);
+  btn.disabled = true;
+  sentenceWords.push({ word, origIndex });
+
+  // Clear feedback when adding
+  document.getElementById('feedback-box').className = 'feedback-box';
+  document.getElementById('sentence-area').className = 'sentence-area';
+
+  renderSentenceArea();
+}
+
+function removeWord(pos) {
+  if (alreadyChecked) return;
+  const removed = sentenceWords.splice(pos, 1)[0];
+  usedIndices.delete(removed.origIndex);
+
+  // Re-enable button in bank
+  const btns = document.querySelectorAll('.word-btn');
+  btns.forEach(btn => {
+    if (parseInt(btn.dataset.origindex) === removed.origIndex) {
+      btn.disabled = false;
+    }
+  });
+
+  document.getElementById('feedback-box').className = 'feedback-box';
+  document.getElementById('sentence-area').className = 'sentence-area';
+  renderSentenceArea();
+}
+
+function clearSentence() {
+  if (alreadyChecked) return;
+  sentenceWords = [];
+  usedIndices = new Set();
+  document.querySelectorAll('.word-btn').forEach(btn => btn.disabled = false);
+  document.getElementById('feedback-box').className = 'feedback-box';
+  document.getElementById('sentence-area').className = 'sentence-area';
+  renderSentenceArea();
+}
+
+function checkSentence() {
+  if (sentenceWords.length === 0) {
+    alert('Monte a frase clicando nas palavras do banco!');
+    return;
+  }
+
+  const p = phrases[currentPhrase];
+  const built = sentenceWords.map(w => w.word);
+  const isCorrect = JSON.stringify(built) === JSON.stringify(p.correct);
+
+  alreadyChecked = true;
+
+  const sa = document.getElementById('sentence-area');
+  const fb = document.getElementById('feedback-box');
+
+  if (isCorrect) {
+    correctCount++;
+    playSound('correct');
+    sa.className = 'sentence-area correct-state';
+    fb.className = 'feedback-box show correct-fb';
+    document.getElementById('fb-icon').textContent = '✅';
+    document.getElementById('fb-text').textContent = 'Perfeito! Frase correta! Você montou a frase certinha!';
+    showNextBtn();
+  } else {
+    playSound('wrong');
+    sa.className = 'sentence-area wrong-state';
+    fb.className = 'feedback-box show wrong-fb';
+    document.getElementById('fb-icon').textContent = '❌';
+    document.getElementById('fb-text').textContent = 'A ordem das palavras não está certa. Tente de novo ou veja a resposta!';
+    alreadyChecked = false; // allow retrying
+  }
+}
+
+function showAnswer() {
+  const p = phrases[currentPhrase];
+  const sa = document.getElementById('sentence-area');
+  const fb = document.getElementById('feedback-box');
+
+  // Clear and show correct answer
+  sentenceWords = p.correct.map((w, i) => ({ word: w, origIndex: i }));
+  usedIndices = new Set(p.correct.map((_, i) => i));
+
+  sa.className = 'sentence-area correct-state';
+  renderSentenceArea();
+
+  fb.className = 'feedback-box show correct-fb';
+  document.getElementById('fb-icon').textContent = '💡';
+  document.getElementById('fb-text').textContent = `Frase correta: "${p.correct.join(' ')}"`;
+
+  alreadyChecked = true;
+  document.querySelectorAll('.word-btn').forEach(btn => btn.disabled = true);
+  showNextBtn();
+}
+
+function showNextBtn() {
+  const btn = document.getElementById('btn-next');
+  btn.style.display = 'block';
+  if (currentPhrase === phrases.length - 1) {
+    btn.textContent = 'Ver resultado 🏆';
+  } else {
+    btn.textContent = 'Próxima frase →';
+  }
+}
+
+function nextPhrase() {
+  currentPhrase++;
+  if (currentPhrase >= phrases.length) {
+    showFinish();
+  } else {
+    renderPhrase();
+  }
+}
+
+function showFinish() {
+  document.getElementById('activity-area').style.display = 'none';
+  document.getElementById('finish-screen').classList.add('show');
+  playSound('correct');
+}
+
+function restartActivity() {
+  currentPhrase = 0;
+  correctCount = 0;
+  document.getElementById('activity-area').style.display = 'block';
+  document.getElementById('finish-screen').classList.remove('show');
+  renderPhrase();
+}
+
+renderPhrase();
+</script>
+</body>
+</html>

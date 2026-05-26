@@ -16,6 +16,9 @@
   --hist-color: #A855F7;
   --hist-light: #D08EF8;
   --hist-bg: #FAF5FF;
+  --mat-color: #0AACE8;
+  --mat-light: #5AC8FB;
+  --mat-bg: #EFF9FF;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; min-height: 100vh; }
@@ -154,6 +157,16 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
 .act-card.hist::after { color: var(--hist-color); }
 .act-card.hist:hover { box-shadow: 0 6px 24px rgba(168,85,247,.15); transform: translateY(-3px); border-color: var(--hist-light); }
 .sched-row .sched-day.hist { color: var(--hist-color); }
+.disc-hero.mat { background: linear-gradient(135deg, #044A7A, #0AACE8 60%, #5AC8FB); }
+.disc-home-card.mat:hover { border-color: var(--mat-light); box-shadow: 0 8px 28px rgba(10,172,232,.15); }
+.disc-nav-btn.active.mat-active { background: var(--mat-bg); color: var(--mat-color); }
+.tag-mat { background: #E0F5FE; color: #0369A1; }
+.theme-tab-btn.mat-tab:hover { border-color: var(--mat-color); color: var(--mat-color); }
+.theme-tab-btn.mat-tab.active { background: var(--mat-bg); border-color: var(--mat-color); color: var(--mat-color); }
+.act-card.mat { border-top: 4px solid var(--mat-color); }
+.act-card.mat::after { color: var(--mat-color); }
+.act-card.mat:hover { box-shadow: 0 6px 24px rgba(10,172,232,.15); transform: translateY(-3px); border-color: var(--mat-light); }
+.sched-row .sched-day.mat { color: var(--mat-color); }
 
 /* ===== THEME CONTENT ===== */
 .theme-content { display: none; }
@@ -337,6 +350,11 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
   .home-body, .disc-body { padding: 24px; }
   .home-title { font-size: 1.9rem; }
 }
+@media (max-width: 480px) {
+  .act-grid { grid-template-columns: 1fr; }
+  .hq-btn { min-width: 44px; min-height: 44px; }
+  .hq-img { width: 100%; }
+}
 </style>
 </head>
 <body>
@@ -375,6 +393,15 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
       <button class="theme-link" onclick="showTheme('geo','paisagem-bairros')">🏙️ A Paisagem dos Bairros</button>
     </div>
 
+    <button class="disc-nav-btn mat-active" id="nav-mat" onclick="showDisc('mat')">
+      <span class="d-icon">📐</span>
+      <span class="d-name">Matemática</span>
+      <span class="d-count" id="count-mat">1 tema</span>
+    </button>
+    <div class="theme-sub" id="sub-mat">
+      <button class="theme-link" onclick="showTheme('mat','numeros-ordinais')">🏆 Números Ordinais</button>
+    </div>
+
     <button class="disc-nav-btn hist-active" id="nav-hist" onclick="showDisc('hist')">
       <span class="d-icon">📜</span>
       <span class="d-name">História</span>
@@ -399,9 +426,9 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
       <div class="home-title">✨ Olá, Lis!</div>
       <div class="home-subtitle">Escolha uma disciplina e vamos aprender juntos! 🎉</div>
       <div class="home-stats">
-        <div class="hstat"><span class="hstat-num">3</span><span class="hstat-label">disciplinas</span></div>
-        <div class="hstat"><span class="hstat-num">11</span><span class="hstat-label">temas</span></div>
-        <div class="hstat"><span class="hstat-num">44</span><span class="hstat-label">atividades</span></div>
+        <div class="hstat"><span class="hstat-num">4</span><span class="hstat-label">disciplinas</span></div>
+        <div class="hstat"><span class="hstat-num">12</span><span class="hstat-label">temas</span></div>
+        <div class="hstat"><span class="hstat-num">49</span><span class="hstat-label">atividades</span></div>
       </div>
     </div>
     <div class="home-body">
@@ -423,6 +450,15 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
           <div class="dhc-chips">
             <span class="chip" style="background:#FEF3C7;color:#92400E">2 temas</span>
             <span class="chip" style="background:#FFFBEB;color:#78350F">8 atividades</span>
+          </div>
+        </button>
+        <button class="disc-home-card mat" onclick="showDisc('mat')">
+          <div class="dhc-icon">📐</div>
+          <div class="dhc-name">Matemática</div>
+          <div class="dhc-desc">Números ordinais, formas e muito mais!</div>
+          <div class="dhc-chips">
+            <span class="chip" style="background:#E0F5FE;color:#0369A1">1 tema</span>
+            <span class="chip" style="background:#EFF9FF;color:#044A7A">5 atividades</span>
           </div>
         </button>
         <button class="disc-home-card hist" onclick="showDisc('hist')">
@@ -1339,6 +1375,100 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
     </div><!-- /disc-body -->
   </div><!-- /screen-hist -->
 
+  <!-- MATEMÁTICA -->
+  <div class="screen" id="screen-mat">
+    <div class="disc-hero mat">
+      <div class="disc-hero-title">📐 Matemática</div>
+      <div class="disc-hero-sub">1 tema · 5 atividades</div>
+    </div>
+    <div class="disc-body">
+
+      <div class="theme-tabs">
+        <button class="theme-tab-btn mat-tab active" id="tab-mat-numeros-ordinais" onclick="showTheme('mat','numeros-ordinais')">🏆 Números Ordinais</button>
+      </div>
+
+      <!-- ── TEMA 1: NÚMEROS ORDINAIS ── -->
+      <div class="theme-content active" id="theme-mat-numeros-ordinais">
+        <div class="hq-card">
+          <div class="hq-viewer-wrap" style="background:#023B61;">
+            <div class="hq-viewer-title" style="color:#5AC8FB;">🏆 A Grande Corrida!</div>
+            <div class="hq-viewer-sub" style="color:#BAE6FD;">Aventura com Lis e Primo · 4 páginas</div>
+            <div class="hq-book-outer">
+              <div class="hq-book-shadow"></div>
+              <div class="hq-book-stack">
+                <div class="hq-page-base" id="hq-ordinais-display">
+                  <img id="hq-ordinais-img" src="matematica/numeros-ordinais/hq-numeros-ordinais-pg1.png" alt="HQ Números Ordinais — Página 1" draggable="false" style="object-fit:contain; touch-action:auto;">
+                  <div class="hq-shine"></div>
+                </div>
+              </div>
+            </div>
+            <div class="hq-controls">
+              <button class="hq-btn" id="hq-ordinais-prev" onclick="hqGoTo('ordinais',hqCurrent['ordinais']-1)" disabled>◀ Voltar</button>
+              <div class="hq-indicator" id="hq-ordinais-ind" style="color:#5AC8FB;">1 / 4</div>
+              <button class="hq-btn" id="hq-ordinais-next" onclick="hqGoTo('ordinais',hqCurrent['ordinais']+1)">Próxima ▶</button>
+            </div>
+            <div class="hq-dots" id="hq-ordinais-dots">
+              <div class="hq-dot active" onclick="hqGoTo('ordinais',0)"></div>
+              <div class="hq-dot" onclick="hqGoTo('ordinais',1)"></div>
+              <div class="hq-dot" onclick="hqGoTo('ordinais',2)"></div>
+              <div class="hq-dot" onclick="hqGoTo('ordinais',3)"></div>
+            </div>
+          </div>
+          <div class="hq-caption">
+            <span>📖</span>
+            <span>A grande corrida! — 4 páginas · Personagens: Lis e Primo 🏆 · Tema: Números que indicam ordem, posição e classificação · 📚 Livro didático de Matemática · pp. 90–93</span>
+          </div>
+        </div>
+        <hr class="sdiv">
+        <div class="act-grid">
+          <a class="act-card mat" href="matematica/numeros-ordinais/quiz-numeros-ordinais.html" target="_blank">
+            <div class="act-icon">❓</div>
+            <div class="act-title">Quiz: Ordinais</div>
+            <div class="act-desc">Perguntas sobre números ordinais com feedback imediato.</div>
+            <div class="act-tags"><span class="tag tag-mat">Matemática</span><span class="tag tag-a">Ativo</span></div>
+            <div class="level lv4">📖 Retrieval practice</div>
+          </a>
+          <a class="act-card mat" href="matematica/numeros-ordinais/jogo-memoria-numeros-ordinais.html" target="_blank">
+            <div class="act-icon">🃏</div>
+            <div class="act-title">Jogo da Memória</div>
+            <div class="act-desc">Encontre os pares de números ordinais e suas posições!</div>
+            <div class="act-tags"><span class="tag tag-mat">Matemática</span><span class="tag tag-a">Prática</span></div>
+            <div class="level lv2">⚡ Praticar (80%)</div>
+          </a>
+          <a class="act-card mat" href="matematica/numeros-ordinais/arrastar-numeros-ordinais.html" target="_blank">
+            <div class="act-icon">🏎️</div>
+            <div class="act-title">Pódio da Corrida</div>
+            <div class="act-desc">Arraste os carros para o lugar certo no pódio da corrida!</div>
+            <div class="act-tags"><span class="tag tag-mat">Matemática</span><span class="tag tag-a">Visual</span></div>
+            <div class="level lv2">⚡ Praticar (80%)</div>
+          </a>
+          <a class="act-card mat" href="matematica/numeros-ordinais/criador-frase-numeros-ordinais.html" target="_blank">
+            <div class="act-icon">✏️</div>
+            <div class="act-title">Criador de Frase</div>
+            <div class="act-desc">Monte frases usando números ordinais do jeito certo!</div>
+            <div class="act-tags"><span class="tag tag-mat">Matemática</span><span class="tag tag-a">Criação</span></div>
+            <div class="level lv3">🏆 Criar (90%)</div>
+          </a>
+          <a class="act-card mat" href="matematica/numeros-ordinais/mapa-mental-numeros-ordinais.html" target="_blank">
+            <div class="act-icon">🗺️</div>
+            <div class="act-title">Mapa Mental</div>
+            <div class="act-desc">Arraste os balões e conecte as ideias sobre números ordinais.</div>
+            <div class="act-tags"><span class="tag tag-mat">Matemática</span><span class="tag tag-a">Síntese</span></div>
+            <div class="level lv3">🏆 Ensinar (90%)</div>
+          </a>
+        </div>
+        <hr class="sdiv">
+        <div class="sched-title">📅 Sugestão de uso</div>
+        <div class="sched">
+          <div class="sched-row"><span class="sched-day" style="color:var(--mat-color)">Dia 1</span><span class="sched-acts">HQ + Quiz</span></div>
+          <div class="sched-row"><span class="sched-day" style="color:var(--mat-color)">Dia 2</span><span class="sched-acts">Jogo da Memória + Pódio da Corrida</span></div>
+          <div class="sched-row"><span class="sched-day" style="color:var(--mat-color)">Dia 3</span><span class="sched-acts">Criador de Frase + Mapa Mental</span></div>
+        </div>
+      </div>
+
+    </div><!-- /disc-body -->
+  </div><!-- /screen-mat -->
+
 </main>
 
 <script>
@@ -1355,10 +1485,11 @@ var hqPages = {
   lugarviver:  ['historia/meu-lugar-viver/hq-meu-lugar-viver-pg1.png','historia/meu-lugar-viver/hq-meu-lugar-viver-pg2.png','historia/meu-lugar-viver/hq-meu-lugar-viver-pg3.png','historia/meu-lugar-viver/hq-meu-lugar-viver-pg4.png'],
   convivencia:   ['historia/convivencia-pessoas/hq-convivencia-pessoas-pg1.png','historia/convivencia-pessoas/hq-convivencia-pessoas-pg2.png','historia/convivencia-pessoas/hq-convivencia-pessoas-pg3.png','historia/convivencia-pessoas/hq-convivencia-pessoas-pg4.png'],
   regrasconv:    ['historia/regras-convivencia/hq-regras-convivencia-pg1.png','historia/regras-convivencia/hq-regras-convivencia-pg2.png','historia/regras-convivencia/hq-regras-convivencia-pg3.png','historia/regras-convivencia/hq-regras-convivencia-pg4.png'],
-  mudancasconv:  ['historia/mudancas-convivencia/hq-mudancas-convivencia-pg1.png','historia/mudancas-convivencia/hq-mudancas-convivencia-pg2.png','historia/mudancas-convivencia/hq-mudancas-convivencia-pg3.png','historia/mudancas-convivencia/hq-mudancas-convivencia-pg4.png']
+  mudancasconv:  ['historia/mudancas-convivencia/hq-mudancas-convivencia-pg1.png','historia/mudancas-convivencia/hq-mudancas-convivencia-pg2.png','historia/mudancas-convivencia/hq-mudancas-convivencia-pg3.png','historia/mudancas-convivencia/hq-mudancas-convivencia-pg4.png'],
+  ordinais:      ['matematica/numeros-ordinais/hq-numeros-ordinais-pg1.png','matematica/numeros-ordinais/hq-numeros-ordinais-pg2.png','matematica/numeros-ordinais/hq-numeros-ordinais-pg3.png','matematica/numeros-ordinais/hq-numeros-ordinais-pg4.png']
 };
 
-var firstTheme = { cien: 'animais-ciclo-vida', geo: 'representar-lugares', hist: 'memorias-lugares' };
+var firstTheme = { cien: 'animais-ciclo-vida', geo: 'representar-lugares', hist: 'memorias-lugares', mat: 'numeros-ordinais' };
 
 function hqGoTo(id, target) {
   var pages = hqPages[id];

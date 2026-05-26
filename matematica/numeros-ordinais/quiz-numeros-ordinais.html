@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Interativo — Números Ordinais | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #0AACE8;
+  --light: #5AC8FB;
+  --bg: #EFF9FF;
+  --dark: #044A7A;
+  --correct: #22C55E;
+  --wrong: #EF4444;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  background: linear-gradient(135deg, #044A7A, #0AACE8 60%, #5AC8FB);
+  color: white;
+  padding: 24px 20px;
+  text-align: center;
+}
+
+header .emoji { font-size: 2.8rem; display: block; margin-bottom: 8px; }
+
+header h1 {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.8rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+header p {
+  font-size: 1rem;
+  opacity: 0.9;
+  margin-top: 4px;
+}
+
+main {
+  flex: 1;
+  padding: 24px 16px;
+  max-width: 700px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.progress-bar-wrap {
+  background: #D0EEFA;
+  border-radius: 99px;
+  height: 12px;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--light));
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+
+.progress-label {
+  font-size: 0.95rem;
+  color: var(--dark);
+  font-weight: 700;
+  margin-bottom: 20px;
+  text-align: right;
+}
+
+.question-card {
+  background: white;
+  border-radius: 20px;
+  padding: 28px 24px;
+  box-shadow: 0 4px 20px rgba(10, 172, 232, 0.15);
+  margin-bottom: 20px;
+}
+
+.question-number {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 10px;
+}
+
+.question-text {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--dark);
+  line-height: 1.4;
+  margin-bottom: 24px;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.option-btn {
+  background: var(--bg);
+  border: 3px solid #D0EEFA;
+  border-radius: 14px;
+  padding: 16px 20px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--dark);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.option-btn:hover:not(:disabled) {
+  border-color: var(--primary);
+  background: #DAEEFA;
+  transform: translateX(4px);
+}
+
+.option-btn.correct {
+  background: #DCFCE7;
+  border-color: var(--correct);
+  color: #166534;
+}
+
+.option-btn.wrong {
+  background: #FEE2E2;
+  border-color: var(--wrong);
+  color: #991B1B;
+}
+
+.option-btn:disabled { cursor: default; transform: none; }
+
+.option-letter {
+  background: var(--primary);
+  color: white;
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+
+.option-btn.correct .option-letter { background: var(--correct); }
+.option-btn.wrong .option-letter { background: var(--wrong); }
+
+.feedback-box {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(10, 172, 232, 0.15);
+  margin-bottom: 20px;
+  display: none;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.feedback-box.show { display: flex; }
+.feedback-box.correct-fb { border-left: 6px solid var(--correct); }
+.feedback-box.wrong-fb { border-left: 6px solid var(--wrong); }
+
+.feedback-icon { font-size: 2rem; flex-shrink: 0; }
+
+.feedback-text {
+  font-size: 1.15rem;
+  color: var(--dark);
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.btn-next {
+  background: linear-gradient(135deg, var(--primary), var(--light));
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 16px 32px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  width: 100%;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+  min-height: 56px;
+}
+
+.btn-next:hover { transform: scale(1.02); }
+
+/* Tela final */
+.result-screen {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 20px;
+  padding: 20px 0;
+}
+
+.result-screen.show { display: flex; }
+
+.result-trophy { font-size: 5rem; animation: bounce 0.8s infinite alternate; }
+
+@keyframes bounce {
+  from { transform: translateY(0); }
+  to { transform: translateY(-12px); }
+}
+
+.result-title {
+  font-family: 'Baloo 2', cursive;
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--dark);
+}
+
+.result-score {
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: var(--primary);
+}
+
+.result-msg {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--dark);
+  max-width: 400px;
+  line-height: 1.5;
+}
+
+.btn-retry {
+  background: linear-gradient(135deg, var(--primary), var(--light));
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 16px 40px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+  min-height: 56px;
+}
+
+.btn-retry:hover { transform: scale(1.05); }
+
+footer {
+  text-align: center;
+  padding: 20px 16px;
+}
+
+.btn-back {
+  background: white;
+  border: 3px solid var(--primary);
+  color: var(--primary);
+  border-radius: 14px;
+  padding: 14px 28px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 48px;
+}
+
+.btn-back:hover { background: var(--primary); color: white; }
+
+@media (max-width: 480px) {
+  body { font-size: 1.05rem; }
+  header h1 { font-size: 1.4rem; }
+  .question-text { font-size: 1.3rem; }
+  .option-btn { font-size: 1.1rem; padding: 14px 16px; }
+  .btn-next, .btn-retry { font-size: 1.1rem; }
+  main { padding: 16px 12px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="emoji">🏆</span>
+  <h1>Quiz — Números Ordinais</h1>
+  <p>8 perguntas · Responda e conquiste pontos!</p>
+</header>
+
+<main>
+  <div id="quiz-area">
+    <div class="progress-bar-wrap">
+      <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
+    </div>
+    <div class="progress-label" id="progress-label">Pergunta 1 de 8</div>
+
+    <div class="question-card">
+      <div class="question-number" id="q-number">Pergunta 1</div>
+      <div class="question-text" id="q-text"></div>
+      <div class="options" id="q-options"></div>
+    </div>
+
+    <div class="feedback-box" id="feedback-box">
+      <div class="feedback-icon" id="feedback-icon"></div>
+      <div class="feedback-text" id="feedback-text"></div>
+    </div>
+
+    <button class="btn-next" id="btn-next" onclick="nextQuestion()" style="display:none">
+      Próxima pergunta →
+    </button>
+  </div>
+
+  <div class="result-screen" id="result-screen">
+    <div class="result-trophy" id="result-trophy">🏆</div>
+    <div class="result-title">Quiz concluído!</div>
+    <div class="result-score" id="result-score"></div>
+    <div class="result-msg" id="result-msg"></div>
+    <button class="btn-retry" onclick="restartQuiz()">Jogar de novo 🔄</button>
+  </div>
+</main>
+
+<footer>
+  <button class="btn-back" onclick="window.location.href='../../index.html'">← Voltar ao Portal</button>
+</footer>
+
+<script>
+const questions = [
+  {
+    text: "O que os números 1º, 2º, 3º indicam?",
+    options: ["Ordem, posição ou classificação", "Quantidade de coisas", "Tamanho dos objetos"],
+    correct: 0,
+    feedback: "Isso mesmo! Números ordinais indicam ordem, posição ou classificação — como numa corrida!"
+  },
+  {
+    text: "Como se escreve 4º por extenso?",
+    options: ["Quarto", "Quatro", "Primeiro"],
+    correct: 0,
+    feedback: "Perfeito! 4º se lê 'quarto'. O carro amarelo ficou em quarto lugar!"
+  },
+  {
+    text: "Na corrida de carros, o carro vermelho está em qual lugar?",
+    options: ["1º (primeiro)", "2º (segundo)", "3º (terceiro)"],
+    correct: 0,
+    feedback: "Exato! O carro vermelho chegou em 1º lugar — primeiro!"
+  },
+  {
+    text: "Quem recebe a medalha de ouro numa competição?",
+    options: ["O 1º colocado", "O 2º colocado", "O 3º colocado"],
+    correct: 0,
+    feedback: "Muito bem! A medalha de ouro vai para o 1º colocado — o primeiro a chegar!"
+  },
+  {
+    text: "Como se escreve 10º por extenso?",
+    options: ["Décimo", "Oitavo", "Nono"],
+    correct: 0,
+    feedback: "Ótimo! 10º = décimo. Depois do nono (9º) vem o décimo (10º)!"
+  },
+  {
+    text: "Qual número ordinal vem logo depois do 7º?",
+    options: ["8º (oitavo)", "6º (sexto)", "9º (nono)"],
+    correct: 0,
+    feedback: "Correto! Depois do sétimo (7º) vem o oitavo (8º)!"
+  },
+  {
+    text: "Como se escreve 11º por extenso?",
+    options: ["Décimo primeiro", "Décimo", "Onze"],
+    correct: 0,
+    feedback: "Mandou bem! 11º = décimo primeiro. É o que vem depois do décimo!"
+  },
+  {
+    text: "Na fila do ônibus, quem entrou antes: quem está em 3º ou em 5º lugar?",
+    options: ["Quem está em 3º lugar", "Quem está em 5º lugar", "São iguais"],
+    correct: 0,
+    feedback: "Isso aí! Quem está em 3º lugar entrou antes — está mais na frente da fila!"
+  }
+];
+
+let current = 0;
+let score = 0;
+let answered = false;
+
+function playSound(type) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  if (type === 'correct') {
+    o.frequency.setValueAtTime(523, ctx.currentTime);
+    o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+    o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    o.start(); o.stop(ctx.currentTime + 0.5);
+  } else {
+    o.frequency.setValueAtTime(300, ctx.currentTime);
+    o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    o.start(); o.stop(ctx.currentTime + 0.4);
+  }
+}
+
+function renderQuestion() {
+  answered = false;
+  const q = questions[current];
+  const letters = ['A', 'B', 'C'];
+
+  document.getElementById('q-number').textContent = `Pergunta ${current + 1}`;
+  document.getElementById('q-text').textContent = q.text;
+  document.getElementById('progress-label').textContent = `Pergunta ${current + 1} de ${questions.length}`;
+  document.getElementById('progress-bar').style.width = `${(current / questions.length) * 100}%`;
+
+  const feedbackBox = document.getElementById('feedback-box');
+  feedbackBox.className = 'feedback-box';
+
+  document.getElementById('btn-next').style.display = 'none';
+
+  const optionsEl = document.getElementById('q-options');
+  optionsEl.innerHTML = '';
+
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="option-letter">${letters[i]}</span> ${opt}`;
+    btn.onclick = () => selectAnswer(i);
+    btn.setAttribute('data-index', i);
+    optionsEl.appendChild(btn);
+  });
+}
+
+function selectAnswer(index) {
+  if (answered) return;
+  answered = true;
+
+  const q = questions[current];
+  const buttons = document.querySelectorAll('.option-btn');
+  const feedbackBox = document.getElementById('feedback-box');
+
+  buttons.forEach(btn => btn.disabled = true);
+
+  const isCorrect = index === q.correct;
+
+  buttons[index].classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect) buttons[q.correct].classList.add('correct');
+
+  if (isCorrect) {
+    score++;
+    playSound('correct');
+    feedbackBox.className = 'feedback-box show correct-fb';
+    document.getElementById('feedback-icon').textContent = '✅';
+  } else {
+    playSound('wrong');
+    feedbackBox.className = 'feedback-box show wrong-fb';
+    document.getElementById('feedback-icon').textContent = '❌';
+  }
+
+  document.getElementById('feedback-text').textContent = q.feedback;
+
+  const btnNext = document.getElementById('btn-next');
+  btnNext.style.display = 'block';
+  if (current === questions.length - 1) {
+    btnNext.textContent = 'Ver resultado 🏆';
+  } else {
+    btnNext.textContent = 'Próxima pergunta →';
+  }
+}
+
+function nextQuestion() {
+  current++;
+  if (current >= questions.length) {
+    showResult();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showResult() {
+  document.getElementById('quiz-area').style.display = 'none';
+  const resultScreen = document.getElementById('result-screen');
+  resultScreen.classList.add('show');
+
+  document.getElementById('result-score').textContent = `${score} / ${questions.length}`;
+  document.getElementById('progress-bar').style.width = '100%';
+
+  let trophy, msg;
+  if (score === 8) {
+    trophy = '🥇'; msg = 'Incrível! Você é o primeiro colocado no quiz de ordinais! Nota 10!';
+  } else if (score >= 6) {
+    trophy = '🥈'; msg = 'Muito bem! Você domina os números ordinais! Continue assim!';
+  } else if (score >= 4) {
+    trophy = '🥉'; msg = 'Bom trabalho! Você está no caminho certo. Tente de novo para melhorar!';
+  } else {
+    trophy = '📚'; msg = 'Continue praticando! Com esforço você chega ao primeiro lugar!';
+  }
+
+  document.getElementById('result-trophy').textContent = trophy;
+  document.getElementById('result-msg').textContent = msg;
+
+  if (score >= 6) playSound('correct');
+}
+
+function restartQuiz() {
+  current = 0;
+  score = 0;
+  answered = false;
+  document.getElementById('quiz-area').style.display = 'block';
+  document.getElementById('result-screen').classList.remove('show');
+  renderQuestion();
+}
+
+renderQuestion();
+</script>
+</body>
+</html>

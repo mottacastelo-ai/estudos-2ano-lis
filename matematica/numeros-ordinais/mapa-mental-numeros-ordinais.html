@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapa Mental — Números Ordinais | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #0AACE8;
+  --light: #5AC8FB;
+  --bg: #EFF9FF;
+  --dark: #044A7A;
+  --correct: #22C55E;
+  --wrong: #EF4444;
+  --neutral: #94A3B8;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  background: linear-gradient(135deg, #044A7A, #0AACE8 60%, #5AC8FB);
+  color: white;
+  padding: 24px 20px;
+  text-align: center;
+}
+
+header .emoji { font-size: 2.8rem; display: block; margin-bottom: 8px; }
+
+header h1 {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.8rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+header p { font-size: 1rem; opacity: 0.9; margin-top: 4px; }
+
+main {
+  flex: 1;
+  padding: 20px 16px;
+  max-width: 760px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.instruction {
+  background: white;
+  border-radius: 16px;
+  padding: 16px 20px;
+  box-shadow: 0 3px 12px rgba(10,172,232,0.12);
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--dark);
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* Nó central */
+.central-node {
+  background: linear-gradient(135deg, var(--primary), var(--light));
+  color: white;
+  border-radius: 20px;
+  padding: 18px 28px;
+  text-align: center;
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.4rem;
+  font-weight: 900;
+  box-shadow: 0 6px 24px rgba(10,172,232,0.4);
+  margin: 0 auto 24px;
+  max-width: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* Layout dos slots */
+.slots-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.slot-row {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.slot-label-box {
+  background: white;
+  border: 3px solid var(--light);
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--dark);
+  flex: 0 0 auto;
+  width: 200px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 8px rgba(10,172,232,0.1);
+}
+
+.slot-arrow {
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.slot-drop {
+  flex: 1;
+  min-height: 60px;
+  border: 3px dashed #B3DDF7;
+  border-radius: 14px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.slot-drop.drag-over {
+  background: #DAEEFA;
+  border-color: var(--primary);
+  box-shadow: 0 0 14px rgba(10,172,232,0.3);
+}
+
+.slot-drop.correct {
+  background: #DCFCE7;
+  border-color: var(--correct);
+}
+
+.slot-drop.wrong {
+  background: #FEE2E2;
+  border-color: var(--wrong);
+}
+
+.slot-drop.filled {
+  border-style: solid;
+  border-color: var(--light);
+}
+
+.slot-placeholder {
+  color: #B3DDF7;
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-style: italic;
+  pointer-events: none;
+}
+
+/* Nós arrastáveis */
+.nodes-area {
+  margin-bottom: 20px;
+}
+
+.nodes-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--dark);
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.nodes-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.node {
+  background: linear-gradient(135deg, var(--dark), #0A6699);
+  color: white;
+  border-radius: 14px;
+  padding: 12px 18px;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: grab;
+  box-shadow: 0 4px 14px rgba(4,74,122,0.3);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.2s ease;
+  border: 3px solid rgba(255,255,255,0.2);
+  user-select: none;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+.node:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 7px 20px rgba(4,74,122,0.35); }
+.node.dragging { opacity: 0.4; cursor: grabbing; }
+.node.placed { opacity: 0.25; pointer-events: none; }
+
+/* Nó dentro do slot */
+.placed-node {
+  background: linear-gradient(135deg, var(--dark), #0A6699);
+  color: white;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  box-shadow: 0 2px 8px rgba(4,74,122,0.25);
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+  text-align: center;
+  width: 100%;
+}
+
+.placed-node:hover { opacity: 0.8; }
+
+/* Feedback and gabarito */
+.feedback-section {
+  margin-bottom: 20px;
+}
+
+.check-result {
+  display: none;
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(10,172,232,0.15);
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.check-result.show { display: block; }
+
+.check-result .res-emoji { font-size: 3rem; margin-bottom: 8px; }
+
+.check-result h3 {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.5rem;
+  color: var(--dark);
+  margin-bottom: 8px;
+}
+
+.check-result p { font-size: 1.1rem; color: #555; font-weight: 700; }
+
+.score-chips {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.score-chip {
+  background: var(--bg);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--dark);
+}
+
+.score-chip.chip-correct { background: #DCFCE7; color: #166534; }
+.score-chip.chip-wrong { background: #FEE2E2; color: #991B1B; }
+
+/* Controles */
+.controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.btn-check {
+  background: linear-gradient(135deg, var(--primary), var(--light));
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 14px 28px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+  min-height: 52px;
+}
+
+.btn-check:hover { transform: scale(1.04); }
+
+.btn-reset {
+  background: white;
+  border: 3px solid var(--primary);
+  color: var(--primary);
+  border-radius: 14px;
+  padding: 14px 24px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 52px;
+}
+
+.btn-reset:hover { background: var(--primary); color: white; }
+
+footer {
+  text-align: center;
+  padding: 20px 16px;
+}
+
+.btn-back {
+  background: white;
+  border: 3px solid var(--primary);
+  color: var(--primary);
+  border-radius: 14px;
+  padding: 14px 28px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 48px;
+}
+
+.btn-back:hover { background: var(--primary); color: white; }
+
+@media (max-width: 480px) {
+  .slot-label-box { width: 140px; font-size: 0.9rem; padding: 10px 10px; }
+  .slot-arrow { font-size: 1.2rem; }
+  .slot-row { gap: 6px; }
+  .node { font-size: 0.9rem; padding: 10px 12px; }
+  header h1 { font-size: 1.4rem; }
+  .central-node { font-size: 1.2rem; padding: 14px 20px; }
+  .placed-node { font-size: 0.85rem; padding: 8px 10px; }
+  main { padding: 14px 10px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="emoji">🏆</span>
+  <h1>Mapa Mental — Números Ordinais</h1>
+  <p>Arraste cada conceito para o lugar certo no mapa!</p>
+</header>
+
+<main>
+  <div class="instruction">
+    Arraste os conceitos azuis para completar o mapa sobre Números Ordinais. Clique num conceito já colocado para removê-lo.
+  </div>
+
+  <div class="central-node">
+    🏆 Números Ordinais
+  </div>
+
+  <div class="slots-container" id="slots-container"></div>
+
+  <div class="nodes-area">
+    <div class="nodes-title">Conceitos para encaixar:</div>
+    <div class="nodes-grid" id="nodes-grid"></div>
+  </div>
+
+  <div class="feedback-section">
+    <div class="check-result" id="check-result">
+      <div class="res-emoji" id="res-emoji"></div>
+      <h3 id="res-title"></h3>
+      <p id="res-text"></p>
+      <div class="score-chips" id="score-chips"></div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="btn-check" onclick="checkMap()">Ver gabarito ✅</button>
+    <button class="btn-reset" onclick="resetMap()">Recomeçar 🔀</button>
+  </div>
+</main>
+
+<footer>
+  <button class="btn-back" onclick="window.location.href='../../index.html'">← Voltar ao Portal</button>
+</footer>
+
+<script>
+const slotsData = [
+  {
+    id: 'indicam',
+    label: '📋 Indicam...',
+    correctNodeId: 'node-order',
+  },
+  {
+    id: 'exemplo1a5',
+    label: '🔢 Exemplo de 1º ao 5º:',
+    correctNodeId: 'node-first5',
+  },
+  {
+    id: 'usamos',
+    label: '🏁 Usamos em...',
+    correctNodeId: 'node-usamos',
+  },
+  {
+    id: 'ouro',
+    label: '🥇 Medalha de ouro =',
+    correctNodeId: 'node-ouro',
+  },
+  {
+    id: 'depois10',
+    label: '⏭️ Depois do 10º vem...',
+    correctNodeId: 'node-depois10',
+  },
+];
+
+const nodesData = [
+  { id: 'node-order',   text: 'ordem, posição ou classificação' },
+  { id: 'node-first5',  text: 'primeiro, segundo, terceiro, quarto, quinto' },
+  { id: 'node-usamos',  text: 'corridas e competições' },
+  { id: 'node-ouro',    text: '1º lugar (primeiro)' },
+  { id: 'node-depois10',text: 'décimo primeiro (11º)' },
+];
+
+let slotContents = {};  // slotId -> nodeId
+let draggedNodeId = null;
+let touchDragClone = null;
+
+function playSound(type) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  if (type === 'correct') {
+    o.frequency.setValueAtTime(523, ctx.currentTime);
+    o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+    o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    o.start(); o.stop(ctx.currentTime + 0.5);
+  } else {
+    o.frequency.setValueAtTime(300, ctx.currentTime);
+    o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    o.start(); o.stop(ctx.currentTime + 0.4);
+  }
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function buildSlots() {
+  const container = document.getElementById('slots-container');
+  container.innerHTML = '';
+  slotsData.forEach(slot => {
+    const row = document.createElement('div');
+    row.className = 'slot-row';
+
+    const labelBox = document.createElement('div');
+    labelBox.className = 'slot-label-box';
+    labelBox.innerHTML = `<span>${slot.label}</span>`;
+
+    const arrow = document.createElement('div');
+    arrow.className = 'slot-arrow';
+    arrow.textContent = '→';
+
+    const drop = document.createElement('div');
+    drop.className = 'slot-drop';
+    drop.id = `slot-${slot.id}`;
+    drop.dataset.slotid = slot.id;
+    drop.innerHTML = `<span class="slot-placeholder">Solte aqui...</span>`;
+
+    // Desktop drag events
+    drop.addEventListener('dragover', e => {
+      e.preventDefault();
+      drop.classList.add('drag-over');
+    });
+    drop.addEventListener('dragleave', () => drop.classList.remove('drag-over'));
+    drop.addEventListener('drop', e => {
+      e.preventDefault();
+      drop.classList.remove('drag-over');
+      placeNode(draggedNodeId, slot.id);
+    });
+
+    row.appendChild(labelBox);
+    row.appendChild(arrow);
+    row.appendChild(drop);
+    container.appendChild(row);
+  });
+}
+
+function buildNodes(order) {
+  const grid = document.getElementById('nodes-grid');
+  grid.innerHTML = '';
+  order.forEach(nodeData => {
+    const el = document.createElement('div');
+    el.className = 'node';
+    el.id = nodeData.id;
+    el.dataset.nodeid = nodeData.id;
+    el.textContent = nodeData.text;
+    el.draggable = true;
+
+    // Desktop drag
+    el.addEventListener('dragstart', e => {
+      draggedNodeId = nodeData.id;
+      e.dataTransfer.effectAllowed = 'move';
+      setTimeout(() => el.classList.add('dragging'), 0);
+    });
+    el.addEventListener('dragend', () => el.classList.remove('dragging'));
+
+    // Touch
+    el.addEventListener('touchstart', onTouchStart, { passive: true });
+    el.addEventListener('touchmove', onTouchMove, { passive: false });
+    el.addEventListener('touchend', onTouchEnd);
+
+    grid.appendChild(el);
+  });
+}
+
+function placeNode(nodeId, slotId) {
+  if (!nodeId) return;
+
+  // Remove from any current slot
+  Object.keys(slotContents).forEach(sid => {
+    if (slotContents[sid] === nodeId) {
+      slotContents[sid] = null;
+      renderSlot(sid);
+    }
+  });
+
+  // If slot already has a node, return it
+  if (slotContents[slotId]) {
+    const prevNodeId = slotContents[slotId];
+    const prevEl = document.getElementById(prevNodeId);
+    if (prevEl) prevEl.classList.remove('placed');
+    slotContents[slotId] = null;
+  }
+
+  slotContents[slotId] = nodeId;
+  const nodeEl = document.getElementById(nodeId);
+  if (nodeEl) nodeEl.classList.add('placed');
+
+  renderSlot(slotId);
+  clearCheckResult();
+}
+
+function removeFromSlot(slotId) {
+  const nodeId = slotContents[slotId];
+  if (!nodeId) return;
+  slotContents[slotId] = null;
+  const nodeEl = document.getElementById(nodeId);
+  if (nodeEl) nodeEl.classList.remove('placed');
+  renderSlot(slotId);
+  clearCheckResult();
+}
+
+function renderSlot(slotId) {
+  const drop = document.getElementById(`slot-${slotId}`);
+  if (!drop) return;
+
+  const nodeId = slotContents[slotId];
+  drop.className = 'slot-drop' + (nodeId ? ' filled' : '');
+
+  if (nodeId) {
+    const nodeData = nodesData.find(n => n.id === nodeId);
+    drop.innerHTML = `
+      <div class="placed-node" title="Clique para remover" onclick="removeFromSlot('${slotId}')">
+        ${nodeData.text}
+      </div>
+    `;
+  } else {
+    drop.innerHTML = `<span class="slot-placeholder">Solte aqui...</span>`;
+  }
+}
+
+function clearCheckResult() {
+  document.getElementById('check-result').classList.remove('show');
+  // Remove correct/wrong classes from slots
+  slotsData.forEach(slot => {
+    const drop = document.getElementById(`slot-${slot.id}`);
+    if (drop) drop.classList.remove('correct', 'wrong');
+  });
+}
+
+function checkMap() {
+  let correct = 0;
+  const chips = [];
+
+  slotsData.forEach(slot => {
+    const drop = document.getElementById(`slot-${slot.id}`);
+    const placed = slotContents[slot.id];
+    const isCorrect = placed === slot.correctNodeId;
+
+    drop.classList.remove('correct', 'wrong');
+    if (placed) {
+      if (isCorrect) {
+        correct++;
+        drop.classList.add('correct');
+        chips.push({ label: slot.label.replace(/^[^\s]+\s/, '').replace(':', ''), ok: true });
+      } else {
+        drop.classList.add('wrong');
+        chips.push({ label: slot.label.replace(/^[^\s]+\s/, '').replace(':', ''), ok: false });
+      }
+    }
+  });
+
+  const result = document.getElementById('check-result');
+  result.classList.add('show');
+
+  const total = slotsData.length;
+  const allFilled = Object.values(slotContents).filter(v => v).length === total;
+
+  let emoji, title, text;
+  if (!allFilled) {
+    emoji = '🤔'; title = 'Mapa incompleto!'; text = `Coloque todos os ${total} conceitos antes de verificar.`;
+  } else if (correct === total) {
+    emoji = '🥇'; title = 'Mapa perfeito!'; text = 'Você conectou todos os conceitos corretamente! Incrível!';
+    playSound('correct');
+  } else {
+    emoji = '📝'; title = `${correct} de ${total} corretos!`;
+    text = 'Os slots vermelhos precisam de ajuste. Tente trocar os conceitos!';
+    playSound('wrong');
+  }
+
+  document.getElementById('res-emoji').textContent = emoji;
+  document.getElementById('res-title').textContent = title;
+  document.getElementById('res-text').textContent = text;
+
+  const chipsEl = document.getElementById('score-chips');
+  chipsEl.innerHTML = '';
+  chips.forEach(c => {
+    const chip = document.createElement('span');
+    chip.className = `score-chip ${c.ok ? 'chip-correct' : 'chip-wrong'}`;
+    chip.textContent = (c.ok ? '✅ ' : '❌ ') + c.label;
+    chipsEl.appendChild(chip);
+  });
+}
+
+function resetMap() {
+  slotContents = {};
+  draggedNodeId = null;
+  clearCheckResult();
+  buildSlots();
+  buildNodes(shuffle([...nodesData]));
+}
+
+// Touch drag support
+function onTouchStart(e) {
+  const el = e.currentTarget;
+  draggedNodeId = el.dataset.nodeid;
+
+  touchDragClone = el.cloneNode(true);
+  touchDragClone.style.position = 'fixed';
+  touchDragClone.style.pointerEvents = 'none';
+  touchDragClone.style.zIndex = '999';
+  touchDragClone.style.opacity = '0.85';
+  touchDragClone.style.transform = 'scale(1.08)';
+  touchDragClone.style.width = el.offsetWidth + 'px';
+  touchDragClone.style.maxWidth = '280px';
+  document.body.appendChild(touchDragClone);
+
+  const t = e.touches[0];
+  moveTouchClone(t.clientX, t.clientY);
+}
+
+function onTouchMove(e) {
+  e.preventDefault();
+  if (!touchDragClone) return;
+  const t = e.touches[0];
+  moveTouchClone(t.clientX, t.clientY);
+
+  document.querySelectorAll('.slot-drop').forEach(s => s.classList.remove('drag-over'));
+  const target = document.elementFromPoint(t.clientX, t.clientY);
+  const slot = target && target.closest('.slot-drop');
+  if (slot) slot.classList.add('drag-over');
+}
+
+function onTouchEnd(e) {
+  if (!touchDragClone) return;
+  const t = e.changedTouches[0];
+  const target = document.elementFromPoint(t.clientX, t.clientY);
+  const slot = target && target.closest('.slot-drop');
+
+  if (slot) {
+    placeNode(draggedNodeId, slot.dataset.slotid);
+  }
+
+  document.body.removeChild(touchDragClone);
+  touchDragClone = null;
+  document.querySelectorAll('.slot-drop').forEach(s => s.classList.remove('drag-over'));
+  draggedNodeId = null;
+}
+
+function moveTouchClone(x, y) {
+  if (!touchDragClone) return;
+  touchDragClone.style.left = (x - touchDragClone.offsetWidth / 2) + 'px';
+  touchDragClone.style.top = (y - touchDragClone.offsetHeight / 2) + 'px';
+}
+
+// Init
+resetMap();
+</script>
+</body>
+</html>
