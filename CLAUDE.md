@@ -73,7 +73,7 @@ Após `analisador-conteudo` gerar a proposta estrutural, **parar e aguardar apro
 | `gerador-atividades` | Planeja e escreve os HTMLs das atividades | Após personagem estar definido |
 | `atualizador-portal` | Edita o index.html com o novo tema | Após atividades geradas |
 | `verificador-entrega` | Valida checklist e aciona próxima etapa | Após atualizador-portal |
-| `gerador-imagens-hq` | Automação Chrome no GPT Quadrinhos Sabendo | Automático após verificador-entrega |
+| `gerador-imagens-hq` | Escreve JSON de pedido em `.claude/pending/`; polling até Codex confirmar em `.claude/done/` | Automático após verificador-entrega |
 | `publicador-portal` | git add + commit + push para o GitHub Pages | Último — após gerador-imagens-hq |
 
 ---
@@ -100,7 +100,7 @@ Após `analisador-conteudo` gerar a proposta estrutural, **parar e aguardar apro
 6. Imagem da HQ no viewer: sempre `object-fit: contain`, nunca `cover`
 7. Viewer da HQ: sempre `touch-action: auto`, nunca `pan-y pinch-zoom`
 8. Nunca adicionar `::before` com gradiente lateral no container do viewer da HQ
-9. A única ação manual de Léo é anexar imagens canônicas quando solicitado pelo gerador-imagens-hq
+9. **Pré-requisito para HQ:** Codex Desktop aberto com a automação "Gerar HQs pendentes" ativa antes de iniciar o pipeline — sem isso o `gerador-imagens-hq` vai expirar o timeout de 30 min
 
 ---
 
@@ -112,4 +112,4 @@ Após `analisador-conteudo` gerar a proposta estrutural, **parar e aguardar apro
 | `referencias/contexto_projeto.md` | Contexto completo e estado atual do projeto |
 | `referencias/SKILL-portal-educacional-2ano-ATUALIZADA.md` | Skill detalhada com templates e padrões HTML |
 | `referencias/hq-gerador-SKILL.md` | Skill de automação de HQ via Chrome |
-| `versao canonica lis.png` | Referência visual canônica da protagonista |
+| `Personagens\2o ano\Lis.png` | Referência visual canônica da protagonista (em pasta centralizada) |

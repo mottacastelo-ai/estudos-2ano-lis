@@ -1,0 +1,14 @@
+{
+  "slug": "numeros-ordinais",
+  "disciplina": "matematica",
+  "raiz": "C:\\Users\\wizar\\OneDrive\\Documentos\\Projeto Estudos\\estudos-2ano",
+  "prompt_path": "matematica/numeros-ordinais/hq-numeros-ordinais-prompt.md",
+  "canonicas_path": "C:\\Users\\wizar\\OneDrive\\Documentos\\Projeto Estudos\\Personagens\\2o ano",
+  "output_dir": "matematica/numeros-ordinais",
+  "expected_outputs": [
+    "hq-numeros-ordinais-pg1.png",
+    "hq-numeros-ordinais-pg2.png",
+    "hq-numeros-ordinais-pg3.png",
+    "hq-numeros-ordinais-pg4.png"
+  ]
+}

@@ -36,6 +36,8 @@ Character design must remain consistent across all pages.
 
 ---
 
+### Personagem principal: Primo
+
 ## PERSONAGENS FIXOS
 
 | Personagem | Descrição visual completa |

@@ -1,7 +1,11 @@
 ---
 name: hq-generator
-description: "Gera automaticamente todas as imagens de uma HQ (folha de personagens + 4 páginas) no GPT Quadrinhos Sabendo, fazendo upload das imagens canônicas de referência antes de cada geração, capturando as imagens via network interception e salvando os arquivos PNG na pasta do projeto. Skill genérica — funciona para qualquer portal (estudos-2ano, estudos, etc.)."
+description: "DEPRECIADO — abordagem ChromeMCP substituída pelo contrato Codex Desktop. Ver agente gerador-imagens-hq.md e para_Codex/skill-gerar-hq-imagens.md."
 ---
+
+> ⚠️ **DEPRECIADO** — Este arquivo descreve a abordagem antiga via ChromeMCP + GPT Quadrinhos Sabendo.
+> O fluxo atual usa **Codex Desktop via contrato de arquivos** (pending/done/error).
+> Consultar: `.claude/agents/gerador-imagens-hq.md`
 
 # Skill: Gerador de HQ — GPT Quadrinhos Sabendo
 
