@@ -134,6 +134,10 @@ Para o index.html:
 - [ ] Nenhuma atividade variável repete tipo de tema anterior da mesma disciplina
 - [ ] Há pelo menos uma atividade de criação/produção (90%)
 - [ ] Há pelo menos uma atividade predominantemente visual
+- [ ] **Exemplos completos na HQ:** para cada procedimento/cálculo presente no roteiro, existe pelo menos um exemplo não-trivial trabalhado passo a passo? (não apenas o caso fácil sem aplicação do método completo)
+
+> Verificar no `hq-[slug]-prompt.md`: se o tema envolve cálculo (adição, subtração, contagem em grupos, etc.), localizar o exemplo e confirmar que ele exige executar o procedimento de ponta a ponta — não apenas casos onde a resposta é imediata/óbvia.
+> **Falha neste item** → `aprovado: false`, indicar página e painel, descrever qual exemplo está faltando.
 
 ### Coerência das atividades interativas (verificação crítica)
 

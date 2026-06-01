@@ -174,6 +174,33 @@ Style: colorful flat illustration, bold outlines, Portuguese speech bubbles, 2x2
 - [ ] Prompts em inglês, falas em português
 - [ ] Todos os termos técnicos do input aparecem na narrativa
 - [ ] Arquivo salvo na raiz do projeto (não em subpasta)
+- [ ] **Regra de exemplos completos** — verificada (ver seção abaixo)
+
+---
+
+## Regra de exemplos completos em procedimentos ⚠️ OBRIGATÓRIA
+
+Para qualquer conceito que envolva um **procedimento, cálculo ou sequência de passos** (ex.: adição com reagrupamento, subtração com empréstimo, contagem por grupos, formação de numerais), o roteiro da HQ deve conter pelo menos um exemplo que **requer aplicar o procedimento completo** — não apenas o caso fácil.
+
+**O que é caso fácil (INSUFICIENTE sozinho):**
+- `3 + 2 = 5` como único exemplo de adição (não requer reagrupamento)
+- Contar 1-2-3-4-5 como único exemplo de contagem (trivial)
+- `10 - 3 = 7` como único exemplo de subtração (sem empréstimo)
+- Qualquer exemplo onde a criança chega à resposta sem precisar executar cada etapa do método
+
+**O que é exemplo completo (OBRIGATÓRIO):**
+- `17 + 5 = 22` com passo a passo explícito: "7 + 5 = 12 → escreve 2, vai 1 → 1 + 1 = 2"
+- `23 - 8 = 15` com empréstimo: "3 não tem pra tirar 8 → pede emprestado → 13 - 8 = 5, 1 - 1 = 1"
+- Contagem em grupos: "3 grupos de 4 maçãs → 4, 8, 12 → são 12 no total"
+- Qualquer exemplo onde cada etapa do procedimento fica visível no painel
+
+**Checklist por conceito operacional:**
+- [ ] O procedimento principal aparece demonstrado em pelo menos 1 exemplo não-trivial?
+- [ ] O exemplo tem passo a passo explícito (numerado ou em sequência visual nos painéis)?
+- [ ] O exemplo termina com confirmação do resultado?
+- [ ] Se existe um caso simples, ele aparece **antes** como introdução — nunca como único exemplo?
+
+> **Origem desta regra:** na HQ de MDC/MMC (5º ano) o único exemplo de cálculo de MMC foi `mmc(4,5)=20` (primos entre si — caso especial sem fatoração). O aluno não soube resolver situações gerais. O mesmo risco existe no 2º ano quando apenas casos triviais são demonstrados.
 
 ---
 
