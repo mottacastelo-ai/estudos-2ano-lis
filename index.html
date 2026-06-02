@@ -105,13 +105,17 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
 .home-section-title { font-family: 'Baloo 2', cursive; font-size: 1.3rem; font-weight: 800; color: #1E293B; margin-bottom: 20px; }
 .disc-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
 .disc-home-card {
-  background: #fff; border-radius: 20px; padding: 26px;
+  background: #fff; border-radius: 24px; padding: 32px;
   border: 2px solid #E2E8F0; cursor: pointer;
   transition: all 0.2s; text-align: left; font-family: 'Nunito', sans-serif;
 }
+.disc-home-card.cien { background: linear-gradient(160deg, #DCFCE7 0%, #F0FDF4 100%); border-color: var(--cien-color); }
+.disc-home-card.geo  { background: linear-gradient(160deg, #FEF9C3 0%, #FFFBEB 100%); border-color: var(--geo-color); }
+.disc-home-card.hist { background: linear-gradient(160deg, #F3E8FF 0%, #FAF5FF 100%); border-color: var(--hist-color); }
+.disc-home-card.mat  { background: linear-gradient(160deg, #E0F5FE 0%, #EFF9FF 100%); border-color: var(--mat-color); }
 .disc-home-card.cien:hover { border-color: var(--cien-light); box-shadow: 0 8px 28px rgba(34,197,94,.15); }
-.dhc-icon { font-size: 2.6rem; margin-bottom: 10px; }
-.dhc-name { font-family: 'Baloo 2', cursive; font-size: 1.35rem; font-weight: 800; color: #1E293B; margin-bottom: 5px; }
+.dhc-icon { font-size: 4rem; margin-bottom: 14px; }
+.dhc-name { font-family: 'Baloo 2', cursive; font-size: 1.6rem; font-weight: 900; color: #1E293B; margin-bottom: 6px; }
 .dhc-desc { font-size: 0.9rem; color: #64748B; font-weight: 600; margin-bottom: 14px; line-height: 1.4; }
 .dhc-chips { display: flex; gap: 8px; flex-wrap: wrap; }
 .chip { font-size: 0.78rem; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
@@ -198,7 +202,7 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
 /* ===== ACTIVITY GRID ===== */
 .act-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; margin-bottom: 8px; }
 .act-card {
-  background: #fff; border-radius: 16px; padding: 20px;
+  background: #fff; border-radius: 20px; padding: 26px;
   border: 2px solid #E2E8F0; text-decoration: none; color: inherit;
   display: block; transition: all 0.2s; position: relative;
 }
@@ -210,8 +214,8 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
 .act-card.cien { border-top: 4px solid var(--cien-color); }
 .act-card.cien::after { color: var(--cien-color); }
 .act-card.cien:hover { box-shadow: 0 6px 24px rgba(34,197,94,.15); transform: translateY(-3px); border-color: var(--cien-light); }
-.act-icon { font-size: 2rem; margin-bottom: 8px; }
-.act-title { font-family: 'Baloo 2', cursive; font-size: 1.05rem; font-weight: 800; color: #1E293B; margin-bottom: 4px; }
+.act-icon { font-size: 2.6rem; margin-bottom: 10px; }
+.act-title { font-family: 'Baloo 2', cursive; font-size: 1.2rem; font-weight: 800; color: #1E293B; margin-bottom: 6px; }
 .act-desc { font-size: 0.85rem; color: #64748B; font-weight: 600; margin-bottom: 12px; line-height: 1.4; }
 .act-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
 .tag { font-size: 0.7rem; font-weight: 700; padding: 3px 8px; border-radius: 20px; }
@@ -438,12 +442,12 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
       </div>
     </div>
     <div class="home-body">
-      <div class="home-section-title">📖 Minhas Disciplinas</div>
+      <div class="home-section-title">🚀 O que vamos aprender hoje?</div>
       <div class="disc-cards">
         <button class="disc-home-card cien" onclick="showDisc('cien')">
           <div class="dhc-icon">🔬</div>
           <div class="dhc-name">Ciências</div>
-          <div class="dhc-desc">Animais, sentidos, plantas e cuidado com o meio ambiente</div>
+          <div class="dhc-desc">Animais, sentidos, plantas e o mundo ao redor 🌱</div>
           <div class="dhc-chips">
             <span class="chip" style="background:#DCFCE7;color:#15803D">4 temas</span>
             <span class="chip" style="background:#ECFDF5;color:#065F46">16 atividades</span>
@@ -452,7 +456,7 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
         <button class="disc-home-card geo" onclick="showDisc('geo')">
           <div class="dhc-icon">🗺️</div>
           <div class="dhc-name">Geografia</div>
-          <div class="dhc-desc">Pontos de vista, representação de lugares e tipos de bairro</div>
+          <div class="dhc-desc">Mapas, bairros e os lugares onde vivemos 🗺️</div>
           <div class="dhc-chips">
             <span class="chip" style="background:#FEF3C7;color:#92400E">2 temas</span>
             <span class="chip" style="background:#FFFBEB;color:#78350F">8 atividades</span>
@@ -461,7 +465,7 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
         <button class="disc-home-card mat" onclick="showDisc('mat')">
           <div class="dhc-icon">📐</div>
           <div class="dhc-name">Matemática</div>
-          <div class="dhc-desc">Números ordinais, formas e muito mais!</div>
+          <div class="dhc-desc">Números, formas e desafios divertidos! 🔢</div>
           <div class="dhc-chips">
             <span class="chip" style="background:#E0F5FE;color:#0369A1">1 tema</span>
             <span class="chip" style="background:#EFF9FF;color:#044A7A">5 atividades</span>
@@ -470,7 +474,7 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
         <button class="disc-home-card hist" onclick="showDisc('hist')">
           <div class="dhc-icon">📜</div>
           <div class="dhc-name">História</div>
-          <div class="dhc-desc">Memórias dos lugares, meu bairro e convivência entre as pessoas</div>
+          <div class="dhc-desc">Histórias, memórias e como vivemos juntos 🏘️</div>
           <div class="dhc-chips">
             <span class="chip" style="background:#F3E8FF;color:#6D28D9">5 temas</span>
             <span class="chip" style="background:#FAF5FF;color:#7E22CE">20 atividades</span>
