@@ -1,7 +1,7 @@
 # SQUAD.md — Portal Educacional da Lis (2º Ano)
 
 > Mapa organizacional do squad de produção de conteúdo.
-> Última atualização: 2026-05-25
+> Última atualização: 2026-06-02
 
 ---
 
@@ -166,3 +166,21 @@ O `atualizador-docs` será acionado diretamente, sem passar pelo pipeline comple
 ### Verificar estado atual
 
 Leia `CONTEUDO.md` na raiz — sempre reflete o último estado validado do portal.
+
+---
+
+## Arquitetura Futura Planejada
+
+### Autenticação + Progresso via Supabase
+
+O portal é atualmente uma SPA estática sem estado persistido. A evolução planejada inclui:
+
+| Componente | Descrição |
+|---|---|
+| **Autenticação** | Login simplificado (ex: PIN ou magic link) para identificar a Lis no dispositivo |
+| **Progresso** | Registro de atividades concluídas e pontuação por tema em tabela Supabase |
+| **Dashboard** | Seção "Meu Progresso" na home com % de conclusão por disciplina |
+| **Gamificação** | Conquistas desbloqueáveis por tema concluído (ex: emblemas por disciplina) |
+| **Backend** | Supabase (PostgreSQL + Auth + Realtime) — sem servidor próprio |
+
+> Nenhuma dessas funcionalidades existe no código atual. Esta seção registra a direção de produto para orientar decisões de design e naming ao criar novos temas.

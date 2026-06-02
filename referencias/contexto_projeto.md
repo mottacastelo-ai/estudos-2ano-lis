@@ -16,6 +16,16 @@ Portal web educacional construído como aplicação de página única (SPA) para
 
 ---
 
+## Ecossistema sabendo.app
+
+| Portal | URL | Repositório |
+|---|---|---|
+| Landing page | https://sabendo.app | sabendo-landing |
+| Portal André (5º ano) | https://andre.sabendo.app | estudos |
+| Portal Lis (2º ano) | https://lis.sabendo.app | estudos-2ano-lis |
+
+---
+
 ## Infraestrutura Técnica
 
 ### Hospedagem & Deploy
@@ -150,6 +160,29 @@ Idêntica ao portal do André: Retrieval practice (Roediger & Karpicke, 2006), A
 - O Cowork edita `index.html` diretamente e salva todos os arquivos em `[disciplina]/[slug]/`
 - As imagens das HQs (`hq-[slug]-pg1.png` … `pg4.png`) são geradas por Léo no GPT Quadrinhos Sabendo e copiadas manualmente para a pasta do tema antes do deploy
 - Fallback Claude.ai: ZIP com `index.html` completo já atualizado + todos os arquivos de atividade
+
+---
+
+## Filosofia de Design para o 2º Ano (7–8 anos)
+
+- Visual alegre, espaçoso e colorido — adequado para crianças pequenas
+- Fontes maiores que o portal do André (público mais novo)
+- Cards com fundos coloridos por disciplina
+- Ícones grandes (4rem), espaçamento generoso entre elementos
+- Linguagem direta com emojis
+- Sidebar e hero harmonizados em verde (cor principal do portal)
+
+---
+
+## Arquitetura Futura Planejada
+
+| Componente | Detalhes |
+|---|---|
+| Autenticação | Supabase Auth |
+| Banco de dados | Supabase (PostgreSQL) |
+| Tabelas previstas | `profiles`, `activity_log`, `streaks` |
+| Estado atual | localStorage como base — sem login |
+| Migração | Mesma estratégia do portal do André: Supabase entra com o login |
 
 ---
 

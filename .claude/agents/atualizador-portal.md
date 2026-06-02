@@ -219,6 +219,35 @@ Ao adicionar qualquer elemento novo no index.html (tab, botão, card), verificar
 
 ---
 
+## Padrões visuais atuais — manter ao inserir conteúdo novo
+
+Ao inserir qualquer tema ou disciplina nova, espelhar os padrões vigentes no `index.html`:
+
+### disc-home-cards
+```css
+/* Referência de estilo */
+padding: 32px;
+border-radius: 24px;
+/* fundo: gradiente colorido leve (cor bg → branco) */
+/* borda lateral da cor primária da disciplina */
+```
+
+### act-cards
+```css
+/* Referência de estilo */
+padding: 26px;
+border-radius: 20px;
+border-top: 4px solid [cor primária da disciplina];
+```
+
+### Tamanho de ícones
+- `dhc-icon` (ícone do disc-home-card): **4rem**
+- `act-icon` (ícone do act-card): **2.6rem**
+
+Não inserir cards com estilos divergentes desses — consistência visual é obrigatória para o público de 7–8 anos.
+
+---
+
 ## Regras de escopo
 
 - ❌ Não criar novos arquivos HTML
