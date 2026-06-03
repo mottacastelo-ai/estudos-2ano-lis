@@ -362,9 +362,67 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
   .hq-btn { min-width: 44px; min-height: 44px; }
   .hq-img { width: 100%; }
 }
+
+/* ── Auth / Login ─────────────────────────────── */
+#login-overlay {
+  position:fixed;inset:0;
+  background:linear-gradient(135deg,#052e16,#14532D 60%,#166534);
+  display:flex;align-items:center;justify-content:center;
+  z-index:9999;
+}
+#login-overlay.hidden { display:none; }
+.login-card {
+  background:#fff;border-radius:28px;padding:48px 40px;
+  width:100%;max-width:380px;text-align:center;
+  box-shadow:0 24px 80px rgba(0,0,0,.3);
+}
+.login-emoji { font-size:64px;margin-bottom:16px;display:block;line-height:1; }
+.login-title { font-family:"Baloo 2",cursive;color:#14532D;font-size:26px;font-weight:900;margin-bottom:6px; }
+.login-sub { color:#64748B;font-size:13px;margin-bottom:32px; }
+.login-input {
+  width:100%;padding:13px 16px;
+  background:#F8FAFC;border:2px solid #E2E8F0;
+  border-radius:14px;color:#1E293B;font-family:"Baloo 2",cursive;
+  font-size:15px;margin-bottom:12px;outline:none;display:block;
+}
+.login-input:focus { border-color:#22C55E; }
+.login-btn {
+  width:100%;padding:15px;margin-top:4px;
+  background:linear-gradient(135deg,#14532D,#22C55E);
+  border:none;border-radius:14px;color:white;
+  font-family:"Baloo 2",cursive;font-size:16px;font-weight:900;
+  cursor:pointer;transition:opacity .15s;
+}
+.login-btn:hover { opacity:.9; }
+.login-btn:disabled { opacity:.5;cursor:default; }
+.login-error { color:#EF4444;font-size:13px;margin-top:12px;min-height:16px; }
+.logout-btn {
+  display:block;width:100%;padding:8px 0;margin-top:10px;
+  background:#F0FDF4;border:1.5px solid #BBF7D0;
+  border-radius:10px;color:#15803D;
+  font-family:"Baloo 2",cursive;font-size:12px;font-weight:700;
+  cursor:pointer;transition:all .15s;text-align:center;
+}
+.logout-btn:hover { background:#DCFCE7; }
+#streak-banner { display:none; }
+#streak-banner.visible { display:flex; }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
 <body>
+
+<!-- ── LOGIN OVERLAY ──────────────────────────── -->
+<div id="login-overlay">
+  <div class="login-card">
+    <span class="login-emoji">⭐</span>
+    <h1 class="login-title">Portal da Lis</h1>
+    <p class="login-sub">2º Ano · sabendo.app</p>
+    <input id="login-email" class="login-input" type="email" placeholder="Email" autocomplete="email">
+    <input id="login-password" class="login-input" type="password" placeholder="Senha" autocomplete="current-password">
+    <button class="login-btn" onclick="doLogin()">Entrar 🌟</button>
+    <p id="login-error" class="login-error"></p>
+  </div>
+</div>
 
 <!-- ===== SIDEBAR ===== -->
 <nav class="sidebar">
@@ -424,6 +482,7 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
   </div>
   <div style="padding:16px 20px;border-top:2px solid #E2E8F0;margin-top:auto;">
     <a href="https://sabendo.app" style="font-size:12px;color:#94A3B8;text-decoration:none;font-weight:600;">← sabendo.app</a>
+    <button class="logout-btn" onclick="doLogout()">🚪 Sair</button>
   </div>
 </nav>
 
@@ -439,6 +498,10 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
         <div class="hstat"><span class="hstat-num">4</span><span class="hstat-label">disciplinas</span></div>
         <div class="hstat"><span class="hstat-num">12</span><span class="hstat-label">temas</span></div>
         <div class="hstat"><span class="hstat-num">49</span><span class="hstat-label">atividades</span></div>
+      </div>
+      <div class="home-stats" id="streak-banner" style="margin-top:16px;">
+        <div class="hstat"><span class="hstat-num" id="streak-count">0</span><span class="hstat-label">🔥 dias seguidos</span></div>
+        <div class="hstat"><span class="hstat-num" id="total-acts">0</span><span class="hstat-label">✅ atividades</span></div>
       </div>
     </div>
     <div class="home-body">
@@ -1565,6 +1628,100 @@ function showTheme(disc, slug) {
     document.getElementById('sub-' + disc).classList.add('open');
   }
 }
+
+// ── SUPABASE AUTH ──────────────────────────────────────
+var SUPA_URL = 'https://mmtrzxmitklpibfilbio.supabase.co';
+var SUPA_KEY = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+var PORTAL_ID = 'estudos-2ano';
+var sbUser = null;
+var sbStreak = { current_streak: 0, longest_streak: 0, total_activities: 0 };
+
+async function initAuth() {
+  var result = await supa.auth.getSession();
+  var session = result.data.session;
+  if (session) {
+    sbUser = session.user;
+    document.getElementById('login-overlay').classList.add('hidden');
+    await loadStreak();
+  }
+}
+
+async function doLogin() {
+  var email = document.getElementById('login-email').value.trim();
+  var pwd = document.getElementById('login-password').value;
+  var errEl = document.getElementById('login-error');
+  var btn = document.querySelector('.login-btn');
+  errEl.textContent = '';
+  btn.textContent = 'Entrando…';
+  btn.disabled = true;
+  var result = await supa.auth.signInWithPassword({ email: email, password: pwd });
+  btn.textContent = 'Entrar 🌟';
+  btn.disabled = false;
+  if (result.error) {
+    errEl.textContent = 'Email ou senha incorretos.';
+    return;
+  }
+  sbUser = result.data.user;
+  document.getElementById('login-overlay').classList.add('hidden');
+  await loadStreak();
+}
+
+async function doLogout() {
+  await supa.auth.signOut();
+  sbUser = null;
+  document.getElementById('streak-banner').classList.remove('visible');
+  document.getElementById('login-overlay').classList.remove('hidden');
+}
+
+async function loadStreak() {
+  if (!sbUser) return;
+  var result = await supa.from('streaks').select('*').eq('user_id', sbUser.id).single();
+  if (result.data) {
+    sbStreak = result.data;
+    renderStreak();
+  }
+}
+
+function renderStreak() {
+  document.getElementById('streak-banner').classList.add('visible');
+  document.getElementById('streak-count').textContent = sbStreak.current_streak;
+  document.getElementById('total-acts').textContent = sbStreak.total_activities;
+}
+
+async function logActivity(discipline, themeSlug, activityType, score) {
+  if (!sbUser) return;
+  var today = new Date().toISOString().split('T')[0];
+  await supa.from('activity_log').insert({
+    user_id: sbUser.id,
+    discipline: discipline,
+    theme_slug: themeSlug,
+    activity_type: activityType,
+    score: score || null
+  });
+  var res = await supa.from('streaks').select('*').eq('user_id', sbUser.id).single();
+  if (!res.data) return;
+  var streak = res.data;
+  var yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
+  var yesterdayStr = yesterday.toISOString().split('T')[0];
+  var newStreak = (streak.last_activity_date === today) ? streak.current_streak :
+                  (streak.last_activity_date === yesterdayStr) ? streak.current_streak + 1 : 1;
+  await supa.from('streaks').update({
+    current_streak: newStreak,
+    longest_streak: Math.max(newStreak, streak.longest_streak),
+    last_activity_date: today,
+    total_activities: streak.total_activities + 1,
+    updated_at: new Date().toISOString()
+  }).eq('user_id', sbUser.id);
+  sbStreak = Object.assign({}, streak, { current_streak: newStreak, total_activities: streak.total_activities + 1 });
+  renderStreak();
+}
+
+document.getElementById('login-password').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') doLogin();
+});
+
+initAuth();
 </script>
 </body>
 </html>
