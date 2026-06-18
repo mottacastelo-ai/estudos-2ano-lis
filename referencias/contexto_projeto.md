@@ -1,6 +1,6 @@
 # Contexto do Projeto Educacional — Portal Interativo de Aprendizagem (Lis, 2º Ano)
 
-**Última atualização:** 2026-05-22 (baseado no estado atual da pasta local)
+**Última atualização:** 2026-06-13
 
 > **Projeto irmão:** [Portal do André — 5º Ano](../../estudos/referencias/contexto_projeto.md) — mesma metodologia, stack técnico e workflow, mas personagens, cores e conteúdos distintos.
 
@@ -183,6 +183,23 @@ Idêntica ao portal do André: Retrieval practice (Roediger & Karpicke, 2006), A
 | Tabelas previstas | `profiles`, `activity_log`, `streaks` |
 | Estado atual | localStorage como base — sem login |
 | Migração | Mesma estratégia do portal do André: Supabase entra com o login |
+
+---
+
+## Automações locais
+
+### sabendo-context-sync-2ano
+
+Script Python que roda em segundo plano no Windows e monitora este arquivo (`contexto_projeto.md`) e `temas-existentes.md`. Ao detectar qualquer alteração, faz upsert automático dos dois como Google Docs na pasta `sabendo-context` do Google Drive — nunca duplica, sempre sobrescreve pelo nome.
+
+| Item | Valor |
+|---|---|
+| Script | `C:\Automacoes\sabendo-context-sync-2ano\sync_to_gdrive.py` |
+| Instalação | `C:\Automacoes\sabendo-context-sync-2ano\install.bat` (rodar como Administrador) |
+| Inicialização | Windows Task Scheduler → tarefa `SabendoContextSync2Ano` → ao login, delay 2 min |
+| Credenciais | `C:\Automacoes\.credentials\credentials.json` (OAuth2 Google Drive API, compartilhada com 5º ano) |
+| Log | `C:\Automacoes\sabendo-context-sync-2ano\sync.log` |
+| Pasta no Drive | `sabendo-context` |
 
 ---
 

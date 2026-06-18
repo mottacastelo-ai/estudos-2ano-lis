@@ -260,6 +260,32 @@ Alternativa aceitável: substituir drag-and-drop por tap-to-select + tap-to-plac
 
 ---
 
+## Validação Mecânica — obrigatória antes de salvar qualquer HTML
+
+Estas duas validações pegam classes de erro que o Teste de Coerência **não** detecta: itens "fantasma" (nunca ensinados) e erros aritméticos de índice. Ambos já causaram bugs reais no portal — tratar como obrigatório, não como sugestão.
+
+### Validação 1 — Cobertura rastreável de itens (evita itens "fantasma")
+
+Para toda atividade com um conjunto fixo de itens a classificar, parear ou ordenar (Arrastar e Soltar, Jogo da Memória, Verdadeiro ou Falso com entidades nomeadas, etc.):
+
+1. Listar cada item que a atividade pretende incluir
+2. Para cada item, localizar a frase ou painel **exato** no roteiro da HQ (arquivo `hq-[slug]-prompt.md`/`.md`) ou a entrada correspondente em `termos_tecnicos` do JSON de input que o nomeia
+3. Se um item não tiver essa rastreabilidade — **removê-lo**. Nunca completar uma quantidade "redonda" (ex.: 3 por categoria) inventando itens que a HQ não ensinou
+4. A quantidade final de itens é a quantidade rastreável, mesmo que fique desbalanceada ou menor que o ideal pedagógico
+5. Erro real já cometido neste projeto: tema "Onde Vivem as Plantas" — a HQ nomeava 6 plantas (aguapé, vitória-régia, laranjeira, mangueira, cacto, facheiro), mas a atividade de classificação incluía 9, com 3 plantas (jurema, ipê, nenúfar) que a criança nunca viu sendo ensinadas. Esse padrão de erro está proibido.
+
+### Validação 2 — Autoconferência de índices em quebra-cabeças de letra fixa
+
+Para toda atividade que pré-preenche posições de uma palavra (objeto `fixed` ou equivalente em "Complete a Palavra", "Ordene as Sílabas", etc.):
+
+1. Para cada palavra, escrever a string com índice explícito antes de definir `fixed`: `answer[0]`, `answer[1]`, `answer[2]`... contando caractere por caractere — nunca estimar de cabeça
+2. Verificar mecanicamente que `fixed[i] === answer[i]` para **todo** índice `i` presente em `fixed`. Se algum par não bater, há um erro de transcrição — corrigir antes de continuar
+3. **Convenção obrigatória:** fixar sempre o índice `0` (primeira letra) e o índice `answer.length - 1` (última letra). Nunca usar índices intermediários arbitrários — é a fonte mais comum desse erro
+4. Antes de salvar o arquivo, repetir a conferência uma segunda vez para a lista completa de palavras, em sequência, sem pular nenhuma
+5. Erro real já cometido neste projeto: tema "Onde Vivem as Plantas" — a palavra `AGUAPE` (A-G-U-A-P-E) tinha `fixed: {0:'A', 3:'P'}`, mas o índice 3 de "AGUAPE" é "A", não "P" (o "P" está no índice 4). A mesma falha ocorreu em `TERRESTRE`. Ambas violavam a convenção do item 3 acima — se a convenção tivesse sido seguida, o erro não existiria.
+
+---
+
 ## Regras de conteúdo — obrigatórias
 
 - ✅ Usar termos técnicos **exatamente** como aparecem no JSON de input

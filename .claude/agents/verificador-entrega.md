@@ -136,6 +136,15 @@ Para o index.html:
 - [ ] Há pelo menos uma atividade predominantemente visual
 - [ ] **Exemplos completos na HQ:** para cada procedimento/cálculo presente no roteiro, existe pelo menos um exemplo não-trivial trabalhado passo a passo? (não apenas o caso fácil sem aplicação do método completo)
 
+### Validação mecânica — rede de segurança final
+
+Reexecutar estas duas checagens mesmo que o gerador-atividades já as tenha feito — são baratas e pegam erros de transcrição:
+
+- [ ] **Itens fantasma:** para cada atividade de classificação/pareamento (Arrastar e Soltar, Jogo da Memória, etc.), todo item incluído tem correspondência literal no roteiro da HQ ou em `termos_tecnicos`? Nenhum item sem essa origem rastreável?
+- [ ] **Índices de letra fixa:** para cada palavra de "Complete a Palavra"/similares, todo par `fixed[i]` bate exatamente com o caractere `answer[i]` (contado manualmente, índice por índice)? Primeira e última letra são os únicos índices fixos?
+
+Se qualquer um desses dois itens falhar: `aprovado: false`, reportar a palavra/item exato com erro, e devolver para `gerador-atividades` corrigir — não corrigir inline.
+
 > Verificar no `hq-[slug]-prompt.md`: se o tema envolve cálculo (adição, subtração, contagem em grupos, etc.), localizar o exemplo e confirmar que ele exige executar o procedimento de ponta a ponta — não apenas casos onde a resposta é imediata/óbvia.
 > **Falha neste item** → `aprovado: false`, indicar página e painel, descrever qual exemplo está faltando.
 
