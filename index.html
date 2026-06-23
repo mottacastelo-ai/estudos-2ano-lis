@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -1933,26 +1933,39 @@ function handleSearch(q) {
   var res = document.getElementById('search-results');
   q = normalizeSearch((q || '').trim());
   if (!q) { res.classList.remove('open'); res.innerHTML = ''; return; }
+
+  // Detect page number: "42", "p42", "p. 42", "pp. 42"
+  var pageNum = null;
+  var pageMatch = q.match(/^(?:pp?\.?\s*)?(\d+)$/);
+  if (pageMatch) pageNum = parseInt(pageMatch[1], 10);
+
   var links = document.querySelectorAll('.theme-link');
   var matches = [];
   links.forEach(function(btn) {
-    if (normalizeSearch(btn.textContent.trim()).indexOf(q) !== -1) {
-      var m = (btn.getAttribute('onclick') || '').match(/showTheme\('(\w+)','([\w-]+)'\)/);
-      if (m) matches.push({ disc: m[1], slug: m[2], label: btn.textContent.trim() });
+    var m = (btn.getAttribute('onclick') || '').match(/showTheme\('(\w+)','([\w-]+)'\)/);
+    if (!m) return;
+    var disc = m[1], slug = m[2];
+    var tc = document.getElementById('theme-' + disc + '-' + slug);
+    var pStart = tc ? parseInt(tc.getAttribute('data-pages-start'), 10) : null;
+    var pEnd   = tc ? parseInt(tc.getAttribute('data-pages-end'),   10) : null;
+
+    var byName = normalizeSearch(btn.textContent.trim()).indexOf(q) !== -1;
+    var byPage = pageNum !== null && pStart && pEnd && pageNum >= pStart && pageNum <= pEnd;
+
+    if (byName || byPage) {
+      var badge = discBadge[disc] || {};
+      var pages = (pStart && pEnd) ? ' <span style="font-size:0.78em;opacity:0.65;margin-left:4px">pp. ' + pStart + '–' + pEnd + '</span>' : '';
+      matches.push({ disc: disc, slug: slug, label: btn.textContent.trim(), badge: badge, pages: pages });
     }
   });
+
   if (!matches.length) {
     res.innerHTML = '<div class="search-empty">Nenhum tema encontrado</div>';
   } else {
     res.innerHTML = matches.map(function(m) {
-      var badge = discBadge[m.disc] || {};
-      var tc = document.getElementById('theme-' + m.disc + '-' + m.slug);
-      var pStart = tc && tc.getAttribute('data-pages-start');
-      var pEnd   = tc && tc.getAttribute('data-pages-end');
-      var pages  = (pStart && pEnd) ? ' <span style="font-size:0.78em;opacity:0.65;margin-left:4px">pp. ' + pStart + '–' + pEnd + '</span>' : '';
       return '<button class="search-item" onmousedown="searchNav(\'' + m.disc + '\',\'' + m.slug + '\')">' +
-        '<span class="search-item-disc" style="background:' + badge.bg + ';color:' + badge.color + '">' + discNames[m.disc] + '</span>' +
-        '<span>' + m.label + pages + '</span>' +
+        '<span class="search-item-disc" style="background:' + m.badge.bg + ';color:' + m.badge.color + '">' + discNames[m.disc] + '</span>' +
+        '<span>' + m.label + m.pages + '</span>' +
         '</button>';
     }).join('');
   }
