@@ -494,6 +494,9 @@
   function lsKey(themeSlug, uid) {
     return 'sgami_prog_' + themeSlug + '_' + (uid || 'anon');
   }
+  function lsKeyGeneric(themeSlug) {
+    return 'sgami_prog_' + themeSlug;
+  }
   function lsSave(themeSlug, uid, activityType) {
     if (!activityType) return;
     try {
@@ -505,9 +508,23 @@
     } catch(e) {}
   }
   function lsLoad(themeSlug, uid) {
+    var types = {};
     try {
-      return Object.keys(JSON.parse(localStorage.getItem(lsKey(themeSlug, uid)) || '{}'));
-    } catch(e) { return []; }
+      var a = JSON.parse(localStorage.getItem(lsKey(themeSlug, uid)) || '{}');
+      Object.keys(a).forEach(function(k) { types[k] = true; });
+    } catch(e) {}
+    try {
+      var b = JSON.parse(localStorage.getItem(lsKeyGeneric(themeSlug)) || '{}');
+      Object.keys(b).forEach(function(k) { types[k] = true; });
+    } catch(e) {}
+    return Object.keys(types);
+  }
+  // Exposto para resgate manual via console do browser
+  function markAllDone(themeSlug, activityTypes) {
+    var obj = {};
+    (activityTypes || []).forEach(function(t) { obj[t] = true; });
+    try { localStorage.setItem(lsKeyGeneric(themeSlug), JSON.stringify(obj)); } catch(e) {}
+    console.log('[Sabendo] Progresso restaurado:', themeSlug, '->', activityTypes);
   }
 
   /* ------------------------------------------------------------------ */
@@ -872,7 +889,7 @@
   /* ------------------------------------------------------------------ */
   /* Export                                                               */
   /* ------------------------------------------------------------------ */
-  window.SabendoGamification = { run: run, showReveal: showReveal };
+  window.SabendoGamification = { run: run, showReveal: showReveal, markAllDone: markAllDone };
 
   window._sgamiTest = {
     sfx: SFX,
