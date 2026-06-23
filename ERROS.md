@@ -54,6 +54,46 @@ Fixar sempre e apenas: índice `0` (primeira letra) e índice `answer.length - 1
 
 ---
 
+## ERR-003 — Funções de onclick presas dentro de IIFE sem exportação para `window`
+
+**Arquivos afetados:** `quiz-bilhete.html`, `memoria-bilhete.html`, `complete-bilhete.html` (e qualquer HTML com IIFE + onclick em atributo)
+**Data:** 2026-06
+**Tipo:** JavaScript — escopo de função inacessível no HTML
+
+### Causa raiz
+
+Botões HTML com `onclick="nomeDaFuncao()"` referenciam o escopo global (`window`). Quando o código JS está encapsulado em um IIFE `(function(){ ... })()`, as funções definidas dentro dele são privadas — o onclick não as encontra e falha silenciosamente. O botão não responde.
+
+### Sintomas
+
+- Botão "Próxima →" não avança para a próxima questão
+- Botão "Jogar de novo" não reinicia
+- Botão "Verificar" não executa nada
+
+### Regra para a squad
+
+**Toda função chamada via `onclick="fn()"` em atributo HTML DEVE ser exportada para `window` antes do fechamento do IIFE.**
+
+```javascript
+// ✅ CORRETO — exportar antes de })()
+window.proximaPergunta = proximaPergunta;
+window.reiniciarQuiz   = reiniciarQuiz;
+window.verificarTudo   = verificarTudo;
+window.ativarLacuna    = ativarLacuna;
+
+})();
+
+// ❌ ERRADO — função privada ao IIFE, onclick falha
+(function() {
+  function proximaPergunta() { ... }
+})();
+// <button onclick="proximaPergunta()"> ← não funciona
+```
+
+**Exceção:** funções declaradas em `<script>` sem IIFE já são globais por padrão — não precisam de exportação.
+
+---
+
 ## Checklist anti-bug para `gerador-atividades`
 
 Antes de finalizar qualquer HTML de atividade, verificar:
@@ -63,3 +103,4 @@ Antes de finalizar qualquer HTML de atividade, verificar:
 - [ ] Nenhuma `var` global usa nome proibido (`history`, `name`, `location`, `event`, `status`, `top`)?
 - [ ] A atividade seta `window.sabendoScore = pct` (0–100) no momento em que o resultado aparece?
 - [ ] O placeholder `<!-- gamificacao-btn -->` está presente antes de `</body>`?
+- [ ] Toda função chamada via `onclick="fn()"` no HTML está exportada com `window.fn = fn` antes do fechamento do IIFE? (ERR-003)
