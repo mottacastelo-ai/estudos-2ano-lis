@@ -1,6 +1,6 @@
 # PROMPT PARA HISTÓRIA EM QUADRINHOS
 ## Tema: Bilhete e Cartão Pessoal
-## Português — 2º ano
+## Português — 2º ano · Capítulo 3 "Trocando mensagens" · pp. 78–102
 
 ---
 
@@ -10,9 +10,9 @@ Este é um job independente. Ignore COMPLETAMENTE qualquer conversa anterior nes
 NÃO use descrições de personagens, estilos ou referências de HQs anteriores.
 Os únicos personagens desta HQ são os definidos abaixo. Não existe "Bia", "André" ou qualquer outro personagem de outros projetos aqui.
 
-**PROTAGONISTA DESTA HQ:** Lis — menina brasileira de 7 anos, cabelos castanhos longos e ondulados, pele morena clara, olhos castanhos expressivos, uniforme escolar (camiseta branca + saia azul marinho) ou roupa casual colorida. Estilo cartoon infantil brasileiro vibrante.
+**PROTAGONISTA DESTA HQ:** Lis — menina brasileira de 7 anos, cabelos castanhos longos e ondulados, pele morena clara, olhos castanhos expressivos, roupa casual colorida. Estilo cartoon infantil brasileiro vibrante.
 
-**PERSONAGEM DE SUPORTE DESTA HQ:** Bilheto — bilhete de papel quadrado animado, cor bege-amarelada kraft, olhinhos redondos desenhados à tinta vermelha, boca larga sorridente, braços feitos das dobras laterais do papel, chapéu em forma de envelope azul royal inclinado, texto "Para:___" impresso no peito. Tamanho menor que a Lis.
+**PERSONAGEM DE SUPORTE DESTA HQ:** Bilheto — bilhete de papel quadrado animado, cor bege-amarelada kraft (#F5E6C8), olhinhos redondos desenhados à tinta vermelha, sobrancelhas de traço de lápis, boca larga sorridente, braços feitos das dobras laterais do papel, chapéu em forma de envelope azul royal inclinado, texto "Para:___" impresso no peito. Altura até o cotovelo da Lis.
 
 Qualquer imagem gerada que contenha personagens diferentes dos descritos acima está incorreta e deve ser regerada.
 
@@ -22,14 +22,11 @@ Qualquer imagem gerada que contenha personagens diferentes dos descritos acima e
 
 Cole o bloco de cada seção diretamente no ChatGPT (GPT Quadrinhos Sabendo).
 Gere na ordem definida em ORDEM DE GERAÇÃO.
-Cada bloco entre ``` ``` é o prompt completo para aquela imagem.
-Não altere os blocos — use-os exatamente como estão.
+Cada bloco entre ``` é o prompt completo — copie tudo dentro das marcações.
 
 ---
 
 ## ESTILO VISUAL GLOBAL
-
-Bloco de referência de estilo — reutilizado em todas as páginas:
 
 ```
 Visual style: colorful Brazilian children's educational comic book, flat illustration,
@@ -38,9 +35,10 @@ Expressive faces and exaggerated body language to convey emotion clearly.
 Speech bubbles with clear rounded borders and thick black outline, text in Portuguese.
 Panels with thick black borders, white gutters between panels.
 Color palette: warm terracotta-red (#E8430A) as dominant accent, kraft-paper beige-yellow
-for Bilheto's body, cream backgrounds with warm paper-texture hints, royal blue envelope hat.
-Thematic visual elements: folded paper notes, envelopes, pencils, handwritten-style text,
-letter seals, ink stamps, flying paper planes, writing desks with scattered stationery.
+for Bilheto's body (#F5E6C8), cream backgrounds (#FFF4EF) with warm paper-texture hints,
+royal blue (#1A3A6B) envelope hat, sunshine yellow highlights.
+Thematic visual elements: folded paper bilhetes, colorful envelopes, pencils, handwritten text,
+fridge magnets, cartoon bears (Urso-Maluco style), stork in flight, personal cards.
 Character design must remain consistent across all pages.
 4 panels per page in a 2x2 grid layout.
 ```
@@ -51,49 +49,45 @@ Character design must remain consistent across all pages.
 
 | Personagem | Descrição visual completa (EN) |
 |---|---|
-| **Lis** | 7-year-old Brazilian girl, warm light skin tone, long wavy chestnut-brown hair reaching her shoulders, large expressive brown eyes, wide open smile sometimes showing teeth, small stature. Outfit for this theme: light cream-colored blouse with small red hearts, denim overalls shorts, white sneakers with red laces. She often holds a pencil or a folded note. |
-| **Bilheto** | Animated folded paper note, slightly crumpled at the corners as if well-traveled. Warm kraft-paper beige-yellow color (#F5E6C8) with bright round ink-drawn eyes in red (#E8430A), expressive pencil-stroke eyebrows, and a wide open smile. His arms are the lateral folds of the paper itself. On his chest/upper body the words "Para:___" are printed in block letters like a real note. He wears a small royal-blue (#1A3A6B) envelope as a jaunty hat tilted to one side. He stands shorter than Lis, reaching about elbow height. Motion lines around him suggest he is always cheerfully waving his little paper arms. |
+| **Lis** | 7-year-old Brazilian girl, warm light skin tone, long wavy chestnut-brown hair reaching her shoulders, large expressive brown eyes, wide open smile sometimes showing teeth, small stature, rosy cheeks. Outfit for this theme: cream blouse with small red hearts, denim overalls shorts, white sneakers with red laces. She often holds a pencil or a folded note. |
+| **Bilheto** | Animated folded paper note, slightly crumpled at the corners as if well-traveled. Warm kraft-paper beige-yellow color (#F5E6C8) with bright round ink-drawn eyes in red (#E8430A), expressive pencil-stroke eyebrows, and a wide open smile. His arms are the lateral folds of the paper itself. On his chest/upper body the words "Para:___" are printed in block letters like a real note. He wears a small royal-blue (#1A3A6B) envelope as a jaunty hat tilted to one side. He stands shorter than Lis, reaching about her elbow height. Motion lines around him suggest he is always cheerfully waving his paper arms. |
 
 ---
 
 ## FOLHA DE PERSONAGENS — LIS
 
 ```
-Character design sheet for children's educational comic book.
-Visual style: colorful flat illustration, bold black outlines, vibrant colors, ages 7-8 audience.
+Character reference sheet for a Brazilian children's educational comic book.
+Flat illustration, bold black outlines, vibrant saturated colors, white background.
 
-Title at top (bold, red #E8430A): "LIS — Personagem Principal"
-Subtitle: "Menina de 7 anos, cabelos castanhos longos e ondulados"
+Subject: Lis — 7-year-old Brazilian girl, warm light skin tone, long wavy chestnut-brown
+hair reaching her shoulders, large expressive brown eyes, rosy cheeks, small stature.
+Outfit: cream blouse with small red hearts, denim overalls shorts, white sneakers with red laces.
 
-White background. Four rounded panels arranged in a 2x2 grid.
-Each panel shows Lis full-body, clearly labeled in Portuguese with emoji.
+Show 4 full-body poses in a 2x2 grid, each inside a rounded rectangular frame
+with a soft cream (#FFF4EF) background. Each frame has a Portuguese label below it.
 
-Panel 1 — label "Curiosa 🔍":
-Lis standing with head slightly tilted, one finger touching her chin pensively,
-eyebrows raised, eyes wide and shining. Mouth in a small intrigued "o" shape.
-Holding a folded note she just found, examining it curiously.
-Outfit: cream blouse with red hearts, denim overalls shorts, white sneakers with red laces.
+Pose 1 (top left) — "Curiosa 🔍":
+Lis tilts her head to one side, one finger raised to her chin in a thinking gesture,
+eyes wide and sparkling, mouth forming a small "o" of surprise, leaning forward slightly.
+She holds a folded note she just found, examining it curiously.
 
-Panel 2 — label "Animada / Celebrando 🎉":
+Pose 2 (top right) — "Animada / Celebrando 🎉":
 Lis jumping with both arms raised high, big open smile showing teeth, eyes crinkled with joy.
-Colorful confetti and small stars bursting around her.
-Holding a finished letter she just completed, waving it in the air triumphantly.
-Same outfit. Motion lines under her feet.
+Colorful confetti and small stars bursting around her. She waves a finished letter in the air.
 
-Panel 3 — label "Surpresa 😲":
-Lis with both hands on her cheeks (Home Alone pose), mouth wide open in a circle,
-eyebrows shot up to her hairline, eyes enormous and sparkling.
-A paper envelope just arrived flying toward her, causing the surprised reaction.
-Same outfit. Small exclamation marks floating around her head.
+Pose 3 (bottom left) — "Surpresa 😲":
+Lis with both hands pressed to her cheeks, eyes extremely wide and round, eyebrows shooting
+upward, mouth open in a large delighted "O" of astonishment.
+A bright yellow speech exclamation "!" floats above her head.
 
-Panel 4 — label "Pensativa / Escrevendo ✏️":
-Lis seated at a small wooden desk, hunched forward in concentration, tongue tip poking out
-from the corner of her mouth as she writes carefully. Pencil in right hand.
-Open notebook in front of her with "Para:" written at the top in her handwriting.
-Same outfit. Small spiral thought-cloud above her head with a tiny heart inside.
+Pose 4 (bottom right) — "Pensativa 🤔":
+Lis seated cross-legged on the floor, chin resting in both hands, elbows on knees,
+eyes gazing upward to the side. A small thought-bubble cloud near her head, empty.
 
-At the bottom: full-body scale comparison — Lis standing normally, relaxed neutral pose,
-slight smile, arms at sides. Clean white background. Label: "Escala de referência".
+Title above grid in bold red (#E8430A) letters: "LIS — Personagem Principal"
+Subtitle in smaller text: "Menina de 7 anos, cabelos castanhos longos e ondulados"
+Style: clean flat cartoon, bold black outlines, bright and friendly.
 ```
 
 ---
@@ -101,131 +95,149 @@ slight smile, arms at sides. Clean white background. Label: "Escala de referênc
 ## FOLHA DE PERSONAGENS — BILHETO
 
 ```
-Character design sheet for children's educational comic book.
-Visual style: colorful flat illustration, bold black outlines, vibrant colors, ages 7-8 audience.
+Character reference sheet for a Brazilian children's educational comic book.
+Flat illustration, bold black outlines, vibrant saturated colors, white background.
 
-Title at top (bold, royal blue #1A3A6B): "BILHETO — Personagem de Suporte"
-Subtitle: "Bilhete animado — seu guia do mundo das mensagens!"
+Subject: Bilheto — animated folded kraft-paper note.
+Body: warm beige-yellow (#F5E6C8), rectangular, slightly crumpled at corners.
+Face: two round red ink-drawn eyes (#E8430A), pencil-stroke eyebrows, wide friendly smile.
+Arms: lateral paper folds that extend and wave.
+Chest: "Para:___" printed in block red letters.
+Hat: small royal-blue (#1A3A6B) envelope worn tilted to the right.
+Height: reaches approximately to Lis's elbow.
 
-White background. Three rounded panels in a single row, wider than tall.
-Each panel shows Bilheto full-body, clearly labeled in Portuguese with emoji.
+Show 3 full-body poses in a 1x3 row, each inside a rounded rectangular frame
+with a soft cream background. Each frame has a Portuguese label below it.
 
-Panel 1 — label "Ensinando / Calmo 📖":
-Bilheto standing upright, one paper-fold arm raised with index finger pointing upward
-in a "listen carefully" gesture. Expression calm and warm: eyes in gentle half-moon
-satisfied shape, small confident smile. His "Para:___" chest label clearly visible.
-Royal-blue envelope hat sits straight on his head. Soft golden glow around him.
-A small chalkboard floats beside him showing "Para:" and "De:" written on it.
+Pose 1 (left) — "Ensinando / Calmo 📖":
+Bilheto stands upright, one paper-fold arm raised with index fold pointing up
+in a teacher gesture. Calm, wise expression: eyebrows gently raised, soft smile.
+A tiny floating scroll beside him with the word "BILHETE" in bold.
 
-Panel 2 — label "Animado / Surpreso ✨":
-Bilheto jumping and waving both paper-fold arms enthusiastically in the air.
-Eyes wide and shining with excitement, big open smile, little stars bursting around him.
-His envelope hat is slightly askew from the motion. Speed lines and exclamation marks
-radiate outward. Small hearts and stars float near his head.
+Pose 2 (center) — "Animado / Surpreso ✨":
+Bilheto leaning forward with both arms spread wide, hat slightly askew,
+eyes wide and sparkling, big open grin, motion lines and paper confetti around him.
 
-Panel 3 — label "Emotivo / Divertido 😄":
-Bilheto laughing with eyes squeezed into happy crescents, mouth wide open in a big laugh.
-One arm is on his paper-body side in a relaxed pose, the other waving casually.
-Small "haha" text bubbles drift around him. His envelope hat tilted rakishly to one side.
-Warm rosy blush circles on his paper cheeks. Motion lines indicate he is bouncing slightly.
+Pose 3 (right) — "Emotivo / Divertido 😄":
+Bilheto holding his belly-area laughing, eyes crinkled shut with joy,
+hat slipping further sideways, tiny star effects around him.
 
-Below the three panels: full-body scale comparison side by side —
-Lis (full height) standing next to Bilheto (reaching only to her elbow/mid-forearm).
-Both in neutral relaxed poses, slight smiles. Label: "Comparação de escala".
-Clean white background. Bold caption: "Bilheto é menor — chega até o cotovelo da Lis!"
+Title above row in bold red letters: "BILHETO — Personagem de Suporte"
+Subtitle: "Bilhete animado, guia da Lis no mundo das mensagens"
+Style: clean flat cartoon, bold black outlines.
+```
+
+---
+
+## COMPARAÇÃO DE ESCALA
+
+```
+Character scale comparison for a Brazilian children's educational comic book.
+Flat illustration, bold black outlines, vibrant saturated colors.
+Soft cream (#FFF4EF) background with floating paper notes and small envelopes as decoration.
+
+Left character — Lis: 7-year-old Brazilian girl, warm light skin, long wavy chestnut-brown
+hair, large brown eyes, cream blouse with red hearts, denim overalls, white red-laced sneakers.
+Full body, standing upright, friendly wave with right hand.
+
+Right character — Bilheto: animated kraft-paper beige-yellow folded note, round red ink eyes,
+paper-fold arms, "Para:___" on chest, royal-blue envelope hat tilted sideways.
+Full body, standing upright. His top reaches exactly to Lis's elbow.
+
+Between them: a double-headed vertical arrow with the label "escala de referência" in Portuguese.
+Background decoration: small floating bilhetes, colorful envelopes, pencil icons.
+Title at top in bold orange letters: "COMPARAÇÃO DE ESCALA"
+Style: clean flat cartoon, bold outlines, character heights consistent with individual sheets.
 ```
 
 ---
 
 ## ROTEIRO — VISÃO GERAL
 
-| Página | Título | Foco pedagógico |
+| Página | Título | Conteúdo do livro (pp. 78–102) |
 |---|---|---|
-| 1 | "Uma Mensagem para Você!" | Introdução — Lis recebe um bilhete, Bilheto surge e explica o que é um bilhete |
-| 2 | "Quem Manda e Quem Recebe?" | Desenvolvimento — conceitos de remetente e destinatário |
-| 3 | "Cartão Pessoal — Uma Mensagem Especial" | Aprofundamento — diferença entre bilhete e cartão pessoal, cartão virtual |
-| 4 | "Escreva com Carinho!" | Conclusão — Lis escreve seu próprio bilhete; fourth-wall break para o portal |
+| 1 | "Bilhetes na Geladeira!" | Lis vê bilhetes colados na geladeira (como pp. 78); Bilheto explica o que é um bilhete; conceito de mensagem breve |
+| 2 | "Quem Manda, Quem Recebe?" | A história do Urso-Maluco escrevendo bilhete para Dona Cegonha-Cor-de-Rosa (pp. 82); destinatário e remetente (p. 85) |
+| 3 | "Cartão ou Bilhete?" | Cartão pessoal do Fabiano (pp. 94); diferença entre bilhete e cartão; cartão virtual (pp. 106–107) |
+| 4 | "Escreva com Carinho!" | Lis escreve seu próprio bilhete com ponto final, interrogação e exclamação (pp. 97–99); fourth-wall break para o portal |
 
 ---
 
-### PÁGINA 1 — "Uma Mensagem para Você!"
+### PÁGINA 1 — "Bilhetes na Geladeira!"
 
-**Objetivo pedagógico:** Introduzir o gênero textual bilhete. Mostrar que um bilhete é uma mensagem escrita curta e direta entre pessoas que se conhecem. Apresentar Bilheto como personagem guia.
+**Objetivo pedagógico:** Apresentar o bilhete como gênero textual do cotidiano. Mostrar que um bilhete é uma mensagem escrita curta e direta. Contextualizar com a cena de bilhetes colados na geladeira, como no livro (p. 78).
 
-**Conceitos cobertos nesta página:** bilhete, mensagem escrita, comunicação pessoal.
+**Conceitos cobertos:** bilhete, mensagem breve, comunicação escrita do dia a dia.
 
 **PROMPT:**
 
 ```
 Brazilian children's educational comic book page, 4 panels in 2x2 grid,
 colorful flat illustration, bold black outlines, warm terracotta-red and kraft-beige
-color palette, Portuguese speech bubbles.
+color palette (#E8430A, #F5E6C8, #FFF4EF), Portuguese speech bubbles with rounded borders.
 
 CHARACTERS:
 Lis — 7-year-old Brazilian girl, warm light skin, long wavy chestnut-brown hair,
 large expressive brown eyes. Outfit: cream blouse with small red hearts,
 denim overalls shorts, white sneakers with red laces.
-Bilheto — animated folded kraft-paper note, beige-yellow (#F5E6C8), round ink-drawn
-red eyes, pencil-stroke eyebrows, wide smile. Arms are paper folds. "Para:___"
+Bilheto — animated folded kraft-paper beige-yellow note (#F5E6C8), round red ink eyes,
+pencil-stroke eyebrows, wide smile. Arms are paper folds. "Para:___"
 printed on chest. Royal-blue envelope hat tilted to one side. Elbow-height beside Lis.
 
 Panel 1 (top left):
-- Setting: Lis's cozy bedroom, afternoon sunlight through a curtained window casting
-  warm golden light. Wooden desk in background with colored pencils and books.
-  A wooden floor with a small rug with star pattern.
-- Lis stands in the center of the room, eyes wide with surprise and delight, both hands
-  raised to cheeks, mouth open in a joyful "O". She is looking down at a small folded
-  paper note that has just landed at her feet, as if dropped from above.
-- The note glows faintly with a warm amber light, as if it is magical and alive.
-- Small golden sparkles and motion lines around the note show it just arrived.
-- No speech bubble this panel — only a small "!" above Lis's head.
-- Atmosphere: warm, cozy, magical discovery moment.
+- Setting: a cozy kitchen. A large silver refrigerator dominates the center of the panel.
+  Two colorful sticky notes are stuck to the fridge door with magnets:
+  Left note (yellow, handwritten): "Mãe, estou brincando na casa do Edu. Beijos, Pedro."
+  Right note (green, handwritten): "Carlos, preparar o lanche das crianças. Beijos, Marisa."
+- Lis stands in front of the fridge, leaning forward to read the notes, finger tracing
+  the words, eyebrows raised in curiosity, small smile of recognition.
+- Warm kitchen light, checkered floor tiles, fruit bowl on counter in background.
+- Speech bubble Lis (white rounded bubble, thick black outline):
+  "Tem vários papéis na geladeira!"
 
 Panel 2 (top right):
-- Setting: same bedroom. Bilheto bursts up from behind the folded note on the floor,
-  arms waving enthusiastically, hat slightly askew, confetti-like paper scraps flying
-  around him. He radiates energy and friendliness.
-- Lis steps back slightly, surprised but already smiling, leaning forward to look at him.
-- Small stars and swirling lines around Bilheto to show his lively entrance.
-- Speech bubble Bilheto: "Olá! Eu sou um bilhete!"
-- Speech bubble Lis: "Uau! Um bilhete vivo?"
-- Background: bedroom with warm light, slightly blurred to keep focus on characters.
+- Setting: same kitchen. One of the sticky notes (yellow) begins to glow and shake.
+  Bilheto bursts out from behind it in a shower of paper confetti and sparkle effects,
+  arms waving wide in an energetic entrance. His envelope hat is slightly askew from the burst.
+- Lis jumps back in delighted surprise: both hands raised, mouth open in a joyful "O",
+  feet barely leaving the floor, eyes huge and sparkling.
+- Stars and swirling lines around Bilheto. The other notes on the fridge flutter.
+- Speech bubble Bilheto (kraft-tinted bubble, thick outline): "Olá! Sou o Bilheto!"
+- Speech bubble Lis: "Uau! Saiu do bilhete mesmo?"
 
 Panel 3 (bottom left):
-- Setting: same bedroom. Bilheto now stands proudly in front of Lis, one arm raised
-  with index finger pointing up in a teacher gesture. A small floating scroll appears
-  beside him with the word "BILHETE" in bold red letters at the top.
-- Lis crouches down to be closer to Bilheto's level, elbows on knees, eyes wide and
-  attentive, chin resting on one hand with a fascinated expression.
-- The floating scroll shows a simple diagram: a small paper with "Para:" at top and
-  a short message below — illustrated like a real handwritten note.
-- Speech bubble Bilheto: "Bilhete é uma mensagem escrita!"
-- Speech bubble Lis: "Que legal! Para quem?"
-- Warm amber and yellow spotlight on the scroll to draw the eye.
+- Setting: same kitchen. Bilheto floats at Lis's eye level, holding the yellow sticky note
+  in his paper-fold arms and pointing at it with one fold, explaining its parts.
+  Three elements on the note are highlighted with small colored arrows and labels:
+  — Arrow pointing to "Mãe" (top): label "destinatário" in a small red badge
+  — Arrow pointing to message body: label "mensagem" in an orange badge
+  — Arrow pointing to "Beijos, Pedro" (bottom): label "remetente" in a blue badge
+- Lis watches intently, nodding with a focused expression, pencil tucked behind her ear.
+- Speech bubble Bilheto: "Bilhete é uma mensagem bem curtinha!"
+- Speech bubble Lis: "E dá para ler num segundo!"
 
 Panel 4 (bottom right):
-- Setting: same bedroom, but now a montage of tiny illustrated scenes floats in the air
-  around Bilheto and Lis like thought-bubbles — showing different people sending notes:
-  a child handing a note to a friend at school, a note left on a kitchen table, a note
-  tucked into a lunchbox, a note pinned to a cork board.
-- Bilheto spreads both arms wide in an expansive welcoming gesture, smiling broadly.
-- Lis looks at the floating scenes with wonder, one finger pointing at each mini-scene
-  with growing recognition and excitement.
-- Speech bubble Bilheto: "Para alguém especial, claro!"
-- Speech bubble Lis: "Como uma mensagem de amizade?"
-- Soft glowing circles around each floating mini-scene, warm golden light throughout.
+- Setting: kitchen, now with a thought-bubble cloud rising from Bilheto that shows
+  three tiny illustrated vignettes floating inside it:
+  Vignette A: a child's hand writing a note at a desk.
+  Vignette B: a note stuck to a lunchbox with a heart sticker.
+  Vignette C: a note pinned to a corkboard on a bedroom door.
+- Bilheto gestures grandly with both paper arms toward the thought-bubble, smiling broadly.
+- Lis looks at the vignettes with wide, bright eyes, one hand pressed to her cheek in wonder.
+- Speech bubble Bilheto: "Bilhetes estão em todo lugar!"
+- Speech bubble Lis: "Já escrevi um para a minha mãe!"
 
-Style: colorful flat illustration, bold outlines, Portuguese speech bubbles, 2x2 grid,
-warm terracotta-red and kraft-beige dominant palette, friendly and inviting mood.
+Style: colorful flat illustration, bold outlines, Portuguese speech bubbles,
+2x2 grid with thick black borders and white gutters, warm kitchen atmosphere.
 ```
 
 ---
 
-### PÁGINA 2 — "Quem Manda e Quem Recebe?"
+### PÁGINA 2 — "Quem Manda, Quem Recebe?"
 
-**Objetivo pedagógico:** Ensinar os conceitos de remetente (quem escreve e envia) e destinatário (quem recebe). Mostrar que todo bilhete tem essas duas partes essenciais. Usar exemplo concreto e visual.
+**Objetivo pedagógico:** Ensinar destinatário (quem recebe o bilhete) e remetente (quem escreve e assina), usando a história real do livro — o bilhete do Urso-Maluco para a Dona Cegonha-Cor-de-Rosa (pp. 82, 85).
 
-**Conceitos cobertos nesta página:** remetente, destinatário, estrutura do bilhete.
+**Conceitos cobertos:** destinatário, remetente, estrutura do bilhete (a quem se escreve + mensagem + despedida + assinatura).
 
 **PROMPT:**
 
@@ -242,294 +254,236 @@ colorful flat illustration, bold black outlines, warm terracotta-red palette,
 Portuguese speech bubbles.
 
 Panel 1 (top left):
-- Setting: a bright classroom with a green chalkboard on the back wall. Wooden desks
-  with colorful chair covers. Sunlight through large windows. Alphabet posters on walls.
-- Bilheto floats in the air in front of the chalkboard like a teacher. On the chalkboard
-  behind him, in large friendly chalk letters:
-    "DESTINATÁRIO = quem recebe"
-    "REMETENTE = quem envia"
-  Each line has a small chalk icon: an envelope for destinatário, a pencil for remetente.
-- Lis sits at a desk in front, leaning forward eagerly with pencil in hand and open notebook.
-  Her expression: deeply attentive, one eyebrow slightly raised in concentration.
-- Speech bubble Bilheto: "Todo bilhete tem dois lados!"
-- Speech bubble Lis: "Dois lados? Quais são eles?"
-- Chalk dust floating around the chalkboard for atmosphere.
+- Setting: a forest clearing — the Bosque Perdido. Tall pine trees in the background,
+  a small blue house with a yellow roof visible among the pines.
+  A cartoon brown bear cub (Urso-Maluco) sits at a wooden table outside the house,
+  writing on a large sheet of lined paper with a quill pen. He looks mischievous
+  and excited, a sly grin on his round bear face.
+- Lis and Bilheto watch the scene from the side, peeking around a tree trunk.
+- Bilheto whispers to Lis with a knowing smile.
+- Speech bubble Bilheto: "Olha! O Urso-Maluco está escrevendo um bilhete!"
+- Speech bubble Lis: "Para quem?"
 
 Panel 2 (top right):
-- Setting: same classroom, closer view. Bilheto holds up a large oversized prop bilhete
-  (3x his own size, clearly a visual teaching aid). The prop note has two sections
-  clearly marked with arrows:
-    TOP section highlighted in blue: "Para: Lis ← DESTINATÁRIO (quem recebe)"
-    BOTTOM section highlighted in red: "De: Bilheto ← REMETENTE (quem envia)"
-  The arrows and labels are bold and legible.
-- Bilheto's expression: proud and enthusiastic, eyes shining, hat slightly bouncing.
-- Lis stands beside the prop note, jaw dropped in delighted understanding, hands clasped.
-- Speech bubble Bilheto: "Veja: 'Para' é o destinatário!"
-- Speech bubble Lis: "E 'De' é o remetente!"
-- Bright warm spotlight on the prop note, rest of background softly blurred.
+- Setting: same forest clearing. The written letter is now shown as a large prop floating
+  in the air between the characters, readable by the reader. The letter reads:
+  "DONA CEGONHA-COR-DE-ROSA,
+   BOA TARDE! MINHA MÃE QUER GANHAR
+   UM URSINHO! EU VENHO LHE PEDIR
+   QUE NOS MANDE UM URSINHO!
+   MUITO OBRIGADO, OUVIU?
+                        URSO-MALUCO"
+  The letter is styled like lined paper with a pencil drawing at the top.
+  Two colored arrows point to specific parts:
+  — Arrow pointing to "DONA CEGONHA-COR-DE-ROSA" at top: red badge "DESTINATÁRIO"
+  — Arrow pointing to "URSO-MALUCO" at bottom: blue badge "REMETENTE"
+- Bilheto stands beside the floating letter, pointing at each label with his fold-arm.
+- Lis reads intently, index finger tracing the words on the floating letter.
+- Speech bubble Bilheto: "Destinatário: quem vai receber!"
+- Speech bubble Lis: "E remetente: quem escreveu!"
 
 Panel 3 (bottom left):
-- Setting: same classroom. Now a fun visual metaphor scene plays out in front of them —
-  a small illustrated vignette floats above like a thought bubble, showing:
-  A cartoon mail carrier (simple character) handing a letter to a surprised and happy
-  child at a door. Arrow from carrier: "REMETENTE" (with pencil icon).
-  Arrow to child: "DESTINATÁRIO" (with envelope icon).
-  Lis and Bilheto both look up at this floating scene, pointing at it.
-- Lis's expression: the "aha!" moment — eyes wide, mouth in a big smile, one finger
-  pointing up in sudden understanding.
-- Bilheto bouncing with excitement, his envelope hat bouncing too.
-- Speech bubble Lis: "Quem manda é o remetente!"
-- Speech bubble Bilheto: "Isso mesmo! Que esperta!"
-- Golden "aha" starburst around Lis's head.
+- Setting: a sky scene. A tall graceful pink stork (Dona Cegonha-Cor-de-Rosa) flies through
+  blue sky with fluffy white clouds. She is cartoon-style: elegant, pink feathers, long beak,
+  wearing a tiny pink bow on her head, carrying a small bundle in her beak.
+  She looks surprised and pleased, holding the envelope of the Urso-Maluco's letter
+  with one wing-tip to read it.
+- Lis and Bilheto are shown in a small circular "reaction" inset panel at the bottom corner,
+  watching together and laughing.
+- Speech bubble Dona Cegonha (white bubble, flowing script): "Um ursinho com música na barriga!"
+- Speech bubble Bilheto (in inset): "Ela é o destinatário!"
+- Speech bubble Lis (in inset): "Ela vai responder?"
 
 Panel 4 (bottom right):
-- Setting: same classroom desk. Close-ish view of Lis's open notebook on the desk.
-  She is writing carefully. The notebook page shows a bilhete taking shape:
-    "Para: Minha amiga Ana   ← (label: Destinatária)"
-    "Quero brincar com você!"
-    "De: Lis               ← (label: Remetente)"
-  The labels in parentheses appear as small floating tooltip arrows beside the text,
-  not inside the notebook — like educational annotation overlays.
-- Lis's expression: focused and proud, tongue tip showing in concentration, pencil moving.
-- Bilheto stands on the corner of the desk, both arms raised in a cheer, hat tilted.
-- Speech bubble Lis: "Eu sou a remetente aqui!"
-- Speech bubble Bilheto: "Perfeito! Você aprendeu!"
-- Warm golden light on the notebook page. Small hearts floating around Bilheto.
+- Setting: back to the cozy kitchen from Page 1. Lis now holds a clean sheet of paper
+  on the kitchen table, pencil in hand, ready to write her own bilhete.
+  Bilheto floats beside her, arms spread encouragingly.
+- On the paper, Lis has already written the start of a bilhete — shown as handwriting:
+  "Vovó,"
+  — and she is about to continue writing, tongue peeking slightly from concentration.
+- On the wall beside the table, a small illustrated reminder card shows the structure:
+  ① Nome do destinatário  ② Mensagem  ③ Despedida  ④ Remetente
+- Speech bubble Bilheto: "Agora é a sua vez, Lis!"
+- Speech bubble Lis: "Vou escrever para a minha vovó!"
 
-Style: colorful flat illustration, bold outlines, Portuguese speech bubbles, 2x2 grid,
-educational and warm mood, terracotta-red and royal-blue accent palette.
+Style: colorful flat illustration, bold outlines, consistent character design,
+Portuguese speech bubbles, 2x2 grid with thick black borders and white gutters.
 ```
 
 ---
 
-### PÁGINA 3 — "Cartão Pessoal — Uma Mensagem Especial"
+### PÁGINA 3 — "Cartão ou Bilhete?"
 
-**Objetivo pedagógico:** Diferenciar o cartão pessoal do bilhete simples. Mostrar que o cartão pessoal é mais elaborado, geralmente com imagem ou decoração, e pode ser físico ou virtual (cartão virtual). Introduzir o contexto do texto motivador: o urso que escreve um bilhete pedindo um irmão.
+**Objetivo pedagógico:** Distinguir bilhete de cartão pessoal. Apresentar o cartão do Fabiano ("A vida fica bem mais leve e gostosa!" pp. 94) e o cartão de aniversário da Marina (p. 96). Introduzir cartão virtual animado (pp. 106–107).
 
-**Conceitos cobertos nesta página:** cartão pessoal, cartão virtual, bilhete x cartão, narrador.
+**Conceitos cobertos:** cartão pessoal, bilhete, imagem + mensagem, cartão virtual.
 
 **PROMPT:**
 
 ```
-Character reference: same characters as previous page —
+Character reference: same characters as previous pages —
 Lis: 7-year-old Brazilian girl, warm light skin, long wavy chestnut-brown hair,
 large brown eyes. Cream blouse with red hearts, denim overalls, white red-laced sneakers.
 Bilheto: animated kraft-paper beige-yellow folded note, red round ink eyes, pencil eyebrows,
-wide smile, paper-fold arms, "Para:___" on chest, royal-blue envelope hat tilted sideways,
-elbow-height beside Lis.
+wide smile, paper-fold arms, "Para:___" on chest, royal-blue envelope hat, elbow-height.
 
 Brazilian children's educational comic book page, 4 panels in 2x2 grid,
 colorful flat illustration, bold black outlines, warm terracotta-red palette,
 Portuguese speech bubbles.
 
 Panel 1 (top left):
-- Setting: a cozy library nook with warm wooden bookshelves filled with colorful books.
-  A small armchair with a striped cushion. Soft reading lamp casting golden light.
-  A book lies open on a small side table — its cover shows a cute illustrated bear
-  with musical notes floating from its belly: title "O Urso com Música na Barriga".
-- Bilheto floats beside the open book, gesturing toward it with one arm, telling a story.
-  His expression is warm and storytelling-mode: slightly dreamy eyes, gentle smile.
-- Lis sits curled in the armchair, hugging her knees, completely enchanted by the story
-  Bilheto is telling, eyes wide and soft with wonder.
-- Speech bubble Bilheto: "Um urso escreveu um bilhete!"
-- Speech bubble Lis: "Um urso? Por quê?"
-- Musical notes and small stars floating around the open book cover.
+- Setting: a bright living room. A table with two objects on it side by side:
+  LEFT: a simple folded yellow sticky note (bilhete).
+  RIGHT: a colorful personal card (cartão pessoal) showing a large hot-air balloon
+  (balão de ar quente) in orange and yellow against a blue sky, with the text
+  "QUANDO ESTAMOS CERCADOS DE AMIGOS COMO VOCÊ..." on the outside.
+- Bilheto stands between the two objects, one arm pointing to each, comparing them
+  with an enthusiastic teaching expression.
+- Lis stands watching, arms crossed, head tilted, thinking expression.
+- Speech bubble Bilheto: "Bilhete ou cartão? Qual a diferença?"
+- Speech bubble Lis: "Esse com balão é muito mais bonito!"
 
 Panel 2 (top right):
-- Setting: same library nook. A large illustrated thought-bubble rises above Bilheto and Lis,
-  showing the scene from the story:
-  Inside the thought-bubble: a round chubby brown bear sitting at a tiny wooden desk,
-  writing carefully on a piece of paper with a quill pen. Musical notes float from
-  his round belly. The bear's expression is sweet, earnest, and a little lonely.
-  The paper he writes reads: "Para: Mamãe. Eu quero um irmão. Do: Urso."
-  Outside the thought-bubble: Lis watches with a moved expression, hands pressed to cheeks.
-  Bilheto narrates from below the bubble, one arm gesturing up toward it.
-- Speech bubble Bilheto: "Ele pediu um irmão por escrito!"
-- Speech bubble Lis: "Que bilhete fofo e especial!"
-- Soft warm golden glow inside the thought-bubble to distinguish it from reality.
+- Setting: close-up view of the cartão pessoal fully open, shown as a large floating prop.
+  OUTSIDE of the card shows the hot-air balloon illustration.
+  INSIDE of the card shows handwritten text:
+  "A VIDA FICA BEM MAIS LEVE E GOSTOSA!
+                        Abraços de seu amigo,
+                        Fabiano"
+  The inside text is highlighted with a warm glow. Two colored callout arrows:
+  — Arrow to balloon image (outside): orange badge "IMAGEM"
+  — Arrow to "Fabiano" (inside): blue badge "REMETENTE"
+- Bilheto floats beside the card holding a magnifying glass, looking pleased and wise.
+- Lis leans in to read the inside, a warm smile spreading on her face.
+- Speech bubble Bilheto: "Cartão tem imagem e mensagem especial!"
+- Speech bubble Lis: "Que mensagem bonita do Fabiano!"
 
 Panel 3 (bottom left):
-- Setting: same library. Now Bilheto produces two objects by magic — they float beside him:
-  LEFT: a simple folded paper note (classic bilhete) — plain, no decoration, just text.
-    Label floating above it: "BILHETE — mensagem simples e direta"
-  RIGHT: a beautiful illustrated greeting card with flowers drawn on the cover and
-    a colorful border. Inside flap partially visible showing a short warm message.
-    Label floating above it: "CARTÃO PESSOAL — mais elaborado, com decoração"
-- Bilheto stands between them, arms spread pointing at each, expression proud and teacherly.
-- Lis looks from one to the other, nodding with a thoughtful "hmmm" expression,
-  index finger tapping her chin as she compares them.
-- Speech bubble Bilheto: "Cartão pessoal tem mais capricho!"
-- Speech bubble Lis: "É mais bonito que o bilhete?"
-- Arrows connecting the two objects with a "VS" badge between them, playful design.
+- Setting: Lis is now looking at a tablet/computer screen showing a cartoon virtual card
+  with animated bears on a beach waving their arms. The screen shows:
+  "Para uma grande pessoa... Um grande abraço para você!"
+  The bears in the animation are mid-wave, joyful expressions. Small musical notes float
+  around the screen indicating sound/animation.
+- Bilheto stands on the table beside the tablet, looking at the screen with wide eyes
+  and an amazed expression. His hat is knocked slightly askew in astonishment.
+- Lis points at the screen excitedly, eyes bright, big grin.
+- Speech bubble Bilheto: "Esse cartão tem som e movimento!"
+- Speech bubble Lis: "É um cartão virtual animado!"
 
 Panel 4 (bottom right):
-- Setting: same library, but now a large glowing tablet/smartphone floats in the air
-  between Lis and Bilheto, showing a colorful digital greeting card on its screen —
-  animated sparkles and hearts moving on the screen, with text "Feliz Aniversário!" and
-  illustrated balloons. This is a cartão virtual.
-- Bilheto taps the tablet screen with one paper-fold arm, pointing excitedly.
-  His envelope hat glows slightly with the screen light.
-- Lis reaches out with one finger to touch the screen, mouth open in amazed delight,
-  eyes reflecting the colorful light of the screen.
-- Small "wifi" icon and envelope-with-wings icon float near the tablet.
-- Speech bubble Bilheto: "Cartão virtual vai pelo celular!"
-- Speech bubble Lis: "Mensagem bonita sem papel?"
-- Soft blue-white digital glow from the screen lighting both characters from below-front.
+- Setting: Lis and Bilheto stand side by side in front of a large illustrated comparison
+  chart floating in the air like a poster, divided into two columns:
+  LEFT column header (yellow, with envelope icon): "BILHETE"
+  — Mensagem curta
+  — Sem imagem
+  — Recado rápido
+  RIGHT column header (red, with balloon icon): "CARTÃO PESSOAL"
+  — Mensagem especial
+  — Com imagem
+  — Para datas especiais
+- Lis points to the chart with a stick, looking proud and confident, smile wide.
+- Bilheto nods enthusiastically beside her, arms outstretched in approval.
+- Speech bubble Lis: "Agora eu sei a diferença!"
+- Speech bubble Bilheto: "Você aprendeu tudo, Lis!"
 
-Style: colorful flat illustration, bold outlines, Portuguese speech bubbles, 2x2 grid,
-warm library atmosphere with magical storytelling elements, terracotta and golden palette.
+Style: colorful flat illustration, bold outlines, consistent character design,
+Portuguese speech bubbles, 2x2 grid with thick black borders and white gutters.
 ```
 
 ---
 
 ### PÁGINA 4 — "Escreva com Carinho!"
 
-**Objetivo pedagógico:** Mostrar Lis aplicando tudo o que aprendeu — escrevendo seu próprio bilhete, identificando remetente e destinatário. Reforçar os conceitos de produção escrita em etapas (rascunho, avaliação, reescrita). Encerrar com fourth-wall break convidando para o portal de estudos.
+**Objetivo pedagógico:** Mostrar Lis escrevendo seu próprio bilhete com uso correto dos sinais de pontuação (ponto final, interrogação, exclamação — pp. 97–99). Encerrar com fourth-wall break convidando o leitor para o portal.
 
-**Conceitos cobertos nesta página:** produção escrita, rascunho, remetente, destinatário, cartão pessoal — revisão geral.
+**Conceitos cobertos:** ponto final (afirmação), ponto de interrogação (pergunta), ponto de exclamação (emoção/ordem), produção de bilhete.
 
 **PROMPT:**
 
 ```
-Character reference: same characters as previous page —
+Character reference: same characters as previous pages —
 Lis: 7-year-old Brazilian girl, warm light skin, long wavy chestnut-brown hair,
 large brown eyes. Cream blouse with red hearts, denim overalls, white red-laced sneakers.
 Bilheto: animated kraft-paper beige-yellow folded note, red round ink eyes, pencil eyebrows,
-wide smile, paper-fold arms, "Para:___" on chest, royal-blue envelope hat tilted sideways,
-elbow-height beside Lis.
+wide smile, paper-fold arms, "Para:___" on chest, royal-blue envelope hat, elbow-height.
 
 Brazilian children's educational comic book page, 4 panels in 2x2 grid,
 colorful flat illustration, bold black outlines, warm terracotta-red palette,
 Portuguese speech bubbles.
 
 Panel 1 (top left):
-- Setting: Lis's bedroom desk. Afternoon sunlight. The desk has colored pencils, an eraser,
-  a red pencil case, and a stack of clean white paper. A small clock on the wall shows
-  mid-afternoon. Warm cozy atmosphere.
-- Lis sits at the desk, hunched forward in serious writing concentration. Tongue peeking
-  from corner of mouth. Pencil gripped carefully in right hand, moving across paper.
-  The paper visible shows the beginning of a draft (rascunho): "Para: Vovó" at the top.
-- Bilheto stands on the desk corner, leaning forward encouragingly, hat bouncing,
-  eyes shining with encouragement.
-- A small floating label near the paper: "RASCUNHO" in bold block letters with a pencil icon.
-- Speech bubble Bilheto: "Escreva o rascunho primeiro!"
-- Speech bubble Lis: "Para:Vovó... assim está certo?"
-- Warm golden light on the paper, slight pencil-scratch texture visible.
+- Setting: kitchen table. Three large floating punctuation mark characters appear,
+  each with a tiny cartoon face and personality:
+  LEFT: a large round blue period/full stop ( . ) with a calm, wise smile — label "PONTO FINAL"
+  CENTER: a red question mark ( ? ) with a curious tilted head and raised eyebrow — label "INTERROGAÇÃO"
+  RIGHT: an orange exclamation mark ( ! ) bouncing excitedly, arms up — label "EXCLAMAÇÃO"
+- Bilheto introduces them with arms spread wide like a host presenting guests.
+  He looks delighted and proud.
+- Lis looks at all three with wide eyes, pencil raised in her hand, ready to learn.
+- Speech bubble Bilheto: "Esses são os sinais de pontuação!"
+- Speech bubble Lis: "Eles são tão expressivos!"
 
 Panel 2 (top right):
-- Setting: same desk, but now Lis's friend (simple background character — another 7-year-old
-  girl with dark curly hair and a yellow shirt) sits across the desk from Lis.
-  Both girls look at the draft together. The friend holds the paper, reading it seriously.
-- Lis watches her friend's face with an anxious but hopeful expression, hands clasped.
-- Bilheto stands between them, pointing at the paper, facilitating like a tiny teacher.
-- The friend points at one part of the paper with a helpful gesture, nodding.
-- A small floating label: "AVALIAÇÃO EM DUPLA" with two-person icon.
-- Speech bubble friend: "Faltou o 'De:' no final!"
-- Speech bubble Lis: "Ah é! Vou corrigir!"
-- Soft warm light. Both girls have engaged, collaborative expressions.
+- Setting: same table. Three example sentences appear as handwritten banners floating
+  in the air, each with the corresponding punctuation mark glowing at the end:
+  Banner 1 (calm blue): "Hoje o dia está bonito." — period glows
+  Banner 2 (curious yellow): "Você vai brincar comigo?" — question mark glows
+  Banner 3 (energetic orange): "Que dia maravilhoso!" — exclamation glows
+- The three punctuation characters from Panel 1 stand beside their respective banners,
+  pointing proudly at themselves.
+- Lis reads each banner aloud, her expression changing to match each one:
+  calm → curious → excited.
+- Speech bubble Lis (calm): "Ponto final encerra a frase."
+- Speech bubble Bilheto: "Interrogação faz pergunta. Exclamação mostra emoção!"
 
 Panel 3 (bottom left):
-- Setting: same desk. Now the final clean version of the bilhete is shown large and clear,
-  floating in the air in front of Lis and Bilheto as if it is the star of the scene.
-  The finished bilhete reads (legible, in a friendly handwritten-style font):
-    "Para: Vovó          ← Destinatária"
-    "Saudade de você!    "
-    "Venha me visitar!   "
-    "De: Lis             ← Remetente"
-  The "← Destinatária" and "← Remetente" labels appear as small floating annotation
-  arrows, like educational overlays, not part of the note itself.
-- Lis stands proudly beside the floating note, arms crossed, huge grin, head tilted
-  with confident satisfaction.
-- Bilheto beside her, both arms raised in triumphant celebration, hat flying slightly
-  off his head from excitement (still attached by a small string).
-- Gold star and sparkle effects around the finished note.
-- Speech bubble Lis: "Meu bilhete está pronto!"
-- Speech bubble Bilheto: "Remetente e destinatária: perfeito!"
+- Setting: kitchen table. Lis sits writing her completed bilhete on a sheet of paper.
+  The finished bilhete is shown large and readable:
+  "Vovó,
+   Hoje aprendi sobre bilhetes e cartões!
+   Você sabia que eu posso te escrever
+   uma cartinha? Beijos com carinho!
+                         Lis."
+  Punctuation marks are subtly highlighted in color: period=blue circle,
+  question mark=yellow circle, exclamation=orange circle.
+- Bilheto reads over her shoulder, eyes wide with pride, arms held to his chest fondly.
+- Lis looks up from her finished bilhete with a radiant proud smile.
+- Speech bubble Bilheto: "Perfeito! Três sinais usados!"
+- Speech bubble Lis: "Usei todos certinhos!"
 
 Panel 4 (bottom right):
-- Setting: Lis steps to the front of the panel and looks directly at the reader —
-  fourth-wall break. She holds up the finished bilhete toward the camera/viewer,
-  offering it like a gift, with a big warm inviting smile.
-- Bilheto stands beside her, also facing the reader, waving both arms in greeting,
-  hat straight and proud.
-- Behind them: a soft warm glow, like a doorway of golden light — suggesting more
-  adventures await.
-- A small glowing portal/screen in the top right corner of the panel shows a computer
-  or tablet with a colorful educational website icon — reference to the portal estudos.
-- Speech bubble Lis (directly to reader): "Você sabe escrever bilhete?"
-- Speech bubble Bilheto: "Pratique no portal Sabendo!"
-- The word "SABENDO" glows in warm terracotta-red in the speech bubble.
-- Warm, inviting, joyful atmosphere. Confetti and small hearts scattered around them.
+- Setting: Lis stands at the front of the panel, facing the reader directly.
+  Bilheto stands beside her, both smiling warmly at the reader/viewer.
+  Colorful confetti and small hearts and letter shapes rain down around them.
+  In the background, the kitchen fridge is visible with the bilhetes stuck on it,
+  and a warm orange glow fills the room.
+- Lis reaches one hand toward the reader, index finger pointing forward in a friendly
+  "your turn" gesture. Big open smile, eyes sparkling.
+- Bilheto holds up a tiny blank paper note toward the reader, waving it invitingly.
+- Speech bubble Lis (large, festive bubble): "Agora é a sua vez!"
+- Speech bubble Bilheto: "Venha praticar no portal!"
+- Small decorative text at the bottom of the panel (caption box in cream):
+  "📚 Baseado em: Português — Cap. 3 'Trocando mensagens' · pp. 78–102"
 
-Style: colorful flat illustration, bold outlines, Portuguese speech bubbles, 2x2 grid,
-warm celebratory mood, terracotta-red and golden palette, fourth-wall break energy.
+Style: colorful flat illustration, bold outlines, consistent character design,
+Portuguese speech bubbles, 2x2 grid with thick black borders and white gutters.
+Festive, celebratory mood for this closing page.
 ```
 
 ---
 
 ## ORDEM DE GERAÇÃO
 
-Execute nesta ordem no GPT Quadrinhos Sabendo:
-
-```
-1. Folha de personagens — Lis (4 variações emocionais)
-2. Folha de personagens — Bilheto (3 variações + comparação de escala)
-3. Página 1 — "Uma Mensagem para Você!"
-4. Página 2 — "Quem Manda e Quem Recebe?"
-5. Página 3 — "Cartão Pessoal — Uma Mensagem Especial"
-6. Página 4 — "Escreva com Carinho!"
-```
-
-**Importante:** Após gerar a Folha de Personagens da Lis, use a imagem resultante
-como referência visual canônica em todas as páginas subsequentes, se o GPT permitir
-upload de referência. Isso garante consistência visual máxima.
+1. Folha de personagens — Lis
+2. Folha de personagens — Bilheto
+3. Comparação de escala
+4. Página 1 — "Bilhetes na Geladeira!"
+5. Página 2 — "Quem Manda, Quem Recebe?"
+6. Página 3 — "Cartão ou Bilhete?"
+7. Página 4 — "Escreva com Carinho!"
 
 ---
 
-## CHECKLIST DE CONCEITOS PEDAGÓGICOS
-
-Verifique que todos os termos técnicos do tema aparecem na narrativa:
-
-- [x] **bilhete** — apresentado na Página 1, praticado na Página 4
-- [x] **destinatário** — ensinado na Página 2 (quem recebe), aplicado nas Páginas 3 e 4
-- [x] **remetente** — ensinado na Página 2 (quem envia), aplicado nas Páginas 3 e 4
-- [x] **cartão pessoal** — diferenciado do bilhete na Página 3
-- [x] **cartão virtual** — apresentado na Página 3, Painel 4
-- [x] **narrador** — referenciado implicitamente via texto motivador (urso escreve bilhete)
-- [x] **rascunho** — mostrado na Página 4, Painel 1
-- [x] **avaliação em dupla** — mostrado na Página 4, Painel 2
-- [x] **reescrita** — resultado mostrado na Página 4, Painel 3
-
----
-
-## CHECKLIST TÉCNICO DE QUALIDADE
-
-- [x] Mínimo 300 linhas: SIM
-- [x] Folha de personagens da Lis presente como bloco separado: SIM
-- [x] Folha de personagens do Bilheto presente como bloco separado: SIM
-- [x] Comparação de escala incluída: SIM (ambas as folhas)
-- [x] 4 páginas com prompts completos: SIM
-- [x] Cada painel com: cenário, personagens, expressões, objetos, falas: SIM
-- [x] Falas com máximo 8 palavras: SIM (verificado painel a painel)
-- [x] Prompts em inglês: SIM
-- [x] Falas dos personagens em português dentro dos prompts: SIM
-- [x] Todos os termos técnicos do input aparecem na narrativa: SIM
-- [x] Página 1 sem "Character reference" (é a primeira): SIM
-- [x] Páginas 2-4 com "Character reference" no topo: SIM
-- [x] Fourth-wall break na Página 4: SIM
-- [x] Tom caloroso e lúdico para criança de 7 anos: SIM
-
----
-
-## RODAPÉ
-
-*Conteúdo baseado em: livro didático de Língua Portuguesa, 2º ano do Ensino Fundamental —
-gêneros textuais: bilhete e cartão pessoal. Texto motivador: "O Urso com Música na Barriga"
-(Érico Veríssimo).*
-
-*Tema: gênero textual bilhete e cartão pessoal — destinatário, remetente, cartão virtual,
-produção escrita em etapas (rascunho, avaliação em dupla, reescrita).*
-
-*Personagem de suporte: Bilheto — bilhete animado, guia do mundo das mensagens escritas.*
-
-*Portal Educacional Lis — 2º ano · Disciplina: Português*
+*Conteúdo baseado em: Livro didático de Português, 2º ano · Capítulo 3 "Trocando mensagens" · pp. 78–102*
+*Texto literário: "O urso com música na barriga" — Erico Verissimo (Companhia das Letrinhas, 2002)*
+*Conceitos: bilhete, destinatário, remetente, cartão pessoal, sinais de pontuação*
