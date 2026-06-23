@@ -4,6 +4,20 @@
 
 ---
 
+## ⚠️ RESET OBRIGATÓRIO — LEIA ANTES DE QUALQUER COISA
+
+Este é um job independente. Ignore COMPLETAMENTE qualquer conversa anterior nesta sessão.
+NÃO use descrições de personagens, estilos ou referências de HQs anteriores.
+Os únicos personagens desta HQ são os definidos abaixo. Não existe "Bia", "André" ou qualquer outro personagem de outros projetos aqui.
+
+**PROTAGONISTA DESTA HQ:** Lis — menina brasileira de 7 anos, cabelos castanhos longos e ondulados, pele morena clara, olhos castanhos expressivos, uniforme escolar (camiseta branca + saia azul marinho) ou roupa casual colorida. Estilo cartoon infantil brasileiro vibrante.
+
+**PERSONAGEM DE SUPORTE DESTA HQ:** Pontinho — ponto de exclamação animado, corpo bastão oval vertical laranja vibrante (#E8430A), barriga redonda em laranja claro (#FB8C5A) que quica quando fala, olhos grandes em formato de gota, sobrancelhas grossas expressivas, bochechas rosadas, sorriso largo com dentes brancos, chapéu dourado em forma da letra A maiúscula levemente torto, dedos em ponta de caneta-tinteiro. Altura até o ombro da Lis.
+
+Qualquer imagem gerada que contenha personagens diferentes dos descritos acima está incorreta e deve ser regerada.
+
+---
+
 ## INSTRUÇÕES DE USO
 
 Cole o bloco de cada seção diretamente no ChatGPT (GPT Quadrinhos Sabendo).

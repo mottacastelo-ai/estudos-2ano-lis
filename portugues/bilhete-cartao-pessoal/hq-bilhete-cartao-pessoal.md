@@ -4,6 +4,20 @@
 
 ---
 
+## ⚠️ RESET OBRIGATÓRIO — LEIA ANTES DE QUALQUER COISA
+
+Este é um job independente. Ignore COMPLETAMENTE qualquer conversa anterior nesta sessão.
+NÃO use descrições de personagens, estilos ou referências de HQs anteriores.
+Os únicos personagens desta HQ são os definidos abaixo. Não existe "Bia", "André" ou qualquer outro personagem de outros projetos aqui.
+
+**PROTAGONISTA DESTA HQ:** Lis — menina brasileira de 7 anos, cabelos castanhos longos e ondulados, pele morena clara, olhos castanhos expressivos, uniforme escolar (camiseta branca + saia azul marinho) ou roupa casual colorida. Estilo cartoon infantil brasileiro vibrante.
+
+**PERSONAGEM DE SUPORTE DESTA HQ:** Bilheto — bilhete de papel quadrado animado, cor bege-amarelada kraft, olhinhos redondos desenhados à tinta vermelha, boca larga sorridente, braços feitos das dobras laterais do papel, chapéu em forma de envelope azul royal inclinado, texto "Para:___" impresso no peito. Tamanho menor que a Lis.
+
+Qualquer imagem gerada que contenha personagens diferentes dos descritos acima está incorreta e deve ser regerada.
+
+---
+
 ## INSTRUÇÕES DE USO
 
 Cole o bloco de cada seção diretamente no ChatGPT (GPT Quadrinhos Sabendo).
