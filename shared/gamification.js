@@ -468,6 +468,27 @@
   }
 
   /* ------------------------------------------------------------------ */
+  /* Emoji canvas — fallback quando characterImg não carrega             */
+  /* ------------------------------------------------------------------ */
+  function makeEmojiImg(emoji, W, H) {
+    var c = document.createElement('canvas');
+    c.width = W || 200; c.height = H || 240;
+    var oc = c.getContext('2d');
+    var grad = oc.createRadialGradient(c.width/2, c.height*0.42, 20, c.width/2, c.height*0.42, c.width*0.72);
+    grad.addColorStop(0, '#2A1F5E');
+    grad.addColorStop(1, '#120D28');
+    oc.fillStyle = grad;
+    oc.fillRect(0, 0, c.width, c.height);
+    oc.font = Math.round(c.height * 0.40) + 'px sans-serif';
+    oc.textAlign = 'center';
+    oc.textBaseline = 'middle';
+    oc.fillText(emoji || '⭐', c.width / 2, c.height / 2 + 4);
+    var fakeImg = new Image();
+    fakeImg.src = c.toDataURL();
+    return fakeImg;
+  }
+
+  /* ------------------------------------------------------------------ */
   /* Supabase                                                             */
   /* ------------------------------------------------------------------ */
   async function saveCard(supa, uid, themeSlug, discipline, cardSlug) {
@@ -779,11 +800,18 @@
       }
     }
 
-    // Carrega portrait do personagem
+    // Carrega portrait do personagem; usa emoji canvas como fallback
     var img = null;
     if (config.characterImg) {
       img = new Image();
       img.src = base + "_landing/" + config.characterImg;
+      await new Promise(function(res) {
+        if (img.complete && img.naturalWidth) { res(); return; }
+        img.onload = res; img.onerror = res;
+      });
+    }
+    if (!img || !img.naturalWidth) {
+      img = makeEmojiImg(config.characterEmoji || '⭐', 200, 240);
       await new Promise(function(res) {
         if (img.complete && img.naturalWidth) { res(); return; }
         img.onload = res; img.onerror = res;
@@ -805,7 +833,11 @@
       await showReveal(cardSlug, config);
     }
 
-    if (config.backUrl) window.location.href = config.backUrl;
+    if (typeof voltarAoPortal === 'function') {
+      voltarAoPortal();
+    } else if (config.backUrl) {
+      window.location.href = config.backUrl;
+    }
   }
 
   /* ------------------------------------------------------------------ */

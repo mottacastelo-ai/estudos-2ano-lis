@@ -1853,6 +1853,7 @@ async function initAuth() {
   if (session) {
     sbUser = session.user;
     await loadStreak();
+    routeFromHash();
   } else {
     window.location.href = 'https://sabendo.app';
   }
@@ -1904,6 +1905,14 @@ async function logActivity(discipline, themeSlug, activityType, score) {
   }).eq('user_id', sbUser.id);
   sbStreak = Object.assign({}, streak, { current_streak: newStreak, total_activities: streak.total_activities + 1 });
   renderStreak();
+}
+
+// ── HASH ROUTING ────────────────────────────────────────
+function routeFromHash() {
+  var hash = window.location.hash;
+  if (!hash) return;
+  var m = hash.match(/#theme-(\w+)-([\w-]+)$/);
+  if (m) { showDisc(m[1]); showTheme(m[1], m[2]); }
 }
 
 // ── SEARCH ──────────────────────────────────────────────

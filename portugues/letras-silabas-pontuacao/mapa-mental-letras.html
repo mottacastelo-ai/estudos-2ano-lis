@@ -36,13 +36,17 @@ body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100
 .wb-words { display: flex; gap: 10px; flex-wrap: wrap; }
 .wb-word {
   background: var(--bg); border: 3px solid var(--light); border-radius: 12px;
-  padding: 10px 16px; cursor: grab; user-select: none;
+  padding: 10px 16px; cursor: pointer; user-select: none;
   font-size: 1.05rem; font-weight: 800; color: #9A2B04;
   transition: all 0.18s; display: flex; align-items: center; gap: 6px;
   min-height: 44px; min-width: 44px;
 }
 .wb-word:hover { border-color: var(--primary); transform: scale(1.04); }
-.wb-word.dragging { opacity: 0.35; }
+.wb-word.selected {
+  border-color: var(--primary); background: var(--primary);
+  color: #fff; transform: scale(1.06);
+  box-shadow: 0 4px 14px rgba(232,67,10,.4);
+}
 .wb-word.used { display: none; }
 
 /* MAP AREA */
@@ -70,7 +74,7 @@ body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100
   font-size: 0.95rem; color: #94A3B8; font-weight: 600; transition: all 0.18s;
   background: #fff; min-width: 44px;
 }
-.drop-slot.drag-over { border-color: var(--primary); background: var(--bg); }
+.drop-slot.ready { border-color: var(--primary); background: var(--bg); cursor: pointer; }
 .drop-slot.filled { border-style: solid; border-color: var(--light); color: #9A2B04; font-weight: 800; font-size: 1rem; }
 .drop-slot .slot-emoji { margin-right: 8px; font-size: 1.2rem; flex-shrink: 0; }
 
@@ -117,12 +121,12 @@ body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100
 <div class="header">
   <span class="header-emoji">❗</span>
   <div class="header-title">Mapa Mental — Letras, Sílabas e Pontuação</div>
-  <div class="header-sub">Arraste as palavras para os lugares certos!</div>
+  <div class="header-sub">Clique na palavra e depois clique no lugar certo!</div>
 </div>
 
 <div class="container">
   <div class="instruction-card">
-    <p>🧠 Arraste cada palavra do banco para o lugar correto no mapa mental.<br>Complete todas as caixinhas e depois clique em <strong>Verificar</strong>!</p>
+    <p>🧠 <strong>Clique</strong> numa palavra do banco e depois <strong>clique</strong> na caixinha onde ela se encaixa. Para tirar uma palavra encaixada, clique nela!<br>Complete todas as caixinhas e depois clique em <strong>Verificar</strong>!</p>
   </div>
 
   <div class="word-bank">
@@ -175,7 +179,7 @@ body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100
   <button class="btn-check" onclick="checkAnswer()">Verificar minha resposta ✅</button>
   <button class="btn-reset" onclick="resetAll()">🔄 Recomeçar</button>
   <div class="result-box" id="result-box"></div>
-  <a class="back-btn" href="../../index.html">🏠 Voltar ao Portal</a>
+  <button class="back-btn" onclick="voltarAoPortal()">🏠 Voltar ao Portal</button>
 </div>
 
 <!-- ── GAMIFICAÇÃO ─────────────────────────────────────────── -->
@@ -258,30 +262,28 @@ var todosTermos = [
   { emoji: '🔡', label: 'A até Z',       value: 'A até Z' }
 ];
 
-// Gabarito interno — slotId → value correto
 var gabarito = {
-  s1:  'TATU',
-  s2:  'PATO',
-  s3:  'DADO',
-  s4:  'FADA',
-  s5:  'RATO',
-  s6:  'PORTA',
-  s7:  'FLOR',
-  s8:  'ponto final',
-  s9:  'interrogação',
-  s10: 'exclamação',
-  s11: 'dicionário',
-  s12: 'primeira letra',
-  s13: 'A até Z'
+  s1: 'TATU', s2: 'PATO', s3: 'DADO', s4: 'FADA',
+  s5: 'RATO', s6: 'PORTA', s7: 'FLOR',
+  s8: 'ponto final', s9: 'interrogação', s10: 'exclamação',
+  s11: 'dicionário', s12: 'primeira letra', s13: 'A até Z'
+};
+
+var placeholders = {
+  s1:  '🐾 T no início...', s2:  '🦆 T no meio...',
+  s3:  '🎲 D no início...', s4:  '🧚 D no meio...',
+  s5:  '🐭 R forte no início...', s6: '🚪 R suave no meio...',
+  s7:  '🌸 R no fim da sílaba...',
+  s8:  '⬛ Termina a frase...', s9: '❓ Faz pergunta...',
+  s10: '❗ Mostra emoção...',
+  s11: '📖 Usamos a ordem para achar no...',
+  s12: '🔠 Ordenamos pela...', s13: '🔡 A sequência vai de...'
 };
 
 var slotMap = {};
-var draggingEl = null;
-var touchDragValue = null;
-var touchClone = null;
-var touchOriginEl = null;
+var selectedValue = null;
 
-// ── Embaralhar e renderizar banco de palavras ───────────────────
+// ── Embaralhar ──────────────────────────────────────────────────
 function shuffle(arr) {
   for (var i = arr.length - 1; i > 0; i--) {
     var j = Math.floor(Math.random() * (i + 1));
@@ -290,107 +292,93 @@ function shuffle(arr) {
   return arr;
 }
 
+// ── Seleção de palavra ──────────────────────────────────────────
+function selectWord(el) {
+  var val = el.dataset.value;
+  if (selectedValue === val) {
+    // Clique duplo na mesma → deseleciona
+    el.classList.remove('selected');
+    selectedValue = null;
+  } else {
+    document.querySelectorAll('.wb-word.selected').forEach(function(w) { w.classList.remove('selected'); });
+    el.classList.add('selected');
+    selectedValue = val;
+  }
+  updateSlotHighlight();
+}
+
+function updateSlotHighlight() {
+  document.querySelectorAll('.drop-slot').forEach(function(s) {
+    if (selectedValue && !s.classList.contains('filled')) {
+      s.classList.add('ready');
+    } else {
+      s.classList.remove('ready');
+    }
+  });
+}
+
+// ── Clicar num slot ─────────────────────────────────────────────
+function clickSlot(slot) {
+  var slotId = slot.dataset.slot;
+
+  if (slot.classList.contains('filled') && !selectedValue) {
+    // Tirar palavra do slot (clique em slot preenchido sem seleção ativa)
+    var val = slotMap[slotId];
+    var wordEl = document.querySelector('.wb-word[data-value="' + val + '"]');
+    if (wordEl) wordEl.classList.remove('used');
+    delete slotMap[slotId];
+    slot.className = 'drop-slot';
+    var ph = placeholders[slotId] || 'Clique aqui...';
+    slot.innerHTML = '<span class="slot-emoji">' + ph.charAt(0) + '</span>' + ph.slice(1);
+    document.getElementById('result-box').className = 'result-box';
+    return;
+  }
+
+  if (!selectedValue) return;
+
+  // Devolver palavra anterior se slot já estava preenchido
+  if (slotMap[slotId]) {
+    var prevEl = document.querySelector('.wb-word[data-value="' + slotMap[slotId] + '"]');
+    if (prevEl) prevEl.classList.remove('used');
+  }
+
+  var srcEl = document.querySelector('.wb-word[data-value="' + selectedValue + '"]');
+  if (!srcEl) return;
+
+  slotMap[slotId] = selectedValue;
+  srcEl.classList.add('used');
+  srcEl.classList.remove('selected');
+  slot.textContent = srcEl.textContent;
+  slot.className = 'drop-slot filled';
+  document.getElementById('result-box').className = 'result-box';
+
+  selectedValue = null;
+  updateSlotHighlight();
+}
+
+// ── Renderizar banco ────────────────────────────────────────────
 function renderWordBank() {
   var bank = document.getElementById('word-bank');
   bank.innerHTML = '';
-  var ordem = shuffle(todosTermos.slice());
-  ordem.forEach(function(t) {
+  shuffle(todosTermos.slice()).forEach(function(t) {
     var el = document.createElement('div');
     el.className = 'wb-word';
-    el.setAttribute('draggable', 'true');
     el.setAttribute('data-value', t.value);
     el.textContent = t.emoji + ' ' + t.label;
-    // Desktop drag
-    el.addEventListener('dragstart', function(e) {
-      draggingEl = el;
-      setTimeout(function() { el.classList.add('dragging'); }, 0);
-      e.dataTransfer.setData('text/plain', t.value);
-    });
-    el.addEventListener('dragend', function() {
-      el.classList.remove('dragging');
-      draggingEl = null;
-    });
-    // Touch
-    el.addEventListener('touchstart', onTouchStart, { passive: false });
-    el.addEventListener('touchmove', onTouchMove, { passive: false });
-    el.addEventListener('touchend', onTouchEnd);
+    el.addEventListener('click', function() { selectWord(el); });
     bank.appendChild(el);
   });
 }
 
-// ── Drop slots ──────────────────────────────────────────────────
+// ── Slots ───────────────────────────────────────────────────────
 document.querySelectorAll('.drop-slot').forEach(function(slot) {
-  slot.addEventListener('dragover', function(e) {
-    e.preventDefault();
-    slot.classList.add('drag-over');
-  });
-  slot.addEventListener('dragleave', function() {
-    slot.classList.remove('drag-over');
-  });
-  slot.addEventListener('drop', function(e) {
-    e.preventDefault();
-    slot.classList.remove('drag-over');
-    var val = e.dataTransfer.getData('text/plain');
-    placeWordInSlot(slot, val);
-  });
+  slot.addEventListener('click', function() { clickSlot(slot); });
 });
-
-function placeWordInSlot(slot, val) {
-  var slotId = slot.dataset.slot;
-  if (slotMap[slotId]) {
-    var oldWord = document.querySelector('.wb-word[data-value="' + slotMap[slotId] + '"]');
-    if (oldWord) oldWord.classList.remove('used');
-  }
-  var srcWord = document.querySelector('.wb-word[data-value="' + val + '"]');
-  if (!srcWord) return;
-  slotMap[slotId] = val;
-  srcWord.classList.add('used');
-  slot.textContent = srcWord.textContent;
-  slot.classList.add('filled');
-  document.getElementById('result-box').className = 'result-box';
-}
-
-// ── Touch drag ──────────────────────────────────────────────────
-function onTouchStart(e) {
-  e.preventDefault();
-  touchOriginEl = e.currentTarget;
-  touchDragValue = touchOriginEl.dataset.value;
-  var touch = e.touches[0];
-  touchClone = touchOriginEl.cloneNode(true);
-  touchClone.style.cssText = 'position:fixed;opacity:0.8;pointer-events:none;z-index:9999;';
-  touchClone.style.left = (touch.clientX - 40) + 'px';
-  touchClone.style.top  = (touch.clientY - 20) + 'px';
-  document.body.appendChild(touchClone);
-}
-
-function onTouchMove(e) {
-  e.preventDefault();
-  if (!touchClone) return;
-  var touch = e.touches[0];
-  touchClone.style.left = (touch.clientX - 40) + 'px';
-  touchClone.style.top  = (touch.clientY - 20) + 'px';
-}
-
-function onTouchEnd(e) {
-  if (touchClone) { document.body.removeChild(touchClone); touchClone = null; }
-  if (!touchDragValue) return;
-  var touch = e.changedTouches[0];
-  var target = document.elementFromPoint(touch.clientX, touch.clientY);
-  while (target && !target.classList.contains('drop-slot')) {
-    target = target.parentElement;
-  }
-  if (target && target.classList.contains('drop-slot')) {
-    placeWordInSlot(target, touchDragValue);
-  }
-  touchDragValue = null;
-  touchOriginEl = null;
-}
 
 // ── Som ─────────────────────────────────────────────────────────
 function playSound(tipo) {
   var ctx = new (window.AudioContext || window.webkitAudioContext)();
-  var o = ctx.createOscillator();
-  var g = ctx.createGain();
+  var o = ctx.createOscillator(); var g = ctx.createGain();
   o.connect(g); g.connect(ctx.destination);
   if (tipo === 'correct') {
     o.frequency.setValueAtTime(523, ctx.currentTime);
@@ -411,14 +399,10 @@ function playSound(tipo) {
 // ── Verificar ───────────────────────────────────────────────────
 function checkAnswer() {
   var slots = document.querySelectorAll('.drop-slot');
-  var filled = 0, correct = 0;
-  var total = slots.length;
+  var filled = 0, correct = 0, total = slots.length;
   slots.forEach(function(slot) {
-    var slotId = slot.dataset.slot;
-    if (slotMap[slotId]) {
-      filled++;
-      if (slotMap[slotId] === gabarito[slotId]) correct++;
-    }
+    var sid = slot.dataset.slot;
+    if (slotMap[sid]) { filled++; if (slotMap[sid] === gabarito[sid]) correct++; }
   });
   var rb = document.getElementById('result-box');
   if (filled < total) {
@@ -440,29 +424,13 @@ function checkAnswer() {
 
 // ── Resetar ─────────────────────────────────────────────────────
 function resetAll() {
-  document.querySelectorAll('.wb-word').forEach(function(w) { w.classList.remove('used'); });
-  var placeholders = {
-    s1:  '🐾 T no início...',
-    s2:  '🦆 T no meio...',
-    s3:  '🎲 D no início...',
-    s4:  '🧚 D no meio...',
-    s5:  '🐭 R forte no início...',
-    s6:  '🚪 R suave no meio...',
-    s7:  '🌸 R no fim da sílaba...',
-    s8:  '⬛ Termina a frase...',
-    s9:  '❓ Faz pergunta...',
-    s10: '❗ Mostra emoção...',
-    s11: '📖 Usamos a ordem para achar no...',
-    s12: '🔠 Ordenamos pela...',
-    s13: '🔡 A sequência vai de...'
-  };
+  selectedValue = null;
+  document.querySelectorAll('.wb-word').forEach(function(w) { w.classList.remove('used', 'selected'); });
   document.querySelectorAll('.drop-slot').forEach(function(slot) {
-    var slotId = slot.dataset.slot;
+    var sid = slot.dataset.slot;
     slot.className = 'drop-slot';
-    var ph = placeholders[slotId] || 'Arraste aqui...';
-    var firstChar = ph.charAt(0);
-    var rest = ph.slice(1);
-    slot.innerHTML = '<span class="slot-emoji">' + firstChar + '</span>' + rest;
+    var ph = placeholders[sid] || 'Clique aqui...';
+    slot.innerHTML = '<span class="slot-emoji">' + ph.charAt(0) + '</span>' + ph.slice(1);
   });
   Object.keys(slotMap).forEach(function(k) { delete slotMap[k]; });
   document.getElementById('result-box').className = 'result-box';
