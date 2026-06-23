@@ -302,7 +302,7 @@ function renderWordBank() {
       draggingEl = null;
     });
     // Touch drag
-    el.addEventListener('touchstart', onTouchStart, { passive: true });
+    el.addEventListener('touchstart', onTouchStart, { passive: false });
     el.addEventListener('touchmove', onTouchMove, { passive: false });
     el.addEventListener('touchend', onTouchEnd);
     bank.appendChild(el);
@@ -347,6 +347,7 @@ var touchClone = null;
 var touchOriginEl = null;
 
 function onTouchStart(e) {
+  e.preventDefault();
   touchOriginEl = e.currentTarget;
   touchDragValue = touchOriginEl.dataset.value;
   var touch = e.touches[0];

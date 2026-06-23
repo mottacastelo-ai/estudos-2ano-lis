@@ -310,7 +310,7 @@ function renderWordBank() {
       draggingEl = null;
     });
     // Touch
-    el.addEventListener('touchstart', onTouchStart, { passive: true });
+    el.addEventListener('touchstart', onTouchStart, { passive: false });
     el.addEventListener('touchmove', onTouchMove, { passive: false });
     el.addEventListener('touchend', onTouchEnd);
     bank.appendChild(el);
@@ -351,6 +351,7 @@ function placeWordInSlot(slot, val) {
 
 // ── Touch drag ──────────────────────────────────────────────────
 function onTouchStart(e) {
+  e.preventDefault();
   touchOriginEl = e.currentTarget;
   touchDragValue = touchOriginEl.dataset.value;
   var touch = e.touches[0];
