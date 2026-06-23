@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -238,7 +238,7 @@
 <div class="top-btns">
   <button class="btn-gabarito" onclick="showGabarito()">📋 Ver Gabarito</button>
   <button class="btn-reset" onclick="initGame()">🔄 Reiniciar</button>
-  <button class="btn-back" onclick="window.close()">🏠 Voltar ao Portal</button>
+  <button class="btn-back" onclick="voltarAoPortal()">🏠 Voltar ao Portal</button>
 </div>
 
 <div class="layout">
@@ -518,5 +518,6 @@ function initGame() {
 window.addEventListener('resize', () => { buildSlots(); drawLines(); });
 initGame();
 </script>
+<script src="../../shared/portal-back.js"></script>
 </body>
 </html>

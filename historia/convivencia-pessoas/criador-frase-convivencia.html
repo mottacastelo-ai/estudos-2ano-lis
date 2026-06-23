@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -121,7 +121,7 @@ header p { font-size: 1rem; opacity: 0.9; font-weight: 600; margin-top: 4px; }
     <div class="result-score" id="result-score"></div>
     <div class="result-msg" id="result-msg"></div>
     <div class="action-btns">
-      <button class="back-btn" onclick="window.close()">⬅️ Voltar ao Portal</button>
+      <button class="back-btn" onclick="voltarAoPortal()">⬅️ Voltar ao Portal</button>
       <button class="retry-btn" onclick="restart()">🔄 Jogar de Novo</button>
     </div>
   </div>
@@ -305,5 +305,6 @@ function playSound(type) {
 }
 loadPhrase();
 </script>
+<script src="../../shared/portal-back.js"></script>
 </body>
 </html>

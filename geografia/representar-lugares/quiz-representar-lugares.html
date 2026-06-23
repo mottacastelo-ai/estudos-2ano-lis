@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
@@ -638,18 +638,12 @@
   }
 
   // ── Back to portal ─────────────────────────────────────────
-  function goBack() {
-    if (window.history.length > 1) {
-      window.history.back();
-    } else {
-      try { window.close(); } catch(e) {}
-      window.location.href = 'index.html';
-    }
-  }
+  function goBack() { voltarAoPortal(); }
 
   // ── Init ───────────────────────────────────────────────────
   renderQuestion();
 </script>
 
+<script src="../../shared/portal-back.js"></script>
 </body>
 </html>

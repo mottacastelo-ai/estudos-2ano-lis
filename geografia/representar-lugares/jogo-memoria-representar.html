@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
@@ -324,7 +324,7 @@
 <div class="status-bar">
   <div class="counter-box">Tentativas: <span id="attempts">0</span></div>
   <div class="counter-box">Pares encontrados: <span id="pairs">0</span>/6</div>
-  <button class="btn-back" onclick="window.close()">← Voltar ao Portal</button>
+  <button class="btn-back" onclick="voltarAoPortal()">← Voltar ao Portal</button>
 </div>
 
 <!-- BOARD -->
@@ -338,7 +338,7 @@
   <p class="motivational">Você é uma geógrafa incrível! Continue explorando e aprendendo sobre os lugares do mundo! 🌍</p>
   <div class="win-buttons">
     <button class="btn-replay" onclick="restartGame()">🔄 Jogar de novo</button>
-    <button class="btn-back" onclick="window.close()">← Voltar ao Portal</button>
+    <button class="btn-back" onclick="voltarAoPortal()">← Voltar ao Portal</button>
   </div>
 </div>
 
@@ -530,5 +530,6 @@
   cards = buildCards();
   renderBoard();
 </script>
+<script src="../../shared/portal-back.js"></script>
 </body>
 </html>

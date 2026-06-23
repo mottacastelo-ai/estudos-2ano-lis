@@ -196,6 +196,7 @@ Substituir o `<!-- gamificacao-btn -->` por este bloco completo (preencher os ca
     width:fit-content;">
   Coletar minha carta! 🃏
 </button>
+<script src="../../shared/portal-back.js"></script>
 </body>
 ```
 
@@ -232,6 +233,14 @@ Para atividades com "Ver gabarito" independente: setar `window.sabendoScore` ANT
 
 > **Atenção (ERR-001 do 5º ano):** Nunca setar `window.sabendoScore` em funções intermediárias.
 
+### Navegação de Volta ao Portal
+
+**Nunca usar `onclick="window.close()"` em botões de retorno.** Browsers modernos bloqueiam `window.close()` em abas abertas por links.
+
+**Padrão obrigatório:** todo botão/link "Voltar ao Portal" deve usar `onclick="voltarAoPortal()"`. O snippet acima já inclui `<script src="../../shared/portal-back.js"></script>` antes do `</body>`.
+
+A função (`shared/portal-back.js`) lê o tema ativo via `window.opener`, tenta fechar a aba e, como fallback, navega para `../../index.html#theme-{disc}-{slug}` — retornando direto ao tema correto.
+
 ---
 
 ## Referências do Projeto
@@ -245,4 +254,5 @@ Para atividades com "Ver gabarito" independente: setar `window.sabendoScore` ANT
 | `referencias/hq-gerador-SKILL.md` | Skill de automação de HQ via Chrome |
 | `referencias/gamificacao-schema.md` | Schema Supabase do sistema de gamificação (tabelas + RLS) |
 | `shared/gamification.js` | Engine de gamificação do 2º ano (raridade aleatória, pixel reveal, reveal cinematográfico) |
+| `shared/portal-back.js` | Função `voltarAoPortal()` — retorna ao tema correto do portal sem depender de `window.close()` |
 | `Personagens\2o ano\Lis.png` | Referência visual canônica da protagonista (em pasta centralizada) |

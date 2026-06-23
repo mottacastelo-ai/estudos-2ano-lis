@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -95,7 +95,7 @@ body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100
   <button class="btn-check" onclick="checkAnswer()">Verificar minha resposta ✅</button>
   <button class="btn-reset" onclick="resetAll()">🔄 Recomeçar</button>
   <div class="result-box" id="result-box"></div>
-  <button class="back-btn" onclick="window.close()">🏠 Voltar ao Portal</button>
+  <button class="back-btn" onclick="voltarAoPortal()">🏠 Voltar ao Portal</button>
 </div>
 <script>
 const plants = {
@@ -178,5 +178,6 @@ function resetAll() {
   document.getElementById('result-box').className = 'result-box';
 }
 </script>
+<script src="../../shared/portal-back.js"></script>
 </body>
 </html>

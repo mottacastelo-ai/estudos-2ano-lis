@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -406,7 +406,7 @@ body {
   </div>
   <button class="btn-reset" onclick="resetAll()">🔄 Recomeçar</button>
   <div class="result-box" id="result-box"></div>
-  <button class="back-btn" onclick="window.close()">🏠 Voltar ao Portal</button>
+  <button class="back-btn" onclick="voltarAoPortal()">🏠 Voltar ao Portal</button>
 
 </div>
 
@@ -730,5 +730,6 @@ function resetAll() {
 // Init
 for (let i = 0; i < 6; i++) resetLine(i);
 </script>
+<script src="../../shared/portal-back.js"></script>
 </body>
 </html>

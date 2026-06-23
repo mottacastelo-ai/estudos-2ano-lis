@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -85,7 +85,7 @@ body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100
     <div class="result-msg" id="res-msg"></div>
     <div class="result-btns">
       <button class="btn-retry" onclick="startGame()">Tentar de novo 🔄</button>
-      <button class="btn-back" onclick="window.close()">Voltar ao Portal 🏠</button>
+      <button class="btn-back" onclick="voltarAoPortal()">Voltar ao Portal 🏠</button>
     </div>
   </div>
 </div>
@@ -184,5 +184,6 @@ function startGame() {
 }
 startGame();
 </script>
+<script src="../../shared/portal-back.js"></script>
 </body>
 </html>

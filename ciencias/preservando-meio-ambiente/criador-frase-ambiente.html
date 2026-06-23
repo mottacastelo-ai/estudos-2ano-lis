@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -162,7 +162,7 @@ body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100
     <div class="gallery" id="gallery"></div>
   </div>
 
-  <button class="back-btn" onclick="window.close()">🏠 Voltar ao Portal</button>
+  <button class="back-btn" onclick="voltarAoPortal()">🏠 Voltar ao Portal</button>
 </div>
 <script>
 let currentWords = [];
@@ -270,5 +270,6 @@ function playSuccess() {
   o.start(); o.stop(ctx.currentTime + 0.5);
 }
 </script>
+<script src="../../shared/portal-back.js"></script>
 </body>
 </html>
