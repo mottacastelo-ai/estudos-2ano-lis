@@ -225,14 +225,14 @@ Panel 3 (bottom left):
   three positions, each highlighted in a different color circle:
   TOP circle (green): "TATU" — the T at the start is large and bold, underlined.
   MIDDLE circle (yellow): "PATO" — the T in the middle is circled with a dotted ring.
-  BOTTOM circle (orange): "PONT" — the final T glows warmly.
+  BOTTOM circle (orange): "CANETA" — the T in the last syllable glows warmly.
 - Pontinho holds up a golden letter-T card in his fountain-pen-nip hands, eyebrows
   arched high in teacher mode, one arm extended toward the blackboard, calm wide smile.
 - Lis stands beside him holding a piece of chalk, face turned toward the board, eyes
   focused and interested, small smile of concentration.
 - Chalk dust drifts gently near the blackboard. Soft classroom lighting.
 - Speech bubble Pontinho: "O T aparece no início, meio e fim!"
-- Speech bubble Lis: "Tatu, pato, pont... entendi!"
+- Speech bubble Lis: "Tatu, pato, caneta... entendi!"
 
 Panel 4 (bottom right):
 - Setting: same classroom, now Pontinho and Lis are seated together on the floor on a
