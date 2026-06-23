@@ -8,7 +8,9 @@ model: claude-sonnet-4-6
 
 ## Missão
 
-Acionar o Codex Desktop para gerar as imagens da HQ (chars + pg1–pg4) escrevendo um JSON de pedido na pasta `.claude/pending/` e aguardando confirmação em `.claude/done/`.
+Fazer polling em `.claude/done/` até o Codex Desktop confirmar a geração das imagens HQ e, após confirmação, fazer commit + push das imagens.
+
+> **ATENÇÃO — O orquestrador escreve o JSON de pedido.** O `gerador-imagens-hq` NÃO escreve em `.claude/pending/` — isso é responsabilidade do orquestrador, imediatamente após o `gerador-prompt-hq` terminar. Este agente apenas aguarda o resultado.
 
 ## Input esperado
 

@@ -46,6 +46,11 @@ PDF (inputs/livro.pdf) → [analisador-conteudo] → Proposta → ⏸ APROVAÇÃ
                    │  [gerador-prompt-hq]      │  ← em paralelo
                    └──────────────────────────┘
                               ↓
+                   ┌──────────────────────────────────────────────────────┐
+                   │  ORQUESTRADOR escreve JSON em estudos/.claude/pending │  ← IMEDIATAMENTE após gerador-prompt-hq
+                   │  (não esperar o resto do pipeline — Codex já começa)  │
+                   └──────────────────────────────────────────────────────┘
+                              ↓ (em paralelo com o Codex gerando imagens)
                    [gerador-atividades]
                               ↓
                    [atualizador-portal]
@@ -55,9 +60,9 @@ PDF (inputs/livro.pdf) → [analisador-conteudo] → Proposta → ⏸ APROVAÇÃ
                    │  [revisor-qualidade]      │  ← em paralelo
                    └──────────────────────────┘
                               ↓ (ambos devem aprovar)
-                   [gerador-imagens-hq]   ← automático, sem gate
+                   [publicador-portal]    ← git add + commit + push (atividades)
                               ↓
-                   [publicador-portal]    ← git add + commit + push
+                   Aguardar Codex → [publicador-portal] commit imagens HQ
 ```
 
 ### Único Ponto de Parada
@@ -77,7 +82,7 @@ Após `analisador-conteudo` gerar a proposta estrutural, **parar e aguardar apro
 | `atualizador-portal` | Edita o index.html com o novo tema | Após atividades geradas |
 | `verificador-entrega` | Valida checklist técnico e de estrutura do portal | Em paralelo com revisor-qualidade, após atualizador-portal |
 | `revisor-qualidade` | Audita pedagogia, terminologia, escopo e vazamento de resposta | Em paralelo com verificador-entrega, após atualizador-portal |
-| `gerador-imagens-hq` | Escreve JSON de pedido em `.claude/pending/`; polling até Codex confirmar em `.claude/done/` | Automático após ambos aprovarem |
+| `gerador-imagens-hq` | Polling em `.claude/done/` até Codex confirmar; commit das imagens | Polling após publicador-portal das atividades |
 | `publicador-portal` | git add + commit + push para o GitHub Pages | Último — após gerador-imagens-hq |
 
 ---
@@ -105,9 +110,10 @@ Após `analisador-conteudo` gerar a proposta estrutural, **parar e aguardar apro
 7. Viewer da HQ: sempre `touch-action: auto`, nunca `pan-y pinch-zoom`
 8. Nunca adicionar `::before` com gradiente lateral no container do viewer da HQ
 9. **Pré-requisito para HQ:** Codex Desktop aberto com a automação "Gerar HQs pendentes" ativa antes de iniciar o pipeline — sem isso o `gerador-imagens-hq` vai expirar o timeout de 30 min
-10. **Variáveis JS globais proibidas:** nunca usar `var history`, `var name`, `var location`, `var event`, `var status`, `var top` em escopo global nos HTMLs de atividade — sobrescrevem objetos nativos do browser e causam bugs silenciosos. Usar nomes descritivos: `quizHistory`, `pageName`, etc.
-11. **Documentação imediata:** toda melhoria de regra, padrão ou convenção aprovada nesta sessão deve ser registrada nos docs do repositório antes de encerrar. Nenhuma melhoria fica apenas na memória do Claude.
-12. **ERROS.md obrigatório:** consultar `ERROS.md` antes de gerar qualquer atividade. Contém bugs reais diagnosticados em produção com regras de prevenção.
+10. **JSON Codex IMEDIATO após gerador-prompt-hq:** o orquestrador escreve o JSON de pedido em `estudos\.claude\pending\` assim que o `gerador-prompt-hq` confirmar o arquivo .md — sem esperar o restante do pipeline. Isso garante que o Codex processe em paralelo. Formato obrigatório: UTF-8 sem BOM via `[System.IO.File]::WriteAllText(path, json, [System.Text.UTF8Encoding]::new($false))`; `expected_outputs` apenas `pg1–pg4` (sem chars); campo `raiz` apontando para `estudos-2ano`.
+11. **Variáveis JS globais proibidas:** nunca usar `var history`, `var name`, `var location`, `var event`, `var status`, `var top` em escopo global nos HTMLs de atividade — sobrescrevem objetos nativos do browser e causam bugs silenciosos. Usar nomes descritivos: `quizHistory`, `pageName`, etc.
+12. **Documentação imediata:** toda melhoria de regra, padrão ou convenção aprovada nesta sessão deve ser registrada nos docs do repositório antes de encerrar. Nenhuma melhoria fica apenas na memória do Claude.
+13. **ERROS.md obrigatório:** consultar `ERROS.md` antes de gerar qualquer atividade. Contém bugs reais diagnosticados em produção com regras de prevenção.
 
 ---
 
