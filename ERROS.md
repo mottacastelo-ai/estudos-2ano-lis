@@ -151,6 +151,42 @@ Todo HTML de atividade DEVE passar `activityType: ACTIVITY_TYPE` no config de `S
 
 ---
 
+## ERR-006 — JSON Codex escrito na pasta errada / backslash duplo no campo `raiz`
+
+**Arquivo afetado:** `.claude/pending/hq-*.json` (contrato com Codex Desktop)
+**Data:** 2026-06
+**Tipo:** Configuração — pasta monitorada errada + escaping incorreto de caminhos Windows
+
+### Causa raiz
+
+**Bug 1 — Pasta errada:** Os JSONs de pedido foram escritos em `estudos-2ano\.claude\pending\`. O Codex Desktop **só monitora** `estudos\.claude\pending\` (projeto do 5º ano). O Codex não encontrou nenhum job.
+
+**Bug 2 — Backslash duplo:** Ao usar interpolação PowerShell com `-replace '\\','\\\\'` para escapar caminhos Windows, o resultado no arquivo JSON ficou `\\\\` por barra (ex: `C:\\\\Users\\\\...`). O Python ao fazer `json.load` lê isso como `C:\\Users\\...` (caminho com barras duplas — inválido).
+
+### Correção aplicada
+
+1. JSON escrito em `estudos\.claude\pending\` (não em `estudos-2ano`).
+2. String PowerShell single-quoted com `\\` literal em vez de interpolação:
+
+```powershell
+# ✅ CORRETO — single-quoted here-string, \\  vira uma barra no JSON
+$json = '{
+  "raiz": "C:\\Users\\wizar\\OneDrive\\Documentos\\Projeto Estudos\\estudos-2ano",
+  ...
+}'
+
+# ❌ ERRADO — interpolação com -replace produz \\\\ no arquivo
+$json = "{`"raiz`": `"$($path -replace '\\','\\\\')`"}"
+```
+
+### Regra para a squad
+
+- JSON de pedido Codex: **sempre** em `estudos\.claude\pending\` (projeto do 5º ano).
+- Caminhos Windows no JSON: usar **string literal single-quoted** com `\\` por barra. Nunca interpolar variáveis de caminho com `-replace`.
+- Verificar o arquivo gerado com `Get-Content` antes de acionar o Codex.
+
+---
+
 ## Checklist anti-bug para `gerador-atividades`
 
 Antes de finalizar qualquer HTML de atividade, verificar:
