@@ -489,6 +489,28 @@
   }
 
   /* ------------------------------------------------------------------ */
+  /* localStorage — backup de progresso (resistente a falhas no DB)     */
+  /* ------------------------------------------------------------------ */
+  function lsKey(themeSlug, uid) {
+    return 'sgami_prog_' + themeSlug + '_' + (uid || 'anon');
+  }
+  function lsSave(themeSlug, uid, activityType) {
+    if (!activityType) return;
+    try {
+      var key = lsKey(themeSlug, uid);
+      var obj = {};
+      try { obj = JSON.parse(localStorage.getItem(key) || '{}'); } catch(e) {}
+      obj[activityType] = true;
+      localStorage.setItem(key, JSON.stringify(obj));
+    } catch(e) {}
+  }
+  function lsLoad(themeSlug, uid) {
+    try {
+      return Object.keys(JSON.parse(localStorage.getItem(lsKey(themeSlug, uid)) || '{}'));
+    } catch(e) { return []; }
+  }
+
+  /* ------------------------------------------------------------------ */
   /* Supabase                                                             */
   /* ------------------------------------------------------------------ */
   async function saveCard(supa, uid, themeSlug, discipline, cardSlug) {
@@ -499,14 +521,18 @@
   }
 
   async function fetchProgress(supa, uid, themeSlug, currentActivityType) {
-    // Conta activity_types distintos concluídos neste tema.
-    // currentActivityType é adicionado otimisticamente para contornar race condition
-    // entre o insert fire-and-forget do caller e esta query.
-    var res = await supa.from("activity_log")
-      .select("activity_type")
-      .eq("user_id", uid)
-      .eq("theme_slug", themeSlug);
-    var uniqueTypes = new Set((res.data || []).map(function(r) { return r.activity_type; }));
+    var uniqueTypes = new Set();
+    // Fonte 1: localStorage (imediato, resistente a falhas de DB/RLS)
+    lsLoad(themeSlug, uid).forEach(function(t) { uniqueTypes.add(t); });
+    // Fonte 2: Supabase (pode estar atrasado ou inacessível — best effort)
+    try {
+      var res = await supa.from("activity_log")
+        .select("activity_type")
+        .eq("user_id", uid)
+        .eq("theme_slug", themeSlug);
+      (res.data || []).forEach(function(r) { uniqueTypes.add(r.activity_type); });
+    } catch(e) {}
+    // Fonte 3: atividade atual (otimismo — garante que pelo menos 1 aparece)
     if (currentActivityType) uniqueTypes.add(currentActivityType);
     return { completedCount: uniqueTypes.size };
   }
@@ -773,6 +799,9 @@
   /* ------------------------------------------------------------------ */
   async function run(supa, uid, themeSlug, discipline, config) {
     loadSpaceMono();
+
+    // Salvar imediatamente no localStorage (não depende do DB)
+    lsSave(themeSlug, uid, config.activityType);
 
     var totalActivities = config.totalActivities || 5;
     var stages          = getStages(totalActivities);
