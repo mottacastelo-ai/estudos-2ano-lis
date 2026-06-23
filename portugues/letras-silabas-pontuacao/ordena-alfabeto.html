@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ordene o Alfabeto — Letras, Sílabas e Pontuação | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #E8430A;
+  --light: #FB8C5A;
+  --bg: #FFF4EF;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.2rem;
+  background: var(--bg);
+  min-height: 100vh;
+  padding: 0 0 40px;
+}
+.header {
+  background: linear-gradient(135deg, #7A1F04, #E8430A 60%, #FB8C5A);
+  color: #fff;
+  padding: 20px 16px 24px;
+  text-align: center;
+}
+.header .emoji { font-size: 2.5rem; display: block; margin-bottom: 6px; }
+.header h1 { font-family: 'Baloo 2', sans-serif; font-size: 1.6rem; font-weight: 900; line-height: 1.2; }
+.header p { font-size: 1rem; opacity: 0.9; margin-top: 4px; }
+.container { max-width: 680px; margin: 0 auto; padding: 20px 16px; }
+.instrucao {
+  background: #fff;
+  border-radius: 16px;
+  padding: 14px 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 12px rgba(232,67,10,0.08);
+  font-size: 1rem;
+  color: #555;
+  line-height: 1.5;
+}
+.instrucao strong { color: var(--primary); }
+.grupo-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(232,67,10,0.1);
+  margin-bottom: 20px;
+}
+.grupo-titulo {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--primary);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.grupo-titulo .grupo-icon { font-size: 1.3rem; }
+.palavras-embaralhadas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.palavra-chip {
+  background: var(--bg);
+  border: 2.5px solid #f0d4c8;
+  border-radius: 12px;
+  padding: 10px 18px;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.18s;
+  min-height: 44px;
+  min-width: 44px;
+  user-select: none;
+}
+.palavra-chip:hover:not(.usada):not(.selecionada) {
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: translateY(-2px);
+}
+.palavra-chip.selecionada {
+  background: #FFF4EF;
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: scale(1.06);
+}
+.palavra-chip.usada {
+  opacity: 0.3;
+  cursor: default;
+  pointer-events: none;
+}
+.slots-ordem {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.slot-ordem {
+  flex: 1;
+  min-width: 70px;
+  min-height: 54px;
+  border-radius: 12px;
+  border: 2.5px dashed #f0d4c8;
+  background: #fafafa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #ccc;
+  cursor: pointer;
+  transition: all 0.18s;
+  position: relative;
+  padding: 6px;
+  text-align: center;
+  line-height: 1.2;
+}
+.slot-ordem:not(.preenchido):hover {
+  border-color: var(--primary);
+  background: #FFF4EF;
+}
+.slot-ordem.preenchido {
+  background: #fff;
+  border-style: solid;
+  border-color: #e0d0c8;
+  color: #333;
+  font-size: 1rem;
+}
+.slot-ordem.correto {
+  background: #dcfce7;
+  border-color: #22c55e;
+  color: #15803d;
+}
+.slot-ordem.errado {
+  background: #fee2e2;
+  border-color: #ef4444;
+  color: #b91c1c;
+}
+.slot-num {
+  position: absolute;
+  top: 3px;
+  left: 5px;
+  font-size: 0.65rem;
+  color: #ccc;
+  font-weight: 700;
+}
+.slot-ordem.correto .slot-num { color: #86efac; }
+.slot-ordem.errado .slot-num { color: #fca5a5; }
+.btn-verificar {
+  display: block;
+  margin: 10px auto 0;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 12px 28px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(232,67,10,0.25);
+  transition: all 0.18s;
+}
+.btn-verificar:hover { transform: translateY(-2px); }
+.btn-verificar:disabled { opacity: 0.5; cursor: default; transform: none; }
+.grupo-feedback {
+  margin-top: 10px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  display: none;
+}
+.grupo-feedback.correct { background: #dcfce7; color: #15803d; }
+.grupo-feedback.wrong   { background: #fee2e2; color: #b91c1c; }
+.btn-limpar {
+  display: none;
+  margin: 6px auto 0;
+  background: none;
+  color: var(--light);
+  border: 2px solid var(--light);
+  border-radius: 50px;
+  padding: 8px 20px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+.resultado-final {
+  display: none;
+  text-align: center;
+  background: #fff;
+  border-radius: 20px;
+  padding: 32px 24px;
+  box-shadow: 0 4px 20px rgba(232,67,10,0.12);
+  margin-top: 10px;
+}
+.resultado-final .big-emoji { font-size: 4rem; }
+.resultado-final h2 { font-family: 'Baloo 2', sans-serif; font-size: 2rem; font-weight: 900; color: var(--primary); margin: 12px 0 8px; }
+.resultado-final .score-text { font-size: 1.4rem; font-weight: 800; color: #555; }
+.resultado-final .msg { font-size: 1.05rem; color: #666; margin-top: 10px; line-height: 1.5; }
+.btn-retry {
+  display: inline-block;
+  margin-top: 20px;
+  background: linear-gradient(135deg, #E8430A, #FB8C5A);
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 14px 32px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+.back-link { display: block; text-align: center; margin-top: 24px; color: var(--primary); font-weight: 700; text-decoration: none; font-size: 1rem; }
+.back-link:hover { text-decoration: underline; }
+@media (max-width: 480px) {
+  .header h1 { font-size: 1.3rem; }
+  .palavras-embaralhadas { gap: 6px; }
+  .palavra-chip { padding: 10px 14px; font-size: 1rem; }
+  .slots-ordem { gap: 6px; }
+  .slot-ordem { min-width: 60px; font-size: 0.9rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="emoji">❗</span>
+  <h1>Ordene em Ordem Alfabética</h1>
+  <p>Pontinho quer organizar as palavras como no dicionário!</p>
+</div>
+
+<div class="container">
+  <div class="instrucao">
+    Clique numa palavra e depois clique no slot onde ela deve ficar. Coloque as palavras em <strong>ordem alfabética</strong> (de A a Z, como no dicionário)!
+  </div>
+
+  <div id="gruposArea"></div>
+
+  <div class="resultado-final" id="resultadoFinal">
+    <div class="big-emoji" id="resultEmoji"></div>
+    <h2 id="resultTitulo"></h2>
+    <div class="score-text" id="resultScore"></div>
+    <div class="msg" id="resultMsg"></div>
+    <button class="btn-retry" onclick="iniciar()">Jogar de novo 🔄</button>
+  </div>
+
+  <a href="../../index.html" class="back-link">← Voltar ao Portal</a>
+</div>
+
+<script>
+(function () {
+
+// Grupos de palavras para ordenar alfabeticamente
+// Criterio: primeira letra determina a ordem (declarado no enunciado e visivel nos proprios elementos)
+var GRUPOS_BASE = [
+  {
+    titulo: 'Animais',
+    icone: '🐾',
+    palavras: ['PATO', 'RATO', 'TATU', 'DADO'] // D, P, R, T
+    // Ordem correta: DADO, PATO, RATO, TATU
+  },
+  {
+    titulo: 'Objetos da sala',
+    icone: '✏️',
+    palavras: ['MESA', 'CADERNO', 'BORRACHA', 'LIVRO']
+    // Ordem correta: BORRACHA, CADERNO, LIVRO, MESA
+  },
+  {
+    titulo: 'Frutas',
+    icone: '🍎',
+    palavras: ['UVA', 'PERA', 'MACA', 'ABACAXI']
+    // Ordem correta: ABACAXI, MACA, PERA, UVA
+  },
+  {
+    titulo: 'Nomes',
+    icone: '👧',
+    palavras: ['PEDRO', 'ANA', 'RITA', 'LUNA']
+    // Ordem correta: ANA, LUNA, PEDRO, RITA
+  }
+];
+
+var gruposEstado = [];
+var chipSelecionado = null; // { grupoIdx, palavraIdx }
+var gruposCorretos = 0;
+
+function embaralharArray(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+function ordemAlfabetica(palavras) {
+  return palavras.slice().sort(function (a, b) { return a.localeCompare(b, 'pt-BR'); });
+}
+
+function playSound(tipo) {
+  try {
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    var o = ctx.createOscillator();
+    var g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    if (tipo === 'correct') {
+      o.frequency.setValueAtTime(523, ctx.currentTime);
+      o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+      o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+      o.start(); o.stop(ctx.currentTime + 0.5);
+    } else {
+      o.frequency.setValueAtTime(300, ctx.currentTime);
+      o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      o.start(); o.stop(ctx.currentTime + 0.4);
+    }
+  } catch (e) {}
+}
+
+function iniciar() {
+  chipSelecionado = null;
+  gruposCorretos = 0;
+  document.getElementById('resultadoFinal').style.display = 'none';
+
+  gruposEstado = GRUPOS_BASE.map(function (g) {
+    return {
+      titulo: g.titulo,
+      icone: g.icone,
+      palavrasEmbaralhadas: embaralharArray(g.palavras),
+      palavrasOrdenadas: ordemAlfabetica(g.palavras),
+      slots: g.palavras.map(function () { return null; }),
+      verificado: false,
+      correto: false
+    };
+  });
+
+  renderizarTodos();
+}
+
+function renderizarTodos() {
+  var area = document.getElementById('gruposArea');
+  area.innerHTML = '';
+  gruposEstado.forEach(function (grupo, gi) {
+    area.appendChild(criarGrupoEl(grupo, gi));
+  });
+}
+
+function criarGrupoEl(grupo, gi) {
+  var card = document.createElement('div');
+  card.className = 'grupo-card';
+  card.id = 'grupo-' + gi;
+
+  var titulo = document.createElement('div');
+  titulo.className = 'grupo-titulo';
+  titulo.innerHTML = '<span class="grupo-icon">' + grupo.icone + '</span>' + grupo.titulo;
+  card.appendChild(titulo);
+
+  // Chips embaralhados
+  var chipsDiv = document.createElement('div');
+  chipsDiv.className = 'palavras-embaralhadas';
+  chipsDiv.id = 'chips-' + gi;
+  grupo.palavrasEmbaralhadas.forEach(function (palavra, pi) {
+    var chip = document.createElement('div');
+    chip.className = 'palavra-chip';
+    chip.textContent = palavra;
+    chip.id = 'chip-' + gi + '-' + pi;
+    // Marcar usada se ja esta no slot
+    var jaUsada = grupo.slots.indexOf(palavra) !== -1;
+    if (jaUsada) chip.classList.add('usada');
+    if (!grupo.verificado && !jaUsada) {
+      chip.addEventListener('click', function () { selecionarChip(gi, pi, palavra); });
+      chip.addEventListener('touchend', function (e) { e.preventDefault(); selecionarChip(gi, pi, palavra); }, { passive: false });
+    }
+    chipsDiv.appendChild(chip);
+  });
+  card.appendChild(chipsDiv);
+
+  // Slots de ordem
+  var slotsDiv = document.createElement('div');
+  slotsDiv.className = 'slots-ordem';
+  slotsDiv.id = 'slots-' + gi;
+  grupo.slots.forEach(function (slotVal, si) {
+    var slot = document.createElement('div');
+    slot.className = 'slot-ordem';
+    slot.id = 'slot-' + gi + '-' + si;
+
+    var numEl = document.createElement('span');
+    numEl.className = 'slot-num';
+    numEl.textContent = (si + 1) + 'º';
+    slot.appendChild(numEl);
+
+    if (slotVal) {
+      slot.classList.add('preenchido');
+      var txtNode = document.createTextNode(slotVal);
+      slot.appendChild(txtNode);
+      if (grupo.verificado) {
+        var correto = slotVal === grupo.palavrasOrdenadas[si];
+        slot.classList.add(correto ? 'correto' : 'errado');
+      }
+    } else {
+      slot.textContent = '';
+      slot.appendChild(numEl);
+    }
+
+    if (!grupo.verificado) {
+      slot.addEventListener('click', function () { clicarSlot(gi, si); });
+      slot.addEventListener('touchend', function (e) { e.preventDefault(); clicarSlot(gi, si); }, { passive: false });
+    }
+    slotsDiv.appendChild(slot);
+  });
+  card.appendChild(slotsDiv);
+
+  // Botoes verificar / limpar
+  var btnVerif = document.createElement('button');
+  btnVerif.className = 'btn-verificar';
+  btnVerif.textContent = 'Verificar ✓';
+  btnVerif.id = 'btnVerif-' + gi;
+  var slotsPreenchidos = grupo.slots.filter(function (s) { return s !== null; }).length;
+  btnVerif.disabled = slotsPreenchidos < grupo.slots.length;
+  if (!grupo.verificado) {
+    btnVerif.addEventListener('click', function () { verificarGrupo(gi); });
+  } else {
+    btnVerif.disabled = true;
+    btnVerif.style.display = 'none';
+  }
+  card.appendChild(btnVerif);
+
+  var btnLimpar = document.createElement('button');
+  btnLimpar.className = 'btn-limpar';
+  btnLimpar.textContent = 'Limpar ↺';
+  btnLimpar.id = 'btnLimpar-' + gi;
+  if (!grupo.verificado && slotsPreenchidos > 0) btnLimpar.style.display = 'block';
+  if (!grupo.verificado) {
+    btnLimpar.addEventListener('click', function () { limparGrupo(gi); });
+  }
+  card.appendChild(btnLimpar);
+
+  // Feedback
+  var fb = document.createElement('div');
+  fb.className = 'grupo-feedback';
+  fb.id = 'fb-' + gi;
+  if (grupo.verificado) {
+    fb.style.display = 'block';
+    if (grupo.correto) {
+      fb.className = 'grupo-feedback correct';
+      fb.textContent = '✅ Perfeito! Ordem alfabética correta!';
+    } else {
+      fb.className = 'grupo-feedback wrong';
+      fb.textContent = '❌ Quase! A ordem certa seria: ' + grupo.palavrasOrdenadas.join(', ');
+    }
+  }
+  card.appendChild(fb);
+
+  return card;
+}
+
+function selecionarChip(gi, pi, palavra) {
+  // Limpa selecao anterior
+  document.querySelectorAll('.palavra-chip.selecionada').forEach(function (el) {
+    el.classList.remove('selecionada');
+  });
+
+  if (chipSelecionado && chipSelecionado.gi === gi && chipSelecionado.pi === pi) {
+    // Deselecionar se clicou no mesmo
+    chipSelecionado = null;
+    return;
+  }
+
+  chipSelecionado = { gi: gi, pi: pi, palavra: palavra };
+  var chipEl = document.getElementById('chip-' + gi + '-' + pi);
+  if (chipEl) chipEl.classList.add('selecionada');
+}
+
+function clicarSlot(gi, si) {
+  if (!chipSelecionado || chipSelecionado.gi !== gi) return;
+
+  var grupo = gruposEstado[gi];
+  if (grupo.verificado) return;
+
+  // Se slot ja tem palavra, devolver ao pool
+  if (grupo.slots[si] !== null) {
+    // Desmarcar chip correspondente
+    var palavraAntiga = grupo.slots[si];
+    var idxAntigo = grupo.palavrasEmbaralhadas.indexOf(palavraAntiga);
+    var chipAntigoEl = document.getElementById('chip-' + gi + '-' + idxAntigo);
+    if (chipAntigoEl) chipAntigoEl.classList.remove('usada');
+  }
+
+  grupo.slots[si] = chipSelecionado.palavra;
+
+  var chipUsadoEl = document.getElementById('chip-' + gi + '-' + chipSelecionado.pi);
+  if (chipUsadoEl) {
+    chipUsadoEl.classList.add('usada');
+    chipUsadoEl.classList.remove('selecionada');
+  }
+  chipSelecionado = null;
+
+  // Re-renderizar grupo
+  var grupoCard = document.getElementById('grupo-' + gi);
+  var newCard = criarGrupoEl(grupo, gi);
+  grupoCard.parentNode.replaceChild(newCard, grupoCard);
+}
+
+function limparGrupo(gi) {
+  var grupo = gruposEstado[gi];
+  grupo.slots = grupo.slots.map(function () { return null; });
+  chipSelecionado = null;
+  var grupoCard = document.getElementById('grupo-' + gi);
+  var newCard = criarGrupoEl(grupo, gi);
+  grupoCard.parentNode.replaceChild(newCard, grupoCard);
+}
+
+function verificarGrupo(gi) {
+  var grupo = gruposEstado[gi];
+  var correto = true;
+  for (var i = 0; i < grupo.slots.length; i++) {
+    if (grupo.slots[i] !== grupo.palavrasOrdenadas[i]) { correto = false; break; }
+  }
+  grupo.verificado = true;
+  grupo.correto = correto;
+
+  if (correto) {
+    gruposCorretos++;
+    playSound('correct');
+  } else {
+    playSound('wrong');
+  }
+
+  var grupoCard = document.getElementById('grupo-' + gi);
+  var newCard = criarGrupoEl(grupo, gi);
+  grupoCard.parentNode.replaceChild(newCard, grupoCard);
+
+  // Verificar se todos os grupos foram verificados
+  var todosVerificados = gruposEstado.every(function (g) { return g.verificado; });
+  if (todosVerificados) {
+    setTimeout(mostrarResultadoFinal, 600);
+  }
+}
+
+function mostrarResultadoFinal() {
+  var total = gruposEstado.length;
+  var pct = Math.round((gruposCorretos / total) * 100);
+  window.sabendoScore = pct;
+
+  var emojiEl = document.getElementById('resultEmoji');
+  var tituloEl = document.getElementById('resultTitulo');
+  var msgEl = document.getElementById('resultMsg');
+  var scoreEl = document.getElementById('resultScore');
+
+  if (gruposCorretos === total) {
+    emojiEl.textContent = '🎉';
+    tituloEl.textContent = 'Dicionário vivo!';
+    msgEl.textContent = 'Todos os grupos em ordem! Pontinho vai usar você no dicionário! ❗📖';
+  } else if (gruposCorretos >= 2) {
+    emojiEl.textContent = '😊';
+    tituloEl.textContent = 'Muito bem!';
+    msgEl.textContent = 'Você acertou ' + gruposCorretos + ' de ' + total + ' grupos. Continue praticando a ordem alfabética!';
+  } else {
+    emojiEl.textContent = '💪';
+    tituloEl.textContent = 'Vamos treinar mais!';
+    msgEl.textContent = 'Lembre: no alfabeto, A vem antes de B, B antes de C... e assim por diante!';
+  }
+  scoreEl.textContent = gruposCorretos + ' / ' + total + ' grupos corretos';
+  document.getElementById('resultadoFinal').style.display = 'block';
+  document.getElementById('resultadoFinal').scrollIntoView({ behavior: 'smooth' });
+}
+
+iniciar();
+window.iniciar = iniciar;
+
+})();
+</script>
+
+<!-- ── GAMIFICAÇÃO ─────────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'letras-silabas-pontuacao';
+  var DISCIPLINE    = 'portugues';
+  var ACTIVITY_TYPE = 'arrastar';
+  var TOTAL_ATIV    = 5;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Pontinho',
+        characterEmoji:  '❗',
+        characterImg:    'chars/pontinho.png',
+        themeLabel:      'Letras, Sílabas e Pontuação · Português',
+        totalActivities: TOTAL_ATIV,
+        primaryColor:    '#E8430A',
+        lightColor:      '#FB8C5A',
+        bgColor:         '#FFF4EF',
+        glowRgb:         '232,67,10',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _scoreVal = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _scoreVal = v;
+      var btn = document.getElementById('gamificacao-btn');
+      if (btn) btn.style.display = 'block';
+    },
+    get: function () { return _scoreVal; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#E8430A,#FB8C5A);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+</body>
+</html>

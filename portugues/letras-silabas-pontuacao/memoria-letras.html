@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jogo da Memória — Letras, Sílabas e Pontuação | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #E8430A;
+  --light: #FB8C5A;
+  --bg: #FFF4EF;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.2rem;
+  background: var(--bg);
+  min-height: 100vh;
+  padding: 0 0 40px;
+}
+.header {
+  background: linear-gradient(135deg, #7A1F04, #E8430A 60%, #FB8C5A);
+  color: #fff;
+  padding: 20px 16px 24px;
+  text-align: center;
+}
+.header .emoji { font-size: 2.5rem; display: block; margin-bottom: 6px; }
+.header h1 { font-family: 'Baloo 2', sans-serif; font-size: 1.6rem; font-weight: 900; line-height: 1.2; }
+.header p { font-size: 1rem; opacity: 0.9; margin-top: 4px; }
+.container { max-width: 680px; margin: 0 auto; padding: 20px 16px; }
+.instrucao {
+  background: #fff;
+  border-radius: 16px;
+  padding: 14px 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 12px rgba(232,67,10,0.08);
+  font-size: 1rem;
+  color: #555;
+  line-height: 1.5;
+}
+.instrucao strong { color: var(--primary); }
+.placar-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  gap: 10px;
+}
+.placar-item {
+  background: #fff;
+  border-radius: 14px;
+  padding: 10px 16px;
+  text-align: center;
+  flex: 1;
+  box-shadow: 0 2px 8px rgba(232,67,10,0.1);
+}
+.placar-item .num {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--primary);
+  line-height: 1;
+}
+.placar-item .label { font-size: 0.8rem; color: #888; font-weight: 700; text-transform: uppercase; }
+.memory-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.mem-card {
+  aspect-ratio: 1;
+  border-radius: 14px;
+  cursor: pointer;
+  position: relative;
+  min-height: 70px;
+  min-width: 44px;
+  perspective: 600px;
+}
+.mem-card-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.35s ease;
+  border-radius: 14px;
+}
+.mem-card.virado .mem-card-inner { transform: rotateY(180deg); }
+.mem-card-frente,
+.mem-card-verso {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 14px;
+  backface-visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+}
+.mem-card-frente {
+  background: linear-gradient(135deg, #E8430A, #FB8C5A);
+  color: #fff;
+  font-size: 2rem;
+}
+.mem-card-verso {
+  transform: rotateY(180deg);
+  background: #fff;
+  border: 2.5px solid #f0d4c8;
+  flex-direction: column;
+  gap: 4px;
+}
+.mem-card-verso .card-tipo {
+  font-size: 0.6rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 2px 6px;
+  border-radius: 20px;
+  background: var(--bg);
+  color: var(--primary);
+  white-space: nowrap;
+}
+.mem-card-verso .card-conteudo {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: #333;
+  text-align: center;
+  line-height: 1.2;
+}
+.mem-card.acertado .mem-card-verso {
+  background: #dcfce7;
+  border-color: #22c55e;
+}
+.mem-card.acertado .mem-card-verso .card-conteudo { color: #15803d; }
+.mem-card.errado .mem-card-verso {
+  background: #fee2e2;
+  border-color: #ef4444;
+  animation: shake 0.3s ease;
+}
+@keyframes shake {
+  0%,100% { transform: rotateY(180deg) translateX(0); }
+  25% { transform: rotateY(180deg) translateX(-4px); }
+  75% { transform: rotateY(180deg) translateX(4px); }
+}
+.resultado {
+  display: none;
+  text-align: center;
+  background: #fff;
+  border-radius: 20px;
+  padding: 32px 24px;
+  box-shadow: 0 4px 20px rgba(232,67,10,0.12);
+}
+.resultado .big-emoji { font-size: 4rem; }
+.resultado h2 { font-family: 'Baloo 2', sans-serif; font-size: 2rem; font-weight: 900; color: var(--primary); margin: 12px 0 8px; }
+.resultado .score-text { font-size: 1.3rem; font-weight: 800; color: #555; }
+.resultado .msg { font-size: 1.05rem; color: #666; margin-top: 10px; line-height: 1.5; }
+.btn-retry {
+  display: inline-block;
+  margin-top: 20px;
+  background: linear-gradient(135deg, #E8430A, #FB8C5A);
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 14px 32px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+.back-link { display: block; text-align: center; margin-top: 24px; color: var(--primary); font-weight: 700; text-decoration: none; font-size: 1rem; }
+.back-link:hover { text-decoration: underline; }
+@media (max-width: 480px) {
+  .header h1 { font-size: 1.3rem; }
+  .memory-grid { grid-template-columns: repeat(4, 1fr); gap: 7px; }
+  .mem-card-verso .card-conteudo { font-size: 0.9rem; }
+  .mem-card-verso .card-tipo { font-size: 0.55rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="emoji">❗</span>
+  <h1>Jogo da Memória — Letras e Palavras</h1>
+  <p>Ache os pares: letra + onde ela aparece na palavra!</p>
+</div>
+
+<div class="container">
+  <div class="instrucao">
+    Vire dois cards de cada vez. Se a <strong>letra</strong> combinar com o <strong>exemplo</strong> correto, você acertou o par! 🎯
+  </div>
+
+  <div class="placar-bar">
+    <div class="placar-item">
+      <div class="num" id="numPares">0/8</div>
+      <div class="label">Pares</div>
+    </div>
+    <div class="placar-item">
+      <div class="num" id="numTentativas">0</div>
+      <div class="label">Tentativas</div>
+    </div>
+  </div>
+
+  <div class="memory-grid" id="memoryGrid"></div>
+
+  <div class="resultado" id="resultadoArea">
+    <div class="big-emoji" id="resultEmoji"></div>
+    <h2 id="resultTitulo"></h2>
+    <div class="score-text" id="resultScore"></div>
+    <div class="msg" id="resultMsg"></div>
+    <button class="btn-retry" onclick="iniciarJogo()">Jogar de novo 🔄</button>
+  </div>
+
+  <a href="../../index.html" class="back-link">← Voltar ao Portal</a>
+</div>
+
+<script>
+(function () {
+
+// Pares: cada par tem um card de "letra+posicao" e um card de "palavra exemplo"
+// Correspondencia pedagogica: letra na posicao especificada aparece na palavra
+var PARES = [
+  { id: 'p1', letra: { tipo: 'Letra', conteudo: 'T no início' }, palavra: { tipo: 'Exemplo', conteudo: 'TATU' } },
+  { id: 'p2', letra: { tipo: 'Letra', conteudo: 'T no meio' },   palavra: { tipo: 'Exemplo', conteudo: 'PATO' } },
+  { id: 'p3', letra: { tipo: 'Letra', conteudo: 'D no início' }, palavra: { tipo: 'Exemplo', conteudo: 'DADO' } },
+  { id: 'p4', letra: { tipo: 'Letra', conteudo: 'D no meio' },   palavra: { tipo: 'Exemplo', conteudo: 'RADAR' } },
+  { id: 'p5', letra: { tipo: 'Letra', conteudo: 'R no início' }, palavra: { tipo: 'Exemplo', conteudo: 'RATO' } },
+  { id: 'p6', letra: { tipo: 'Letra', conteudo: 'R suave (meio)' }, palavra: { tipo: 'Exemplo', conteudo: 'PORTA' } },
+  { id: 'p7', letra: { tipo: 'Letra', conteudo: 'R no fim' },    palavra: { tipo: 'Exemplo', conteudo: 'FLOR' } },
+  { id: 'p8', letra: { tipo: 'Letra', conteudo: 'RR forte' },    palavra: { tipo: 'Exemplo', conteudo: 'CARRO' } }
+];
+
+var cards = [];
+var virados = [];
+var paresAcertados = 0;
+var tentativas = 0;
+var bloqueado = false;
+
+function embaralharArray(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+function playSound(tipo) {
+  try {
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    var o = ctx.createOscillator();
+    var g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    if (tipo === 'correct') {
+      o.frequency.setValueAtTime(523, ctx.currentTime);
+      o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+      o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+      o.start(); o.stop(ctx.currentTime + 0.5);
+    } else {
+      o.frequency.setValueAtTime(300, ctx.currentTime);
+      o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      o.start(); o.stop(ctx.currentTime + 0.4);
+    }
+  } catch (e) {}
+}
+
+function iniciarJogo() {
+  paresAcertados = 0;
+  tentativas = 0;
+  virados = [];
+  bloqueado = false;
+  document.getElementById('resultadoArea').style.display = 'none';
+  document.getElementById('numPares').textContent = '0/8';
+  document.getElementById('numTentativas').textContent = '0';
+
+  // Montar lista de todos os cards (16 ao todo, 2 por par)
+  cards = [];
+  PARES.forEach(function (par) {
+    cards.push({ parid: par.id, tipo: par.letra.tipo, conteudo: par.letra.conteudo, lado: 'letra' });
+    cards.push({ parid: par.id, tipo: par.palavra.tipo, conteudo: par.palavra.conteudo, lado: 'palavra' });
+  });
+  cards = embaralharArray(cards);
+
+  var grid = document.getElementById('memoryGrid');
+  grid.innerHTML = '';
+  cards.forEach(function (card, idx) {
+    var el = document.createElement('div');
+    el.className = 'mem-card';
+    el.setAttribute('data-idx', idx);
+    el.innerHTML =
+      '<div class="mem-card-inner">' +
+        '<div class="mem-card-frente">🃏</div>' +
+        '<div class="mem-card-verso">' +
+          '<div class="card-tipo">' + card.tipo + '</div>' +
+          '<div class="card-conteudo">' + card.conteudo + '</div>' +
+        '</div>' +
+      '</div>';
+    el.addEventListener('click', function () { clicarCard(idx, el); });
+    // Touch support
+    el.addEventListener('touchend', function (e) { e.preventDefault(); clicarCard(idx, el); }, { passive: false });
+    grid.appendChild(el);
+  });
+}
+
+function clicarCard(idx, el) {
+  if (bloqueado) return;
+  if (el.classList.contains('virado') || el.classList.contains('acertado')) return;
+  if (virados.length >= 2) return;
+
+  el.classList.add('virado');
+  virados.push({ idx: idx, el: el });
+
+  if (virados.length === 2) {
+    tentativas++;
+    document.getElementById('numTentativas').textContent = tentativas;
+    bloqueado = true;
+    setTimeout(verificarPar, 900);
+  }
+}
+
+function verificarPar() {
+  var a = virados[0];
+  var b = virados[1];
+  var cardA = cards[a.idx];
+  var cardB = cards[b.idx];
+
+  if (cardA.parid === cardB.parid && cardA.lado !== cardB.lado) {
+    // Par correto
+    a.el.classList.add('acertado');
+    b.el.classList.add('acertado');
+    paresAcertados++;
+    document.getElementById('numPares').textContent = paresAcertados + '/8';
+    playSound('correct');
+    virados = [];
+    bloqueado = false;
+    if (paresAcertados === 8) {
+      setTimeout(mostrarResultado, 500);
+    }
+  } else {
+    // Par errado
+    a.el.classList.add('errado');
+    b.el.classList.add('errado');
+    playSound('wrong');
+    setTimeout(function () {
+      a.el.classList.remove('virado', 'errado');
+      b.el.classList.remove('virado', 'errado');
+      virados = [];
+      bloqueado = false;
+    }, 700);
+  }
+}
+
+function mostrarResultado() {
+  window.sabendoScore = Math.round(Math.max(0, (1 - (tentativas - 8) / 16) * 100));
+
+  var emojiEl = document.getElementById('resultEmoji');
+  var tituloEl = document.getElementById('resultTitulo');
+  var msgEl = document.getElementById('resultMsg');
+  var scoreEl = document.getElementById('resultScore');
+
+  if (tentativas <= 10) {
+    emojiEl.textContent = '🏆';
+    tituloEl.textContent = 'Memória de ouro!';
+    msgEl.textContent = 'Que incrível! Você completou em ' + tentativas + ' tentativas. Pontinho adorou! ❗✨';
+  } else if (tentativas <= 16) {
+    emojiEl.textContent = '😊';
+    tituloEl.textContent = 'Muito bem!';
+    msgEl.textContent = 'Você completou em ' + tentativas + ' tentativas. Bom trabalho!';
+  } else {
+    emojiEl.textContent = '💪';
+    tituloEl.textContent = 'Concluído!';
+    msgEl.textContent = 'Você encontrou todos os pares em ' + tentativas + ' tentativas. Pratique mais!';
+  }
+  scoreEl.textContent = tentativas + ' tentativas para completar';
+  document.getElementById('resultadoArea').style.display = 'block';
+  document.getElementById('resultadoArea').scrollIntoView({ behavior: 'smooth' });
+}
+
+iniciarJogo();
+window.iniciarJogo = iniciarJogo;
+
+})();
+</script>
+
+<!-- ── GAMIFICAÇÃO ─────────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'letras-silabas-pontuacao';
+  var DISCIPLINE    = 'portugues';
+  var ACTIVITY_TYPE = 'memoria';
+  var TOTAL_ATIV    = 5;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Pontinho',
+        characterEmoji:  '❗',
+        characterImg:    'chars/pontinho.png',
+        themeLabel:      'Letras, Sílabas e Pontuação · Português',
+        totalActivities: TOTAL_ATIV,
+        primaryColor:    '#E8430A',
+        lightColor:      '#FB8C5A',
+        bgColor:         '#FFF4EF',
+        glowRgb:         '232,67,10',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _scoreVal = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _scoreVal = v;
+      var btn = document.getElementById('gamificacao-btn');
+      if (btn) btn.style.display = 'block';
+    },
+    get: function () { return _scoreVal; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#E8430A,#FB8C5A);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+</body>
+</html>

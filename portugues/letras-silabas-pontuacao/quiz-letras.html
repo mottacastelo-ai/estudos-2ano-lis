@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Interativo — Letras, Sílabas e Pontuação | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #E8430A;
+  --light: #FB8C5A;
+  --bg: #FFF4EF;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.2rem;
+  background: var(--bg);
+  min-height: 100vh;
+  padding: 0 0 40px;
+}
+.header {
+  background: linear-gradient(135deg, #7A1F04, #E8430A 60%, #FB8C5A);
+  color: #fff;
+  padding: 20px 16px 24px;
+  text-align: center;
+}
+.header .emoji { font-size: 2.5rem; display: block; margin-bottom: 6px; }
+.header h1 {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+.header p { font-size: 1rem; opacity: 0.9; margin-top: 4px; }
+.container { max-width: 680px; margin: 0 auto; padding: 24px 16px; }
+.progress-bar {
+  background: #f0d4c8;
+  border-radius: 50px;
+  height: 10px;
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #E8430A, #FB8C5A);
+  border-radius: 50px;
+  transition: width 0.4s ease;
+}
+.question-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(232,67,10,0.12);
+  margin-bottom: 20px;
+}
+.question-number {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--light);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+.question-text {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #333;
+  line-height: 1.4;
+  margin-bottom: 20px;
+}
+.word-highlight {
+  color: var(--primary);
+  background: #FFF4EF;
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-weight: 900;
+}
+.options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.option-btn {
+  background: #fff;
+  border: 2.5px solid #e0d0c8;
+  border-radius: 14px;
+  padding: 16px 14px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #444;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.18s;
+  min-height: 56px;
+  min-width: 44px;
+  line-height: 1.3;
+}
+.option-btn:hover:not(:disabled) {
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(232,67,10,0.2);
+}
+.option-btn.correct {
+  background: #dcfce7;
+  border-color: #22c55e;
+  color: #15803d;
+}
+.option-btn.wrong {
+  background: #fee2e2;
+  border-color: #ef4444;
+  color: #b91c1c;
+}
+.option-btn:disabled { cursor: default; }
+.feedback-box {
+  margin-top: 16px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  display: none;
+}
+.feedback-box.correct { background: #dcfce7; color: #15803d; }
+.feedback-box.wrong   { background: #fee2e2; color: #b91c1c; }
+.btn-next {
+  display: block;
+  margin: 20px auto 0;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 14px 36px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(232,67,10,0.3);
+  transition: all 0.18s;
+}
+.btn-next:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(232,67,10,0.4); }
+.resultado {
+  display: none;
+  text-align: center;
+  background: #fff;
+  border-radius: 20px;
+  padding: 32px 24px;
+  box-shadow: 0 4px 20px rgba(232,67,10,0.12);
+}
+.resultado .big-emoji { font-size: 4rem; }
+.resultado h2 {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--primary);
+  margin: 12px 0 8px;
+}
+.resultado .score-text { font-size: 1.5rem; font-weight: 800; color: #555; }
+.resultado .msg { font-size: 1.1rem; color: #666; margin-top: 10px; line-height: 1.5; }
+.btn-retry {
+  display: inline-block;
+  margin-top: 20px;
+  background: linear-gradient(135deg, #E8430A, #FB8C5A);
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 14px 32px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+.back-link {
+  display: block;
+  text-align: center;
+  margin-top: 24px;
+  color: var(--primary);
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 1rem;
+}
+.back-link:hover { text-decoration: underline; }
+@media (max-width: 480px) {
+  body { padding-bottom: 40px; }
+  .header h1 { font-size: 1.3rem; }
+  .question-text { font-size: 1.2rem; }
+  .options { grid-template-columns: 1fr; }
+  .option-btn { width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="emoji">❗</span>
+  <h1>Quiz — Letras, Sílabas e Pontuação</h1>
+  <p>Pontinho quer saber o que você aprendeu!</p>
+</div>
+
+<div class="container">
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill" style="width:0%"></div>
+  </div>
+
+  <div id="quizArea">
+    <div class="question-card">
+      <div class="question-number" id="questionNumber">Pergunta 1 de 6</div>
+      <div class="question-text" id="questionText"></div>
+      <div class="options" id="optionsArea"></div>
+      <div class="feedback-box" id="feedbackBox"></div>
+    </div>
+    <button class="btn-next" id="btnNext" style="display:none" onclick="proximaPergunta()">Próxima ❯</button>
+  </div>
+
+  <div class="resultado" id="resultadoArea">
+    <div class="big-emoji" id="resultEmoji"></div>
+    <h2 id="resultTitulo"></h2>
+    <div class="score-text" id="resultScore"></div>
+    <div class="msg" id="resultMsg"></div>
+    <button class="btn-retry" onclick="reiniciarQuiz()">Tentar novamente 🔄</button>
+  </div>
+
+  <a href="../../index.html" class="back-link">← Voltar ao Portal</a>
+</div>
+
+<script>
+(function () {
+
+var PERGUNTAS_BASE = [
+  {
+    texto: 'Onde está a letra <span class="word-highlight">T</span> na palavra TATU?',
+    opcoes: ['No início', 'Só no meio', 'Só no fim', 'Não tem T'],
+    correta: 0,
+    explicacao: 'TATU começa com T! A letra T está no início da palavra.'
+  },
+  {
+    texto: 'Na palavra <span class="word-highlight">PATO</span>, onde está a letra T?',
+    opcoes: ['No início', 'No meio', 'No fim', 'Não tem T'],
+    correta: 1,
+    explicacao: 'PA-TO — o T está no meio da palavra PATO!'
+  },
+  {
+    texto: 'O R de <span class="word-highlight">RATO</span> tem som…',
+    opcoes: ['Forte (rr)', 'Suave (r)', 'Igual ao R de PORTA', 'Não faz som'],
+    correta: 0,
+    explicacao: 'O R no início da palavra tem som FORTE, como em RATO e RODA!'
+  },
+  {
+    texto: 'Na palavra <span class="word-highlight">PORTA</span>, o R tem som…',
+    opcoes: ['Forte, como em RATO', 'Suave, no meio de sílaba', 'Igual ao RR de CARRO', 'Não faz som'],
+    correta: 1,
+    explicacao: 'POR-TA — o R de PORTA é suave, dentro de sílaba (ar, er, ir, or, ur).'
+  },
+  {
+    texto: 'Qual sinal de pontuação usamos para mostrar que <span class="word-highlight">estamos admirados</span>?',
+    opcoes: ['Ponto final .', 'Ponto de interrogação ?', 'Ponto de exclamação !', 'Vírgula ,'],
+    correta: 2,
+    explicacao: 'O ponto de exclamação ! mostra que estamos admirados ou empolgados!'
+  },
+  {
+    texto: 'Se precisamos colocar as palavras DADO, RATO e PATO em <span class="word-highlight">ordem alfabética</span>, a ordem certa é:',
+    opcoes: ['RATO, DADO, PATO', 'DADO, PATO, RATO', 'PATO, DADO, RATO', 'DADO, RATO, PATO'],
+    correta: 1,
+    explicacao: 'No alfabeto: D vem antes de P, que vem antes de R. Então: DADO, PATO, RATO!'
+  }
+];
+
+var perguntas = [];
+var indicePergunta = 0;
+var acertos = 0;
+var respondida = false;
+
+function embaralharArray(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+function prepararPerguntas() {
+  perguntas = PERGUNTAS_BASE.slice();
+  // Para cada pergunta, criamos versao com opcoes embaralhadas e indice correto recalculado
+  perguntas = perguntas.map(function (p) {
+    var opcoes = p.opcoes.slice();
+    var textoCorreto = opcoes[p.correta];
+    var opcoesEmbaralhadas = embaralharArray(opcoes);
+    return {
+      texto: p.texto,
+      opcoes: opcoesEmbaralhadas,
+      correta: opcoesEmbaralhadas.indexOf(textoCorreto),
+      explicacao: p.explicacao
+    };
+  });
+}
+
+function playSound(tipo) {
+  try {
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    var o = ctx.createOscillator();
+    var g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    if (tipo === 'correct') {
+      o.frequency.setValueAtTime(523, ctx.currentTime);
+      o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+      o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+      o.start(); o.stop(ctx.currentTime + 0.5);
+    } else {
+      o.frequency.setValueAtTime(300, ctx.currentTime);
+      o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      o.start(); o.stop(ctx.currentTime + 0.4);
+    }
+  } catch (e) {}
+}
+
+function renderizarPergunta() {
+  respondida = false;
+  var p = perguntas[indicePergunta];
+  var total = perguntas.length;
+
+  document.getElementById('questionNumber').textContent = 'Pergunta ' + (indicePergunta + 1) + ' de ' + total;
+  document.getElementById('questionText').innerHTML = p.texto;
+
+  var area = document.getElementById('optionsArea');
+  area.innerHTML = '';
+  p.opcoes.forEach(function (opcao, idx) {
+    var btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.textContent = opcao;
+    btn.setAttribute('data-idx', idx);
+    btn.addEventListener('click', function () { responder(idx); });
+    area.appendChild(btn);
+  });
+
+  var fb = document.getElementById('feedbackBox');
+  fb.style.display = 'none';
+  fb.className = 'feedback-box';
+  document.getElementById('btnNext').style.display = 'none';
+
+  var pct = (indicePergunta / total) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+function responder(idx) {
+  if (respondida) return;
+  respondida = true;
+  var p = perguntas[indicePergunta];
+  var botoes = document.querySelectorAll('.option-btn');
+  botoes.forEach(function (b) { b.disabled = true; });
+
+  var fb = document.getElementById('feedbackBox');
+  if (idx === p.correta) {
+    acertos++;
+    botoes[idx].classList.add('correct');
+    fb.className = 'feedback-box correct';
+    fb.textContent = '✅ ' + p.explicacao;
+    playSound('correct');
+  } else {
+    botoes[idx].classList.add('wrong');
+    botoes[p.correta].classList.add('correct');
+    fb.className = 'feedback-box wrong';
+    fb.textContent = '❌ ' + p.explicacao;
+    playSound('wrong');
+  }
+  fb.style.display = 'block';
+
+  var btnNext = document.getElementById('btnNext');
+  if (indicePergunta < perguntas.length - 1) {
+    btnNext.textContent = 'Próxima ❯';
+  } else {
+    btnNext.textContent = 'Ver resultado 🏆';
+  }
+  btnNext.style.display = 'block';
+}
+
+function proximaPergunta() {
+  indicePergunta++;
+  if (indicePergunta < perguntas.length) {
+    renderizarPergunta();
+  } else {
+    mostrarResultado();
+  }
+}
+
+function mostrarResultado() {
+  var total = perguntas.length;
+  var pct = Math.round((acertos / total) * 100);
+  window.sabendoScore = pct;
+
+  document.getElementById('quizArea').style.display = 'none';
+  document.getElementById('progressFill').style.width = '100%';
+
+  var emojiEl = document.getElementById('resultEmoji');
+  var tituloEl = document.getElementById('resultTitulo');
+  var msgEl = document.getElementById('resultMsg');
+
+  if (pct >= 83) {
+    emojiEl.textContent = '🎉';
+    tituloEl.textContent = 'Incrível!';
+    msgEl.textContent = 'Você acertou ' + acertos + ' de ' + total + '! Pontinho ficou orgulhoso de você! ❗✨';
+  } else if (pct >= 50) {
+    emojiEl.textContent = '😊';
+    tituloEl.textContent = 'Muito bem!';
+    msgEl.textContent = 'Você acertou ' + acertos + ' de ' + total + '! Pratique mais um pouco e vai bombar!';
+  } else {
+    emojiEl.textContent = '💪';
+    tituloEl.textContent = 'Continue tentando!';
+    msgEl.textContent = 'Você acertou ' + acertos + ' de ' + total + '. Releia o conteúdo e tente de novo!';
+  }
+  document.getElementById('resultScore').textContent = acertos + ' / ' + total + ' corretas';
+  document.getElementById('resultadoArea').style.display = 'block';
+}
+
+function reiniciarQuiz() {
+  indicePergunta = 0;
+  acertos = 0;
+  prepararPerguntas();
+  document.getElementById('resultadoArea').style.display = 'none';
+  document.getElementById('quizArea').style.display = 'block';
+  renderizarPergunta();
+}
+
+// Init
+prepararPerguntas();
+renderizarPergunta();
+
+window.proximaPergunta = proximaPergunta;
+window.reiniciarQuiz = reiniciarQuiz;
+
+})();
+</script>
+
+<!-- ── GAMIFICAÇÃO ─────────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'letras-silabas-pontuacao';
+  var DISCIPLINE    = 'portugues';
+  var ACTIVITY_TYPE = 'quiz';
+  var TOTAL_ATIV    = 5;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Pontinho',
+        characterEmoji:  '❗',
+        characterImg:    'chars/pontinho.png',
+        themeLabel:      'Letras, Sílabas e Pontuação · Português',
+        totalActivities: TOTAL_ATIV,
+        primaryColor:    '#E8430A',
+        lightColor:      '#FB8C5A',
+        bgColor:         '#FFF4EF',
+        glowRgb:         '232,67,10',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _scoreVal = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _scoreVal = v;
+      var btn = document.getElementById('gamificacao-btn');
+      if (btn) btn.style.display = 'block';
+    },
+    get: function () { return _scoreVal; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#E8430A,#FB8C5A);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+</body>
+</html>

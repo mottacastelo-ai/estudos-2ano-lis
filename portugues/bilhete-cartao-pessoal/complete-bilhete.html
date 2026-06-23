@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Complete o Bilhete — Bilhete e Cartão Pessoal | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #E8430A;
+  --light: #FB8C5A;
+  --bg: #FFF4EF;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.2rem;
+  background: var(--bg);
+  min-height: 100vh;
+  padding-bottom: 40px;
+}
+.header {
+  background: linear-gradient(135deg, #7A1F04, #E8430A 60%, #FB8C5A);
+  color: #fff;
+  padding: 24px 20px 20px;
+  text-align: center;
+}
+.header .emoji { font-size: 2.8rem; display: block; margin-bottom: 6px; }
+.header h1 {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+.header p { font-size: 1rem; opacity: 0.9; margin-top: 4px; }
+
+.container { max-width: 720px; margin: 0 auto; padding: 24px 16px; }
+
+/* Bilhete modelo */
+.modelo-section { margin-bottom: 28px; }
+.modelo-section h2 {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.3rem;
+  color: var(--primary);
+  margin-bottom: 12px;
+}
+.bilhete-modelo {
+  background: #fffbe8;
+  border: 2px dashed #f0b060;
+  border-radius: 16px;
+  padding: 20px 24px;
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: #3a2a00;
+}
+.bilhete-modelo .label {
+  font-weight: 800;
+  color: var(--primary);
+}
+.bilhete-modelo .line { margin-bottom: 4px; }
+
+/* Banco de palavras */
+.banco-section { margin-bottom: 24px; }
+.banco-section h2 {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.2rem;
+  color: #3a1a0a;
+  margin-bottom: 10px;
+}
+.banco {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.palavra-chip {
+  background: #fff;
+  border: 2.5px solid var(--primary);
+  border-radius: 50px;
+  padding: 10px 20px;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--primary);
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  min-height: 44px;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.palavra-chip:hover { background: var(--bg); transform: scale(1.05); }
+.palavra-chip.usada {
+  background: #e0e0e0;
+  border-color: #aaa;
+  color: #888;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Perguntas */
+.pergunta-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 24px 22px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 16px rgba(232,67,10,0.09);
+  border: 2px solid #ffd6c0;
+}
+.pergunta-num {
+  font-size: 0.85rem;
+  color: var(--primary);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+.pergunta-enunciado {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #3a1a0a;
+  margin-bottom: 18px;
+  line-height: 1.4;
+}
+.lacuna-area {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.15rem;
+  color: #3a1a0a;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+.lacuna {
+  display: inline-block;
+  min-width: 160px;
+  border-bottom: 3px solid var(--primary);
+  padding: 4px 10px;
+  font-weight: 800;
+  font-size: 1.15rem;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 6px 6px 0 0;
+  background: #fff4ef;
+  min-height: 40px;
+  color: transparent;
+  transition: background 0.2s;
+  position: relative;
+}
+.lacuna.aguardando {
+  background: #ffeee6;
+  animation: pulse-border 1.2s infinite;
+}
+.lacuna.preenchida {
+  color: var(--primary);
+  background: #fff4ef;
+  cursor: pointer;
+}
+.lacuna.preenchida:hover { background: #ffddd0; }
+.lacuna.correta {
+  background: #dcfce7 !important;
+  border-color: #22c55e;
+  color: #166534 !important;
+  cursor: default;
+}
+.lacuna.errada {
+  background: #fee2e2 !important;
+  border-color: #ef4444;
+  color: #991b1b !important;
+  cursor: default;
+}
+@keyframes pulse-border {
+  0%, 100% { border-bottom-color: var(--primary); }
+  50% { border-bottom-color: #FB8C5A; }
+}
+
+.feedback-pergunta {
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 10px 14px;
+  border-radius: 10px;
+  display: none;
+  margin-top: 8px;
+}
+.feedback-pergunta.ok { background: #dcfce7; color: #166534; display: block; }
+.feedback-pergunta.err { background: #fee2e2; color: #991b1b; display: block; }
+
+/* Verificar */
+.btn-verificar {
+  display: block;
+  width: 100%;
+  max-width: 340px;
+  margin: 8px auto 0;
+  padding: 14px 24px;
+  background: linear-gradient(135deg, #E8430A, #FB8C5A);
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(232,67,10,0.25);
+  min-height: 50px;
+  transition: transform 0.1s;
+}
+.btn-verificar:hover { transform: translateY(-2px); }
+.btn-verificar:disabled {
+  background: #ccc;
+  box-shadow: none;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Resultado */
+.resultado-final {
+  display: none;
+  background: #fff;
+  border-radius: 20px;
+  padding: 32px 24px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(232,67,10,0.12);
+  border: 2px solid #ffd6c0;
+  margin-top: 24px;
+}
+.resultado-final .trophy { font-size: 4.5rem; display: block; margin-bottom: 12px; }
+.resultado-final h2 {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.8rem;
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+.resultado-final .score { font-size: 2.5rem; font-weight: 900; color: var(--primary); font-family: 'Baloo 2', sans-serif; }
+.resultado-final .msg { font-size: 1.15rem; color: #5a2a10; margin: 10px 0 20px; line-height: 1.5; }
+.btn-retry {
+  padding: 14px 32px;
+  background: linear-gradient(135deg, #E8430A, #FB8C5A);
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(232,67,10,0.25);
+  min-height: 50px;
+  min-width: 180px;
+}
+
+.footer { text-align: center; margin-top: 32px; }
+.btn-back {
+  display: inline-block;
+  padding: 12px 28px;
+  background: #fff;
+  border: 2px solid var(--primary);
+  border-radius: 50px;
+  color: var(--primary);
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  text-decoration: none;
+  min-height: 44px;
+}
+.btn-back:hover { background: var(--bg); }
+
+@media (max-width: 480px) {
+  body { padding: 12px; font-size: 1.05rem; }
+  .header h1 { font-size: 1.3rem; }
+  .pergunta-enunciado { font-size: 1.1rem; }
+  .lacuna-area { font-size: 1.05rem; }
+  .lacuna { min-width: 120px; }
+  .banco { gap: 8px; }
+  .palavra-chip { font-size: 1rem; padding: 8px 14px; }
+  .pergunta-card { padding: 18px 14px; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="emoji">📝</span>
+  <h1>Complete o Bilhete!</h1>
+  <p>Bilheto diz: clique na palavra certa para preencher a lacuna!</p>
+</div>
+
+<div class="container">
+
+  <!-- Bilhete modelo -->
+  <div class="modelo-section">
+    <h2>📌 Veja como é um bilhete:</h2>
+    <div class="bilhete-modelo">
+      <div class="line"><span class="label">Para:</span> Vovó</div>
+      <div class="line"><span class="label">Data:</span> 20/06/2026</div>
+      <div class="line">&nbsp;</div>
+      <div class="line">Fui brincar na casa da Ana.</div>
+      <div class="line">Volto logo!</div>
+      <div class="line">&nbsp;</div>
+      <div class="line"><span class="label">Assinatura:</span> Lis ❤️</div>
+    </div>
+  </div>
+
+  <!-- Banco de palavras -->
+  <div class="banco-section">
+    <h2>🗂️ Banco de palavras — clique para usar:</h2>
+    <div class="banco" id="banco-palavras"></div>
+  </div>
+
+  <!-- Perguntas -->
+  <div id="perguntas-area"></div>
+
+  <!-- Botão verificar -->
+  <button class="btn-verificar" id="btn-verificar" onclick="verificarTudo()" disabled>
+    Verificar respostas ✅
+  </button>
+
+  <!-- Resultado final -->
+  <div class="resultado-final" id="resultado-final">
+    <span class="trophy" id="trophy-emoji"></span>
+    <h2 id="res-titulo"></h2>
+    <div class="score" id="res-score"></div>
+    <p class="msg" id="res-msg"></p>
+    <button class="btn-retry" onclick="reiniciar()">Tentar de novo 🔄</button>
+  </div>
+
+  <div class="footer" id="footer-back" style="display:none;">
+    <a href="../../index.html" class="btn-back">← Voltar ao Portal</a>
+  </div>
+</div>
+
+<script>
+(function () {
+
+// ── Dados das perguntas ──────────────────────────────────────
+// Cada pergunta tem: enunciado antes da lacuna, enunciado depois, resposta correta, feedback
+var perguntas = [
+  {
+    antes: "A pessoa que VAI RECEBER o bilhete se chama",
+    depois: ".",
+    resposta: "destinatário",
+    feedback: "Certo! O destinatário é quem recebe o bilhete."
+  },
+  {
+    antes: "A pessoa que ESCREVE e envia o bilhete se chama",
+    depois: ".",
+    resposta: "remetente",
+    feedback: "Isso! O remetente é quem escreveu e enviou o bilhete."
+  },
+  {
+    antes: "No bilhete, o",
+    depois: "é o tema ou motivo da mensagem.",
+    resposta: "assunto",
+    feedback: "Muito bem! O assunto diz do que trata o bilhete."
+  },
+  {
+    antes: "Escrevemos a",
+    depois: "para mostrar quando o bilhete foi escrito.",
+    resposta: "data",
+    feedback: "Correto! A data mostra quando o bilhete foi escrito."
+  },
+  {
+    antes: "No final do bilhete colocamos a nossa",
+    depois: "para mostrar de quem é a mensagem.",
+    resposta: "assinatura",
+    feedback: "Ótimo! A assinatura identifica quem escreveu o bilhete."
+  }
+];
+
+var palavras = ["destinatário", "remetente", "assunto", "data", "assinatura"];
+var respostasAluno = new Array(perguntas.length).fill(null);
+var lacunaAtiva = null; // índice da lacuna aguardando clique
+var verificado = false;
+
+function renderBanco() {
+  var banco = document.getElementById('banco-palavras');
+  banco.innerHTML = '';
+  palavras.forEach(function(palavra) {
+    var chip = document.createElement('button');
+    chip.className = 'palavra-chip';
+    chip.textContent = palavra;
+    chip.setAttribute('data-palavra', palavra);
+    chip.addEventListener('click', function() { usarPalavra(palavra, chip); });
+    banco.appendChild(chip);
+  });
+}
+
+function renderPerguntas() {
+  var area = document.getElementById('perguntas-area');
+  area.innerHTML = '';
+  perguntas.forEach(function(p, idx) {
+    var card = document.createElement('div');
+    card.className = 'pergunta-card';
+    card.innerHTML =
+      '<div class="pergunta-num">Lacuna ' + (idx + 1) + ' de ' + perguntas.length + '</div>' +
+      '<div class="pergunta-enunciado">Complete a frase:</div>' +
+      '<div class="lacuna-area">' +
+        '<span>' + p.antes + '</span>' +
+        '<span class="lacuna" id="lacuna-' + idx + '" data-idx="' + idx + '" onclick="ativarLacuna(' + idx + ')">___</span>' +
+        '<span>' + p.depois + '</span>' +
+      '</div>' +
+      '<div class="feedback-pergunta" id="fb-' + idx + '"></div>';
+    area.appendChild(card);
+  });
+}
+
+function ativarLacuna(idx) {
+  if (verificado) return;
+
+  // Desativar lacuna anterior
+  if (lacunaAtiva !== null && lacunaAtiva !== idx) {
+    var anterior = document.getElementById('lacuna-' + lacunaAtiva);
+    if (anterior && !respostasAluno[lacunaAtiva]) {
+      anterior.classList.remove('aguardando');
+    }
+  }
+
+  // Se a lacuna já tem resposta, limpar (devolver ao banco)
+  if (respostasAluno[idx]) {
+    devolverPalavra(respostasAluno[idx], idx);
+    return;
+  }
+
+  lacunaAtiva = idx;
+  var el = document.getElementById('lacuna-' + idx);
+  el.classList.add('aguardando');
+  el.textContent = '⬅️ escolha';
+  el.style.color = '#aaa';
+}
+
+function usarPalavra(palavra, chip) {
+  if (verificado) return;
+  if (chip.classList.contains('usada')) return;
+  if (lacunaAtiva === null) {
+    // Se nenhuma lacuna ativa, ativar a primeira disponível
+    for (var i = 0; i < perguntas.length; i++) {
+      if (!respostasAluno[i]) { ativarLacuna(i); break; }
+    }
+    if (lacunaAtiva === null) return;
+  }
+
+  // Preencher lacuna
+  var idx = lacunaAtiva;
+  respostasAluno[idx] = palavra;
+  chip.classList.add('usada');
+
+  var el = document.getElementById('lacuna-' + idx);
+  el.classList.remove('aguardando');
+  el.classList.add('preenchida');
+  el.textContent = palavra;
+  el.style.color = '';
+
+  lacunaAtiva = null;
+  atualizarBotaoVerificar();
+}
+
+function devolverPalavra(palavra, idx) {
+  respostasAluno[idx] = null;
+
+  var el = document.getElementById('lacuna-' + idx);
+  el.classList.remove('preenchida', 'aguardando', 'correta', 'errada');
+  el.textContent = '___';
+  el.style.color = 'transparent';
+
+  // Reativar chip no banco
+  var chips = document.querySelectorAll('.palavra-chip');
+  chips.forEach(function(c) {
+    if (c.getAttribute('data-palavra') === palavra) {
+      c.classList.remove('usada');
+    }
+  });
+
+  lacunaAtiva = null;
+  atualizarBotaoVerificar();
+}
+
+function atualizarBotaoVerificar() {
+  var todas = respostasAluno.every(function(r) { return r !== null; });
+  document.getElementById('btn-verificar').disabled = !todas;
+}
+
+function verificarTudo() {
+  if (verificado) return;
+  verificado = true;
+  lacunaAtiva = null;
+  document.getElementById('btn-verificar').disabled = true;
+
+  var acertos = 0;
+  perguntas.forEach(function(p, idx) {
+    var el = document.getElementById('lacuna-' + idx);
+    var fb = document.getElementById('fb-' + idx);
+    var acertou = respostasAluno[idx] === p.resposta;
+    if (acertou) {
+      acertos++;
+      el.classList.add('correta');
+      fb.textContent = '✅ ' + p.feedback;
+      fb.className = 'feedback-pergunta ok';
+      playSound('acerto');
+    } else {
+      el.classList.add('errada');
+      fb.textContent = '❌ A resposta correta é "' + p.resposta + '". ' + p.feedback;
+      fb.className = 'feedback-pergunta err';
+      playSound('erro');
+    }
+  });
+
+  var pct = Math.round((acertos / perguntas.length) * 100);
+  window.sabendoScore = pct;
+
+  setTimeout(function() { mostrarResultado(acertos, pct); }, 1000);
+}
+
+function mostrarResultado(acertos, pct) {
+  var res = document.getElementById('resultado-final');
+  res.style.display = 'block';
+  res.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  var trophy, titulo, msg;
+  if (pct === 100) {
+    trophy = '🏆'; titulo = 'Perfeito!';
+    msg = 'Você conhece todas as partes do bilhete! Bilheto está com orgulho! 🎉';
+  } else if (pct >= 60) {
+    trophy = '⭐'; titulo = 'Muito bem!';
+    msg = 'Quase tudo certo! Revise as lacunas erradas e repita! 📝';
+  } else {
+    trophy = '💪'; titulo = 'Continue tentando!';
+    msg = 'Cada tentativa é um aprendizado! Você consegue! 😊';
+  }
+
+  document.getElementById('trophy-emoji').textContent = trophy;
+  document.getElementById('res-titulo').textContent = titulo;
+  document.getElementById('res-score').textContent = acertos + ' de ' + perguntas.length + ' certas';
+  document.getElementById('res-msg').textContent = msg;
+  document.getElementById('footer-back').style.display = 'block';
+}
+
+function reiniciar() {
+  verificado = false;
+  lacunaAtiva = null;
+  respostasAluno = new Array(perguntas.length).fill(null);
+  document.getElementById('resultado-final').style.display = 'none';
+  document.getElementById('footer-back').style.display = 'none';
+  renderBanco();
+  renderPerguntas();
+  document.getElementById('btn-verificar').disabled = true;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function playSound(tipo) {
+  try {
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    var osc = ctx.createOscillator();
+    var gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    if (tipo === 'acerto') { osc.frequency.value = 880; gain.gain.value = 0.3; }
+    else { osc.frequency.value = 220; gain.gain.value = 0.3; }
+    osc.start(); gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    osc.stop(ctx.currentTime + 0.4);
+  } catch(e) {}
+}
+
+// Iniciar
+renderBanco();
+renderPerguntas();
+
+})();
+</script>
+
+<!-- ── GAMIFICAÇÃO ─────────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'bilhete-cartao-pessoal';
+  var DISCIPLINE    = 'portugues';
+  var ACTIVITY_TYPE = 'completar';
+  var TOTAL_ATIV    = 4;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Bilheto',
+        characterEmoji:  '📝',
+        characterImg:    'chars/bilheto.png',
+        themeLabel:      'Bilhete e Cartão Pessoal · Português',
+        totalActivities: TOTAL_ATIV,
+        primaryColor:    '#E8430A',
+        lightColor:      '#FB8C5A',
+        bgColor:         '#FFF4EF',
+        glowRgb:         '232,67,10',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _scoreVal = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _scoreVal = v;
+      var btn = document.getElementById('gamificacao-btn');
+      if (btn) btn.style.display = 'block';
+    },
+    get: function () { return _scoreVal; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#E8430A,#FB8C5A);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+</body>
+</html>

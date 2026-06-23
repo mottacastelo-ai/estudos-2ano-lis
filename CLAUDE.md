@@ -50,8 +50,11 @@ PDF (inputs/livro.pdf) → [analisador-conteudo] → Proposta → ⏸ APROVAÇÃ
                               ↓
                    [atualizador-portal]
                               ↓
-                   [verificador-entrega]
-                              ↓
+                   ┌──────────────────────────┐
+                   │  [verificador-entrega]    │  ← em paralelo
+                   │  [revisor-qualidade]      │  ← em paralelo
+                   └──────────────────────────┘
+                              ↓ (ambos devem aprovar)
                    [gerador-imagens-hq]   ← automático, sem gate
                               ↓
                    [publicador-portal]    ← git add + commit + push
@@ -72,8 +75,9 @@ Após `analisador-conteudo` gerar a proposta estrutural, **parar e aguardar apro
 | `gerador-prompt-hq` | Gera o arquivo .md com prompts para a HQ | Em paralelo com criador-personagem |
 | `gerador-atividades` | Planeja e escreve os HTMLs das atividades | Após personagem estar definido |
 | `atualizador-portal` | Edita o index.html com o novo tema | Após atividades geradas |
-| `verificador-entrega` | Valida checklist e aciona próxima etapa | Após atualizador-portal |
-| `gerador-imagens-hq` | Escreve JSON de pedido em `.claude/pending/`; polling até Codex confirmar em `.claude/done/` | Automático após verificador-entrega |
+| `verificador-entrega` | Valida checklist técnico e de estrutura do portal | Em paralelo com revisor-qualidade, após atualizador-portal |
+| `revisor-qualidade` | Audita pedagogia, terminologia, escopo e vazamento de resposta | Em paralelo com verificador-entrega, após atualizador-portal |
+| `gerador-imagens-hq` | Escreve JSON de pedido em `.claude/pending/`; polling até Codex confirmar em `.claude/done/` | Automático após ambos aprovarem |
 | `publicador-portal` | git add + commit + push para o GitHub Pages | Último — após gerador-imagens-hq |
 
 ---
@@ -101,6 +105,125 @@ Após `analisador-conteudo` gerar a proposta estrutural, **parar e aguardar apro
 7. Viewer da HQ: sempre `touch-action: auto`, nunca `pan-y pinch-zoom`
 8. Nunca adicionar `::before` com gradiente lateral no container do viewer da HQ
 9. **Pré-requisito para HQ:** Codex Desktop aberto com a automação "Gerar HQs pendentes" ativa antes de iniciar o pipeline — sem isso o `gerador-imagens-hq` vai expirar o timeout de 30 min
+10. **Variáveis JS globais proibidas:** nunca usar `var history`, `var name`, `var location`, `var event`, `var status`, `var top` em escopo global nos HTMLs de atividade — sobrescrevem objetos nativos do browser e causam bugs silenciosos. Usar nomes descritivos: `quizHistory`, `pageName`, etc.
+11. **Documentação imediata:** toda melhoria de regra, padrão ou convenção aprovada nesta sessão deve ser registrada nos docs do repositório antes de encerrar. Nenhuma melhoria fica apenas na memória do Claude.
+12. **ERROS.md obrigatório:** consultar `ERROS.md` antes de gerar qualquer atividade. Contém bugs reais diagnosticados em produção com regras de prevenção.
+
+---
+
+## Gamificação — Sistema ativo
+
+Sistema de cartas **temáticas** próprias para a Lis. Ao concluir todas as atividades de um módulo, a Lis recebe uma carta temática sorteada aleatoriamente — sem raridade, toda carta é igualmente especial!
+
+**Arquivo principal:** `shared/gamification.js`
+**Assets de cartas:** `_landing/cartas/carta-fundo-[card_slug].png`
+**Cartas disponíveis:** abacaxi 🍍 · banana 🍌 · coração ❤️ · estrela ⭐ · kiwi 🥝 · maçã 🍎 · melancia 🍉 · morango 🍓 · pêssego 🍑 · uva 🍇
+**Assets de personagens:** `_landing/chars/[slug-personagem].png`
+**Supabase:** credenciais em `SUBSTITUIR_URL_SUPABASE` / `SUBSTITUIR_CHAVE_PUBLICA` (Leo deve criar projeto separado do 5º ano)
+
+### Snippet obrigatório em todo HTML de atividade
+
+Substituir o `<!-- gamificacao-btn -->` por este bloco completo (preencher os campos com `[COLCHETES]`):
+
+```html
+<!-- ── GAMIFICAÇÃO ─────────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = '[SLUG]';
+  var DISCIPLINE    = '[disciplina]';        // ex: 'ciencias'
+  var ACTIVITY_TYPE = '[tipo_atividade]';    // ex: 'quiz', 'memoria', 'completar'
+  var TOTAL_ATIV    = [TOTAL_ATIVIDADES];    // número inteiro
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+
+      // Registra conclusão desta atividade
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   '[NOME_PERSONAGEM]',
+        characterEmoji:  '[EMOJI_PERSONAGEM]',
+        characterImg:    'chars/[SLUG_PERSONAGEM].png',
+        themeLabel:      '[TEMA] · [DISCIPLINA_LABEL]',
+        totalActivities: TOTAL_ATIV,
+        primaryColor:    '[COR_PRIMARIA]',
+        lightColor:      '[COR_CLARA]',
+        bgColor:         '[BG_COLOR]',
+        glowRgb:         '[GLOW_RGB]',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _scoreVal = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _scoreVal = v;
+      var btn = document.getElementById('gamificacao-btn');
+      if (btn) btn.style.display = 'block';
+    },
+    get: function () { return _scoreVal; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,[COR_PRIMARIA],[COR_CLARA]);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+</body>
+```
+
+### Reveal
+
+Confete colorido (arco-íris) animado igual para todas as cartas. O glow/raios usam a `primaryColor` da disciplina do tema.
+
+### glowRgb por disciplina
+
+| Disciplina | glowRgb |
+|---|---|
+| Ciências | `34,197,94` |
+| Português | `232,67,10` |
+| Matemática | `10,172,232` |
+| História | `168,85,247` |
+| Geografia | `245,158,11` |
+
+### Padrão window.sabendoScore — obrigatório
+
+```javascript
+// ✅ CORRETO — setar junto com o resultado
+function mostrarResultado() {
+  var acertos = respostas.filter(function(r) { return r.correta; }).length;
+  window.sabendoScore = Math.round((acertos / total) * 100);
+  painelResultado.style.display = 'block';
+}
+
+// ❌ ERRADO — nunca incremental
+function onAcerto() { acertos++; window.sabendoScore = ...; }
+```
+
+Para mapa mental e atividades sem score numérico: `window.sabendoScore = 100` na conclusão.
+Para atividades com "Ver gabarito" independente: setar `window.sabendoScore` ANTES de exibir o gabarito.
+
+> **Atenção (ERR-001 do 5º ano):** Nunca setar `window.sabendoScore` em funções intermediárias.
 
 ---
 
@@ -108,8 +231,11 @@ Após `analisador-conteudo` gerar a proposta estrutural, **parar e aguardar apro
 
 | Arquivo | Propósito |
 |---|---|
+| `ERROS.md` | **Consultar antes de gerar atividades** — bugs reais diagnosticados em produção |
 | `referencias/temas-existentes.md` | Lista de temas já implementados (verificar conflito) |
 | `referencias/contexto_projeto.md` | Contexto completo e estado atual do projeto |
 | `referencias/SKILL-portal-educacional-2ano-ATUALIZADA.md` | Skill detalhada com templates e padrões HTML |
 | `referencias/hq-gerador-SKILL.md` | Skill de automação de HQ via Chrome |
+| `referencias/gamificacao-schema.md` | Schema Supabase do sistema de gamificação (tabelas + RLS) |
+| `shared/gamification.js` | Engine de gamificação do 2º ano (raridade aleatória, pixel reveal, reveal cinematográfico) |
 | `Personagens\2o ano\Lis.png` | Referência visual canônica da protagonista (em pasta centralizada) |

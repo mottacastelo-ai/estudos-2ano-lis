@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapa Mental — Letras, Sílabas e Pontuação | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root { --primary: #E8430A; --light: #FB8C5A; --bg: #FFF4EF; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100vh; padding-bottom: 60px; }
+
+.header {
+  background: linear-gradient(135deg, #7A1F04, #E8430A 60%, #FB8C5A);
+  padding: 28px 32px; color: #fff; text-align: center;
+}
+.header-emoji { font-size: 3rem; display: block; margin-bottom: 8px; }
+.header-title { font-family: 'Baloo 2', cursive; font-size: 1.8rem; font-weight: 900; }
+.header-sub { font-size: 1rem; opacity: 0.9; font-weight: 600; margin-top: 4px; }
+
+.container { max-width: 860px; margin: 0 auto; padding: 32px 20px; }
+
+.instruction-card {
+  background: #fff; border-radius: 16px; padding: 20px 24px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07); margin-bottom: 28px;
+  border-left: 5px solid var(--primary);
+}
+.instruction-card p { font-size: 1.15rem; font-weight: 700; color: #334155; line-height: 1.5; }
+
+/* WORD BANK */
+.word-bank {
+  background: #fff; border-radius: 20px; padding: 24px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07); margin-bottom: 28px;
+}
+.wb-title { font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800; color: #475569; margin-bottom: 16px; }
+.wb-words { display: flex; gap: 10px; flex-wrap: wrap; }
+.wb-word {
+  background: var(--bg); border: 3px solid var(--light); border-radius: 12px;
+  padding: 10px 16px; cursor: grab; user-select: none;
+  font-size: 1.05rem; font-weight: 800; color: #9A2B04;
+  transition: all 0.18s; display: flex; align-items: center; gap: 6px;
+  min-height: 44px; min-width: 44px;
+}
+.wb-word:hover { border-color: var(--primary); transform: scale(1.04); }
+.wb-word.dragging { opacity: 0.35; }
+.wb-word.used { display: none; }
+
+/* MAP AREA */
+.map-area {
+  background: #fff; border-radius: 20px; padding: 28px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07); margin-bottom: 24px;
+}
+.map-center {
+  background: linear-gradient(135deg, #7A1F04, #E8430A);
+  color: #fff; border-radius: 20px; padding: 18px 24px;
+  text-align: center; font-family: 'Baloo 2', cursive;
+  font-size: 1.25rem; font-weight: 900; margin: 0 auto 32px;
+  max-width: 380px; box-shadow: 0 4px 16px rgba(232,67,10,.3);
+}
+
+.branches { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.branch {
+  border: 2px solid #E2E8F0; border-radius: 16px; padding: 18px; background: #FAFAFA;
+}
+.branch-title { font-family: 'Baloo 2', cursive; font-size: 1rem; font-weight: 800; color: #64748B; margin-bottom: 12px; }
+
+.drop-slot {
+  min-height: 52px; border: 2px dashed #CBD5E1; border-radius: 12px;
+  padding: 8px 12px; margin-bottom: 8px; display: flex; align-items: center;
+  font-size: 0.95rem; color: #94A3B8; font-weight: 600; transition: all 0.18s;
+  background: #fff; min-width: 44px;
+}
+.drop-slot.drag-over { border-color: var(--primary); background: var(--bg); }
+.drop-slot.filled { border-style: solid; border-color: var(--light); color: #9A2B04; font-weight: 800; font-size: 1rem; }
+.drop-slot .slot-emoji { margin-right: 8px; font-size: 1.2rem; flex-shrink: 0; }
+
+.btn-check {
+  display: block; width: 100%; padding: 18px;
+  border-radius: 16px; border: none; background: var(--primary);
+  color: #fff; font-family: 'Baloo 2', cursive; font-size: 1.3rem; font-weight: 900;
+  cursor: pointer; transition: all 0.18s; margin-bottom: 12px;
+}
+.btn-check:hover { background: #C23508; transform: translateY(-2px); }
+.btn-reset {
+  display: block; width: 100%; padding: 14px;
+  border-radius: 14px; border: 2px solid #CBD5E1; background: #fff;
+  color: #64748B; font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800;
+  cursor: pointer; transition: all 0.18s; margin-bottom: 16px;
+}
+.btn-reset:hover { border-color: var(--primary); color: var(--primary); }
+.result-box {
+  border-radius: 16px; padding: 20px 24px; font-size: 1.1rem; font-weight: 700;
+  display: none; margin-bottom: 16px; line-height: 1.5;
+}
+.result-box.show { display: block; }
+.result-box.correct { background: #DCFCE7; color: #15803D; }
+.result-box.partial { background: #FEF9C3; color: #92400E; }
+.result-box.wrong { background: #FEE2E2; color: #B91C1C; }
+.back-btn {
+  display: block; text-align: center; padding: 14px; border-radius: 14px; border: none;
+  background: var(--primary); color: #fff; font-family: 'Baloo 2', cursive;
+  font-size: 1.1rem; font-weight: 800; cursor: pointer; transition: all 0.18s;
+  text-decoration: none; width: 100%;
+}
+.back-btn:hover { background: #C23508; }
+
+@media (max-width: 480px) {
+  body { padding: 12px; font-size: 1.15rem; }
+  .branches { grid-template-columns: 1fr; }
+  .header-title { font-size: 1.3rem; }
+  .btn-check, .btn-reset, .back-btn { width: 100%; justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="header-emoji">❗</span>
+  <div class="header-title">Mapa Mental — Letras, Sílabas e Pontuação</div>
+  <div class="header-sub">Arraste as palavras para os lugares certos!</div>
+</div>
+
+<div class="container">
+  <div class="instruction-card">
+    <p>🧠 Arraste cada palavra do banco para o lugar correto no mapa mental.<br>Complete todas as caixinhas e depois clique em <strong>Verificar</strong>!</p>
+  </div>
+
+  <div class="word-bank">
+    <div class="wb-title">📦 Banco de palavras:</div>
+    <div class="wb-words" id="word-bank">
+      <!-- palavras injetadas pelo JS após embaralhamento -->
+    </div>
+  </div>
+
+  <div class="map-area">
+    <div class="map-center">❗ Letras, Sílabas e Pontuação</div>
+    <div class="branches">
+
+      <div class="branch">
+        <div class="branch-title">🔤 Letra T — exemplos:</div>
+        <div class="drop-slot" data-slot="s1"><span class="slot-emoji">🐾</span>T no início...</div>
+        <div class="drop-slot" data-slot="s2"><span class="slot-emoji">🦆</span>T no meio...</div>
+      </div>
+
+      <div class="branch">
+        <div class="branch-title">🔤 Letra D — exemplos:</div>
+        <div class="drop-slot" data-slot="s3"><span class="slot-emoji">🎲</span>D no início...</div>
+        <div class="drop-slot" data-slot="s4"><span class="slot-emoji">🧚</span>D no meio...</div>
+      </div>
+
+      <div class="branch">
+        <div class="branch-title">🔤 Letra R — três sons:</div>
+        <div class="drop-slot" data-slot="s5"><span class="slot-emoji">🐭</span>R forte no início...</div>
+        <div class="drop-slot" data-slot="s6"><span class="slot-emoji">🚪</span>R suave no meio...</div>
+        <div class="drop-slot" data-slot="s7"><span class="slot-emoji">🌸</span>R no fim da sílaba...</div>
+      </div>
+
+      <div class="branch">
+        <div class="branch-title">❓ Pontuação — cada sinal:</div>
+        <div class="drop-slot" data-slot="s8"><span class="slot-emoji">⬛</span>Termina a frase...</div>
+        <div class="drop-slot" data-slot="s9"><span class="slot-emoji">❓</span>Faz pergunta...</div>
+        <div class="drop-slot" data-slot="s10"><span class="slot-emoji">❗</span>Mostra emoção...</div>
+      </div>
+
+      <div class="branch" style="grid-column: 1 / -1;">
+        <div class="branch-title">🔡 Ordem Alfabética — para que serve:</div>
+        <div class="drop-slot" data-slot="s11"><span class="slot-emoji">📖</span>Usamos a ordem para achar no...</div>
+        <div class="drop-slot" data-slot="s12"><span class="slot-emoji">🔠</span>Ordenamos pela...</div>
+        <div class="drop-slot" data-slot="s13"><span class="slot-emoji">🔡</span>A sequência vai de...</div>
+      </div>
+
+    </div>
+  </div>
+
+  <button class="btn-check" onclick="checkAnswer()">Verificar minha resposta ✅</button>
+  <button class="btn-reset" onclick="resetAll()">🔄 Recomeçar</button>
+  <div class="result-box" id="result-box"></div>
+  <a class="back-btn" href="../../index.html">🏠 Voltar ao Portal</a>
+</div>
+
+<!-- ── GAMIFICAÇÃO ─────────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'letras-silabas-pontuacao';
+  var DISCIPLINE    = 'portugues';
+  var ACTIVITY_TYPE = 'mapa-mental';
+  var TOTAL_ATIV    = 5;
+  var supaClient = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supaClient.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supaClient.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+      SabendoGamification.run(supaClient, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Pontinho',
+        characterEmoji:  '❗',
+        characterImg:    'chars/pontinho.png',
+        themeLabel:      'Letras, Sílabas e Pontuação · Português',
+        totalActivities: TOTAL_ATIV,
+        primaryColor:    '#E8430A',
+        lightColor:      '#FB8C5A',
+        bgColor:         '#FFF4EF',
+        glowRgb:         '232,67,10',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _scoreVal = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _scoreVal = v;
+      var btn = document.getElementById('gamificacao-btn');
+      if (btn) btn.style.display = 'block';
+    },
+    get: function () { return _scoreVal; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#E8430A,#FB8C5A);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;display:none;">
+  Coletar minha carta! 🃏
+</button>
+
+<script>
+// ── Dados das palavras ──────────────────────────────────────────
+var todosTermos = [
+  { emoji: '🐾', label: 'TATU',          value: 'TATU' },
+  { emoji: '🦆', label: 'PATO',          value: 'PATO' },
+  { emoji: '🎲', label: 'DADO',          value: 'DADO' },
+  { emoji: '🧚', label: 'FADA',          value: 'FADA' },
+  { emoji: '🐭', label: 'RATO',          value: 'RATO' },
+  { emoji: '🚪', label: 'PORTA',         value: 'PORTA' },
+  { emoji: '🌸', label: 'FLOR',          value: 'FLOR' },
+  { emoji: '⬛', label: 'ponto final',   value: 'ponto final' },
+  { emoji: '❓', label: 'interrogação',  value: 'interrogação' },
+  { emoji: '❗', label: 'exclamação',    value: 'exclamação' },
+  { emoji: '📖', label: 'dicionário',    value: 'dicionário' },
+  { emoji: '🔠', label: 'primeira letra', value: 'primeira letra' },
+  { emoji: '🔡', label: 'A até Z',       value: 'A até Z' }
+];
+
+// Gabarito interno — slotId → value correto
+var gabarito = {
+  s1:  'TATU',
+  s2:  'PATO',
+  s3:  'DADO',
+  s4:  'FADA',
+  s5:  'RATO',
+  s6:  'PORTA',
+  s7:  'FLOR',
+  s8:  'ponto final',
+  s9:  'interrogação',
+  s10: 'exclamação',
+  s11: 'dicionário',
+  s12: 'primeira letra',
+  s13: 'A até Z'
+};
+
+var slotMap = {};
+var draggingEl = null;
+var touchDragValue = null;
+var touchClone = null;
+var touchOriginEl = null;
+
+// ── Embaralhar e renderizar banco de palavras ───────────────────
+function shuffle(arr) {
+  for (var i = arr.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+  }
+  return arr;
+}
+
+function renderWordBank() {
+  var bank = document.getElementById('word-bank');
+  bank.innerHTML = '';
+  var ordem = shuffle(todosTermos.slice());
+  ordem.forEach(function(t) {
+    var el = document.createElement('div');
+    el.className = 'wb-word';
+    el.setAttribute('draggable', 'true');
+    el.setAttribute('data-value', t.value);
+    el.textContent = t.emoji + ' ' + t.label;
+    // Desktop drag
+    el.addEventListener('dragstart', function(e) {
+      draggingEl = el;
+      setTimeout(function() { el.classList.add('dragging'); }, 0);
+      e.dataTransfer.setData('text/plain', t.value);
+    });
+    el.addEventListener('dragend', function() {
+      el.classList.remove('dragging');
+      draggingEl = null;
+    });
+    // Touch
+    el.addEventListener('touchstart', onTouchStart, { passive: true });
+    el.addEventListener('touchmove', onTouchMove, { passive: false });
+    el.addEventListener('touchend', onTouchEnd);
+    bank.appendChild(el);
+  });
+}
+
+// ── Drop slots ──────────────────────────────────────────────────
+document.querySelectorAll('.drop-slot').forEach(function(slot) {
+  slot.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    slot.classList.add('drag-over');
+  });
+  slot.addEventListener('dragleave', function() {
+    slot.classList.remove('drag-over');
+  });
+  slot.addEventListener('drop', function(e) {
+    e.preventDefault();
+    slot.classList.remove('drag-over');
+    var val = e.dataTransfer.getData('text/plain');
+    placeWordInSlot(slot, val);
+  });
+});
+
+function placeWordInSlot(slot, val) {
+  var slotId = slot.dataset.slot;
+  if (slotMap[slotId]) {
+    var oldWord = document.querySelector('.wb-word[data-value="' + slotMap[slotId] + '"]');
+    if (oldWord) oldWord.classList.remove('used');
+  }
+  var srcWord = document.querySelector('.wb-word[data-value="' + val + '"]');
+  if (!srcWord) return;
+  slotMap[slotId] = val;
+  srcWord.classList.add('used');
+  slot.textContent = srcWord.textContent;
+  slot.classList.add('filled');
+  document.getElementById('result-box').className = 'result-box';
+}
+
+// ── Touch drag ──────────────────────────────────────────────────
+function onTouchStart(e) {
+  touchOriginEl = e.currentTarget;
+  touchDragValue = touchOriginEl.dataset.value;
+  var touch = e.touches[0];
+  touchClone = touchOriginEl.cloneNode(true);
+  touchClone.style.cssText = 'position:fixed;opacity:0.8;pointer-events:none;z-index:9999;';
+  touchClone.style.left = (touch.clientX - 40) + 'px';
+  touchClone.style.top  = (touch.clientY - 20) + 'px';
+  document.body.appendChild(touchClone);
+}
+
+function onTouchMove(e) {
+  e.preventDefault();
+  if (!touchClone) return;
+  var touch = e.touches[0];
+  touchClone.style.left = (touch.clientX - 40) + 'px';
+  touchClone.style.top  = (touch.clientY - 20) + 'px';
+}
+
+function onTouchEnd(e) {
+  if (touchClone) { document.body.removeChild(touchClone); touchClone = null; }
+  if (!touchDragValue) return;
+  var touch = e.changedTouches[0];
+  var target = document.elementFromPoint(touch.clientX, touch.clientY);
+  while (target && !target.classList.contains('drop-slot')) {
+    target = target.parentElement;
+  }
+  if (target && target.classList.contains('drop-slot')) {
+    placeWordInSlot(target, touchDragValue);
+  }
+  touchDragValue = null;
+  touchOriginEl = null;
+}
+
+// ── Som ─────────────────────────────────────────────────────────
+function playSound(tipo) {
+  var ctx = new (window.AudioContext || window.webkitAudioContext)();
+  var o = ctx.createOscillator();
+  var g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  if (tipo === 'correct') {
+    o.frequency.setValueAtTime(523, ctx.currentTime);
+    o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+    o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    o.start(); o.stop(ctx.currentTime + 0.5);
+  } else {
+    o.frequency.setValueAtTime(300, ctx.currentTime);
+    o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    o.start(); o.stop(ctx.currentTime + 0.4);
+  }
+}
+
+// ── Verificar ───────────────────────────────────────────────────
+function checkAnswer() {
+  var slots = document.querySelectorAll('.drop-slot');
+  var filled = 0, correct = 0;
+  var total = slots.length;
+  slots.forEach(function(slot) {
+    var slotId = slot.dataset.slot;
+    if (slotMap[slotId]) {
+      filled++;
+      if (slotMap[slotId] === gabarito[slotId]) correct++;
+    }
+  });
+  var rb = document.getElementById('result-box');
+  if (filled < total) {
+    rb.className = 'result-box partial show';
+    rb.textContent = '⚠️ Faltam ' + (total - filled) + ' caixinha(s)! Preencha todas antes de verificar.';
+    return;
+  }
+  window.sabendoScore = Math.round((correct / total) * 100);
+  if (correct === total) {
+    playSound('correct');
+    rb.className = 'result-box correct show';
+    rb.textContent = '🎉 Mapa mental completo e perfeito! Você dominou letras, sílabas e pontuação! 🏆❗';
+  } else {
+    playSound('wrong');
+    rb.className = 'result-box wrong show';
+    rb.textContent = '❌ Você acertou ' + correct + ' de ' + total + '. Alguma palavra está no lugar errado. Revise e tente de novo!';
+  }
+}
+
+// ── Resetar ─────────────────────────────────────────────────────
+function resetAll() {
+  document.querySelectorAll('.wb-word').forEach(function(w) { w.classList.remove('used'); });
+  var placeholders = {
+    s1:  '🐾 T no início...',
+    s2:  '🦆 T no meio...',
+    s3:  '🎲 D no início...',
+    s4:  '🧚 D no meio...',
+    s5:  '🐭 R forte no início...',
+    s6:  '🚪 R suave no meio...',
+    s7:  '🌸 R no fim da sílaba...',
+    s8:  '⬛ Termina a frase...',
+    s9:  '❓ Faz pergunta...',
+    s10: '❗ Mostra emoção...',
+    s11: '📖 Usamos a ordem para achar no...',
+    s12: '🔠 Ordenamos pela...',
+    s13: '🔡 A sequência vai de...'
+  };
+  document.querySelectorAll('.drop-slot').forEach(function(slot) {
+    var slotId = slot.dataset.slot;
+    slot.className = 'drop-slot';
+    var ph = placeholders[slotId] || 'Arraste aqui...';
+    var firstChar = ph.charAt(0);
+    var rest = ph.slice(1);
+    slot.innerHTML = '<span class="slot-emoji">' + firstChar + '</span>' + rest;
+  });
+  Object.keys(slotMap).forEach(function(k) { delete slotMap[k]; });
+  document.getElementById('result-box').className = 'result-box';
+}
+
+// ── Init ────────────────────────────────────────────────────────
+renderWordBank();
+</script>
+</body>
+</html>

@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz — Bilhete e Cartão Pessoal | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #E8430A;
+  --light: #FB8C5A;
+  --bg: #FFF4EF;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.2rem;
+  background: var(--bg);
+  min-height: 100vh;
+  padding-bottom: 40px;
+}
+.header {
+  background: linear-gradient(135deg, #7A1F04, #E8430A 60%, #FB8C5A);
+  color: #fff;
+  padding: 24px 20px 20px;
+  text-align: center;
+}
+.header .emoji { font-size: 2.8rem; display: block; margin-bottom: 6px; }
+.header h1 {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+.header p { font-size: 1rem; opacity: 0.9; margin-top: 4px; }
+
+.container { max-width: 680px; margin: 0 auto; padding: 24px 16px; }
+
+.progress-bar-wrap {
+  background: #f0d0c0;
+  border-radius: 50px;
+  height: 12px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #E8430A, #FB8C5A);
+  border-radius: 50px;
+  transition: width 0.4s ease;
+}
+.progress-label {
+  text-align: right;
+  font-size: 0.9rem;
+  color: #9B4420;
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+.card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 28px 24px;
+  box-shadow: 0 4px 20px rgba(232,67,10,0.10);
+  border: 2px solid #ffd6c0;
+}
+.question-num {
+  font-size: 0.9rem;
+  color: var(--primary);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 10px;
+}
+.question-text {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #3a1a0a;
+  line-height: 1.4;
+  margin-bottom: 24px;
+}
+.options-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.option-btn {
+  background: #fff;
+  border: 2.5px solid #f0c0a0;
+  border-radius: 14px;
+  padding: 16px 20px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #3a1a0a;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s, background 0.15s, transform 0.1s;
+  min-height: 54px;
+  line-height: 1.3;
+}
+.option-btn:hover:not(:disabled) {
+  border-color: var(--primary);
+  background: #fff4ef;
+  transform: translateX(4px);
+}
+.option-btn.correct {
+  border-color: #22c55e;
+  background: #f0fdf4;
+  color: #166534;
+}
+.option-btn.wrong {
+  border-color: #ef4444;
+  background: #fff1f1;
+  color: #991b1b;
+}
+.option-btn:disabled { cursor: not-allowed; }
+
+.feedback-box {
+  margin-top: 16px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  display: none;
+}
+.feedback-box.correct {
+  background: #dcfce7;
+  color: #166534;
+  border: 2px solid #86efac;
+  display: block;
+}
+.feedback-box.wrong {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 2px solid #fca5a5;
+  display: block;
+}
+
+.btn-next {
+  display: none;
+  margin-top: 20px;
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #E8430A, #FB8C5A);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(232,67,10,0.30);
+  transition: transform 0.1s;
+  min-height: 54px;
+}
+.btn-next:hover { transform: translateY(-2px); }
+
+/* Resultado final */
+.resultado {
+  display: none;
+  text-align: center;
+}
+.resultado .trophy { font-size: 5rem; display: block; margin-bottom: 12px; }
+.resultado h2 {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+.resultado .score-num {
+  font-size: 3rem;
+  font-weight: 900;
+  color: #E8430A;
+  font-family: 'Baloo 2', sans-serif;
+}
+.resultado .msg {
+  font-size: 1.2rem;
+  color: #5a2a10;
+  margin: 12px 0 20px;
+  line-height: 1.5;
+}
+.btn-retry {
+  padding: 14px 32px;
+  background: linear-gradient(135deg, #E8430A, #FB8C5A);
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(232,67,10,0.30);
+  min-height: 50px;
+  min-width: 180px;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 32px;
+}
+.btn-back {
+  display: inline-block;
+  padding: 12px 28px;
+  background: #fff;
+  border: 2px solid var(--primary);
+  border-radius: 50px;
+  color: var(--primary);
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  text-decoration: none;
+  transition: background 0.15s;
+  min-height: 44px;
+}
+.btn-back:hover { background: var(--bg); }
+
+@media (max-width: 480px) {
+  body { padding: 12px; font-size: 1.15rem; }
+  .header h1 { font-size: 1.3rem; }
+  .question-text { font-size: 1.25rem; }
+  .option-btn { font-size: 1.05rem; padding: 14px 16px; }
+  .card { padding: 20px 16px; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="emoji">📝</span>
+  <h1>Quiz — Bilhete e Cartão Pessoal</h1>
+  <p>Bilheto quer saber: você aprendeu?</p>
+</div>
+
+<div class="container">
+  <div id="quiz-area">
+    <div class="progress-label" id="progress-label">Pergunta 1 de 6</div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar" id="progress-bar" style="width:16.66%"></div>
+    </div>
+    <div class="card">
+      <div class="question-num" id="question-num">Pergunta 1</div>
+      <div class="question-text" id="question-text"></div>
+      <div class="options-grid" id="options-grid"></div>
+      <div class="feedback-box" id="feedback-box"></div>
+      <button class="btn-next" id="btn-next" onclick="proximaPergunta()">Próxima →</button>
+    </div>
+  </div>
+
+  <div class="card resultado" id="resultado">
+    <span class="trophy" id="trophy-emoji"></span>
+    <h2 id="resultado-titulo"></h2>
+    <div class="score-num" id="score-num"></div>
+    <p class="msg" id="resultado-msg"></p>
+    <button class="btn-retry" onclick="reiniciarQuiz()">Tentar de novo 🔄</button>
+  </div>
+
+  <div class="footer" id="footer-back" style="display:none;">
+    <a href="../../index.html" class="btn-back">← Voltar ao Portal</a>
+  </div>
+</div>
+
+<script>
+(function () {
+
+var questoesOriginais = [
+  {
+    pergunta: "O que é um bilhete?",
+    opcoes: [
+      "Uma mensagem curta e informal escrita para alguém",
+      "Um livro com muitas páginas e capítulos",
+      "Uma lista de compras do supermercado",
+      "Uma redação longa sobre um tema"
+    ],
+    correta: 0,
+    feedback: "Isso mesmo! O bilhete é uma mensagem curta e informal que escrevemos para alguém."
+  },
+  {
+    pergunta: "Quem é o DESTINATÁRIO de um bilhete?",
+    opcoes: [
+      "A pessoa que escreve o bilhete",
+      "O carteiro que entrega a carta",
+      "A pessoa que VAI RECEBER o bilhete",
+      "O professor que corrige o texto"
+    ],
+    correta: 2,
+    feedback: "Correto! O destinatário é a pessoa para quem o bilhete foi escrito — quem vai receber."
+  },
+  {
+    pergunta: "Quem é o REMETENTE de um bilhete?",
+    opcoes: [
+      "Quem compra o papel para escrever",
+      "Quem ENVIA ou escreve o bilhete",
+      "Quem lê o bilhete em voz alta",
+      "Quem guarda o bilhete na gaveta"
+    ],
+    correta: 1,
+    feedback: "Muito bem! O remetente é a pessoa que escreve e envia o bilhete."
+  },
+  {
+    pergunta: "Qual é a diferença entre cartão pessoal e cartão virtual?",
+    opcoes: [
+      "Não há diferença, são a mesma coisa",
+      "O cartão pessoal é maior do que o cartão virtual",
+      "O cartão pessoal é escrito no papel; o cartão virtual é enviado pela internet",
+      "O cartão virtual só pode ser enviado pelo correio"
+    ],
+    correta: 2,
+    feedback: "Ótimo! O cartão pessoal é escrito à mão no papel, enquanto o cartão virtual é enviado pela internet."
+  },
+  {
+    pergunta: "O que é o NARRADOR de uma história?",
+    opcoes: [
+      "O personagem mais bonito da história",
+      "O autor que vende os livros na livraria",
+      "Quem conta a história ao leitor",
+      "O vilão que atrapalha tudo"
+    ],
+    correta: 2,
+    feedback: "Exato! O narrador é quem conta a história — a voz que nos guia pelo texto."
+  },
+  {
+    pergunta: "Qual dessas partes NÃO pertence a um bilhete?",
+    opcoes: [
+      "Destinatário (para quem é)",
+      "Assunto (o que quer dizer)",
+      "Índice e sumário",
+      "Assinatura (de quem é)"
+    ],
+    correta: 2,
+    feedback: "Correto! Índice e sumário são partes de livros. O bilhete tem: destinatário, assunto, data e assinatura."
+  }
+];
+
+var questoes = [];
+var perguntaAtual = 0;
+var acertos = 0;
+var respondida = false;
+
+function embaralhar(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+function prepararQuestoes() {
+  questoes = questoesOriginais.map(function(q) {
+    var opcoes = q.opcoes.slice();
+    var corretaTexto = opcoes[q.correta];
+    opcoes = embaralhar(opcoes);
+    return {
+      pergunta: q.pergunta,
+      opcoes: opcoes,
+      corretaTexto: corretaTexto,
+      feedback: q.feedback
+    };
+  });
+  questoes = embaralhar(questoes);
+}
+
+function renderPergunta() {
+  respondida = false;
+  var q = questoes[perguntaAtual];
+  var total = questoes.length;
+  var num = perguntaAtual + 1;
+
+  document.getElementById('progress-label').textContent = 'Pergunta ' + num + ' de ' + total;
+  document.getElementById('progress-bar').style.width = ((num / total) * 100) + '%';
+  document.getElementById('question-num').textContent = 'Pergunta ' + num;
+  document.getElementById('question-text').textContent = q.pergunta;
+
+  var grid = document.getElementById('options-grid');
+  grid.innerHTML = '';
+  q.opcoes.forEach(function(op, idx) {
+    var btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.textContent = op;
+    btn.setAttribute('data-idx', idx);
+    btn.addEventListener('click', function() { responder(idx); });
+    grid.appendChild(btn);
+  });
+
+  var fb = document.getElementById('feedback-box');
+  fb.className = 'feedback-box';
+  fb.style.display = 'none';
+  fb.textContent = '';
+  document.getElementById('btn-next').style.display = 'none';
+}
+
+function responder(idx) {
+  if (respondida) return;
+  respondida = true;
+
+  var q = questoes[perguntaAtual];
+  var btns = document.querySelectorAll('.option-btn');
+  var selecionado = btns[idx];
+  var acertou = q.opcoes[idx] === q.corretaTexto;
+
+  btns.forEach(function(b) {
+    b.disabled = true;
+    if (q.opcoes[b.getAttribute('data-idx')] === q.corretaTexto) {
+      b.classList.add('correct');
+    }
+  });
+
+  if (!acertou) {
+    selecionado.classList.add('wrong');
+    playSound('erro');
+  } else {
+    acertos++;
+    playSound('acerto');
+  }
+
+  var fb = document.getElementById('feedback-box');
+  fb.textContent = (acertou ? '✅ ' : '❌ ') + q.feedback;
+  fb.className = 'feedback-box ' + (acertou ? 'correct' : 'wrong');
+
+  var btnNext = document.getElementById('btn-next');
+  btnNext.style.display = 'block';
+  if (perguntaAtual === questoes.length - 1) {
+    btnNext.textContent = 'Ver resultado 🏁';
+  } else {
+    btnNext.textContent = 'Próxima →';
+  }
+}
+
+function proximaPergunta() {
+  perguntaAtual++;
+  if (perguntaAtual >= questoes.length) {
+    mostrarResultado();
+  } else {
+    renderPergunta();
+  }
+}
+
+function mostrarResultado() {
+  var total = questoes.length;
+  var pct = Math.round((acertos / total) * 100);
+  window.sabendoScore = pct;
+
+  document.getElementById('quiz-area').style.display = 'none';
+  var res = document.getElementById('resultado');
+  res.style.display = 'block';
+
+  var trophy, titulo, msg;
+  if (pct === 100) {
+    trophy = '🏆'; titulo = 'Perfeito!';
+    msg = 'Você acertou tudo! O Bilheto ficou superespecial com você! 🎉';
+  } else if (pct >= 66) {
+    trophy = '⭐'; titulo = 'Muito bem!';
+    msg = 'Você aprendeu bastante sobre bilhetes e cartões! Continue assim! 📝';
+  } else if (pct >= 33) {
+    trophy = '💪'; titulo = 'Bom esforço!';
+    msg = 'Está no caminho certo! Revise o conteúdo e tente novamente! 😊';
+  } else {
+    trophy = '🌱'; titulo = 'Continue tentando!';
+    msg = 'Todo aprendizado começa com uma tentativa! Você consegue! 💛';
+  }
+
+  document.getElementById('trophy-emoji').textContent = trophy;
+  document.getElementById('resultado-titulo').textContent = titulo;
+  document.getElementById('score-num').textContent = acertos + ' de ' + total + ' (' + pct + '%)';
+  document.getElementById('resultado-msg').textContent = msg;
+  document.getElementById('footer-back').style.display = 'block';
+}
+
+function reiniciarQuiz() {
+  perguntaAtual = 0;
+  acertos = 0;
+  respondida = false;
+  document.getElementById('resultado').style.display = 'none';
+  document.getElementById('quiz-area').style.display = 'block';
+  document.getElementById('footer-back').style.display = 'none';
+  prepararQuestoes();
+  renderPergunta();
+}
+
+function playSound(tipo) {
+  try {
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    var osc = ctx.createOscillator();
+    var gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    if (tipo === 'acerto') { osc.frequency.value = 880; gain.gain.value = 0.3; }
+    else { osc.frequency.value = 220; gain.gain.value = 0.3; }
+    osc.start(); gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    osc.stop(ctx.currentTime + 0.4);
+  } catch(e) {}
+}
+
+// Iniciar
+prepararQuestoes();
+renderPergunta();
+
+})();
+</script>
+
+<!-- ── GAMIFICAÇÃO ─────────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'bilhete-cartao-pessoal';
+  var DISCIPLINE    = 'portugues';
+  var ACTIVITY_TYPE = 'quiz';
+  var TOTAL_ATIV    = 4;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Bilheto',
+        characterEmoji:  '📝',
+        characterImg:    'chars/bilheto.png',
+        themeLabel:      'Bilhete e Cartão Pessoal · Português',
+        totalActivities: TOTAL_ATIV,
+        primaryColor:    '#E8430A',
+        lightColor:      '#FB8C5A',
+        bgColor:         '#FFF4EF',
+        glowRgb:         '232,67,10',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _scoreVal = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _scoreVal = v;
+      var btn = document.getElementById('gamificacao-btn');
+      if (btn) btn.style.display = 'block';
+    },
+    get: function () { return _scoreVal; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#E8430A,#FB8C5A);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+</body>
+</html>

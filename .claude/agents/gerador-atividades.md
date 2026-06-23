@@ -9,6 +9,8 @@ description: Planeja quais atividades criar (respeitando variedade por disciplin
 
 Você planeja quais atividades criar e gera os arquivos HTML. Cada HTML deve ser autocontido (CSS+JS inline, sem dependências externas além de Google Fonts) e pedagogicamente justificado.
 
+> **Antes de começar:** consultar `ERROS.md` na raiz do projeto para não repetir classes de erro já ocorridas em produção.
+
 ---
 
 ## Input esperado
@@ -229,6 +231,34 @@ Alternativa aceitável: substituir drag-and-drop por tap-to-select + tap-to-plac
 
 ---
 
+## Vazamento de resposta — checagem 3c (obrigatória antes de gerar)
+
+Esta checagem é **diferente** do Teste de Coerência: enquanto o Teste verifica se o critério de acerto está visível na tela, a 3c verifica se a **estrutura das opções** entrega a resposta correta sem que o aluno precise saber o conteúdo.
+
+Aplicar a toda atividade com alternativas/opções (quiz, classificador, verdadeiro-falso, complete-a-palavra):
+
+**3c-1 — Dados auxiliares**
+Se a pergunta pede comparação (maior/menor/mais/menos), as opções NÃO devem conter os dados numéricos que permitem resolver por cálculo direto. Mover dados para o feedback pós-resposta.
+
+**3c-2 — Codificação visual**
+Antes do clique, todas as opções devem ter o mesmo estilo visual (cor, borda, ícone, tamanho). Nenhum atributo visual diferencia a correta das erradas antes da interação.
+
+**3c-3 — Comprimento assimétrico**
+Alternativas devem ter nível de detalhe equilibrado. Se a correta for ≥ 40% mais longa que a média das erradas em mais da metade das questões → redesenhar.
+
+**3c-4 — Posição fixa**
+Se as alternativas têm ordem fixa no código E a correta aparece sempre na mesma posição → embaralhar no load.
+
+**3c-5 — Gabarito no DOM**
+Não armazenar gabarito em `data-correct`, `data-answer` ou atributos de elementos visíveis antes da interação. Manter apenas em variável JS interna.
+
+**3c-6 — IDs/classes reveladores**
+Não usar `id="opcao-correta"`, `class="correta"`, `class="resposta-certa"`. Exceção: `correct: true` em array JS é aceitável SE o array for embaralhado a cada render.
+
+**Se qualquer item 3c falhar: redesenhar antes de gerar o HTML.**
+
+---
+
 ## Teste de Coerência — obrigatório antes de gerar qualquer HTML
 
 **Para cada atividade planejada, escreva internamente uma linha de spec e aplique o teste antes de codar:**
@@ -283,6 +313,127 @@ Para toda atividade que pré-preenche posições de uma palavra (objeto `fixed` 
 3. **Convenção obrigatória:** fixar sempre o índice `0` (primeira letra) e o índice `answer.length - 1` (última letra). Nunca usar índices intermediários arbitrários — é a fonte mais comum desse erro
 4. Antes de salvar o arquivo, repetir a conferência uma segunda vez para a lista completa de palavras, em sequência, sem pular nenhuma
 5. Erro real já cometido neste projeto: tema "Onde Vivem as Plantas" — a palavra `AGUAPE` (A-G-U-A-P-E) tinha `fixed: {0:'A', 3:'P'}`, mas o índice 3 de "AGUAPE" é "A", não "P" (o "P" está no índice 4). A mesma falha ocorreu em `TERRESTRE`. Ambas violavam a convenção do item 3 acima — se a convenção tivesse sido seguida, o erro não existiria.
+
+---
+
+## Variáveis JS globais — nomes proibidos
+
+Os nomes abaixo já existem como propriedades nativas do browser e **NÃO podem ser usados como `var` em nível global**. A atribuição falha silenciosamente e a variável continua sendo o objeto nativo, quebrando o código sem erro visível no console:
+
+| Nome proibido | Objeto nativo conflitante | Sintoma |
+|---|---|---|
+| `history` | `window.history` (History API) | `.push()` não existe → erro silencioso |
+| `name` | `window.name` (string) | variável vira string, arrays falham |
+| `location` | `window.location` (Location API) | sobrescrever redireciona a página |
+| `event` | `window.event` (Event) | comportamento imprevisível em handlers |
+| `status` | `window.status` | valor sempre string |
+| `top` | `window.top` | referência ao frame pai |
+
+**Usar sempre nomes descritivos:** `quizHistory`, `pageName`, `quizStatus`, etc.
+
+---
+
+## Preparação para gamificação — obrigatório desde já
+
+O portal terá sistema de cartas próprias para a Lis. Toda atividade deve estar pré-conectada ao gancho de gamificação:
+
+### Obrigação 1 — `window.sabendoScore`
+
+Toda atividade DEVE setar `window.sabendoScore = pct` (número 0–100) **no momento exato em que o resultado aparece**:
+
+```javascript
+// ✅ CORRETO — score setado junto com o resultado
+function mostrarResultado() {
+  var acertos = respostas.filter(function(r) { return r.correta; }).length;
+  window.sabendoScore = Math.round((acertos / total) * 100);
+  painelResultado.style.display = 'block'; // painel aparece depois
+}
+
+// ❌ ERRADO — score incremental (setar a cada acerto parcial)
+function onAcerto() {
+  acertos++;
+  window.sabendoScore = Math.round((acertos / total) * 100); // nunca assim
+}
+```
+
+**Para atividades com botão "Ver gabarito" independente:** setar `window.sabendoScore` ANTES de exibir o gabarito.
+
+**Para mapa mental e atividades sem score numérico:** `window.sabendoScore = 100` na conclusão.
+
+### Obrigação 2 — Snippet de gamificação (substituir os campos entre `[COLCHETES]`)
+
+Incluir o bloco completo abaixo antes de `</body>` em TODOS os HTMLs. Preencher os campos com os valores reais do tema:
+
+```html
+<!-- ── GAMIFICAÇÃO ─────────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = '[SLUG]';
+  var DISCIPLINE    = '[disciplina]';        // ex: 'ciencias'
+  var ACTIVITY_TYPE = '[tipo_atividade]';    // ex: 'quiz', 'memoria', 'completar'
+  var TOTAL_ATIV    = [TOTAL_ATIVIDADES];    // número inteiro
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+
+      // Registra conclusão desta atividade
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   '[NOME_PERSONAGEM]',
+        characterEmoji:  '[EMOJI_PERSONAGEM]',
+        characterImg:    'chars/[SLUG_PERSONAGEM].png',
+        themeLabel:      '[TEMA] · [DISCIPLINA_LABEL]',
+        totalActivities: TOTAL_ATIV,
+        primaryColor:    '[COR_PRIMARIA]',
+        lightColor:      '[COR_CLARA]',
+        bgColor:         '[BG_COLOR]',
+        glowRgb:         '[GLOW_RGB]',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _scoreVal = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _scoreVal = v;
+      var btn = document.getElementById('gamificacao-btn');
+      if (btn) btn.style.display = 'block';
+    },
+    get: function () { return _scoreVal; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,[COR_PRIMARIA],[COR_CLARA]);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+</body>
+```
+
+**ACTIVITY_TYPE por arquivo:** `quiz`, `memoria`, `arrastar`, `completar`, `caca-palavras`, `silabas`, `vf`, `ilustrador`, `frase`, `mapa-mental`
+
+**glowRgb por disciplina:** Ciências `34,197,94` · Português `232,67,10` · Matemática `10,172,232` · História `168,85,247` · Geografia `245,158,11`
 
 ---
 

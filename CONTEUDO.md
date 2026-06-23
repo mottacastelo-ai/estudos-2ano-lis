@@ -1,7 +1,6 @@
 # Inventário do Portal — Lis (2º Ano)
 
-> Inventário gerado por `scripts/update-docs.py` (última execução: 2026-05-26).
-> Seção **Design System** adicionada manualmente em 2026-06-02.
+> Gerado automaticamente por `scripts/update-docs.py` em 2026-06-22.
 > Fonte primária: `index.html`. Existência de arquivos validada no filesystem.
 
 ---
@@ -10,11 +9,11 @@
 
 | Disciplina | Temas | Atividades | HQs completas |
 |---|---|---|---|
-| 🔢 Matemática | 1 | 5 | 0/1 |
+| 🔢 Matemática | 1 | 5 | 1/1 |
 | 🔬 Ciências | 4 | 16 | 4/4 |
 | 🌍 Geografia | 2 | 8 | 2/2 |
 | 📜 História | 5 | 20 | 5/5 |
-| **Total** | **12** | **49** | **11/12** |
+| **Total** | **12** | **49** | **12/12** |
 
 ---
 
@@ -22,7 +21,7 @@
 
 ### numeros-ordinais
 
-**HQ:** `hq-numeros-ordinais-pg1.png` — ❌ p1 · ❌ p2 · ❌ p3 · ❌ p4 | ✅ prompt.md
+**HQ:** `hq-numeros-ordinais-pg1.png` — ✅ p1 · ✅ p2 · ✅ p3 · ✅ p4 | ✅ prompt.md
 
 **Atividades (5):**
 
@@ -170,82 +169,6 @@
 ## Personagens (`Personagens/2o ano/`)
 
 - *(pasta não encontrada ou vazia)*
-
----
-
-## Design System
-
-> Decisões visuais vigentes no `index.html`. Referência para novos temas e para o `gerador-atividades`.
-
-### Fontes
-
-| Uso | Família | Pesos |
-|---|---|---|
-| Corpo / UI | `Nunito` (Google Fonts) | 400, 600, 700, 800, 900 |
-| Títulos / headers / botões HQ | `Baloo 2` (Google Fonts) | 700, 800, 900 |
-
-### Sidebar
-
-| Propriedade | Valor |
-|---|---|
-| Largura | 248 px (fixo) |
-| Header — gradiente | `linear-gradient(135deg, #14532D, #22C55E 60%, #6EE7A0)` |
-| Header — conteúdo | branco (`#fff` / `rgba(255,255,255,0.88)`) |
-| Card nav ativo | fundo `var(--cien-bg)` + texto `var(--cien-color)` (por disciplina) |
-| Link rodapé | `← sabendo.app` → `https://sabendo.app` |
-
-### Hero (Home e disciplinas)
-
-| Propriedade | Valor |
-|---|---|
-| Home hero — gradiente | `linear-gradient(135deg, #14532D, #22C55E 60%, #6EE7A0)` |
-| Home body | fundo `#F8FAFC`, `border-radius: 28px 28px 0 0`, `margin-top: -28px` |
-| Título home | `"✨ Olá, Lis!"` + subtítulo com emoji |
-| Seção de atividades | `"🚀 O que vamos aprender hoje?"` |
-| Disciplinas hero | gradiente da própria disciplina (ver tabela de paleta no SQUAD.md) |
-
-### Cards de disciplina (home)
-
-| Propriedade | Valor |
-|---|---|
-| Border-radius | 24 px |
-| Padding | 32 px |
-| Fundo | gradiente leve da cor da disciplina (ex: `linear-gradient(160deg, #DCFCE7 0%, #F0FDF4 100%)` para Ciências) |
-| Borda | `2px solid var(--disc-color)` |
-| Ícone | 4 rem (`font-size: 4rem`) |
-| Nome | `Baloo 2`, 1.6 rem, weight 900 |
-| Descrições | texto com emojis, ex: `"Animais, sentidos, plantas e o mundo ao redor 🌱"` |
-
-### Cards de atividade
-
-| Propriedade | Valor |
-|---|---|
-| Border-radius | 20 px |
-| Padding | 26 px |
-| Borda superior | `4px solid var(--disc-color)` |
-| Ícone | 2.6 rem (`font-size: 2.6rem`) |
-| Título | `Baloo 2`, 1.2 rem, weight 800 |
-| Hover | `translateY(-3px)` + sombra colorida + seta `→` animada |
-
-### Transições e animações
-
-| Elemento | Comportamento |
-|---|---|
-| Troca de telas | `opacity 0 → 1` + `translateY(8px → 0)` em **150 ms** |
-| Hover em botões/cards | `transition: all 0.2s` |
-| Hover em nav | `transition: all 0.18s` |
-
-### Favicon
-
-SVG inline via `<link rel="icon" href="data:image/svg+xml,...">` com emoji `⭐` (font-size 90, viewBox 100×100).
-
-### Filosofia visual
-
-- Público: 7–8 anos — infantil, alegre, espaçosa
-- Border-radius generoso em toda a UI (24 px cards, 20 px atividades, 16 px tabs, 10 px nav)
-- Cores vibrantes por disciplina; fundo geral `#F8FAFC` (quase branco)
-- Sidebar fixa à esquerda (248 px); main com `margin-left: 248px`
-- Responsivo: sidebar empilha acima de 900 px; grid de atividades colapsa a 1 coluna abaixo de 480 px
 
 ---
 

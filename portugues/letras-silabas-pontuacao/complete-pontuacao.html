@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Complete a Pontuação — Letras, Sílabas e Pontuação | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #E8430A;
+  --light: #FB8C5A;
+  --bg: #FFF4EF;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.2rem;
+  background: var(--bg);
+  min-height: 100vh;
+  padding: 0 0 40px;
+}
+.header {
+  background: linear-gradient(135deg, #7A1F04, #E8430A 60%, #FB8C5A);
+  color: #fff;
+  padding: 20px 16px 24px;
+  text-align: center;
+}
+.header .emoji { font-size: 2.5rem; display: block; margin-bottom: 6px; }
+.header h1 { font-family: 'Baloo 2', sans-serif; font-size: 1.6rem; font-weight: 900; line-height: 1.2; }
+.header p { font-size: 1rem; opacity: 0.9; margin-top: 4px; }
+.container { max-width: 680px; margin: 0 auto; padding: 24px 16px; }
+.instrucao {
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 12px rgba(232,67,10,0.08);
+  font-size: 1.1rem;
+  color: #555;
+  line-height: 1.5;
+}
+.instrucao strong { color: var(--primary); }
+.progress-bar { background: #f0d4c8; border-radius: 50px; height: 10px; margin-bottom: 24px; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, #E8430A, #FB8C5A); border-radius: 50px; transition: width 0.4s ease; }
+.frase-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 28px 24px;
+  box-shadow: 0 4px 20px rgba(232,67,10,0.12);
+  margin-bottom: 20px;
+  text-align: center;
+}
+.frase-num {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--light);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+.frase-contexto {
+  font-size: 1rem;
+  color: #888;
+  margin-bottom: 10px;
+  font-style: italic;
+}
+.frase-texto {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #333;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+.frase-slot {
+  display: inline-block;
+  width: 48px;
+  height: 44px;
+  border-bottom: 3px solid var(--primary);
+  vertical-align: middle;
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: var(--primary);
+  line-height: 44px;
+  text-align: center;
+  margin: 0 4px;
+  transition: all 0.2s;
+}
+.frase-slot.preenchido { border-bottom-color: transparent; }
+.pontuacao-btns {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.punct-btn {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid #e0d0c8;
+  background: #fff;
+  font-size: 2rem;
+  font-weight: 900;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.18s;
+  min-height: 44px;
+  min-width: 44px;
+  color: #555;
+  font-family: 'Nunito', sans-serif;
+}
+.punct-btn span.label { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; margin-top: 2px; color: #888; }
+.punct-btn:hover:not(:disabled) {
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: scale(1.08);
+  box-shadow: 0 4px 14px rgba(232,67,10,0.2);
+}
+.punct-btn:disabled { cursor: default; opacity: 0.5; }
+.feedback-box {
+  margin-top: 16px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  display: none;
+  text-align: left;
+}
+.feedback-box.correct { background: #dcfce7; color: #15803d; }
+.feedback-box.wrong   { background: #fee2e2; color: #b91c1c; }
+.btn-next {
+  display: block;
+  margin: 16px auto 0;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 14px 36px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(232,67,10,0.3);
+  transition: all 0.18s;
+}
+.btn-next:hover { transform: translateY(-2px); }
+.resultado {
+  display: none;
+  text-align: center;
+  background: #fff;
+  border-radius: 20px;
+  padding: 32px 24px;
+  box-shadow: 0 4px 20px rgba(232,67,10,0.12);
+}
+.resultado .big-emoji { font-size: 4rem; }
+.resultado h2 { font-family: 'Baloo 2', sans-serif; font-size: 2rem; font-weight: 900; color: var(--primary); margin: 12px 0 8px; }
+.resultado .score-text { font-size: 1.5rem; font-weight: 800; color: #555; }
+.resultado .msg { font-size: 1.1rem; color: #666; margin-top: 10px; line-height: 1.5; }
+.btn-retry {
+  display: inline-block;
+  margin-top: 20px;
+  background: linear-gradient(135deg, #E8430A, #FB8C5A);
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 14px 32px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+.back-link { display: block; text-align: center; margin-top: 24px; color: var(--primary); font-weight: 700; text-decoration: none; font-size: 1rem; }
+.back-link:hover { text-decoration: underline; }
+@media (max-width: 480px) {
+  .header h1 { font-size: 1.3rem; }
+  .frase-texto { font-size: 1.3rem; }
+  .punct-btn { width: 72px; height: 72px; font-size: 1.7rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="emoji">❗</span>
+  <h1>Complete a Pontuação</h1>
+  <p>Pontinho precisa da pontuação certa em cada frase!</p>
+</div>
+
+<div class="container">
+  <div class="instrucao">
+    Leia cada frase e escolha o sinal certo: <strong>ponto final .</strong>, <strong>interrogação ?</strong> ou <strong>exclamação !</strong>
+    <p style="font-size:1rem;color:#666;margin-top:4px;font-style:italic;">
+      💡 Dica: perguntas usam <strong>?</strong> · admiração/alegria usam <strong>!</strong> · afirmações usam <strong>.</strong>
+    </p>
+  </div>
+
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill" style="width:0%"></div>
+  </div>
+
+  <div id="fraseArea">
+    <div class="frase-card">
+      <div class="frase-num" id="fraseNum">Frase 1 de 6</div>
+      <div class="frase-contexto" id="fraseContexto"></div>
+      <div class="frase-texto" id="fraseTexto"></div>
+      <div class="pontuacao-btns" id="punctBtns">
+        <button class="punct-btn" id="btnPonto" onclick="responder('.')">
+          . <span class="label">Ponto final</span>
+        </button>
+        <button class="punct-btn" id="btnInterrog" onclick="responder('?')">
+          ? <span class="label">Interrogação</span>
+        </button>
+        <button class="punct-btn" id="btnExclam" onclick="responder('!')">
+          ! <span class="label">Exclamação</span>
+        </button>
+      </div>
+      <div class="feedback-box" id="feedbackBox"></div>
+    </div>
+    <button class="btn-next" id="btnNext" style="display:none" onclick="proximaFrase()">Próxima ❯</button>
+  </div>
+
+  <div class="resultado" id="resultadoArea">
+    <div class="big-emoji" id="resultEmoji"></div>
+    <h2 id="resultTitulo"></h2>
+    <div class="score-text" id="resultScore"></div>
+    <div class="msg" id="resultMsg"></div>
+    <button class="btn-retry" onclick="reiniciar()">Tentar novamente 🔄</button>
+  </div>
+
+  <a href="../../index.html" class="back-link">← Voltar ao Portal</a>
+</div>
+
+<script>
+(function () {
+
+var FRASES = [
+  {
+    contexto: 'Alguém está perguntando algo…',
+    frase: 'Onde está o meu lápis',
+    correta: '?',
+    explicacao: 'É uma pergunta! Usamos o ponto de interrogação ? no final.'
+  },
+  {
+    contexto: 'Declarando um fato…',
+    frase: 'A tatu mora debaixo da terra',
+    correta: '.',
+    explicacao: 'É uma frase que conta algo. Usamos o ponto final . no final.'
+  },
+  {
+    contexto: 'Mostrando admiração…',
+    frase: 'Que letra incrível',
+    correta: '!',
+    explicacao: 'É uma exclamação de admiração! Usamos o ponto de exclamação !'
+  },
+  {
+    contexto: 'Fazendo uma pergunta…',
+    frase: 'Qual é a primeira letra do alfabeto',
+    correta: '?',
+    explicacao: 'Pergunta = ponto de interrogação ?. Qual, quem, como, onde pedem ?'
+  },
+  {
+    contexto: 'Contando o que aconteceu…',
+    frase: 'O rato comeu o queijo',
+    correta: '.',
+    explicacao: 'Frase que conta um fato. Ponto final . no final!'
+  },
+  {
+    contexto: 'Demonstrando alegria…',
+    frase: 'Que dia maravilhoso',
+    correta: '!',
+    explicacao: 'Expressão de alegria = ponto de exclamação !'
+  }
+];
+
+var indiceFrase = 0;
+var acertos = 0;
+var respondida = false;
+
+function playSound(tipo) {
+  try {
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    var o = ctx.createOscillator();
+    var g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    if (tipo === 'correct') {
+      o.frequency.setValueAtTime(523, ctx.currentTime);
+      o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+      o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+      o.start(); o.stop(ctx.currentTime + 0.5);
+    } else {
+      o.frequency.setValueAtTime(300, ctx.currentTime);
+      o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      o.start(); o.stop(ctx.currentTime + 0.4);
+    }
+  } catch (e) {}
+}
+
+function renderizarFrase() {
+  respondida = false;
+  var f = FRASES[indiceFrase];
+  var total = FRASES.length;
+
+  document.getElementById('fraseNum').textContent = 'Frase ' + (indiceFrase + 1) + ' de ' + total;
+  document.getElementById('fraseContexto').textContent = f.contexto;
+  document.getElementById('fraseTexto').innerHTML = f.frase + ' <span class="frase-slot" id="slotPunct"></span>';
+
+  document.getElementById('btnPonto').disabled = false;
+  document.getElementById('btnInterrog').disabled = false;
+  document.getElementById('btnExclam').disabled = false;
+  document.getElementById('btnPonto').style.borderColor = '#e0d0c8';
+  document.getElementById('btnInterrog').style.borderColor = '#e0d0c8';
+  document.getElementById('btnExclam').style.borderColor = '#e0d0c8';
+
+  var fb = document.getElementById('feedbackBox');
+  fb.style.display = 'none';
+  fb.className = 'feedback-box';
+  document.getElementById('btnNext').style.display = 'none';
+
+  var pct = (indiceFrase / total) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+function responder(sinal) {
+  if (respondida) return;
+  respondida = true;
+
+  var f = FRASES[indiceFrase];
+  var slot = document.getElementById('slotPunct');
+  slot.textContent = sinal;
+  slot.classList.add('preenchido');
+
+  document.getElementById('btnPonto').disabled = true;
+  document.getElementById('btnInterrog').disabled = true;
+  document.getElementById('btnExclam').disabled = true;
+
+  var fb = document.getElementById('feedbackBox');
+  if (sinal === f.correta) {
+    acertos++;
+    slot.style.color = '#22c55e';
+    fb.className = 'feedback-box correct';
+    fb.textContent = '✅ ' + f.explicacao;
+    playSound('correct');
+    // Highlight botao correto
+    if (sinal === '.') document.getElementById('btnPonto').style.borderColor = '#22c55e';
+    if (sinal === '?') document.getElementById('btnInterrog').style.borderColor = '#22c55e';
+    if (sinal === '!') document.getElementById('btnExclam').style.borderColor = '#22c55e';
+  } else {
+    slot.style.color = '#ef4444';
+    fb.className = 'feedback-box wrong';
+    fb.textContent = '❌ ' + f.explicacao;
+    playSound('wrong');
+    if (sinal === '.') document.getElementById('btnPonto').style.borderColor = '#ef4444';
+    if (sinal === '?') document.getElementById('btnInterrog').style.borderColor = '#ef4444';
+    if (sinal === '!') document.getElementById('btnExclam').style.borderColor = '#ef4444';
+    // Mostrar correto em verde
+    if (f.correta === '.') document.getElementById('btnPonto').style.borderColor = '#22c55e';
+    if (f.correta === '?') document.getElementById('btnInterrog').style.borderColor = '#22c55e';
+    if (f.correta === '!') document.getElementById('btnExclam').style.borderColor = '#22c55e';
+  }
+  fb.style.display = 'block';
+
+  var btnNext = document.getElementById('btnNext');
+  btnNext.textContent = indiceFrase < FRASES.length - 1 ? 'Próxima ❯' : 'Ver resultado 🏆';
+  btnNext.style.display = 'block';
+}
+
+function proximaFrase() {
+  indiceFrase++;
+  if (indiceFrase < FRASES.length) {
+    renderizarFrase();
+  } else {
+    mostrarResultado();
+  }
+}
+
+function mostrarResultado() {
+  var total = FRASES.length;
+  var pct = Math.round((acertos / total) * 100);
+  window.sabendoScore = pct;
+
+  document.getElementById('fraseArea').style.display = 'none';
+  document.getElementById('progressFill').style.width = '100%';
+
+  var emojiEl = document.getElementById('resultEmoji');
+  var tituloEl = document.getElementById('resultTitulo');
+  var msgEl = document.getElementById('resultMsg');
+
+  if (pct >= 83) {
+    emojiEl.textContent = '🎉';
+    tituloEl.textContent = 'Arrasou!';
+    msgEl.textContent = 'Você acertou ' + acertos + ' de ' + total + '! Pontinho está super feliz! ❗😄';
+  } else if (pct >= 50) {
+    emojiEl.textContent = '😊';
+    tituloEl.textContent = 'Quase lá!';
+    msgEl.textContent = 'Você acertou ' + acertos + ' de ' + total + '. Continue praticando a pontuação!';
+  } else {
+    emojiEl.textContent = '💪';
+    tituloEl.textContent = 'Vamos praticar mais!';
+    msgEl.textContent = 'Você acertou ' + acertos + ' de ' + total + '. Releia as dicas e tente novamente!';
+  }
+  document.getElementById('resultScore').textContent = acertos + ' / ' + total + ' corretas';
+  document.getElementById('resultadoArea').style.display = 'block';
+}
+
+function reiniciar() {
+  indiceFrase = 0;
+  acertos = 0;
+  document.getElementById('resultadoArea').style.display = 'none';
+  document.getElementById('fraseArea').style.display = 'block';
+  renderizarFrase();
+}
+
+renderizarFrase();
+
+window.responder = responder;
+window.proximaFrase = proximaFrase;
+window.reiniciar = reiniciar;
+
+})();
+</script>
+
+<!-- ── GAMIFICAÇÃO ─────────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'letras-silabas-pontuacao';
+  var DISCIPLINE    = 'portugues';
+  var ACTIVITY_TYPE = 'completar';
+  var TOTAL_ATIV    = 5;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Pontinho',
+        characterEmoji:  '❗',
+        characterImg:    'chars/pontinho.png',
+        themeLabel:      'Letras, Sílabas e Pontuação · Português',
+        totalActivities: TOTAL_ATIV,
+        primaryColor:    '#E8430A',
+        lightColor:      '#FB8C5A',
+        bgColor:         '#FFF4EF',
+        glowRgb:         '232,67,10',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _scoreVal = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _scoreVal = v;
+      var btn = document.getElementById('gamificacao-btn');
+      if (btn) btn.style.display = 'block';
+    },
+    get: function () { return _scoreVal; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#E8430A,#FB8C5A);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+</body>
+</html>
