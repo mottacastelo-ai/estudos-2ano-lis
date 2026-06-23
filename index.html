@@ -395,6 +395,39 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
 .logout-btn:hover { background:#DCFCE7; }
 #streak-banner { display:none; }
 #streak-banner.visible { display:flex; }
+
+/* ===== SEARCH ===== */
+.search-wrap { padding: 12px 14px 6px; position: relative; }
+.search-input {
+  width: 100%; padding: 9px 12px 9px 34px;
+  border-radius: 10px; border: 2px solid #E2E8F0;
+  font-family: 'Nunito', sans-serif; font-size: 0.88rem; font-weight: 600;
+  background: #F8FAFC; color: #334155; outline: none;
+  transition: border-color 0.18s;
+}
+.search-input::placeholder { color: #94A3B8; }
+.search-input:focus { border-color: #22C55E; background: #fff; }
+.search-icon {
+  position: absolute; left: 25px; top: 50%; transform: translateY(-50%);
+  font-size: 0.9rem; pointer-events: none; color: #94A3B8;
+}
+.search-results {
+  display: none; position: absolute; left: 14px; right: 14px; top: calc(100% + 2px);
+  background: #fff; border-radius: 12px; box-shadow: 0 8px 28px rgba(0,0,0,0.14);
+  border: 2px solid #E2E8F0; z-index: 200; max-height: 280px; overflow-y: auto;
+}
+.search-results.open { display: block; }
+.search-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 12px; cursor: pointer;
+  font-family: 'Nunito', sans-serif; font-size: 0.84rem; font-weight: 700; color: #334155;
+  border: none; background: none; width: 100%; text-align: left;
+  transition: background 0.15s; border-bottom: 1px solid #F1F5F9;
+}
+.search-item:last-child { border-bottom: none; }
+.search-item:hover { background: #F8FAFC; }
+.search-item-disc { font-size: 0.68rem; font-weight: 800; padding: 2px 7px; border-radius: 10px; white-space: nowrap; }
+.search-empty { padding: 14px; text-align: center; font-size: 0.83rem; color: #94A3B8; font-weight: 600; }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
@@ -405,6 +438,14 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
   <div class="sidebar-header">
     <span class="sidebar-logo">📚 Portal da Lis</span>
     <span class="sidebar-sub">2º Ano do Ensino Fundamental</span>
+  </div>
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="search-input" class="search-input" placeholder="Buscar tema..." autocomplete="off"
+      oninput="handleSearch(this.value)"
+      onfocus="handleSearch(this.value)"
+      onblur="setTimeout(closeSearch, 180)">
+    <div class="search-results" id="search-results"></div>
   </div>
   <div class="sidebar-nav">
     <div class="nav-section-label">Navegação</div>
@@ -1863,6 +1904,54 @@ async function logActivity(discipline, themeSlug, activityType, score) {
   }).eq('user_id', sbUser.id);
   sbStreak = Object.assign({}, streak, { current_streak: newStreak, total_activities: streak.total_activities + 1 });
   renderStreak();
+}
+
+// ── SEARCH ──────────────────────────────────────────────
+var discNames  = { cien: 'Ciências', geo: 'Geografia', hist: 'História', mat: 'Matemática', port: 'Português' };
+var discBadge  = {
+  cien: { bg: '#DCFCE7', color: '#15803D' },
+  geo:  { bg: '#FEF3C7', color: '#92400E' },
+  hist: { bg: '#F3E8FF', color: '#6D28D9' },
+  mat:  { bg: '#E0F5FE', color: '#0369A1' },
+  port: { bg: '#FFE8DE', color: '#7A1F04' }
+};
+
+function handleSearch(q) {
+  var res = document.getElementById('search-results');
+  q = (q || '').trim().toLowerCase();
+  if (!q) { res.classList.remove('open'); res.innerHTML = ''; return; }
+  var links = document.querySelectorAll('.theme-link');
+  var matches = [];
+  links.forEach(function(btn) {
+    if (btn.textContent.trim().toLowerCase().indexOf(q) !== -1) {
+      var m = (btn.getAttribute('onclick') || '').match(/showTheme\('(\w+)','([\w-]+)'\)/);
+      if (m) matches.push({ disc: m[1], slug: m[2], label: btn.textContent.trim() });
+    }
+  });
+  if (!matches.length) {
+    res.innerHTML = '<div class="search-empty">Nenhum tema encontrado</div>';
+  } else {
+    res.innerHTML = matches.map(function(m) {
+      var badge = discBadge[m.disc] || {};
+      return '<button class="search-item" onmousedown="searchNav(\'' + m.disc + '\',\'' + m.slug + '\')">' +
+        '<span class="search-item-disc" style="background:' + badge.bg + ';color:' + badge.color + '">' + discNames[m.disc] + '</span>' +
+        '<span>' + m.label + '</span>' +
+        '</button>';
+    }).join('');
+  }
+  res.classList.add('open');
+}
+
+function searchNav(disc, slug) {
+  document.getElementById('search-input').value = '';
+  document.getElementById('search-results').classList.remove('open');
+  showDisc(disc);
+  showTheme(disc, slug);
+}
+
+function closeSearch() {
+  var res = document.getElementById('search-results');
+  if (res) res.classList.remove('open');
 }
 
 initAuth();
