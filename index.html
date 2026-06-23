@@ -1916,14 +1916,18 @@ var discBadge  = {
   port: { bg: '#FFE8DE', color: '#7A1F04' }
 };
 
+function normalizeSearch(s) {
+  return s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+}
+
 function handleSearch(q) {
   var res = document.getElementById('search-results');
-  q = (q || '').trim().toLowerCase();
+  q = normalizeSearch((q || '').trim());
   if (!q) { res.classList.remove('open'); res.innerHTML = ''; return; }
   var links = document.querySelectorAll('.theme-link');
   var matches = [];
   links.forEach(function(btn) {
-    if (btn.textContent.trim().toLowerCase().indexOf(q) !== -1) {
+    if (normalizeSearch(btn.textContent.trim()).indexOf(q) !== -1) {
       var m = (btn.getAttribute('onclick') || '').match(/showTheme\('(\w+)','([\w-]+)'\)/);
       if (m) matches.push({ disc: m[1], slug: m[2], label: btn.textContent.trim() });
     }
