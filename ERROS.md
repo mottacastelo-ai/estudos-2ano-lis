@@ -94,6 +94,37 @@ window.ativarLacuna    = ativarLacuna;
 
 ---
 
+## ERR-004 — Arrastar no touch (mobile/tablet) rola a página em vez de mover a palavra
+
+**Arquivos afetados:** `mapa-mental-bilhete.html`, `mapa-mental-letras.html`
+**Data:** 2026-06
+**Tipo:** Touch — listener passivo impede `preventDefault()`
+
+### Causa raiz
+
+O listener `touchstart` dos elementos arrastáveis estava registrado com `{ passive: true }`. Com esse flag, o browser ignora qualquer `e.preventDefault()` dentro do handler — e inicia o scroll da página em vez de iniciar o drag. A palavra nunca sai do lugar.
+
+### Correção aplicada
+
+```javascript
+// ❌ ERRADO — passive:true ignora preventDefault; scroll vence o drag
+el.addEventListener('touchstart', onTouchStart, { passive: true });
+
+// ✅ CORRETO — passive:false permite preventDefault; drag funciona
+el.addEventListener('touchstart', onTouchStart, { passive: false });
+
+function onTouchStart(e) {
+  e.preventDefault(); // ← obrigatório para bloquear scroll
+  // ... resto do handler
+}
+```
+
+### Regra para a squad
+
+Todo elemento arrastável via touch DEVE registrar `touchstart` com `{ passive: false }` e chamar `e.preventDefault()` logo na primeira linha do handler. O mesmo vale para `touchmove`.
+
+---
+
 ## Checklist anti-bug para `gerador-atividades`
 
 Antes de finalizar qualquer HTML de atividade, verificar:
@@ -104,3 +135,4 @@ Antes de finalizar qualquer HTML de atividade, verificar:
 - [ ] A atividade seta `window.sabendoScore = pct` (0–100) no momento em que o resultado aparece?
 - [ ] O placeholder `<!-- gamificacao-btn -->` está presente antes de `</body>`?
 - [ ] Toda função chamada via `onclick="fn()"` no HTML está exportada com `window.fn = fn` antes do fechamento do IIFE? (ERR-003)
+- [ ] Elementos arrastáveis: `touchstart` e `touchmove` com `{ passive: false }` + `e.preventDefault()`? (ERR-004)
