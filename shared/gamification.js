@@ -477,13 +477,16 @@
     );
   }
 
-  async function fetchProgress(supa, uid, themeSlug) {
-    // Conta activity_types distintos concluídos neste tema
+  async function fetchProgress(supa, uid, themeSlug, currentActivityType) {
+    // Conta activity_types distintos concluídos neste tema.
+    // currentActivityType é adicionado otimisticamente para contornar race condition
+    // entre o insert fire-and-forget do caller e esta query.
     var res = await supa.from("activity_log")
       .select("activity_type")
       .eq("user_id", uid)
       .eq("theme_slug", themeSlug);
     var uniqueTypes = new Set((res.data || []).map(function(r) { return r.activity_type; }));
+    if (currentActivityType) uniqueTypes.add(currentActivityType);
     return { completedCount: uniqueTypes.size };
   }
 
@@ -756,18 +759,19 @@
 
     injectStyles(config.primaryColor, config.lightColor, config.bgColor, config.glowRgb || "167,139,250");
 
-    var progress   = await fetchProgress(supa, uid, themeSlug);
-    // stageIndex ANTES de registrar esta atividade (já contabilizada pelo caller)
+    var progress   = await fetchProgress(supa, uid, themeSlug, config.activityType);
     var stageIndex = Math.min(progress.completedCount, totalActivities);
     var isComplete = stageIndex >= totalActivities;
 
     var cardSlug = null;
+    var isFirstCompletion = false;
 
     if (isComplete) {
       var cardRes = await supa.from("cards").select("card_slug")
         .eq("user_id", uid).eq("theme_slug", themeSlug).maybeSingle();
 
       if (!cardRes.data) {
+        isFirstCompletion = true;
         cardSlug = randomCard();
         await saveCard(supa, uid, themeSlug, discipline, cardSlug);
       } else {
@@ -797,14 +801,8 @@
     });
 
     // Reveal cinematográfico apenas na primeira conclusão total do módulo
-    if (isComplete && cardSlug) {
-      var cardRes2 = await supa.from("cards").select("created_at,updated_at")
-        .eq("user_id", uid).eq("theme_slug", themeSlug).maybeSingle();
-      var justCreated = cardRes2.data &&
-        Math.abs(new Date(cardRes2.data.created_at) - new Date(cardRes2.data.updated_at)) < 5000;
-      if (justCreated) {
-        await showReveal(cardSlug, config);
-      }
+    if (isComplete && cardSlug && isFirstCompletion) {
+      await showReveal(cardSlug, config);
     }
 
     if (config.backUrl) window.location.href = config.backUrl;
