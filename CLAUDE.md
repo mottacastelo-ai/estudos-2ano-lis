@@ -163,6 +163,7 @@ Substituir o `<!-- gamificacao-btn -->` por este bloco completo (preencher os ca
         characterImg:    'chars/[SLUG_PERSONAGEM].png',
         themeLabel:      '[TEMA] · [DISCIPLINA_LABEL]',
         totalActivities: TOTAL_ATIV,
+        activityType:    ACTIVITY_TYPE,
         primaryColor:    '[COR_PRIMARIA]',
         lightColor:      '[COR_CLARA]',
         bgColor:         '[BG_COLOR]',

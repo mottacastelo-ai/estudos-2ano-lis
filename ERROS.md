@@ -125,6 +125,32 @@ Todo elemento arrastável via touch DEVE registrar `touchstart` com `{ passive: 
 
 ---
 
+## ERR-005 — Reveal da carta não dispara ao completar o mapa mental (race condition)
+
+**Arquivos afetados:** `shared/gamification.js` + todos os HTMLs de atividade
+**Data:** 2026-06
+**Tipo:** Async — race condition entre insert fire-and-forget e query de progresso
+
+### Causa raiz
+
+**Bug 1 — Race condition:** A função `abrirGamificacao()` no snippet HTML faz o `insert` no `activity_log` sem `await` e chama `SabendoGamification.run()` imediatamente. Quando `run()` consulta `fetchProgress()`, o registro da atividade atual pode não ter chegado ao banco ainda. `completedCount` fica com `N-1`, `isComplete = false` e o reveal nunca dispara.
+
+**Bug 2 — Reveal repetido:** A condição original para revelar a carta usava comparação de timestamps `created_at` vs `updated_at` com janela de 5s. Como o Supabase não atualiza `updated_at` quando o upsert não altera nenhum campo, a diferença era sempre 0ms → reveal disparava em TODA conclusão do tema, não só na primeira.
+
+### Correção aplicada
+
+**`gamification.js`:**
+1. `fetchProgress()` recebe o `currentActivityType` e o adiciona otimisticamente ao `Set` de tipos únicos, garantindo que a atividade atual seja contada mesmo se o insert ainda não commitou.
+2. Condição de reveal substituída por `isFirstCompletion = !cardRes.data` — flag booleana capturada antes do `saveCard()`. Reveal dispara somente quando não existia carta prévia.
+
+**Todos os HTMLs:** adicionado `activityType: ACTIVITY_TYPE` no config do `run()` para que `fetchProgress()` receba o tipo correto.
+
+### Regra para a squad
+
+Todo HTML de atividade DEVE passar `activityType: ACTIVITY_TYPE` no config de `SabendoGamification.run()`. O template canônico em `CLAUDE.md` já inclui esse campo — nunca omitir.
+
+---
+
 ## Checklist anti-bug para `gerador-atividades`
 
 Antes de finalizar qualquer HTML de atividade, verificar:
@@ -136,3 +162,4 @@ Antes de finalizar qualquer HTML de atividade, verificar:
 - [ ] O placeholder `<!-- gamificacao-btn -->` está presente antes de `</body>`?
 - [ ] Toda função chamada via `onclick="fn()"` no HTML está exportada com `window.fn = fn` antes do fechamento do IIFE? (ERR-003)
 - [ ] Elementos arrastáveis: `touchstart` e `touchmove` com `{ passive: false }` + `e.preventDefault()`? (ERR-004)
+- [ ] O config de `SabendoGamification.run()` inclui `activityType: ACTIVITY_TYPE`? (ERR-005)
