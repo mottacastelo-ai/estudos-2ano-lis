@@ -1946,9 +1946,13 @@ function handleSearch(q) {
   } else {
     res.innerHTML = matches.map(function(m) {
       var badge = discBadge[m.disc] || {};
+      var tc = document.getElementById('theme-' + m.disc + '-' + m.slug);
+      var pStart = tc && tc.getAttribute('data-pages-start');
+      var pEnd   = tc && tc.getAttribute('data-pages-end');
+      var pages  = (pStart && pEnd) ? ' <span style="font-size:0.78em;opacity:0.65;margin-left:4px">pp. ' + pStart + '–' + pEnd + '</span>' : '';
       return '<button class="search-item" onmousedown="searchNav(\'' + m.disc + '\',\'' + m.slug + '\')">' +
         '<span class="search-item-disc" style="background:' + badge.bg + ';color:' + badge.color + '">' + discNames[m.disc] + '</span>' +
-        '<span>' + m.label + '</span>' +
+        '<span>' + m.label + pages + '</span>' +
         '</button>';
     }).join('');
   }
