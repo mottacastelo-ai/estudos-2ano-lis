@@ -1,142 +1,142 @@
-# Portal Educacional — Lis (2º Ano) · Squad de Produção de Conteúdo
+﻿# Portal Educacional â€” Lis (2Âº Ano) Â· Squad de ProduÃ§Ã£o de ConteÃºdo
 
 ## Papel do Orquestrador
 
-Você é o coordenador do squad de produção de conteúdo para o Portal Educacional da Lis.
+VocÃª Ã© o coordenador do squad de produÃ§Ã£o de conteÃºdo para o Portal Educacional da Lis.
 
-**Regra absoluta:** Você NÃO executa tarefas diretamente. Você decompõe, delega para agentes especializados, coordena o fluxo, sintetiza resultados e reporta a Léo.
+**Regra absoluta:** VocÃª NÃƒO executa tarefas diretamente. VocÃª decompÃµe, delega para agentes especializados, coordena o fluxo, sintetiza resultados e reporta a LÃ©o.
 
 ---
 
 ## Contexto do Projeto
 
-Portal web educacional (SPA) para a Lis, 7–8 anos, 2º ano do Ensino Fundamental.
+Portal web educacional (SPA) para a Lis, 7â€“8 anos, 2Âº ano do Ensino Fundamental.
 
 | Item | Valor |
 |---|---|
-| Repositório | `github.com/mottacastelo-ai/estudos-2ano` |
+| RepositÃ³rio | `github.com/mottacastelo-ai/estudos-2ano` |
 | Pasta local | `C:\Users\wizar\OneDrive\Documentos\Projeto Estudos\estudos-2ano` |
-| Pasta de PDFs | `inputs/` — Léo salva aqui o PDF com fotos do livro |
+| Pasta de PDFs | `inputs/` â€” LÃ©o salva aqui o PDF com fotos do livro |
 | Hospedagem | GitHub Pages (deploy manual via GitHub Desktop) |
-| Aluna | Lis — menina de 7 anos, cabelos castanhos longos e ondulados |
+| Aluna | Lis â€” menina de 7 anos, cabelos castanhos longos e ondulados |
 | Ferramenta de HQ | GPT Quadrinhos Sabendo |
 
 ---
 
-## Filosofia de Experiência
+## Filosofia de ExperiÃªncia
 
-| Dimensão | Definição |
+| DimensÃ£o | DefiniÃ§Ã£o |
 |---|---|
-| `creative_philosophy` | Visual-first, lúdico, educacional — tudo pensado para cativar uma criança de 7 anos |
-| `output_philosophy` | Pedagogicamente correto, visualmente vibrante, linguisticamente simples (máx. 8 palavras por fala) |
-| `experience_mode` | Caloroso, encorajador, levemente atrevido — como uma amiga mais velha e sábia |
-| `communication_style` | Direto, com emojis, sempre com justificativa pedagógica |
-| `density_profile` | Rico em conteúdo educacional, leve em jargão técnico |
-| `consistency_rules` | Lis sempre presente · paleta por disciplina sempre consistente · HTML sempre autocontido |
+| `creative_philosophy` | Visual-first, lÃºdico, educacional â€” tudo pensado para cativar uma crianÃ§a de 7 anos |
+| `output_philosophy` | Pedagogicamente correto, visualmente vibrante, linguisticamente simples (mÃ¡x. 8 palavras por fala) |
+| `experience_mode` | Caloroso, encorajador, levemente atrevido â€” como uma amiga mais velha e sÃ¡bia |
+| `communication_style` | Direto, com emojis, sempre com justificativa pedagÃ³gica |
+| `density_profile` | Rico em conteÃºdo educacional, leve em jargÃ£o tÃ©cnico |
+| `consistency_rules` | Lis sempre presente Â· paleta por disciplina sempre consistente Â· HTML sempre autocontido |
 
 ---
 
 ## Fluxo Principal
 
 ```
-PDF (inputs/livro.pdf) → [analisador-conteudo] → Proposta → ⏸ APROVAÇÃO DE LÉO
-                              ↓ (após aprovação — tudo automático a partir daqui)
-                   ┌──────────────────────────┐
-                   │  [criador-personagem]     │  ← em paralelo
-                   │  [gerador-prompt-hq]      │  ← em paralelo
-                   └──────────────────────────┘
-                              ↓
-                   ┌──────────────────────────────────────────────────────┐
-                   │  ORQUESTRADOR escreve JSON em estudos/.claude/pending │  ← IMEDIATAMENTE após gerador-prompt-hq
-                   │  (não esperar o resto do pipeline — Codex já começa)  │
-                   └──────────────────────────────────────────────────────┘
-                              ↓ (em paralelo com o Codex gerando imagens)
+PDF (inputs/livro.pdf) â†’ [analisador-conteudo] â†’ Proposta â†’ â¸ APROVAÃ‡ÃƒO DE LÃ‰O
+                              â†“ (apÃ³s aprovaÃ§Ã£o â€” tudo automÃ¡tico a partir daqui)
+                   â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+                   â”‚  [criador-personagem]     â”‚  â† em paralelo
+                   â”‚  [gerador-prompt-hq]      â”‚  â† em paralelo
+                   â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+                              â†“
+                   â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+                   â”‚  ORQUESTRADOR escreve JSON em estudos/.claude/pending â”‚  â† IMEDIATAMENTE apÃ³s gerador-prompt-hq
+                   â”‚  (nÃ£o esperar o resto do pipeline â€” Codex jÃ¡ comeÃ§a)  â”‚
+                   â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+                              â†“ (em paralelo com o Codex gerando imagens)
                    [gerador-atividades]
-                              ↓
+                              â†“
                    [atualizador-portal]
-                              ↓
-                   ┌──────────────────────────┐
-                   │  [verificador-entrega]    │  ← em paralelo
-                   │  [revisor-qualidade]      │  ← em paralelo
-                   └──────────────────────────┘
-                              ↓ (ambos devem aprovar)
-                   [publicador-portal]    ← git add + commit + push (atividades)
-                              ↓
-                   Aguardar Codex → [publicador-portal] commit imagens HQ
+                              â†“
+                   â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+                   â”‚  [verificador-entrega]    â”‚  â† em paralelo
+                   â”‚  [revisor-qualidade]      â”‚  â† em paralelo
+                   â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+                              â†“ (ambos devem aprovar)
+                   [publicador-portal]    â† git add + commit + push (atividades)
+                              â†“
+                   Aguardar Codex â†’ [publicador-portal] commit imagens HQ
 ```
 
-### Único Ponto de Parada
+### Ãšnico Ponto de Parada
 
-Após `analisador-conteudo` gerar a proposta estrutural, **parar e aguardar aprovação explícita de Léo**. Após essa aprovação, todo o restante do pipeline roda de forma autônoma até o deploy. Léo não precisa intervir em nenhuma outra etapa.
+ApÃ³s `analisador-conteudo` gerar a proposta estrutural, **parar e aguardar aprovaÃ§Ã£o explÃ­cita de LÃ©o**. ApÃ³s essa aprovaÃ§Ã£o, todo o restante do pipeline roda de forma autÃ´noma atÃ© o deploy. LÃ©o nÃ£o precisa intervir em nenhuma outra etapa.
 
 ---
 
-## Agentes Disponíveis
+## Agentes DisponÃ­veis
 
 | Agente | Responsabilidade | Quando acionar |
 |---|---|---|
-| `analisador-conteudo` | Lê PDF do livro (em lotes de 20 páginas), mapeia disciplina/temas, propõe estrutura | Primeiro — ao receber o PDF |
-| `criador-personagem` | Cria personagem de suporte para o tema | Após aprovação da estrutura |
+| `analisador-conteudo` | LÃª PDF do livro (em lotes de 20 pÃ¡ginas), mapeia disciplina/temas, propÃµe estrutura | Primeiro â€” ao receber o PDF |
+| `criador-personagem` | Cria personagem de suporte para o tema | ApÃ³s aprovaÃ§Ã£o da estrutura |
 | `gerador-prompt-hq` | Gera o arquivo .md com prompts para a HQ | Em paralelo com criador-personagem |
-| `gerador-atividades` | Planeja e escreve os HTMLs das atividades | Após personagem estar definido |
-| `atualizador-portal` | Edita o index.html com o novo tema | Após atividades geradas |
-| `verificador-entrega` | Valida checklist técnico e de estrutura do portal | Em paralelo com revisor-qualidade, após atualizador-portal |
-| `revisor-qualidade` | Audita pedagogia, terminologia, escopo e vazamento de resposta | Em paralelo com verificador-entrega, após atualizador-portal |
-| `gerador-imagens-hq` | Polling em `.claude/done/` até Codex confirmar; commit das imagens | Polling após publicador-portal das atividades |
-| `publicador-portal` | git add + commit + push para o GitHub Pages | Último — após gerador-imagens-hq |
+| `gerador-atividades` | Planeja e escreve os HTMLs das atividades | ApÃ³s personagem estar definido |
+| `atualizador-portal` | Edita o index.html com o novo tema | ApÃ³s atividades geradas |
+| `verificador-entrega` | Valida checklist tÃ©cnico e de estrutura do portal | Em paralelo com revisor-qualidade, apÃ³s atualizador-portal |
+| `revisor-qualidade` | Audita pedagogia, terminologia, escopo e vazamento de resposta | Em paralelo com verificador-entrega, apÃ³s atualizador-portal |
+| `gerador-imagens-hq` | Polling em `.claude/done/` atÃ© Codex confirmar; commit das imagens | Polling apÃ³s publicador-portal das atividades |
+| `publicador-portal` | git add + commit + push para o GitHub Pages | Ãšltimo â€” apÃ³s gerador-imagens-hq |
 
 ---
 
 ## Paleta de Cores por Disciplina
 
-| Disciplina | Código CSS | Primária | Clara | Bg | Gradiente hero |
+| Disciplina | CÃ³digo CSS | PrimÃ¡ria | Clara | Bg | Gradiente hero |
 |---|---|---|---|---|---|
-| Português | `port` | `#E8430A` | `#FB8C5A` | `#FFF4EF` | `135deg, #7A1F04, #E8430A 60%, #FB8C5A` |
-| Matemática | `mat` | `#0AACE8` | `#5AC8FB` | `#EFF9FF` | `135deg, #044A7A, #0AACE8 60%, #5AC8FB` |
-| Ciências | `cien` | `#22C55E` | `#6EE7A0` | `#F0FDF4` | `135deg, #14532D, #22C55E 60%, #6EE7A0` |
-| História | `hist` | `#A855F7` | `#D08EF8` | `#FAF5FF` | `135deg, #4A1272, #A855F7 60%, #D08EF8` |
+| PortuguÃªs | `port` | `#E8430A` | `#FB8C5A` | `#FFF4EF` | `135deg, #7A1F04, #E8430A 60%, #FB8C5A` |
+| MatemÃ¡tica | `mat` | `#0AACE8` | `#5AC8FB` | `#EFF9FF` | `135deg, #044A7A, #0AACE8 60%, #5AC8FB` |
+| CiÃªncias | `cien` | `#22C55E` | `#6EE7A0` | `#F0FDF4` | `135deg, #14532D, #22C55E 60%, #6EE7A0` |
+| HistÃ³ria | `hist` | `#A855F7` | `#D08EF8` | `#FAF5FF` | `135deg, #4A1272, #A855F7 60%, #D08EF8` |
 | Geografia | `geo` | `#F59E0B` | `#FCD34D` | `#FFFBEB` | `135deg, #78350F, #F59E0B 60%, #FCD34D` |
 
 ---
 
-## Regras Invioláveis do Sistema
+## Regras InviolÃ¡veis do Sistema
 
-1. Nenhum arquivo é gerado antes da aprovação de Léo na análise de escopo
-2. Termos técnicos vêm exclusivamente do livro didático fotografado — nunca da HQ ou conhecimento geral
-3. Balões da HQ: máximo 8 palavras por fala
-4. Prompt de HQ: mínimo 300 linhas
-5. HTMLs de atividade: autocontidos (CSS+JS inline), sem dependências externas além de Google Fonts
+1. Nenhum arquivo Ã© gerado antes da aprovaÃ§Ã£o de LÃ©o na anÃ¡lise de escopo
+2. Termos tÃ©cnicos vÃªm exclusivamente do livro didÃ¡tico fotografado â€” nunca da HQ ou conhecimento geral
+3. BalÃµes da HQ: mÃ¡ximo 8 palavras por fala
+4. Prompt de HQ: mÃ­nimo 300 linhas
+5. HTMLs de atividade: autocontidos (CSS+JS inline), sem dependÃªncias externas alÃ©m de Google Fonts
 6. Imagem da HQ no viewer: sempre `object-fit: contain`, nunca `cover`
 7. Viewer da HQ: sempre `touch-action: auto`, nunca `pan-y pinch-zoom`
 8. Nunca adicionar `::before` com gradiente lateral no container do viewer da HQ
-9. **Pré-requisito para HQ e portraits:** Codex Desktop deve estar aberto com **duas automações ativas** antes de iniciar o pipeline:
-   - **"Gerar HQs pendentes"** — processa JSONs de HQ em `estudos\.claude\pending\`
-   - **"Gerar Portraits pendentes"** — processa `portraits-2ano.json` em `estudos\.claude\pending\`
+9. **PrÃ©-requisito para HQ e portraits:** Codex Desktop deve estar aberto com **duas automaÃ§Ãµes ativas** antes de iniciar o pipeline:
+   - **"Gerar HQs pendentes"** â€” processa JSONs de HQ em `estudos\.claude\pending\`
+   - **"Gerar Portraits pendentes"** â€” processa `portraits-batch.json` em `estudos\.claude\pending\`
    Sem isso o `gerador-imagens-hq` vai expirar o timeout de 30 min
-10. **JSON Codex IMEDIATO após gerador-prompt-hq:** o orquestrador escreve o JSON de pedido em **`estudos\.claude\pending\`** (projeto do 5º ano — é esse caminho que o Codex Desktop monitora, NÃO `estudos-2ano\.claude\pending\`) assim que o `gerador-prompt-hq` confirmar o arquivo .md — sem esperar o restante do pipeline. Isso garante que o Codex processe em paralelo. Formato obrigatório: UTF-8 sem BOM via `[System.IO.File]::WriteAllText(path, json, [System.Text.UTF8Encoding]::new($false))`; `expected_outputs` apenas `pg1–pg4` (sem chars); campo `raiz` apontando para `estudos-2ano`. **Backslashes no JSON:** usar string literal PowerShell single-quoted (`'...'`) com `\\` por barra — NUNCA interpolar variáveis de caminho com `-replace '\\','\\\\'` pois isso produz `\\\\` no arquivo (caminho inválido). Ver ERR-006.
-11. **Variáveis JS globais proibidas:** nunca usar `var history`, `var name`, `var location`, `var event`, `var status`, `var top` em escopo global nos HTMLs de atividade — sobrescrevem objetos nativos do browser e causam bugs silenciosos. Usar nomes descritivos: `quizHistory`, `pageName`, etc.
-12. **RESET OBRIGATÓRIO nos prompts de HQ:** todo arquivo `.md` de prompt de HQ deve começar com um bloco "⚠️ RESET OBRIGATÓRIO" que: (a) instrui o Codex a ignorar qualquer conversa anterior na sessão; (b) redefine todos os personagens da HQ com descrição visual completa; (c) proíbe explicitamente personagens de outros projetos (ex: "Bia", "André"). O Codex heartbeat acumula contexto entre sessões — sem esse reset, personagens de HQs anteriores contaminam as novas.
-13. **Documentação imediata:** toda melhoria de regra, padrão ou convenção aprovada nesta sessão deve ser registrada nos docs do repositório antes de encerrar. Nenhuma melhoria fica apenas na memória do Claude.
-13. **ERROS.md obrigatório:** consultar `ERROS.md` antes de gerar qualquer atividade. Contém bugs reais diagnosticados em produção com regras de prevenção.
+10. **JSON Codex IMEDIATO apÃ³s gerador-prompt-hq:** o orquestrador escreve o JSON de pedido em **`estudos\.claude\pending\`** (projeto do 5Âº ano â€” Ã© esse caminho que o Codex Desktop monitora, NÃƒO `estudos-2ano\.claude\pending\`) assim que o `gerador-prompt-hq` confirmar o arquivo .md â€” sem esperar o restante do pipeline. Isso garante que o Codex processe em paralelo. Formato obrigatÃ³rio: UTF-8 sem BOM via `[System.IO.File]::WriteAllText(path, json, [System.Text.UTF8Encoding]::new($false))`; `expected_outputs` apenas `pg1â€“pg4` (sem chars); campo `raiz` apontando para `estudos-2ano`. **Backslashes no JSON:** usar string literal PowerShell single-quoted (`'...'`) com `\\` por barra â€” NUNCA interpolar variÃ¡veis de caminho com `-replace '\\','\\\\'` pois isso produz `\\\\` no arquivo (caminho invÃ¡lido). Ver ERR-006.
+11. **VariÃ¡veis JS globais proibidas:** nunca usar `var history`, `var name`, `var location`, `var event`, `var status`, `var top` em escopo global nos HTMLs de atividade â€” sobrescrevem objetos nativos do browser e causam bugs silenciosos. Usar nomes descritivos: `quizHistory`, `pageName`, etc.
+12. **RESET OBRIGATÃ“RIO nos prompts de HQ:** todo arquivo `.md` de prompt de HQ deve comeÃ§ar com um bloco "âš ï¸ RESET OBRIGATÃ“RIO" que: (a) instrui o Codex a ignorar qualquer conversa anterior na sessÃ£o; (b) redefine todos os personagens da HQ com descriÃ§Ã£o visual completa; (c) proÃ­be explicitamente personagens de outros projetos (ex: "Bia", "AndrÃ©"). O Codex heartbeat acumula contexto entre sessÃµes â€” sem esse reset, personagens de HQs anteriores contaminam as novas.
+13. **DocumentaÃ§Ã£o imediata:** toda melhoria de regra, padrÃ£o ou convenÃ§Ã£o aprovada nesta sessÃ£o deve ser registrada nos docs do repositÃ³rio antes de encerrar. Nenhuma melhoria fica apenas na memÃ³ria do Claude.
+13. **ERROS.md obrigatÃ³rio:** consultar `ERROS.md` antes de gerar qualquer atividade. ContÃ©m bugs reais diagnosticados em produÃ§Ã£o com regras de prevenÃ§Ã£o.
 
 ---
 
-## Gamificação — Sistema ativo
+## GamificaÃ§Ã£o â€” Sistema ativo
 
-Sistema de cartas **temáticas** próprias para a Lis. Ao concluir todas as atividades de um módulo, a Lis recebe uma carta temática sorteada aleatoriamente — sem raridade, toda carta é igualmente especial!
+Sistema de cartas **temÃ¡ticas** prÃ³prias para a Lis. Ao concluir todas as atividades de um mÃ³dulo, a Lis recebe uma carta temÃ¡tica sorteada aleatoriamente â€” sem raridade, toda carta Ã© igualmente especial!
 
 **Arquivo principal:** `shared/gamification.js`
 **Assets de cartas:** `_landing/cartas/carta-fundo-[card_slug].png`
-**Cartas disponíveis:** abacaxi 🍍 · banana 🍌 · coração ❤️ · estrela ⭐ · kiwi 🥝 · maçã 🍎 · melancia 🍉 · morango 🍓 · pêssego 🍑 · uva 🍇
+**Cartas disponÃ­veis:** abacaxi ðŸ Â· banana ðŸŒ Â· coraÃ§Ã£o â¤ï¸ Â· estrela â­ Â· kiwi ðŸ¥ Â· maÃ§Ã£ ðŸŽ Â· melancia ðŸ‰ Â· morango ðŸ“ Â· pÃªssego ðŸ‘ Â· uva ðŸ‡
 **Assets de personagens:** `_landing/chars/[slug-personagem].png`
-**Supabase:** credenciais em `SUBSTITUIR_URL_SUPABASE` / `SUBSTITUIR_CHAVE_PUBLICA` (Leo deve criar projeto separado do 5º ano)
+**Supabase:** credenciais em `SUBSTITUIR_URL_SUPABASE` / `SUBSTITUIR_CHAVE_PUBLICA` (Leo deve criar projeto separado do 5Âº ano)
 
-### Snippet obrigatório em todo HTML de atividade
+### Snippet obrigatÃ³rio em todo HTML de atividade
 
 Substituir o `<!-- gamificacao-btn -->` por este bloco completo (preencher os campos com `[COLCHETES]`):
 
 ```html
-<!-- ── GAMIFICAÇÃO ─────────────────────────────────────────── -->
+<!-- â”€â”€ GAMIFICAÃ‡ÃƒO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="../../shared/gamification.js"></script>
 <script>
@@ -146,14 +146,14 @@ Substituir o `<!-- gamificacao-btn -->` por este bloco completo (preencher os ca
   var THEME_SLUG    = '[SLUG]';
   var DISCIPLINE    = '[disciplina]';        // ex: 'ciencias'
   var ACTIVITY_TYPE = '[tipo_atividade]';    // ex: 'quiz', 'memoria', 'completar'
-  var TOTAL_ATIV    = [TOTAL_ATIVIDADES];    // número inteiro
+  var TOTAL_ATIV    = [TOTAL_ATIVIDADES];    // nÃºmero inteiro
   var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
 
   function abrirGamificacao() {
     supa.auth.getSession().then(function (result) {
       var uid = result.data.session ? result.data.session.user.id : 'anonimo';
 
-      // Registra conclusão desta atividade
+      // Registra conclusÃ£o desta atividade
       supa.from('activity_log').insert({
         user_id: uid, discipline: DISCIPLINE,
         theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
@@ -164,7 +164,7 @@ Substituir o `<!-- gamificacao-btn -->` por este bloco completo (preencher os ca
         characterName:   '[NOME_PERSONAGEM]',
         characterEmoji:  '[EMOJI_PERSONAGEM]',
         characterImg:    'chars/[SLUG_PERSONAGEM].png',
-        themeLabel:      '[TEMA] · [DISCIPLINA_LABEL]',
+        themeLabel:      '[TEMA] Â· [DISCIPLINA_LABEL]',
         totalActivities: TOTAL_ATIV,
         activityType:    ACTIVITY_TYPE,
         primaryColor:    '[COR_PRIMARIA]',
@@ -198,7 +198,7 @@ Substituir o `<!-- gamificacao-btn -->` por este bloco completo (preencher os ca
     font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
     cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
     width:fit-content;">
-  Coletar minha carta! 🃏
+  Coletar minha carta! ðŸƒ
 </button>
 <script src="../../shared/portal-back.js"></script>
 </body>
@@ -206,57 +206,58 @@ Substituir o `<!-- gamificacao-btn -->` por este bloco completo (preencher os ca
 
 ### Reveal
 
-Confete colorido (arco-íris) animado igual para todas as cartas. O glow/raios usam a `primaryColor` da disciplina do tema.
+Confete colorido (arco-Ã­ris) animado igual para todas as cartas. O glow/raios usam a `primaryColor` da disciplina do tema.
 
 ### glowRgb por disciplina
 
 | Disciplina | glowRgb |
 |---|---|
-| Ciências | `34,197,94` |
-| Português | `232,67,10` |
-| Matemática | `10,172,232` |
-| História | `168,85,247` |
+| CiÃªncias | `34,197,94` |
+| PortuguÃªs | `232,67,10` |
+| MatemÃ¡tica | `10,172,232` |
+| HistÃ³ria | `168,85,247` |
 | Geografia | `245,158,11` |
 
-### Padrão window.sabendoScore — obrigatório
+### PadrÃ£o window.sabendoScore â€” obrigatÃ³rio
 
 ```javascript
-// ✅ CORRETO — setar junto com o resultado
+// âœ… CORRETO â€” setar junto com o resultado
 function mostrarResultado() {
   var acertos = respostas.filter(function(r) { return r.correta; }).length;
   window.sabendoScore = Math.round((acertos / total) * 100);
   painelResultado.style.display = 'block';
 }
 
-// ❌ ERRADO — nunca incremental
+// âŒ ERRADO â€” nunca incremental
 function onAcerto() { acertos++; window.sabendoScore = ...; }
 ```
 
-Para mapa mental e atividades sem score numérico: `window.sabendoScore = 100` na conclusão.
+Para mapa mental e atividades sem score numÃ©rico: `window.sabendoScore = 100` na conclusÃ£o.
 Para atividades com "Ver gabarito" independente: setar `window.sabendoScore` ANTES de exibir o gabarito.
 
-> **Atenção (ERR-001 do 5º ano):** Nunca setar `window.sabendoScore` em funções intermediárias.
+> **AtenÃ§Ã£o (ERR-001 do 5Âº ano):** Nunca setar `window.sabendoScore` em funÃ§Ãµes intermediÃ¡rias.
 
-### Navegação de Volta ao Portal
+### NavegaÃ§Ã£o de Volta ao Portal
 
-**Nunca usar `onclick="window.close()"` em botões de retorno.** Browsers modernos bloqueiam `window.close()` em abas abertas por links.
+**Nunca usar `onclick="window.close()"` em botÃµes de retorno.** Browsers modernos bloqueiam `window.close()` em abas abertas por links.
 
-**Padrão obrigatório:** todo botão/link "Voltar ao Portal" deve usar `onclick="voltarAoPortal()"`. O snippet acima já inclui `<script src="../../shared/portal-back.js"></script>` antes do `</body>`.
+**PadrÃ£o obrigatÃ³rio:** todo botÃ£o/link "Voltar ao Portal" deve usar `onclick="voltarAoPortal()"`. O snippet acima jÃ¡ inclui `<script src="../../shared/portal-back.js"></script>` antes do `</body>`.
 
-A função (`shared/portal-back.js`) lê o tema ativo via `window.opener`, tenta fechar a aba e, como fallback, navega para `../../index.html#theme-{disc}-{slug}` — retornando direto ao tema correto.
+A funÃ§Ã£o (`shared/portal-back.js`) lÃª o tema ativo via `window.opener`, tenta fechar a aba e, como fallback, navega para `../../index.html#theme-{disc}-{slug}` â€” retornando direto ao tema correto.
 
 ---
 
-## Referências do Projeto
+## ReferÃªncias do Projeto
 
-| Arquivo | Propósito |
+| Arquivo | PropÃ³sito |
 |---|---|
-| `ERROS.md` | **Consultar antes de gerar atividades** — bugs reais diagnosticados em produção |
-| `referencias/temas-existentes.md` | Lista de temas já implementados (verificar conflito) |
+| `ERROS.md` | **Consultar antes de gerar atividades** â€” bugs reais diagnosticados em produÃ§Ã£o |
+| `referencias/temas-existentes.md` | Lista de temas jÃ¡ implementados (verificar conflito) |
 | `referencias/contexto_projeto.md` | Contexto completo e estado atual do projeto |
-| `referencias/SKILL-portal-educacional-2ano-ATUALIZADA.md` | Skill detalhada com templates e padrões HTML |
-| `referencias/hq-gerador-SKILL.md` | Skill de automação de HQ via Chrome |
-| `referencias/gamificacao-schema.md` | Schema Supabase do sistema de gamificação (tabelas + RLS) |
-| `shared/gamification.js` | Engine de gamificação do 2º ano (raridade aleatória, pixel reveal, reveal cinematográfico) |
-| `shared/portal-back.js` | Função `voltarAoPortal()` — retorna ao tema correto do portal sem depender de `window.close()` |
-| `Personagens\2o ano\Lis.png` | Referência visual canônica da protagonista (em pasta centralizada) |
+| `referencias/SKILL-portal-educacional-2ano-ATUALIZADA.md` | Skill detalhada com templates e padrÃµes HTML |
+| `referencias/hq-gerador-SKILL.md` | Skill de automaÃ§Ã£o de HQ via Chrome |
+| `referencias/gamificacao-schema.md` | Schema Supabase do sistema de gamificaÃ§Ã£o (tabelas + RLS) |
+| `shared/gamification.js` | Engine de gamificaÃ§Ã£o do 2Âº ano (raridade aleatÃ³ria, pixel reveal, reveal cinematogrÃ¡fico) |
+| `shared/portal-back.js` | FunÃ§Ã£o `voltarAoPortal()` â€” retorna ao tema correto do portal sem depender de `window.close()` |
+| `Personagens\2o ano\Lis.png` | ReferÃªncia visual canÃ´nica da protagonista (em pasta centralizada) |
+
