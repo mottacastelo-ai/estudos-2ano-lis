@@ -309,13 +309,13 @@
       .sgami-rev-char-emoji { font-size:72px; line-height:1; }
       .sgami-rev-info {
         position:absolute; bottom:0; left:0; right:0; height:148px; z-index:11;
-        display:flex; flex-direction:column; align-items:center;
+        display:flex; flex-direction:column; align-items:stretch;
         padding:48px 18px 16px; gap:2px;
       }
       .sgami-rev-name  { font-size:22px; font-weight:900; line-height:1; text-align:center; color:#E5E0FF; }
       .sgami-rev-theme { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.1em; opacity:.65; text-align:center; color:#A78BFA; }
-      .sgami-rev-extra { font-family:"Space Mono",monospace; font-size:10px; font-weight:700; margin-top:3px; color:rgba(255,255,255,.5); text-align:center; width:100%; }
-      .sgami-rev-logo  { margin-top:auto; font-family:"Space Mono",monospace; font-size:11px; font-weight:700; color:rgba(255,255,255,.55); text-align:center; width:100%; }
+      .sgami-rev-extra { font-family:"Space Mono",monospace; font-size:10px; font-weight:700; margin-top:3px; color:rgba(255,255,255,.6); text-align:center; text-transform:uppercase; letter-spacing:.18em; }
+      .sgami-rev-logo  { margin-top:auto; font-family:"Space Mono",monospace; font-size:11px; font-weight:700; color:rgba(255,255,255,.55); text-align:center; }
       .sgami-rev-logo span { color:#2DD4BF; }
       .sgami-rev-card-label {
         position:absolute; top:14px; left:50%; transform:translateX(-50%);
