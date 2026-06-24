@@ -428,6 +428,26 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
 .search-item:hover { background: #F8FAFC; }
 .search-item-disc { font-size: 0.68rem; font-weight: 800; padding: 2px 7px; border-radius: 10px; white-space: nowrap; }
 .search-empty { padding: 14px; text-align: center; font-size: 0.83rem; color: #94A3B8; font-weight: 600; }
+
+/* ===== ACT BADGE ===== */
+.act-badge { position:absolute;top:10px;right:10px;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;line-height:1.6;pointer-events:none; }
+.act-badge-done { background:#ECFDF5;color:#065F46; }
+.act-score-line { font-size:11px;color:#059669;font-weight:700;margin-top:5px; }
+.theme-progress-dot { display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;vertical-align:middle;flex-shrink:0; }
+.theme-progress-dot--done    { background:#34D399; }
+.theme-progress-dot--partial { background:#F59E0B; }
+
+/* ===== CARTAS GALLERY ===== */
+.cartas-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px;padding:20px 0;align-items:start; }
+.carta-coll-outer { position:relative;width:100%;aspect-ratio:4/5.7;transition:filter .2s,transform .2s;cursor:pointer; }
+.carta-coll-outer:hover { filter:brightness(1.12);transform:scale(1.05); }
+.carta-coll-outer:active { transform:scale(0.97); }
+.carta-coll-scaler { position:absolute;inset:0;display:flex;align-items:flex-start;justify-content:center;overflow:hidden;border-radius:20px; }
+.cartas-empty { text-align:center;padding:60px 20px; }
+.cartas-empty-icon { font-size:56px;margin-bottom:16px; }
+.cartas-empty-title { font-weight:800;color:#1e1b4b;font-size:18px;margin-bottom:8px;font-family:'Baloo 2',cursive; }
+.cartas-empty-desc { color:#6b7280;font-size:14px;line-height:1.5;font-family:'Baloo 2',cursive; }
+@media (max-width:600px) { .cartas-grid { grid-template-columns:repeat(2,1fr); } }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
@@ -450,6 +470,7 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
   <div class="sidebar-nav">
     <div class="nav-section-label">Navegação</div>
     <button class="home-btn active" id="nav-home" onclick="showHome()">🏠 Início</button>
+    <button class="home-btn" id="nav-cartas" onclick="showCartas()">🎴 Minhas Cartas <span id="cartas-sidebar-count" style="font-size:0.72rem;background:#E2E8F0;color:#64748B;padding:1px 7px;border-radius:20px;font-weight:700;margin-left:4px"></span></button>
 
     <div class="nav-section-label" style="margin-top:12px">Disciplinas</div>
 
@@ -1747,6 +1768,23 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
     </div><!-- /disc-body -->
   </div><!-- /screen-port -->
 
+  <!-- CARTAS -->
+  <div class="screen" id="screen-cartas">
+    <div class="disc-hero" style="background:linear-gradient(135deg,#120D28 0%,#1e1045 55%,#2D1B69 100%)">
+      <div class="disc-hero-title">✨ Minhas Cartas</div>
+      <div class="disc-hero-sub">Conquistas das missões completadas</div>
+    </div>
+    <div class="disc-body">
+      <div id="cartas-loading" style="text-align:center;padding:40px;color:#6b7280;font-family:'Baloo 2',cursive">⏳ Carregando cartas...</div>
+      <div id="cartas-empty" class="cartas-empty" style="display:none">
+        <div class="cartas-empty-icon">🎴</div>
+        <div class="cartas-empty-title">Nenhuma carta ainda</div>
+        <div class="cartas-empty-desc">Complete <strong>todas</strong> as atividades de um tema para ganhar sua primeira carta!</div>
+      </div>
+      <div class="cartas-grid" id="cartas-grid"></div>
+    </div>
+  </div>
+
 </main>
 
 <script>
@@ -1853,6 +1891,8 @@ async function initAuth() {
   if (session) {
     sbUser = session.user;
     await loadStreak();
+    loadActivityStatus();
+    loadCartasCount();
     routeFromHash();
   } else {
     window.location.href = 'https://sabendo.app';
@@ -1905,6 +1945,212 @@ async function logActivity(discipline, themeSlug, activityType, score) {
   }).eq('user_id', sbUser.id);
   sbStreak = Object.assign({}, streak, { current_streak: newStreak, total_activities: streak.total_activities + 1 });
   renderStreak();
+}
+
+// ── CARTAS & ACTIVITY STATUS ────────────────────────────
+
+var THEME_CATALOG = [
+  {slug:'animais-ciclo-vida',          disc:'cien', label:'Animais e Ciclo de Vida',        emoji:'🐢', charName:'Tarta',   charImg:null},
+  {slug:'orgaos-sentidos',             disc:'cien', label:'Órgãos dos Sentidos',             emoji:'🤖', charName:'Sensinho',charImg:null},
+  {slug:'preservando-meio-ambiente',   disc:'cien', label:'Preservando o Meio Ambiente',     emoji:'🦸', charName:'Eciona',  charImg:null},
+  {slug:'onde-vivem-plantas',          disc:'cien', label:'Onde Vivem as Plantas',           emoji:'🌻', charName:'Flora',   charImg:null},
+  {slug:'representar-lugares',         disc:'geo',  label:'Representar os Lugares',          emoji:'🚁', charName:'Viu',     charImg:null},
+  {slug:'paisagem-bairros',            disc:'geo',  label:'A Paisagem dos Bairros',          emoji:'🚌', charName:'Beto',    charImg:null},
+  {slug:'memorias-lugares',            disc:'hist', label:'Memórias dos Lugares',            emoji:'🏛️', charName:'Foca',    charImg:null},
+  {slug:'meu-lugar-viver',             disc:'hist', label:'Meu Lugar de Viver',              emoji:'🏘️', charName:'Cadê',    charImg:null},
+  {slug:'convivencia-pessoas',         disc:'hist', label:'Convivência entre as Pessoas',    emoji:'🥁', charName:'Tambô',   charImg:null},
+  {slug:'regras-convivencia',          disc:'hist', label:'Regras de Convivência',           emoji:'📋', charName:'Combi',   charImg:null},
+  {slug:'mudancas-convivencia',        disc:'hist', label:'Mudanças na Convivência',         emoji:'⏳', charName:'Tempa',   charImg:null},
+  {slug:'numeros-ordinais',            disc:'mat',  label:'Números Ordinais',                emoji:'🏆', charName:'Primo',   charImg:null},
+  {slug:'bilhete-cartao-pessoal',      disc:'port', label:'Bilhete e Cartão Pessoal',        emoji:'📝', charName:'Bilheto', charImg:'chars/bilheto.png'},
+  {slug:'letras-silabas-pontuacao',    disc:'port', label:'Letras, Sílabas e Pontuação',     emoji:'❗', charName:'Pontinho',charImg:'chars/pontinho.png'}
+];
+
+var HREF_MAP = {
+  'ciencias/animais-ciclo-vida/quiz-animais-ciclo-vida.html':       'animais-ciclo-vida|quiz',
+  'ciencias/animais-ciclo-vida/ordena-ciclo-vida.html':             'animais-ciclo-vida|ordena',
+  'ciencias/animais-ciclo-vida/arrastar-nascimento-ciencias.html':  'animais-ciclo-vida|arrastar',
+  'ciencias/animais-ciclo-vida/mapa-mental-animais-ciclo-vida.html':'animais-ciclo-vida|mapa-mental',
+  'ciencias/orgaos-sentidos/quiz-orgaos-sentidos.html':             'orgaos-sentidos|quiz',
+  'ciencias/orgaos-sentidos/associa-sentidos.html':                 'orgaos-sentidos|associa',
+  'ciencias/orgaos-sentidos/verdadeiro-falso-sentidos.html':        'orgaos-sentidos|verdadeiro-falso',
+  'ciencias/orgaos-sentidos/mapa-mental-orgaos-sentidos.html':      'orgaos-sentidos|mapa-mental',
+  'ciencias/preservando-meio-ambiente/quiz-preservando-meio-ambiente.html':     'preservando-meio-ambiente|quiz',
+  'ciencias/preservando-meio-ambiente/classifica-acoes-ambiente.html':          'preservando-meio-ambiente|classifica',
+  'ciencias/preservando-meio-ambiente/criador-frase-ambiente.html':             'preservando-meio-ambiente|criador',
+  'ciencias/preservando-meio-ambiente/mapa-mental-preservando-meio-ambiente.html':'preservando-meio-ambiente|mapa-mental',
+  'ciencias/onde-vivem-plantas/quiz-onde-vivem-plantas.html':       'onde-vivem-plantas|quiz',
+  'ciencias/onde-vivem-plantas/classifica-plantas.html':            'onde-vivem-plantas|classifica',
+  'ciencias/onde-vivem-plantas/complete-palavra-plantas.html':      'onde-vivem-plantas|completar',
+  'ciencias/onde-vivem-plantas/mapa-mental-onde-vivem-plantas.html':'onde-vivem-plantas|mapa-mental',
+  'geografia/representar-lugares/quiz-representar-lugares.html':    'representar-lugares|quiz',
+  'geografia/representar-lugares/arrastar-pontos-vista.html':       'representar-lugares|arrastar',
+  'geografia/representar-lugares/jogo-memoria-representar.html':    'representar-lugares|memoria',
+  'geografia/representar-lugares/mapa-mental-representar-lugares.html':'representar-lugares|mapa-mental',
+  'geografia/paisagem-bairros/quiz-paisagem-bairros.html':          'paisagem-bairros|quiz',
+  'geografia/paisagem-bairros/arrastar-tipos-bairro.html':          'paisagem-bairros|arrastar',
+  'geografia/paisagem-bairros/verdadeiro-falso-bairros.html':       'paisagem-bairros|verdadeiro-falso',
+  'geografia/paisagem-bairros/mapa-mental-paisagem-bairros.html':   'paisagem-bairros|mapa-mental',
+  'historia/memorias-lugares/quiz-memorias-lugares.html':           'memorias-lugares|quiz',
+  'historia/memorias-lugares/arrastar-fontes-historicas.html':      'memorias-lugares|arrastar',
+  'historia/memorias-lugares/verdadeiro-falso-memorias.html':       'memorias-lugares|verdadeiro-falso',
+  'historia/memorias-lugares/mapa-mental-memorias-lugares.html':    'memorias-lugares|mapa-mental',
+  'historia/meu-lugar-viver/quiz-meu-lugar-viver.html':             'meu-lugar-viver|quiz',
+  'historia/meu-lugar-viver/jogo-memoria-bairro.html':              'meu-lugar-viver|memoria',
+  'historia/meu-lugar-viver/caca-palavras-lugar-viver.html':        'meu-lugar-viver|caca-palavras',
+  'historia/meu-lugar-viver/mapa-mental-meu-lugar-viver.html':      'meu-lugar-viver|mapa-mental',
+  'historia/convivencia-pessoas/quiz-convivencia-pessoas.html':     'convivencia-pessoas|quiz',
+  'historia/convivencia-pessoas/ordena-silabas-convivencia.html':   'convivencia-pessoas|ordena',
+  'historia/convivencia-pessoas/criador-frase-convivencia.html':    'convivencia-pessoas|criador',
+  'historia/convivencia-pessoas/mapa-mental-convivencia.html':      'convivencia-pessoas|mapa-mental',
+  'historia/regras-convivencia/quiz-regras-convivencia.html':       'regras-convivencia|quiz',
+  'historia/regras-convivencia/completar-regras-convivencia.html':  'regras-convivencia|completar',
+  'historia/regras-convivencia/ilustrador-regras-convivencia.html': 'regras-convivencia|ilustrador',
+  'historia/regras-convivencia/mapa-mental-regras-convivencia.html':'regras-convivencia|mapa-mental',
+  'historia/mudancas-convivencia/quiz-mudancas-convivencia.html':   'mudancas-convivencia|quiz',
+  'historia/mudancas-convivencia/memoria-mudancas-convivencia.html':'mudancas-convivencia|memoria',
+  'historia/mudancas-convivencia/silabas-mudancas-convivencia.html':'mudancas-convivencia|silabas',
+  'historia/mudancas-convivencia/mapa-mental-mudancas-convivencia.html':'mudancas-convivencia|mapa-mental',
+  'matematica/numeros-ordinais/quiz-numeros-ordinais.html':         'numeros-ordinais|quiz',
+  'matematica/numeros-ordinais/jogo-memoria-numeros-ordinais.html': 'numeros-ordinais|memoria',
+  'matematica/numeros-ordinais/arrastar-numeros-ordinais.html':     'numeros-ordinais|arrastar',
+  'matematica/numeros-ordinais/criador-frase-numeros-ordinais.html':'numeros-ordinais|criador',
+  'matematica/numeros-ordinais/mapa-mental-numeros-ordinais.html':  'numeros-ordinais|mapa-mental',
+  'portugues/bilhete-cartao-pessoal/quiz-bilhete.html':             'bilhete-cartao-pessoal|quiz',
+  'portugues/bilhete-cartao-pessoal/complete-bilhete.html':         'bilhete-cartao-pessoal|completar',
+  'portugues/bilhete-cartao-pessoal/memoria-bilhete.html':          'bilhete-cartao-pessoal|memoria',
+  'portugues/bilhete-cartao-pessoal/mapa-mental-bilhete.html':      'bilhete-cartao-pessoal|mapa-mental',
+  'portugues/letras-silabas-pontuacao/quiz-letras.html':            'letras-silabas-pontuacao|quiz',
+  'portugues/letras-silabas-pontuacao/complete-pontuacao.html':     'letras-silabas-pontuacao|completar',
+  'portugues/letras-silabas-pontuacao/memoria-letras.html':         'letras-silabas-pontuacao|memoria',
+  'portugues/letras-silabas-pontuacao/ordena-alfabeto.html':        'letras-silabas-pontuacao|ordena',
+  'portugues/letras-silabas-pontuacao/mapa-mental-letras.html':     'letras-silabas-pontuacao|mapa-mental'
+};
+
+var DISC_LABEL_MAP = { cien:'Ciências', geo:'Geografia', hist:'História', mat:'Matemática', port:'Português' };
+var GLOW_RGB = { cien:'34,197,94', geo:'245,158,11', hist:'168,85,247', mat:'10,172,232', port:'232,67,10' };
+var CARD_SLUGS = ['abacaxi','banana','coracao','estrela','kiwi','maca','melancia','morango','pessego','uva'];
+
+function themeToCardSlug(themeSlug) {
+  var h = 0;
+  for (var i = 0; i < themeSlug.length; i++) h = (h * 31 + themeSlug.charCodeAt(i)) & 0xffff;
+  return CARD_SLUGS[h % CARD_SLUGS.length];
+}
+
+async function loadActivityStatus() {
+  if (!sbUser) return;
+  var res = await supa.from('activity_log').select('theme_slug,activity_type,score').eq('user_id', sbUser.id);
+  if (res.error || !res.data) return;
+  var doneMap = {};
+  res.data.forEach(function(row) {
+    var key = row.theme_slug + '|' + row.activity_type;
+    if (doneMap[key] === undefined || (row.score !== null && row.score > doneMap[key]))
+      doneMap[key] = row.score !== null ? row.score : 0;
+  });
+  document.querySelectorAll('.act-card[href]').forEach(function(card) {
+    var key = HREF_MAP[card.getAttribute('href')];
+    if (!key || !doneMap.hasOwnProperty(key)) return;
+    var badge = document.createElement('span');
+    badge.className = 'act-badge act-badge-done';
+    badge.textContent = '✓ Feito';
+    card.appendChild(badge);
+    var line = document.createElement('div');
+    line.className = 'act-score-line';
+    line.textContent = doneMap[key] > 0 ? 'Melhor: ' + doneMap[key] + '%' : '✓ Concluído';
+    card.appendChild(line);
+  });
+  document.querySelectorAll('.theme-link').forEach(function(btn) {
+    var m = (btn.getAttribute('onclick') || '').match(/showTheme\('(\w+)','([\w-]+)'\)/);
+    if (!m) return;
+    var tc = document.getElementById('theme-' + m[1] + '-' + m[2]);
+    if (!tc) return;
+    var allCards = tc.querySelectorAll('.act-card[href]');
+    var total = allCards.length, done = 0;
+    allCards.forEach(function(c) {
+      if (HREF_MAP[c.getAttribute('href')] && doneMap.hasOwnProperty(HREF_MAP[c.getAttribute('href')])) done++;
+    });
+    if (done === 0) return;
+    var dot = document.createElement('span');
+    dot.className = 'theme-progress-dot ' + (done >= total ? 'theme-progress-dot--done' : 'theme-progress-dot--partial');
+    btn.insertBefore(dot, btn.firstChild);
+  });
+}
+
+async function loadCartasCount() {
+  if (!sbUser) return;
+  var res = await supa.from('cards').select('id', {count:'exact', head:true}).eq('user_id', sbUser.id);
+  var count = res.count || 0;
+  var el = document.getElementById('cartas-sidebar-count');
+  if (el) el.textContent = count > 0 ? count : '';
+}
+
+function showCartas() {
+  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+  document.getElementById('screen-cartas').classList.add('active');
+  document.querySelectorAll('.disc-nav-btn, .home-btn').forEach(function(b) { b.classList.remove('active'); });
+  document.getElementById('nav-cartas').classList.add('active');
+  document.querySelectorAll('.theme-sub').forEach(function(s) { s.classList.remove('open'); });
+  loadCartas();
+}
+
+async function loadCartas() {
+  if (!sbUser) return;
+  var loading = document.getElementById('cartas-loading');
+  var empty   = document.getElementById('cartas-empty');
+  var grid    = document.getElementById('cartas-grid');
+  if (!loading || !empty || !grid) return;
+  loading.style.display = 'block'; empty.style.display = 'none'; grid.innerHTML = '';
+  var res = await supa.from('cards').select('*').eq('user_id', sbUser.id);
+  var cards = res.data || [];
+  loading.style.display = 'none';
+  var el = document.getElementById('cartas-sidebar-count');
+  if (el) el.textContent = cards.length > 0 ? cards.length : '';
+  if (!cards.length) { empty.style.display = 'block'; return; }
+  var BASE = '_landing/';
+  cards.forEach(function(card) {
+    var theme    = THEME_CATALOG.find(function(t) { return t.slug === card.theme_slug; });
+    var charName = theme ? theme.charName : (card.theme_slug || 'Personagem');
+    var charImg  = theme ? theme.charImg  : null;
+    var emoji    = theme ? theme.emoji    : '⭐';
+    var label    = theme ? theme.label    : card.theme_slug;
+    var disc     = DISC_LABEL_MAP[card.discipline] || card.discipline;
+    var glow     = GLOW_RGB[card.discipline] || '100,100,200';
+    var cardSlug = themeToCardSlug(card.theme_slug);
+    var cardBgUrl = BASE + 'cartas/carta-fundo-' + cardSlug + '.png';
+    var charInner = charImg
+      ? '<img src="' + BASE + charImg + '" alt="' + charName + '" style="width:72px;height:72px;object-fit:cover;border-radius:50%;border:3px solid rgba(255,255,255,.6)">'
+      : '<span style="font-size:2.8rem;line-height:1">' + emoji + '</span>';
+    var cardHtml =
+      '<div style="width:280px;height:400px;border-radius:20px;overflow:hidden;position:relative;' +
+      'background:#1A1035;box-shadow:0 0 30px rgba(' + glow + ',.5),0 0 60px rgba(' + glow + ',.2)">' +
+        '<div style="position:absolute;inset:0;background-image:url(\'' + cardBgUrl + '\');background-size:cover;background-position:center"></div>' +
+        '<div style="position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.75) 100%)"></div>' +
+        '<div style="position:absolute;top:40px;left:50%;transform:translateX(-50%);display:flex;align-items:center;justify-content:center">' + charInner + '</div>' +
+        '<div style="position:absolute;bottom:0;left:0;right:0;padding:18px;text-align:center">' +
+          '<div style="font-family:\'Baloo 2\',cursive;font-size:1.3rem;font-weight:900;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.8)">' + charName + '</div>' +
+          '<div style="font-size:0.7rem;color:rgba(255,255,255,.75);font-weight:700;margin-top:3px">' + label + ' · ' + disc + '</div>' +
+          '<div style="font-size:0.65rem;color:rgba(255,255,255,.45);font-weight:700;margin-top:6px;letter-spacing:1px">sabendo.</div>' +
+        '</div>' +
+      '</div>';
+    var outer = document.createElement('div');
+    outer.className = 'carta-coll-outer';
+    var scaler = document.createElement('div');
+    scaler.className = 'carta-coll-scaler';
+    scaler.innerHTML = cardHtml;
+    outer.appendChild(scaler);
+    grid.appendChild(outer);
+    requestAnimationFrame(function() {
+      var ce = scaler.querySelector('div');
+      if (ce) { var s = scaler.offsetWidth / 280; ce.style.transform = 'scale(' + s + ')'; ce.style.transformOrigin = 'top center'; }
+    });
+  });
+  window.removeEventListener('resize', window._rescaleCartas);
+  window._rescaleCartas = function() {
+    grid.querySelectorAll('.carta-coll-scaler').forEach(function(sc) {
+      var ce = sc.querySelector('div'); if (ce) ce.style.transform = 'scale(' + (sc.offsetWidth/280) + ')';
+    });
+  };
+  window.addEventListener('resize', window._rescaleCartas);
 }
 
 // ── HASH ROUTING ────────────────────────────────────────
