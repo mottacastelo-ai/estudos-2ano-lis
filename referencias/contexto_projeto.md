@@ -1,28 +1,28 @@
 # Contexto do Projeto Educacional — Portal Interativo de Aprendizagem (Lis, 2º Ano)
 
-**Última atualização:** 2026-06-13
+**Última atualização:** 2026-06-23
 
-> **Projeto irmão:** [Portal do André — 5º Ano](../../estudos/referencias/contexto_projeto.md) — mesma metodologia, stack técnico e workflow, mas personagens, cores e conteúdos distintos.
+> **Projeto irmão:** [Portal do André — 5º Ano](../../estudos/referencias/contexto_projeto.md) — mesma metodologia, stack técnico e workflow, mas personagens, cores e conteúdos distintos. **SEMPRE consultar o 5º ano antes de implementar qualquer padrão novo.**
 
 ---
 
 ## Visão Geral
 
-Portal web educacional construído como aplicação de página única (SPA) para o aprendizado da Lis (2º ano, 7–8 anos). Usa a mesma metodologia do portal do André: aprendizagem ativa (Roediger & Karpicke, 2006; Mayer, 2009) e Pirâmide de Glasser. As atividades são adaptadas à faixa etária — linguagem mais simples, balões com no máximo 8 palavras, cores mais vibrantes e saturadas.
+Portal web educacional construído como SPA para o aprendizado da Lis (2º ano, 7–8 anos). Usa a mesma metodologia do portal do André: aprendizagem ativa, Pirâmide de Glasser, gamificação com cartas. Atividades adaptadas à faixa etária — linguagem simples, balões com máx. 8 palavras, cores vibrantes.
 
-- **Repositório:** [github.com/mottacastelo-ai/estudos-2ano](https://github.com/mottacastelo-ai/estudos-2ano)
+- **Repositório:** [github.com/mottacastelo-ai/estudos-2ano-lis](https://github.com/mottacastelo-ai/estudos-2ano-lis)
+- **URL pública:** https://lis.sabendo.app
 - **Pasta local:** `C:\Users\wizar\OneDrive\Documentos\Projeto Estudos\estudos-2ano`
-- **Ferramenta de HQ:** GPT Quadrinhos Sabendo (`chatgpt.com/g/g-69ff2b40169881918c5f75a8d9767f30-gpt-quadrinhos-sabendo`)
 
 ---
 
 ## Ecossistema sabendo.app
 
-| Portal | URL | Repositório |
+| Portal | URL | Pasta local |
 |---|---|---|
-| Landing page | https://sabendo.app | sabendo-landing |
-| Portal André (5º ano) | https://andre.sabendo.app | estudos |
-| Portal Lis (2º ano) | https://lis.sabendo.app | estudos-2ano-lis |
+| Landing page | https://sabendo.app | `estudos\_landing\` |
+| Portal André (5º ano) | https://andre.sabendo.app | `estudos\` |
+| Portal Lis (2º ano) | https://lis.sabendo.app | `estudos-2ano\` |
 
 ---
 
@@ -30,181 +30,204 @@ Portal web educacional construído como aplicação de página única (SPA) para
 
 ### Hospedagem & Deploy
 - **Hospedagem:** GitHub Pages
-- **Workflow de deploy:**
-  1. Editar arquivos localmente
-  2. Commit + push via GitHub Desktop (**manual**, ~30 segundos)
-  3. GitHub Pages publica automaticamente após o push
+- **Deploy:** manual — commit + push (`git add → commit → push origin main`)
+- **`.nojekyll`** na raiz do repo — obrigatório para que GitHub Pages sirva a pasta `_landing/` (Jekyll ignora pastas com `_` por padrão)
 
-### Estrutura de Arquivos
+### Supabase
+- **Projeto:** `mmtrzxmitklpibfilbio.supabase.co`
+- **Chave anon pública:** `sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_`
+- **Usuária:** `lis@sabendo.app` (portal: estudos-2ano, year: 2)
+
+**Tabelas ativas:**
+| Tabela | Uso |
+|---|---|
+| `profiles` | user_id, portal, year |
+| `activity_log` | user_id, discipline, theme_slug, activity_type, score, created_at |
+| `streaks` | current_streak, longest_streak, last_activity_date, total_activities |
+| `cards` | user_id, theme_slug, discipline, rarity, avg_score |
+
+### Autenticação
+Login na landing (sabendo.app) → detecta portal via `profiles.portal` → redireciona com tokens no hash → portal processa via `detectSessionInUrl: true` → limpa hash. Se sem sessão → redirect para `https://sabendo.app`.
+
+---
+
+## Estrutura de Arquivos
 
 ```
 estudos-2ano/
-├── index.html                      ← SPA principal
-├── ref-viewer.html                 ← visualizador de referências de personagens
-├── versao canonica lis.png         ← referência visual canônica da Lis
-├── ciencias/
-│   ├── orgaos-sentidos/
-│   ├── animais-ciclo-vida/
-│   ├── onde-vivem-plantas/
-│   └── preservando-meio-ambiente/
-├── historia/
-│   ├── meu-lugar-viver/
-│   ├── memorias-lugares/
-│   └── convivencia-pessoas/
-├── geografia/
-│   ├── paisagem-bairros/
-│   └── representar-lugares/
+├── index.html                          ← SPA principal — fonte primária de verdade
+├── .nojekyll                           ← obrigatório para GitHub Pages servir _landing/
+├── ERROS.md                            ← consultar SEMPRE antes de gerar atividades
+├── shared/
+│   ├── gamification.js                 ← engine de gamificação (cartas, reveal, Supabase)
+│   └── portal-back.js                  ← voltarAoPortal() — padrão obrigatório de retorno
+├── _landing/
+│   ├── cartas/
+│   │   └── carta-fundo-[slug].png      ← backgrounds das cartas (abacaxi, banana, etc.)
+│   └── chars/
+│       ├── [slug]-hd.png               ← portraits HD gerados pelo Codex
+│       └── [slug]-portrait-prompt.md   ← prompts para geração dos portraits
+├── ciencias/[slug]/
+├── geografia/[slug]/
+├── historia/[slug]/
+├── matematica/[slug]/
+├── portugues/[slug]/
+│   └── cada pasta contém:
+│       ├── hq-[slug]-pg1.png … pg4.png ← páginas da HQ (4 arquivos separados)
+│       ├── [tipo-atividade].html
+│       └── hq-[slug]-prompt.md
 └── referencias/
-    ├── contexto_projeto.md         ← este arquivo
-    ├── temas-existentes.md
+    ├── contexto_projeto.md             ← este arquivo
+    ├── temas-existentes.md             ← temas implementados + personagens
     ├── SKILL-portal-educacional-2ano-ATUALIZADA.md
-    └── hq-gerador-SKILL.md
+    ├── hq-gerador-SKILL.md
+    └── gamificacao-schema.md
 ```
 
-Cada subdiretório de tema contém: HQ (4 arquivos `.png` separados), atividades (`.html`) e prompt HQ (`.md`).
-
-> **Diferença importante em relação ao portal do André:** as 4 páginas da HQ são mantidas como arquivos separados (`hq-[slug]-pg1.png` … `pg4.png`) — **não são coladas em um único arquivo**. O Cowork salva os arquivos em `[disciplina]/[slug]/` e Léo copia manualmente as imagens geradas para essa pasta antes do deploy.
+> **Diferença do André:** HQs do 2º ano são 4 arquivos separados (`pg1.png … pg4.png`), não coladas em um único arquivo.
 
 ---
 
-## Estado Atual — Disciplinas e Temas
+## Estado Atual — 5 Disciplinas · 13 Temas
 
-### 🔬 Ciências — 4 temas
+Ver `temas-existentes.md` para lista completa com personagens e atividades por tema.
 
-| Tema | Slug |
+| Disciplina | Temas |
 |---|---|
-| Órgãos dos Sentidos | `orgaos-sentidos` |
-| Ciclo de Vida dos Animais | `animais-ciclo-vida` |
-| Onde Vivem as Plantas | `onde-vivem-plantas` |
-| Preservando o Meio Ambiente | `preservando-meio-ambiente` |
-
-### 📜 História — 3 temas
-
-| Tema | Slug |
-|---|---|
-| Meu Lugar de Viver | `meu-lugar-viver` |
-| Memórias dos Lugares | `memorias-lugares` |
-| Convivência com as Pessoas | `convivencia-pessoas` |
-
-### 🗺️ Geografia — 2 temas
-
-| Tema | Slug |
-|---|---|
-| Paisagem dos Bairros | `paisagem-bairros` |
-| Representar Lugares | `representar-lugares` |
-
-**Total atual: 3 disciplinas · 9 temas**
-
-> Português e Matemática estão previstos na paleta de cores mas ainda não têm temas implementados.
+| Ciências | 4 (animais-ciclo-vida, orgaos-sentidos, preservando-meio-ambiente, onde-vivem-plantas) |
+| Geografia | 2 (representar-lugares, paisagem-bairros) |
+| História | 5 (memorias-lugares, meu-lugar-viver, convivencia-pessoas, regras-convivencia, mudancas-convivencia) |
+| Matemática | 1 (numeros-ordinais) |
+| Português | 2 (bilhete-cartao-pessoal, letras-silabas-pontuacao) |
 
 ---
 
-## Personagens
+## Funcionalidades Implementadas no Portal (index.html)
 
-### Protagonista (sempre presente)
+### Gamificação (mesmo padrão do 5º ano)
+- **Sistema de cartas temáticas** — ao concluir todas as atividades de um tema, a Lis coleta uma carta aleatória
+- `shared/gamification.js` — engine completa (Supabase + localStorage fallback)
+- Confete arco-íris + reveal cinematográfico com glow da disciplina
+- **Cartas disponíveis:** abacaxi, banana, coração, estrela, kiwi, maçã, melancia, morango, pêssego, uva
+- `_landing/cartas/carta-fundo-[slug].png` — backgrounds das cartas
 
-**Lis** — menina de 7 anos, cabelos castanhos longos e ondulados, sorriso expressivo e aberto, estilo despojado. Curiosa, animada, levemente atrevida. Protagonista de todas as HQs.
+### Badges de atividade completada
+- `.act-badge` / `.act-badge-done` — ícone "✓ Feito" nos cards de atividade
+- `.act-score-line` — melhor pontuação exibida abaixo do badge
+- `HREF_MAP` no index.html — mapa `url → theme_slug|activity_type` para 58 atividades
+- `loadActivityStatus()` — lê `activity_log` do Supabase, aplica badges em todos os cards
 
-### Personagens de suporte
+### Pontos de progresso nos temas (sidebar)
+- `.theme-progress-dot` — ponto ao lado de cada tema na sidebar
+  - Verde (`--done`) = todas as atividades concluídas
+  - Âmbar (`--partial`) = ao menos uma concluída
+- Calculado em `loadActivityStatus()` com base no `HREF_MAP`
 
-*(a documentar progressivamente conforme novos temas forem criados)*
+### Galeria de Cartas ("Minhas Cartas")
+- Botão `🎴 Minhas Cartas` na sidebar com contador de cartas coletadas
+- `#screen-cartas` — tela dedicada com grid de cartas
+- `loadCartas()` — busca tabela `cards` do Supabase, renderiza cada carta com background temático
+- `themeToCardSlug()` — hash determinístico que mapeia theme_slug → card background slug
 
-### Diretrizes para novos personagens
+### Streak e progresso geral
+- `loadStreak()` — exibe dias seguidos e total de atividades no hero do portal
+- `loadActivityStatus()` + `loadCartasCount()` chamados em `initAuth()` após login
 
-- Metáfora visual do conteúdo (animais falantes, objetos animados)
-- Tom lúdico, acolhedor, levemente engraçado — adequado a 7 anos
-- Expressões faciais exageradas para facilitar leitura emocional
-- Cor e estilo dialogam com a paleta da disciplina
-- Sempre interage com a Lis na HQ
+### Portraits dos Personagens
+- `THEME_CATALOG` no index.html — array com metadados de todos os 13 temas incluindo `charImg: 'chars/[slug]-hd.png'`
+- Portraits gerados pelo Codex Desktop via JSON de contrato em `estudos\.claude\pending\portraits-2ano.json`
+- Automação Codex: **"Gerar Portraits pendentes"** (distinta de "Gerar HQs pendentes")
+- Fundo chroma-key `#00ff00`, canvas 1024×1024
+- Arquivo de saída: `_landing/chars/[slug]-hd.png`
+
+---
+
+## Padrões Obrigatórios nos HTMLs de Atividade
+
+### window.sabendoScore
+```javascript
+// CORRETO — setar junto com o resultado
+function mostrarResultado() {
+  window.sabendoScore = Math.round((acertos / total) * 100);
+  painelResultado.style.display = 'block';
+}
+// ERRADO — nunca incremental nem em funções intermediárias
+```
+Para atividades sem score numérico (mapa mental, etc.): `window.sabendoScore = 100` na conclusão.
+
+### Botão de retorno
+**Nunca `onclick="window.close()"`** — browsers modernos bloqueiam. Usar sempre `onclick="voltarAoPortal()"` + `<script src="../../shared/portal-back.js"></script>` antes do `</body>`.
+
+### Variáveis JS globais proibidas
+Nunca em escopo global: `var history`, `var name`, `var location`, `var event`, `var status`, `var top`. Usar nomes descritivos: `quizHistory`, `pageName`, etc.
+
+### Snippet de gamificação
+Ver CLAUDE.md para o snippet completo obrigatório (`<!-- GAMIFICAÇÃO -->`). Campos a preencher: `THEME_SLUG`, `DISCIPLINE`, `ACTIVITY_TYPE`, `TOTAL_ATIV`, `characterName`, `characterImg`, `themeLabel`, cores da disciplina.
+
+---
+
+## Personagens de Suporte (13 temas)
+
+Ver `temas-existentes.md` para lista completa. Cada personagem tem:
+- Folha de personagens (`[disciplina]/[slug]/folha-personagens-[nome].png`) — Bilheto e Pontinho (português)
+- Página 1 da HQ (`[disciplina]/[slug]/hq-[slug]-pg1.png`) — referência visual para os demais 11
+- Portrait HD (`_landing/chars/[slug]-hd.png`) — gerado pelo Codex, usado no reveal de cartas
+
+**Protagonista:** Lis — menina de 7 anos, cabelos castanhos longos e ondulados, sorriso expressivo.
 
 ---
 
 ## Paleta de Cores por Disciplina
 
-| Disciplina | Código CSS | Cor primária | Cor clara | Bg |
+| Disciplina | Primária | Clara | Bg | glowRgb |
 |---|---|---|---|---|
-| Português | `port` | `#E8430A` | `#FB8C5A` | `#FFF4EF` |
-| Matemática | `mat` | `#0AACE8` | `#5AC8FB` | `#EFF9FF` |
-| Ciências | `cien` | `#22C55E` | `#6EE7A0` | `#F0FDF4` |
-| História | `hist` | `#A855F7` | `#D08EF8` | `#FAF5FF` |
-| Geografia | `geo` | `#F59E0B` | `#FCD34D` | `#FFFBEB` |
+| Português (`port`) | `#E8430A` | `#FB8C5A` | `#FFF4EF` | `232,67,10` |
+| Matemática (`mat`) | `#0AACE8` | `#5AC8FB` | `#EFF9FF` | `10,172,232` |
+| Ciências (`cien`) | `#22C55E` | `#6EE7A0` | `#F0FDF4` | `34,197,94` |
+| História (`hist`) | `#A855F7` | `#D08EF8` | `#FAF5FF` | `168,85,247` |
+| Geografia (`geo`) | `#F59E0B` | `#FCD34D` | `#FFFBEB` | `245,158,11` |
 
-> Cores deliberadamente distintas das do portal do André — mais vibrantes e saturadas para o público de 7–8 anos.
-
----
-
-## Fundamentação Pedagógica
-
-Idêntica ao portal do André: Retrieval practice (Roediger & Karpicke, 2006), Aprendizagem Multimídia (Mayer, 2009), Pirâmide de Glasser e gamificação (Plass, Homer & Kinzer, 2015).
-
-**Adaptações para o 2º ano:**
-- Balões com no máximo 8 palavras por fala
-- Prompts de HQ com mínimo de 300 linhas (mais detalhados que os do 5º ano)
-- Atividades com linguagem e complexidade adequadas a 7–8 anos
-- Cada painel descrito com precisão: posição na grade, cenário, expressão facial, gesto, objetos
+Gradiente hero: `135deg, [escuro], [primária] 60%, [clara]`
 
 ---
 
-## Princípios Reitores
+## Workflow de Entrega
 
-1. **Termos técnicos do livro são obrigatórios** — usar o nome exato (ex.: "metamorfose completa", não só "transformação").
-2. **Proibido introduzir conteúdo fora do escopo das fotos** — nenhum conceito ausente nas fotos enviadas pode aparecer nas atividades.
-3. **Variedade de tipos de atividade** — nenhum tipo deve se repetir entre temas da mesma disciplina.
-4. **Qualidade sobre quantidade.**
-5. **Narrativa contínua** — a Lis aparece em todas as HQs, criando coesão entre os temas.
+1. Analisador lê PDF → propõe estrutura → **pausa para aprovação de Léo**
+2. Após aprovação → pipeline automático:
+   - Criador de personagem + gerador de prompt HQ (paralelo)
+   - JSON Codex escrito em `estudos\.claude\pending\` IMEDIATAMENTE após prompt HQ
+   - Gerador de atividades → atualizador do portal
+   - Verificador + revisor (paralelo) → publicador (commit + push atividades)
+   - Polling em `estudos\.claude\done\` → commit das imagens HQ
 
----
+### Codex Desktop — pré-requisitos
+Antes de iniciar o pipeline, o Codex Desktop deve estar aberto com **duas automações ativas**:
+- **"Gerar HQs pendentes"** — processa JSONs de HQ (`hq-[slug].json`)
+- **"Gerar Portraits pendentes"** — processa `portraits-2ano.json`
 
-## Workflow de Entrega (Cowork)
-
-- O Cowork edita `index.html` diretamente e salva todos os arquivos em `[disciplina]/[slug]/`
-- As imagens das HQs (`hq-[slug]-pg1.png` … `pg4.png`) são geradas por Léo no GPT Quadrinhos Sabendo e copiadas manualmente para a pasta do tema antes do deploy
-- Fallback Claude.ai: ZIP com `index.html` completo já atualizado + todos os arquivos de atividade
-
----
-
-## Filosofia de Design para o 2º Ano (7–8 anos)
-
-- Visual alegre, espaçoso e colorido — adequado para crianças pequenas
-- Fontes maiores que o portal do André (público mais novo)
-- Cards com fundos coloridos por disciplina
-- Ícones grandes (4rem), espaçamento generoso entre elementos
-- Linguagem direta com emojis
-- Sidebar e hero harmonizados em verde (cor principal do portal)
+### JSON de contrato Codex
+Escrito em **`estudos\.claude\pending\`** (pasta do projeto do 5º ano — é isso que o Codex monitora, NÃO `estudos-2ano\.claude\pending\`).
+- Encoding: UTF-8 sem BOM via `[System.IO.File]::WriteAllText` com `[System.Text.UTF8Encoding]::new($false)`
+- Backslashes: usar string literal PowerShell single-quoted com `\\` — NUNCA interpolar com `-replace` (gera `\\\\`)
 
 ---
 
-## Arquitetura Futura Planejada
+## Referências Críticas
 
-| Componente | Detalhes |
+| Arquivo | Quando consultar |
 |---|---|
-| Autenticação | Supabase Auth |
-| Banco de dados | Supabase (PostgreSQL) |
-| Tabelas previstas | `profiles`, `activity_log`, `streaks` |
-| Estado atual | localStorage como base — sem login |
-| Migração | Mesma estratégia do portal do André: Supabase entra com o login |
-
----
-
-## Automações locais
-
-### sabendo-context-sync-2ano
-
-Script Python que roda em segundo plano no Windows e monitora este arquivo (`contexto_projeto.md`) e `temas-existentes.md`. Ao detectar qualquer alteração, faz upsert automático dos dois como Google Docs na pasta `sabendo-context` do Google Drive — nunca duplica, sempre sobrescreve pelo nome.
-
-| Item | Valor |
-|---|---|
-| Script | `C:\Automacoes\sabendo-context-sync-2ano\sync_to_gdrive.py` |
-| Instalação | `C:\Automacoes\sabendo-context-sync-2ano\install.bat` (rodar como Administrador) |
-| Inicialização | Windows Task Scheduler → tarefa `SabendoContextSync2Ano` → ao login, delay 2 min |
-| Credenciais | `C:\Automacoes\.credentials\credentials.json` (OAuth2 Google Drive API, compartilhada com 5º ano) |
-| Log | `C:\Automacoes\sabendo-context-sync-2ano\sync.log` |
-| Pasta no Drive | `sabendo-context` |
+| `ERROS.md` | **SEMPRE antes de gerar atividades** |
+| `referencias/temas-existentes.md` | Verificar conflito de tema ou atividade |
+| `referencias/SKILL-portal-educacional-2ano-ATUALIZADA.md` | Templates HTML e padrões de atividade |
+| `referencias/hq-gerador-SKILL.md` | Workflow de geração de HQ |
+| `../../estudos/referencias/contexto_projeto.md` | **Portal irmão — consultar ANTES de qualquer padrão novo** |
+| `shared/gamification.js` | Engine de gamificação |
+| `shared/portal-back.js` | Função voltarAoPortal() |
 
 ---
 
 ## Contato & Manutenção
 
-- **Responsável:** Léo Motta
-- **Repositório:** github.com/mottacastelo-ai/estudos-2ano
-- **Pasta local:** `C:\Users\wizar\OneDrive\Documentos\Projeto Estudos\estudos-2ano`
+- **Responsável:** Léo Motta (`wizardcastelo@gmail.com`)
+- **Repositório:** github.com/mottacastelo-ai/estudos-2ano-lis
