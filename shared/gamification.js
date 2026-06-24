@@ -298,7 +298,7 @@
       .sgami-rev-frame-bg { position:absolute; inset:0; background-size:cover; background-position:center top; background-color:#1A1035; }
       .sgami-rev-frame-overlay {
         position:absolute; inset:0;
-        background:linear-gradient(to bottom,transparent 0%,transparent 45%,rgba(5,4,15,.7) 65%,rgba(5,4,15,.95) 100%);
+        background:linear-gradient(to bottom,transparent 0%,transparent 52%,rgba(5,4,15,.7) 70%,rgba(5,4,15,.95) 100%);
       }
       .sgami-rev-char {
         position:absolute; bottom:150px; left:50%; transform:translateX(-50%);
@@ -310,7 +310,7 @@
       .sgami-rev-info {
         position:absolute; bottom:0; left:0; right:0; height:148px; z-index:11;
         display:flex; flex-direction:column; align-items:stretch;
-        padding:48px 18px 16px; gap:2px;
+        padding:76px 18px 10px; gap:2px;
       }
       .sgami-rev-name  { font-size:22px; font-weight:900; line-height:1; text-align:center; color:#E5E0FF; }
       .sgami-rev-theme { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.1em; opacity:.65; text-align:center; color:#A78BFA; }
