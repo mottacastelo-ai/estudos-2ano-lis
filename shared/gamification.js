@@ -292,7 +292,7 @@
 
       .sgami-rev-card {
         position:relative; width:280px; height:400px;
-        border-radius:20px; overflow:visible; margin-top:64px;
+        border-radius:20px; overflow:visible; margin-top:24px;
       }
       .sgami-rev-frame { position:absolute; inset:0; border-radius:20px; overflow:hidden; }
       .sgami-rev-frame-bg { position:absolute; inset:0; background-size:cover; background-position:center top; background-color:#1A1035; }
@@ -756,7 +756,7 @@
         else { var s=document.createElement("span"); s.className="sgami-rev-letter"; s.textContent=ch; s.style.animationDelay=(i*38)+"ms"; titleEl.appendChild(s); }
       });
 
-      cardNameEl.textContent = cardEmoji + " " + cardLabel;
+      cardNameEl.textContent = (config.characterEmoji || "") + " " + (config.characterName || cardLabel);
       glow.style.background = "radial-gradient(ellipse at center,rgba(" + glowRgb + ",.22) 0%,transparent 65%)";
 
       overlay.style.display = "flex"; overlay.offsetHeight; overlay.classList.add("active");
