@@ -314,8 +314,8 @@
       }
       .sgami-rev-name  { font-size:22px; font-weight:900; line-height:1; text-align:center; color:#E5E0FF; }
       .sgami-rev-theme { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.1em; opacity:.65; text-align:center; color:#A78BFA; }
-      .sgami-rev-extra { font-family:"Space Mono",monospace; font-size:10px; font-weight:700; margin-top:3px; color:rgba(255,255,255,.5); }
-      .sgami-rev-logo  { margin-top:auto; font-family:"Space Mono",monospace; font-size:11px; font-weight:700; color:rgba(255,255,255,.55); }
+      .sgami-rev-extra { font-family:"Space Mono",monospace; font-size:10px; font-weight:700; margin-top:3px; color:rgba(255,255,255,.5); text-align:center; width:100%; }
+      .sgami-rev-logo  { margin-top:auto; font-family:"Space Mono",monospace; font-size:11px; font-weight:700; color:rgba(255,255,255,.55); text-align:center; width:100%; }
       .sgami-rev-logo span { color:#2DD4BF; }
       .sgami-rev-card-label {
         position:absolute; top:14px; left:50%; transform:translateX(-50%);
