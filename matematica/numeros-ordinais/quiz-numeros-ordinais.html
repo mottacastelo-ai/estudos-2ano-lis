@@ -342,49 +342,49 @@ const questions = [
   {
     text: "O que os números 1º, 2º, 3º indicam?",
     options: ["Ordem, posição ou classificação", "Quantidade de coisas", "Tamanho dos objetos"],
-    correct: 0,
+    correctText: "Ordem, posição ou classificação",
     feedback: "Isso mesmo! Números ordinais indicam ordem, posição ou classificação — como numa corrida!"
   },
   {
     text: "Como se escreve 4º por extenso?",
     options: ["Quarto", "Quatro", "Primeiro"],
-    correct: 0,
+    correctText: "Quarto",
     feedback: "Perfeito! 4º se lê 'quarto'. O carro amarelo ficou em quarto lugar!"
   },
   {
     text: "Na corrida de carros, o carro vermelho está em qual lugar?",
     options: ["1º (primeiro)", "2º (segundo)", "3º (terceiro)"],
-    correct: 0,
+    correctText: "1º (primeiro)",
     feedback: "Exato! O carro vermelho chegou em 1º lugar — primeiro!"
   },
   {
     text: "Quem recebe a medalha de ouro numa competição?",
     options: ["O 1º colocado", "O 2º colocado", "O 3º colocado"],
-    correct: 0,
+    correctText: "O 1º colocado",
     feedback: "Muito bem! A medalha de ouro vai para o 1º colocado — o primeiro a chegar!"
   },
   {
     text: "Como se escreve 10º por extenso?",
     options: ["Décimo", "Oitavo", "Nono"],
-    correct: 0,
+    correctText: "Décimo",
     feedback: "Ótimo! 10º = décimo. Depois do nono (9º) vem o décimo (10º)!"
   },
   {
     text: "Qual número ordinal vem logo depois do 7º?",
     options: ["8º (oitavo)", "6º (sexto)", "9º (nono)"],
-    correct: 0,
+    correctText: "8º (oitavo)",
     feedback: "Correto! Depois do sétimo (7º) vem o oitavo (8º)!"
   },
   {
     text: "Como se escreve 11º por extenso?",
     options: ["Décimo primeiro", "Décimo", "Onze"],
-    correct: 0,
+    correctText: "Décimo primeiro",
     feedback: "Mandou bem! 11º = décimo primeiro. É o que vem depois do décimo!"
   },
   {
     text: "Na fila do ônibus, quem entrou antes: quem está em 3º ou em 5º lugar?",
     options: ["Quem está em 3º lugar", "Quem está em 5º lugar", "São iguais"],
-    correct: 0,
+    correctText: "Quem está em 3º lugar",
     feedback: "Isso aí! Quem está em 3º lugar entrou antes — está mais na frente da fila!"
   }
 ];
@@ -414,6 +414,15 @@ function playSound(type) {
   }
 }
 
+function shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 function renderQuestion() {
   answered = false;
   const q = questions[current];
@@ -432,17 +441,21 @@ function renderQuestion() {
   const optionsEl = document.getElementById('q-options');
   optionsEl.innerHTML = '';
 
-  q.options.forEach((opt, i) => {
+  // Embaralhar opções para evitar vazamento de posição (3c-4)
+  const optsWithCorrect = q.options.map(opt => ({ text: opt, isCorrect: opt === q.correctText }));
+  const shuffled = shuffleArray(optsWithCorrect);
+
+  shuffled.forEach((opt, i) => {
     const btn = document.createElement('button');
     btn.className = 'option-btn';
-    btn.innerHTML = `<span class="option-letter">${letters[i]}</span> ${opt}`;
-    btn.onclick = () => selectAnswer(i);
+    btn.innerHTML = `<span class="option-letter">${letters[i]}</span> ${opt.text}`;
+    btn.onclick = () => selectAnswer(i, opt.isCorrect, shuffled);
     btn.setAttribute('data-index', i);
     optionsEl.appendChild(btn);
   });
 }
 
-function selectAnswer(index) {
+function selectAnswer(index, isCorrect, shuffled) {
   if (answered) return;
   answered = true;
 
@@ -452,10 +465,12 @@ function selectAnswer(index) {
 
   buttons.forEach(btn => btn.disabled = true);
 
-  const isCorrect = index === q.correct;
-
   buttons[index].classList.add(isCorrect ? 'correct' : 'wrong');
-  if (!isCorrect) buttons[q.correct].classList.add('correct');
+  if (!isCorrect) {
+    // Destacar a correta
+    const correctIdx = shuffled.findIndex(o => o.isCorrect);
+    buttons[correctIdx].classList.add('correct');
+  }
 
   if (isCorrect) {
     score++;
@@ -489,6 +504,7 @@ function nextQuestion() {
 }
 
 function showResult() {
+  window.sabendoScore = Math.round((score / questions.length) * 100);
   document.getElementById('quiz-area').style.display = 'none';
   const resultScreen = document.getElementById('result-screen');
   resultScreen.classList.add('show');
@@ -524,6 +540,67 @@ function restartQuiz() {
 
 renderQuestion();
 </script>
+<!-- ── GAMIFICAÇÃO ─────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'numeros-ordinais';
+  var DISCIPLINE    = 'matematica';
+  var ACTIVITY_TYPE = 'quiz';
+  var TOTAL_ATIV    = 5;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Primo',
+        characterEmoji:  '🎖️',
+        characterImg:    'chars/primo.png',
+        themeLabel:      'Números Ordinais · Matemática',
+        totalActivities: TOTAL_ATIV,
+        activityType:    ACTIVITY_TYPE,
+        primaryColor:    '#0AACE8',
+        lightColor:      '#5AC8FB',
+        bgColor:         '#EFF9FF',
+        glowRgb:         '10,172,232',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _scoreVal = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _scoreVal = v;
+      var btn = document.getElementById('gamificacao-btn');
+      if (btn) btn.style.display = 'block';
+    },
+    get: function () { return _scoreVal; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#0AACE8,#5AC8FB);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
 <script src="../../shared/portal-back.js"></script>
 </body>
 </html>
