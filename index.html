@@ -499,10 +499,14 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
     <button class="disc-nav-btn mat-active" id="nav-mat" onclick="showDisc('mat')">
       <span class="d-icon">📐</span>
       <span class="d-name">Matemática</span>
-      <span class="d-count" id="count-mat">1 tema</span>
+      <span class="d-count" id="count-mat">5 temas</span>
     </button>
     <div class="theme-sub" id="sub-mat">
       <button class="theme-link" onclick="showTheme('mat','numeros-ordinais')">🏆 Números Ordinais</button>
+      <button class="theme-link" onclick="showTheme('mat','dezena-numeros-ate-19')">🟨 A Dezena e os Números até 19</button>
+      <button class="theme-link" onclick="showTheme('mat','pares-impares-dezenas-exatas')">🎲 Pares, Ímpares e Dezenas Exatas</button>
+      <button class="theme-link" onclick="showTheme('mat','numeros-ate-99')">🧮 Números até 99 e Comparar Quantidades</button>
+      <button class="theme-link" onclick="showTheme('mat','centena-e-mil')">🟦 A Centena e o Número 1.000</button>
     </div>
 
     <button class="disc-nav-btn hist-active" id="nav-hist" onclick="showDisc('hist')">
@@ -544,8 +548,8 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
       <div class="home-subtitle">Escolha uma disciplina e vamos aprender juntos! 🎉</div>
       <div class="home-stats">
         <div class="hstat"><span class="hstat-num">5</span><span class="hstat-label">disciplinas</span></div>
-        <div class="hstat"><span class="hstat-num">13</span><span class="hstat-label">temas</span></div>
-        <div class="hstat"><span class="hstat-num">58</span><span class="hstat-label">atividades</span></div>
+        <div class="hstat"><span class="hstat-num">17</span><span class="hstat-label">temas</span></div>
+        <div class="hstat"><span class="hstat-num">78</span><span class="hstat-label">atividades</span></div>
       </div>
       <div class="home-stats" id="streak-banner" style="margin-top:16px;">
         <div class="hstat"><span class="hstat-num" id="streak-count">0</span><span class="hstat-label">🔥 dias seguidos</span></div>
@@ -578,8 +582,8 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
           <div class="dhc-name">Matemática</div>
           <div class="dhc-desc">Números, formas e desafios divertidos! 🔢</div>
           <div class="dhc-chips">
-            <span class="chip" style="background:#E0F5FE;color:#0369A1">1 tema</span>
-            <span class="chip" style="background:#EFF9FF;color:#044A7A">5 atividades</span>
+            <span class="chip" style="background:#E0F5FE;color:#0369A1">5 temas</span>
+            <span class="chip" style="background:#EFF9FF;color:#044A7A">25 atividades</span>
           </div>
         </button>
         <button class="disc-home-card hist" onclick="showDisc('hist')">
@@ -1509,12 +1513,16 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
   <div class="screen" id="screen-mat">
     <div class="disc-hero mat">
       <div class="disc-hero-title">📐 Matemática</div>
-      <div class="disc-hero-sub">1 tema · 5 atividades</div>
+      <div class="disc-hero-sub">5 temas · 25 atividades</div>
     </div>
     <div class="disc-body">
 
       <div class="theme-tabs">
         <button class="theme-tab-btn mat-tab active" id="tab-mat-numeros-ordinais" onclick="showTheme('mat','numeros-ordinais')">🏆 Números Ordinais</button>
+        <button class="theme-tab-btn mat-tab" id="tab-mat-dezena-numeros-ate-19" onclick="showTheme('mat','dezena-numeros-ate-19')">🟨 A Dezena e os Números até 19</button>
+        <button class="theme-tab-btn mat-tab" id="tab-mat-pares-impares-dezenas-exatas" onclick="showTheme('mat','pares-impares-dezenas-exatas')">🎲 Pares, Ímpares e Dezenas Exatas</button>
+        <button class="theme-tab-btn mat-tab" id="tab-mat-numeros-ate-99" onclick="showTheme('mat','numeros-ate-99')">🧮 Números até 99 e Comparar Quantidades</button>
+        <button class="theme-tab-btn mat-tab" id="tab-mat-centena-e-mil" onclick="showTheme('mat','centena-e-mil')">🟦 A Centena e o Número 1.000</button>
       </div>
 
       <!-- ── TEMA 1: NÚMEROS ORDINAIS ── -->
@@ -1593,6 +1601,283 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
           <div class="sched-row"><span class="sched-day" style="color:var(--mat-color)">Dia 1</span><span class="sched-acts">HQ + Quiz</span></div>
           <div class="sched-row"><span class="sched-day" style="color:var(--mat-color)">Dia 2</span><span class="sched-acts">Jogo da Memória + Pódio da Corrida</span></div>
           <div class="sched-row"><span class="sched-day" style="color:var(--mat-color)">Dia 3</span><span class="sched-acts">Criador de Frase + Mapa Mental</span></div>
+        </div>
+      </div>
+
+
+      <!-- ── TEMA 2: A DEZENA E OS NÚMEROS ATÉ 19 ── -->
+      <div class="theme-content" id="theme-mat-dezena-numeros-ate-19">
+        <div class="hq-card">
+          <div class="hq-viewer-wrap" style="background:#023B61;">
+            <div class="hq-viewer-title" style="color:#5AC8FB;">🟨 A Dezena e os Números até 19</div>
+            <div class="hq-viewer-sub" style="color:#BAE6FD;">Aventura com Lis e Dezi · 4 páginas</div>
+            <div class="hq-book-outer">
+              <div class="hq-book-shadow"></div>
+              <div class="hq-book-stack">
+                <div class="hq-page-base" id="hq-dezena-display">
+                  <img id="hq-dezena-img" src="matematica/dezena-numeros-ate-19/hq-dezena-numeros-ate-19-pg1.png" alt="HQ A Dezena e os Números até 19 — Página 1" draggable="false" style="object-fit:contain; touch-action:auto;">
+                  <div class="hq-shine"></div>
+                </div>
+              </div>
+            </div>
+            <div class="hq-controls">
+              <button class="hq-btn" id="hq-dezena-prev" onclick="hqGoTo('dezena',hqCurrent['dezena']-1)" disabled>◀ Voltar</button>
+              <div class="hq-indicator" id="hq-dezena-ind" style="color:#5AC8FB;">1 / 4</div>
+              <button class="hq-btn" id="hq-dezena-next" onclick="hqGoTo('dezena',hqCurrent['dezena']+1)">Próxima ▶</button>
+            </div>
+            <div class="hq-dots" id="hq-dezena-dots">
+              <div class="hq-dot active" onclick="hqGoTo('dezena',0)"></div>
+              <div class="hq-dot" onclick="hqGoTo('dezena',1)"></div>
+              <div class="hq-dot" onclick="hqGoTo('dezena',2)"></div>
+              <div class="hq-dot" onclick="hqGoTo('dezena',3)"></div>
+            </div>
+          </div>
+          <div class="hq-caption">
+            <span>📖</span>
+            <span>A Dezena e os Números até 19 — 4 páginas · Personagens: Lis e Dezi · Tema: dezena e quadro de ordens</span>
+          </div>
+        </div>
+        <hr class="sdiv">
+        <div class="act-grid">
+          <a class="act-card mat lv4" href="matematica/dezena-numeros-ate-19/quiz-dezena-numeros-ate-19.html" target="_blank">
+            <div class="act-icon">❓</div>
+            <div class="act-name">Quiz Interativo</div>
+            <div class="act-info"><div class="level lv4">📖 Retrieval practice</div></div>
+          </a>
+          <a class="act-card mat" href="matematica/dezena-numeros-ate-19/memoria-dezena-numeros-ate-19.html" target="_blank">
+            <div class="act-icon">🃏</div>
+            <div class="act-name">Memória</div>
+            <div class="act-info"><div class="level lv2">⚡ Praticar (80%)</div></div>
+          </a>
+          <a class="act-card mat" href="matematica/dezena-numeros-ate-19/arrastar-dezena-numeros-ate-19.html" target="_blank">
+            <div class="act-icon">🔀</div>
+            <div class="act-name">Arrastar e Soltar</div>
+            <div class="act-info"><div class="level lv2">⚡ Praticar (80%)</div></div>
+          </a>
+          <a class="act-card mat" href="matematica/dezena-numeros-ate-19/completar-dezena-numeros-ate-19.html" target="_blank">
+            <div class="act-icon">✏️</div>
+            <div class="act-name">Complete a Palavra</div>
+            <div class="act-info"><div class="level lv2">⚡ Praticar (80%)</div></div>
+          </a>
+          <a class="act-card mat" href="matematica/dezena-numeros-ate-19/mapa-mental-dezena-numeros-ate-19.html" target="_blank">
+            <div class="act-icon">🗺️</div>
+            <div class="act-name">Mapa Mental</div>
+            <div class="act-info"><div class="level lv3">🏆 Ensinar (90%)</div></div>
+          </a>
+        </div>
+        <hr class="sdiv">
+        <div class="sched-title">📅 Sugestão de uso</div>
+        <div class="sched">
+          <div class="sched-row"><span class="sched-day" style="color:var(--mat-color)">Dia 1</span><span class="sched-acts">HQ + Quiz Interativo</span></div>
+          <div class="sched-row"><span class="sched-day" style="color:var(--mat-color)">Dia 2</span><span class="sched-acts">Memória + Arrastar e Soltar</span></div>
+          <div class="sched-row"><span class="sched-day" style="color:var(--mat-color)">Dia 3</span><span class="sched-acts">Complete a Palavra + Mapa Mental</span></div>
+        </div>
+      </div>
+
+      <!-- ── TEMA 3: PARES, ÍMPARES E DEZENAS EXATAS ── -->
+      <div class="theme-content" id="theme-mat-pares-impares-dezenas-exatas">
+        <div class="hq-card">
+          <div class="hq-viewer-wrap" style="background:#023B61;">
+            <div class="hq-viewer-title" style="color:#5AC8FB;">🎲 Pares, Ímpares e Dezenas Exatas</div>
+            <div class="hq-viewer-sub" style="color:#BAE6FD;">Aventura com Lis e Duo · 4 páginas</div>
+            <div class="hq-book-outer">
+              <div class="hq-book-shadow"></div>
+              <div class="hq-book-stack">
+                <div class="hq-page-base" id="hq-pares-display">
+                  <img id="hq-pares-img" src="matematica/pares-impares-dezenas-exatas/hq-pares-impares-dezenas-exatas-pg1.png" alt="HQ Pares, Ímpares e Dezenas Exatas — Página 1" draggable="false" style="object-fit:contain; touch-action:auto;">
+                  <div class="hq-shine"></div>
+                </div>
+              </div>
+            </div>
+            <div class="hq-controls">
+              <button class="hq-btn" id="hq-pares-prev" onclick="hqGoTo('pares',hqCurrent['pares']-1)" disabled>◀ Voltar</button>
+              <div class="hq-indicator" id="hq-pares-ind" style="color:#5AC8FB;">1 / 4</div>
+              <button class="hq-btn" id="hq-pares-next" onclick="hqGoTo('pares',hqCurrent['pares']+1)">Próxima ▶</button>
+            </div>
+            <div class="hq-dots" id="hq-pares-dots">
+              <div class="hq-dot active" onclick="hqGoTo('pares',0)"></div>
+              <div class="hq-dot" onclick="hqGoTo('pares',1)"></div>
+              <div class="hq-dot" onclick="hqGoTo('pares',2)"></div>
+              <div class="hq-dot" onclick="hqGoTo('pares',3)"></div>
+            </div>
+          </div>
+          <div class="hq-caption">
+            <span>📖</span>
+            <span>Pares, Ímpares e Dezenas Exatas — 4 páginas · Personagens: Lis e Duo · Tema: números pares, ímpares e dezenas exatas</span>
+          </div>
+        </div>
+        <hr class="sdiv">
+        <div class="act-grid">
+          <a class="act-card mat" href="matematica/pares-impares-dezenas-exatas/quiz-pares-impares-dezenas-exatas.html" target="_blank">
+            <div class="act-icon">❓</div>
+            <div class="act-name">Quiz Interativo</div>
+            <div class="act-info"><div class="level lv4">📖 Retrieval practice</div></div>
+          </a>
+          <a class="act-card mat" href="matematica/pares-impares-dezenas-exatas/arrastar-pares-impares-dezenas-exatas.html" target="_blank">
+            <div class="act-icon">🔀</div>
+            <div class="act-name">Arrastar e Soltar</div>
+            <div class="act-info"><div class="level lv2">⚡ Praticar (80%)</div></div>
+          </a>
+          <a class="act-card mat" href="matematica/pares-impares-dezenas-exatas/sequencia-dezenas-exatas.html" target="_blank">
+            <div class="act-icon">🔢</div>
+            <div class="act-name">Completar Sequência</div>
+            <div class="act-info"><div class="level lv2">⚡ Praticar (80%)</div></div>
+          </a>
+          <a class="act-card mat" href="matematica/pares-impares-dezenas-exatas/verdadeiro-ou-falso-pares-impares-dezenas-exatas.html" target="_blank">
+            <div class="act-icon">✅</div>
+            <div class="act-name">Verdadeiro ou Falso</div>
+            <div class="act-info"><div class="level lv1">💬 Discutir (70%)</div></div>
+          </a>
+          <a class="act-card mat" href="matematica/pares-impares-dezenas-exatas/mapa-mental-pares-impares-dezenas-exatas.html" target="_blank">
+            <div class="act-icon">🗺️</div>
+            <div class="act-name">Mapa Mental</div>
+            <div class="act-info"><div class="level lv3">🏆 Ensinar (90%)</div></div>
+          </a>
+        </div>
+        <hr class="sdiv">
+        <div class="sched-title">📅 Sugestão de uso</div>
+        <div class="sched">
+          <div class="sched-row"><span class="sched-day" style="color:var(--mat-color)">Dia 1</span><span class="sched-acts">HQ + Quiz Interativo</span></div>
+          <div class="sched-row"><span class="sched-day" style="color:var(--mat-color)">Dia 2</span><span class="sched-acts">Arrastar e Soltar + Completar Sequência</span></div>
+          <div class="sched-row"><span class="sched-day" style="color:var(--mat-color)">Dia 3</span><span class="sched-acts">Verdadeiro ou Falso + Mapa Mental</span></div>
+        </div>
+      </div>
+
+      <!-- ── TEMA 4: NÚMEROS ATÉ 99 E COMPARAR QUANTIDADES ── -->
+      <div class="theme-content" id="theme-mat-numeros-ate-99">
+        <div class="hq-card">
+          <div class="hq-viewer-wrap" style="background:#023B61;">
+            <div class="hq-viewer-title" style="color:#5AC8FB;">🧮 Números até 99 e Comparar Quantidades</div>
+            <div class="hq-viewer-sub" style="color:#BAE6FD;">Aventura com Lis e Centão · 4 páginas</div>
+            <div class="hq-book-outer">
+              <div class="hq-book-shadow"></div>
+              <div class="hq-book-stack">
+                <div class="hq-page-base" id="hq-numeros99-display">
+                  <img id="hq-numeros99-img" src="matematica/numeros-ate-99/hq-numeros-ate-99-pg1.png" alt="HQ Números até 99 e Comparar Quantidades — Página 1" draggable="false" style="object-fit:contain; touch-action:auto;">
+                  <div class="hq-shine"></div>
+                </div>
+              </div>
+            </div>
+            <div class="hq-controls">
+              <button class="hq-btn" id="hq-numeros99-prev" onclick="hqGoTo('numeros99',hqCurrent['numeros99']-1)" disabled>◀ Voltar</button>
+              <div class="hq-indicator" id="hq-numeros99-ind" style="color:#5AC8FB;">1 / 4</div>
+              <button class="hq-btn" id="hq-numeros99-next" onclick="hqGoTo('numeros99',hqCurrent['numeros99']+1)">Próxima ▶</button>
+            </div>
+            <div class="hq-dots" id="hq-numeros99-dots">
+              <div class="hq-dot active" onclick="hqGoTo('numeros99',0)"></div>
+              <div class="hq-dot" onclick="hqGoTo('numeros99',1)"></div>
+              <div class="hq-dot" onclick="hqGoTo('numeros99',2)"></div>
+              <div class="hq-dot" onclick="hqGoTo('numeros99',3)"></div>
+            </div>
+          </div>
+          <div class="hq-caption">
+            <span>📖</span>
+            <span>Números até 99 e Comparar Quantidades — 4 páginas · Personagens: Lis e Centão · Tema: composição D+U, vizinhos e comparação</span>
+          </div>
+        </div>
+        <hr class="sdiv">
+        <div class="act-grid">
+          <a class="act-card mat" href="matematica/numeros-ate-99/quiz-numeros-ate-99.html" target="_blank">
+            <div class="act-icon">❓</div>
+            <div class="act-name">Quiz Interativo</div>
+            <div class="act-info"><div class="level lv4">📖 Retrieval practice</div></div>
+          </a>
+          <a class="act-card mat" href="matematica/numeros-ate-99/memoria-numeros-ate-99.html" target="_blank">
+            <div class="act-icon">🃏</div>
+            <div class="act-name">Memória</div>
+            <div class="act-info"><div class="level lv2">⚡ Praticar (80%)</div></div>
+          </a>
+          <a class="act-card mat" href="matematica/numeros-ate-99/verdadeiro-ou-falso-numeros-ate-99.html" target="_blank">
+            <div class="act-icon">✅</div>
+            <div class="act-name">Verdadeiro ou Falso</div>
+            <div class="act-info"><div class="level lv1">💬 Discutir (70%)</div></div>
+          </a>
+          <a class="act-card mat" href="matematica/numeros-ate-99/arrastar-numeros-ate-99.html" target="_blank">
+            <div class="act-icon">🔀</div>
+            <div class="act-name">Arrastar e Soltar</div>
+            <div class="act-info"><div class="level lv2">⚡ Praticar (80%)</div></div>
+          </a>
+          <a class="act-card mat" href="matematica/numeros-ate-99/mapa-mental-numeros-ate-99.html" target="_blank">
+            <div class="act-icon">🗺️</div>
+            <div class="act-name">Mapa Mental</div>
+            <div class="act-info"><div class="level lv3">🏆 Ensinar (90%)</div></div>
+          </a>
+        </div>
+        <hr class="sdiv">
+        <div class="sched-title">📅 Sugestão de uso</div>
+        <div class="sched">
+          <div class="sched-row"><span class="sched-day" style="color:var(--mat-color)">Dia 1</span><span class="sched-acts">HQ + Quiz Interativo</span></div>
+          <div class="sched-row"><span class="sched-day" style="color:var(--mat-color)">Dia 2</span><span class="sched-acts">Memória + Arrastar e Soltar</span></div>
+          <div class="sched-row"><span class="sched-day" style="color:var(--mat-color)">Dia 3</span><span class="sched-acts">Verdadeiro ou Falso + Mapa Mental</span></div>
+        </div>
+      </div>
+
+      <!-- ── TEMA 5: A CENTENA E O NÚMERO 1.000 ── -->
+      <div class="theme-content" id="theme-mat-centena-e-mil">
+        <div class="hq-card">
+          <div class="hq-viewer-wrap" style="background:#023B61;">
+            <div class="hq-viewer-title" style="color:#5AC8FB;">🟦 A Centena e o Número 1.000</div>
+            <div class="hq-viewer-sub" style="color:#BAE6FD;">Aventura com Lis e Cento · 4 páginas</div>
+            <div class="hq-book-outer">
+              <div class="hq-book-shadow"></div>
+              <div class="hq-book-stack">
+                <div class="hq-page-base" id="hq-centena-display">
+                  <img id="hq-centena-img" src="matematica/centena-e-mil/hq-centena-e-mil-pg1.png" alt="HQ A Centena e o Número 1.000 — Página 1" draggable="false" style="object-fit:contain; touch-action:auto;">
+                  <div class="hq-shine"></div>
+                </div>
+              </div>
+            </div>
+            <div class="hq-controls">
+              <button class="hq-btn" id="hq-centena-prev" onclick="hqGoTo('centena',hqCurrent['centena']-1)" disabled>◀ Voltar</button>
+              <div class="hq-indicator" id="hq-centena-ind" style="color:#5AC8FB;">1 / 4</div>
+              <button class="hq-btn" id="hq-centena-next" onclick="hqGoTo('centena',hqCurrent['centena']+1)">Próxima ▶</button>
+            </div>
+            <div class="hq-dots" id="hq-centena-dots">
+              <div class="hq-dot active" onclick="hqGoTo('centena',0)"></div>
+              <div class="hq-dot" onclick="hqGoTo('centena',1)"></div>
+              <div class="hq-dot" onclick="hqGoTo('centena',2)"></div>
+              <div class="hq-dot" onclick="hqGoTo('centena',3)"></div>
+            </div>
+          </div>
+          <div class="hq-caption">
+            <span>📖</span>
+            <span>A Centena e o Número 1.000 — 4 páginas · Personagens: Lis e Cento · Tema: centena, decomposição C+D+U e gráfico de barras</span>
+          </div>
+        </div>
+        <hr class="sdiv">
+        <div class="act-grid">
+          <a class="act-card mat" href="matematica/centena-e-mil/quiz-centena-e-mil.html" target="_blank">
+            <div class="act-icon">❓</div>
+            <div class="act-name">Quiz Interativo</div>
+            <div class="act-info"><div class="level lv4">📖 Retrieval practice</div></div>
+          </a>
+          <a class="act-card mat" href="matematica/centena-e-mil/arrastar-centena-e-mil.html" target="_blank">
+            <div class="act-icon">🔀</div>
+            <div class="act-name">Arrastar e Soltar</div>
+            <div class="act-info"><div class="level lv2">⚡ Praticar (80%)</div></div>
+          </a>
+          <a class="act-card mat" href="matematica/centena-e-mil/verdadeiro-ou-falso-centena-e-mil.html" target="_blank">
+            <div class="act-icon">✅</div>
+            <div class="act-name">Verdadeiro ou Falso</div>
+            <div class="act-info"><div class="level lv1">💬 Discutir (70%)</div></div>
+          </a>
+          <a class="act-card mat" href="matematica/centena-e-mil/grafico-de-barras.html" target="_blank">
+            <div class="act-icon">📊</div>
+            <div class="act-name">Gráfico de Barras</div>
+            <div class="act-info"><div class="level lv3">🏆 Criar (90%)</div></div>
+          </a>
+          <a class="act-card mat" href="matematica/centena-e-mil/mapa-mental-centena-e-mil.html" target="_blank">
+            <div class="act-icon">🗺️</div>
+            <div class="act-name">Mapa Mental</div>
+            <div class="act-info"><div class="level lv3">🏆 Ensinar (90%)</div></div>
+          </a>
+        </div>
+        <hr class="sdiv">
+        <div class="sched-title">📅 Sugestão de uso</div>
+        <div class="sched">
+          <div class="sched-row"><span class="sched-day" style="color:var(--mat-color)">Dia 1</span><span class="sched-acts">HQ + Quiz Interativo</span></div>
+          <div class="sched-row"><span class="sched-day" style="color:var(--mat-color)">Dia 2</span><span class="sched-acts">Arrastar e Soltar + Verdadeiro ou Falso</span></div>
+          <div class="sched-row"><span class="sched-day" style="color:var(--mat-color)">Dia 3</span><span class="sched-acts">Gráfico de Barras + Mapa Mental</span></div>
         </div>
       </div>
 
@@ -1803,6 +2088,10 @@ var hqPages = {
   regrasconv:    ['historia/regras-convivencia/hq-regras-convivencia-pg1.png','historia/regras-convivencia/hq-regras-convivencia-pg2.png','historia/regras-convivencia/hq-regras-convivencia-pg3.png','historia/regras-convivencia/hq-regras-convivencia-pg4.png'],
   mudancasconv:  ['historia/mudancas-convivencia/hq-mudancas-convivencia-pg1.png','historia/mudancas-convivencia/hq-mudancas-convivencia-pg2.png','historia/mudancas-convivencia/hq-mudancas-convivencia-pg3.png','historia/mudancas-convivencia/hq-mudancas-convivencia-pg4.png'],
   ordinais:      ['matematica/numeros-ordinais/hq-numeros-ordinais-pg1.png','matematica/numeros-ordinais/hq-numeros-ordinais-pg2.png','matematica/numeros-ordinais/hq-numeros-ordinais-pg3.png','matematica/numeros-ordinais/hq-numeros-ordinais-pg4.png'],
+  dezena:        ['matematica/dezena-numeros-ate-19/hq-dezena-numeros-ate-19-pg1.png','matematica/dezena-numeros-ate-19/hq-dezena-numeros-ate-19-pg2.png','matematica/dezena-numeros-ate-19/hq-dezena-numeros-ate-19-pg3.png','matematica/dezena-numeros-ate-19/hq-dezena-numeros-ate-19-pg4.png'],
+  pares:         ['matematica/pares-impares-dezenas-exatas/hq-pares-impares-dezenas-exatas-pg1.png','matematica/pares-impares-dezenas-exatas/hq-pares-impares-dezenas-exatas-pg2.png','matematica/pares-impares-dezenas-exatas/hq-pares-impares-dezenas-exatas-pg3.png','matematica/pares-impares-dezenas-exatas/hq-pares-impares-dezenas-exatas-pg4.png'],
+  numeros99:     ['matematica/numeros-ate-99/hq-numeros-ate-99-pg1.png','matematica/numeros-ate-99/hq-numeros-ate-99-pg2.png','matematica/numeros-ate-99/hq-numeros-ate-99-pg3.png','matematica/numeros-ate-99/hq-numeros-ate-99-pg4.png'],
+  centena:       ['matematica/centena-e-mil/hq-centena-e-mil-pg1.png','matematica/centena-e-mil/hq-centena-e-mil-pg2.png','matematica/centena-e-mil/hq-centena-e-mil-pg3.png','matematica/centena-e-mil/hq-centena-e-mil-pg4.png'],
   bilhete:       ['portugues/bilhete-cartao-pessoal/hq-bilhete-cartao-pessoal-pg1.png','portugues/bilhete-cartao-pessoal/hq-bilhete-cartao-pessoal-pg2.png','portugues/bilhete-cartao-pessoal/hq-bilhete-cartao-pessoal-pg3.png','portugues/bilhete-cartao-pessoal/hq-bilhete-cartao-pessoal-pg4.png'],
   letras:        ['portugues/letras-silabas-pontuacao/hq-letras-silabas-pontuacao-pg1.png','portugues/letras-silabas-pontuacao/hq-letras-silabas-pontuacao-pg2.png','portugues/letras-silabas-pontuacao/hq-letras-silabas-pontuacao-pg3.png','portugues/letras-silabas-pontuacao/hq-letras-silabas-pontuacao-pg4.png']
 };
