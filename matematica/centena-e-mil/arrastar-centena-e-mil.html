@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quadro de Ordens — A Centena e o Número 1.000 | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root { --primary: #0AACE8; --light: #5AC8FB; --bg: #EFF9FF; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100vh; }
+.header { background: linear-gradient(135deg, #044A7A, #0AACE8 60%, #5AC8FB); color: #fff; padding: 20px 24px; text-align: center; }
+.header h1 { font-family: 'Baloo 2', sans-serif; font-size: 1.5rem; font-weight: 900; }
+.header p { font-size: 1rem; opacity: .85; margin-top: 4px; }
+.container { max-width: 680px; margin: 0 auto; padding: 24px 16px; }
+.rodada-info { text-align: center; font-size: 1rem; font-weight: 700; color: var(--primary); margin-bottom: 12px; }
+.enunciado { background: #fff; border-radius: 16px; padding: 20px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(10,172,232,.10); }
+.numero-alvo { font-family: 'Baloo 2', sans-serif; font-size: 3.5rem; font-weight: 900; color: var(--primary); text-align: center; }
+.instrucao { text-align: center; font-size: 1.1rem; color: #555; margin-top: 6px; }
+.quadro-wrap { background: #fff; border-radius: 16px; padding: 20px; box-shadow: 0 2px 12px rgba(10,172,232,.10); margin-bottom: 20px; }
+.quadro-titulo { text-align: center; font-weight: 800; font-size: 1rem; color: #444; margin-bottom: 12px; }
+.quadro { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; border: 3px solid var(--primary); border-radius: 12px; overflow: hidden; }
+.col-header { background: var(--primary); color: #fff; font-family: 'Baloo 2', sans-serif; font-size: 1.6rem; font-weight: 900; text-align: center; padding: 12px 8px; }
+.col-slot {
+  min-height: 80px; background: #f0faff;
+  border-top: 2px solid #c0e6f7; border-left: 2px solid #c0e6f7;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Baloo 2', sans-serif; font-size: 2rem; font-weight: 900;
+  color: #1a3a4a; transition: background .2s;
+  position: relative;
+}
+.col-slot:first-child { border-left: none; }
+.col-slot.dragover { background: #baeeff; }
+.col-slot.filled { background: #dcf5ff; }
+.fichas-area { background: #fff; border-radius: 16px; padding: 20px; box-shadow: 0 2px 12px rgba(10,172,232,.10); margin-bottom: 20px; }
+.fichas-titulo { font-weight: 800; font-size: 1rem; color: #444; margin-bottom: 14px; text-align: center; }
+.fichas-grid { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+.ficha {
+  background: linear-gradient(135deg, var(--primary), var(--light));
+  color: #fff; border-radius: 14px; padding: 14px 20px;
+  font-family: 'Baloo 2', sans-serif; font-size: 1.6rem; font-weight: 900;
+  cursor: grab; min-width: 64px; min-height: 56px;
+  text-align: center; user-select: none;
+  box-shadow: 0 3px 10px rgba(10,172,232,.25);
+  transition: transform .1s, box-shadow .1s;
+}
+.ficha:active { cursor: grabbing; transform: scale(1.06); }
+.ficha.usada { opacity: .35; pointer-events: none; }
+.verificar-btn {
+  width: 100%; padding: 16px; background: linear-gradient(135deg, var(--primary), var(--light));
+  color: #fff; border: none; border-radius: 50px;
+  font-family: 'Baloo 2', sans-serif; font-size: 1.2rem; font-weight: 900; cursor: pointer;
+  margin-bottom: 14px;
+}
+.feedback { padding: 14px 18px; border-radius: 14px; font-size: 1.1rem; font-weight: 700; display: none; text-align: center; margin-bottom: 14px; }
+.feedback.show { display: block; }
+.feedback.ok { background: #dcfce7; color: #15803d; }
+.feedback.err { background: #fee2e2; color: #b91c1c; }
+.proximo-btn {
+  width: 100%; padding: 16px; background: linear-gradient(135deg, #22c55e, #6ee7a0);
+  color: #fff; border: none; border-radius: 50px;
+  font-family: 'Baloo 2', sans-serif; font-size: 1.2rem; font-weight: 900; cursor: pointer;
+  display: none; margin-bottom: 14px;
+}
+.result-card { display: none; background: #fff; border-radius: 20px; padding: 36px 24px; text-align: center; box-shadow: 0 4px 20px rgba(10,172,232,.15); }
+.result-emoji { font-size: 3.5rem; margin-bottom: 10px; }
+.result-score { font-family: 'Baloo 2', sans-serif; font-size: 2.4rem; font-weight: 900; color: var(--primary); }
+.result-msg { font-size: 1.15rem; font-weight: 700; color: #1a3a4a; margin-top: 8px; }
+.reiniciar-btn {
+  margin-top: 18px; padding: 14px 32px;
+  background: linear-gradient(135deg, var(--primary), var(--light));
+  color: #fff; border: none; border-radius: 50px;
+  font-family: 'Baloo 2', sans-serif; font-size: 1.1rem; font-weight: 900; cursor: pointer;
+}
+.back-btn { display: block; text-align: center; margin: 20px auto 0; color: var(--primary); font-weight: 700; background: none; border: none; cursor: pointer; text-decoration: underline; }
+@media (max-width: 480px) {
+  .numero-alvo { font-size: 2.8rem; }
+  .col-header { font-size: 1.3rem; padding: 10px 4px; }
+  .col-slot { min-height: 64px; font-size: 1.6rem; }
+  .ficha { font-size: 1.3rem; padding: 12px 16px; min-width: 52px; min-height: 48px; }
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>🟦 Quadro de Ordens — Montar Números!</h1>
+  <p>Arraste as fichas para as colunas C, D e U</p>
+</div>
+<div class="container">
+  <div id="atividade">
+    <div class="rodada-info" id="rodadaInfo"></div>
+    <div class="enunciado">
+      <div class="numero-alvo" id="numAlvo"></div>
+      <div class="instrucao">Arraste cada algarismo para a coluna certa!</div>
+    </div>
+    <div class="quadro-wrap">
+      <div class="quadro-titulo">Quadro de Ordens</div>
+      <div class="quadro">
+        <div class="col-header">C</div>
+        <div class="col-header">D</div>
+        <div class="col-header">U</div>
+        <div class="col-slot" id="slotC" data-col="C"></div>
+        <div class="col-slot" id="slotD" data-col="D"></div>
+        <div class="col-slot" id="slotU" data-col="U"></div>
+      </div>
+    </div>
+    <div class="fichas-area">
+      <div class="fichas-titulo">Fichas — arraste para o quadro:</div>
+      <div class="fichas-grid" id="fichasGrid"></div>
+    </div>
+    <div class="feedback" id="fb"></div>
+    <button class="verificar-btn" id="verificarBtn" onclick="verificar()">Verificar ✔</button>
+    <button class="proximo-btn" id="proximoBtn" onclick="proximoNumero()">Próximo número →</button>
+  </div>
+  <div class="result-card" id="rcard">
+    <div class="result-emoji" id="remoji"></div>
+    <div class="result-score" id="rscore"></div>
+    <div class="result-msg" id="rmsg"></div>
+    <button class="reiniciar-btn" onclick="reiniciar()">Jogar de novo 🔄</button>
+  </div>
+  <button class="back-btn" onclick="voltarAoPortal()">← Voltar ao Portal</button>
+</div>
+<script>
+(function () {
+  var numeros = [
+    { num: 324, C: '3', D: '2', U: '4' },
+    { num: 517, C: '5', D: '1', U: '7' },
+    { num: 862, C: '8', D: '6', U: '2' },
+    { num: 430, C: '4', D: '3', U: '0' },
+    { num: 259, C: '2', D: '5', U: '9' },
+    { num: 701, C: '7', D: '0', U: '1' }
+  ];
+
+  var atual = 0;
+  var acertos = 0;
+  var arrastando = null;
+  var slots = { C: null, D: null, U: null };
+  var verificado = false;
+
+  function embaralhar(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  function mostrarNumero() {
+    verificado = false;
+    slots = { C: null, D: null, U: null };
+    var n = numeros[atual];
+    document.getElementById('rodadaInfo').textContent = 'Número ' + (atual + 1) + ' de ' + numeros.length;
+    document.getElementById('numAlvo').textContent = n.num;
+
+    ['C','D','U'].forEach(function(c) {
+      var sl = document.getElementById('slot' + c);
+      sl.textContent = '';
+      sl.className = 'col-slot';
+      sl.setAttribute('data-filled', '');
+    });
+
+    var fb = document.getElementById('fb');
+    fb.className = 'feedback'; fb.textContent = '';
+    document.getElementById('verificarBtn').style.display = 'block';
+    document.getElementById('proximoBtn').style.display = 'none';
+
+    var digits = embaralhar([
+      { val: n.C, col: 'C' },
+      { val: n.D, col: 'D' },
+      { val: n.U, col: 'U' }
+    ]);
+
+    var grid = document.getElementById('fichasGrid');
+    grid.innerHTML = '';
+    digits.forEach(function(d, i) {
+      var ficha = document.createElement('div');
+      ficha.className = 'ficha';
+      ficha.textContent = d.val;
+      ficha.setAttribute('draggable', 'true');
+      ficha.setAttribute('data-val', d.val);
+      ficha.setAttribute('data-id', 'f' + i);
+
+      // Desktop drag
+      ficha.addEventListener('dragstart', function(e) {
+        arrastando = { val: d.val, el: ficha };
+        e.dataTransfer.effectAllowed = 'move';
+      });
+
+      // Touch
+      ficha.addEventListener('touchstart', onTouchStart, { passive: false });
+      ficha.addEventListener('touchmove', onTouchMove, { passive: false });
+      ficha.addEventListener('touchend', onTouchEnd);
+
+      grid.appendChild(ficha);
+    });
+
+    // Slots drag events
+    ['C','D','U'].forEach(function(c) {
+      var sl = document.getElementById('slot' + c);
+      sl.addEventListener('dragover', function(e) { e.preventDefault(); sl.classList.add('dragover'); });
+      sl.addEventListener('dragleave', function() { sl.classList.remove('dragover'); });
+      sl.addEventListener('drop', function(e) {
+        e.preventDefault();
+        sl.classList.remove('dragover');
+        if (arrastando) soltar(c, arrastando.val, arrastando.el);
+      });
+    });
+  }
+
+  function soltar(col, val, fichaEl) {
+    if (verificado) return;
+    // Se slot já tinha ficha, devolver
+    if (slots[col]) {
+      slots[col].classList.remove('usada');
+    }
+    slots[col] = fichaEl;
+    fichaEl.classList.add('usada');
+    var sl = document.getElementById('slot' + col);
+    sl.textContent = val;
+    sl.classList.add('filled');
+    arrastando = null;
+  }
+
+  // Touch drag
+  var touchFicha = null;
+  var touchClone = null;
+  function onTouchStart(e) {
+    e.preventDefault();
+    var t = e.touches[0];
+    touchFicha = this;
+    arrastando = { val: this.getAttribute('data-val'), el: this };
+    touchClone = this.cloneNode(true);
+    touchClone.style.cssText = 'position:fixed;z-index:999;opacity:.85;pointer-events:none;' +
+      'left:' + (t.clientX - 32) + 'px;top:' + (t.clientY - 28) + 'px;';
+    document.body.appendChild(touchClone);
+  }
+  function onTouchMove(e) {
+    e.preventDefault();
+    if (!touchClone) return;
+    var t = e.touches[0];
+    touchClone.style.left = (t.clientX - 32) + 'px';
+    touchClone.style.top  = (t.clientY - 28) + 'px';
+  }
+  function onTouchEnd(e) {
+    if (touchClone) { document.body.removeChild(touchClone); touchClone = null; }
+    if (!arrastando) return;
+    var t = e.changedTouches[0];
+    var cols = ['C','D','U'];
+    for (var i = 0; i < cols.length; i++) {
+      var sl = document.getElementById('slot' + cols[i]);
+      var r = sl.getBoundingClientRect();
+      if (t.clientX >= r.left && t.clientX <= r.right && t.clientY >= r.top && t.clientY <= r.bottom) {
+        soltar(cols[i], arrastando.val, arrastando.el);
+        return;
+      }
+    }
+    arrastando = null;
+  }
+
+  function verificar() {
+    var n = numeros[atual];
+    var ok = slots.C && slots.C.getAttribute('data-val') === n.C &&
+             slots.D && slots.D.getAttribute('data-val') === n.D &&
+             slots.U && slots.U.getAttribute('data-val') === n.U;
+    verificado = true;
+    var fb = document.getElementById('fb');
+    if (ok) {
+      acertos++;
+      fb.textContent = '✅ Perfeito! ' + n.num + ' = ' + n.C + ' centena(s) · ' + n.D + ' dezena(s) · ' + n.U + ' unidade(s)!';
+      fb.className = 'feedback show ok';
+      playSound('correct');
+    } else {
+      fb.textContent = '❌ Quase! ' + n.num + ' tem ' + n.C + ' na coluna C, ' + n.D + ' na coluna D e ' + n.U + ' na coluna U.';
+      fb.className = 'feedback show err';
+      // Mostrar resposta certa
+      ['C','D','U'].forEach(function(c) {
+        var sl = document.getElementById('slot' + c);
+        sl.textContent = n[c];
+        sl.classList.add('filled');
+      });
+      playSound('wrong');
+    }
+    document.getElementById('verificarBtn').style.display = 'none';
+    document.getElementById('proximoBtn').style.display = 'block';
+    document.getElementById('proximoBtn').textContent = atual < numeros.length - 1 ? 'Próximo número →' : 'Ver resultado 🏁';
+  }
+
+  function proximoNumero() {
+    atual++;
+    if (atual >= numeros.length) {
+      mostrarResultado();
+    } else {
+      mostrarNumero();
+    }
+  }
+
+  function mostrarResultado() {
+    document.getElementById('atividade').style.display = 'none';
+    var rc = document.getElementById('rcard');
+    rc.style.display = 'block';
+    var pct = Math.round((acertos / numeros.length) * 100);
+    window.sabendoScore = pct;
+    document.getElementById('remoji').textContent = pct >= 80 ? '🎉🟦🏆' : pct >= 50 ? '⭐💪' : '📚✨';
+    document.getElementById('rscore').textContent = acertos + ' de ' + numeros.length + ' corretos!';
+    document.getElementById('rmsg').textContent = pct >= 80 ? 'Você dominou o quadro de ordens!' : 'Continue praticando, você vai arrasar!';
+  }
+
+  function reiniciar() {
+    atual = 0; acertos = 0;
+    document.getElementById('atividade').style.display = 'block';
+    document.getElementById('rcard').style.display = 'none';
+    mostrarNumero();
+  }
+
+  function playSound(type) {
+    try {
+      var ctx = new (window.AudioContext || window.webkitAudioContext)();
+      var o = ctx.createOscillator();
+      var g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      if (type === 'correct') {
+        o.frequency.setValueAtTime(523, ctx.currentTime);
+        o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+        o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+        g.gain.setValueAtTime(0.3, ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+        o.start(); o.stop(ctx.currentTime + 0.5);
+      } else {
+        o.frequency.setValueAtTime(300, ctx.currentTime);
+        o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+        g.gain.setValueAtTime(0.3, ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+        o.start(); o.stop(ctx.currentTime + 0.4);
+      }
+    } catch(e) {}
+  }
+
+  window.verificar = verificar;
+  window.proximoNumero = proximoNumero;
+  window.reiniciar = reiniciar;
+
+  mostrarNumero();
+})();
+</script>
+
+<!-- GAMIFICAÇÃO -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'centena-e-mil';
+  var DISCIPLINE    = 'matematica';
+  var ACTIVITY_TYPE = 'arrastar';
+  var TOTAL_ATIV    = 5;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Cento',
+        characterEmoji:  '🟦',
+        characterImg:    'chars/cento.png',
+        themeLabel:      'A Centena e o Número 1.000 · Matemática',
+        totalActivities: TOTAL_ATIV,
+        activityType:    ACTIVITY_TYPE,
+        primaryColor:    '#0AACE8',
+        lightColor:      '#5AC8FB',
+        bgColor:         '#EFF9FF',
+        glowRgb:         '10,172,232',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _s = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _s = v;
+      var btn = document.getElementById('gamificacao-btn');
+      if (btn) btn.style.display = 'block';
+    },
+    get: function () { return _s; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#0AACE8,#5AC8FB);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>

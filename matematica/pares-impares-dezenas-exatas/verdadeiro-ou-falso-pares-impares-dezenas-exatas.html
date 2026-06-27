@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verdadeiro ou Falso — Pares e Ímpares | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #0AACE8;
+  --light: #5AC8FB;
+  --bg: #EFF9FF;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100vh; }
+
+.header {
+  background: linear-gradient(135deg, #044A7A, #0AACE8 60%, #5AC8FB);
+  color: #fff;
+  padding: 20px 24px;
+  text-align: center;
+}
+.header .emoji { font-size: 2.4rem; display: block; margin-bottom: 6px; }
+.header h1 { font-family: 'Baloo 2', sans-serif; font-size: 1.5rem; font-weight: 900; }
+.header p { font-size: 1rem; opacity: 0.9; margin-top: 4px; }
+
+.container { max-width: 660px; margin: 0 auto; padding: 24px 16px; }
+
+.progresso-txt { text-align: center; font-size: 1rem; font-weight: 700; color: #64748b; margin-bottom: 8px; }
+.progress-bar-wrap { background: #c7eaf9; border-radius: 20px; height: 10px; margin-bottom: 20px; }
+.progress-bar { background: var(--primary); height: 10px; border-radius: 20px; transition: width 0.4s; }
+
+/* Card da questão */
+.vf-card {
+  background: #fff;
+  border-radius: 24px;
+  padding: 32px 24px 28px;
+  box-shadow: 0 4px 24px rgba(10,172,232,0.13);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Área visual: emojis grandes representando o grupo */
+.grupo-visual {
+  font-size: 2.8rem;
+  line-height: 1.5;
+  margin-bottom: 18px;
+  min-height: 80px;
+  word-break: break-word;
+  letter-spacing: 4px;
+}
+.quantidade-label {
+  background: var(--bg);
+  border: 2px solid var(--light);
+  border-radius: 50px;
+  padding: 6px 20px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: var(--primary);
+  display: inline-block;
+  margin-bottom: 18px;
+}
+
+.afirmacao {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #1a2e3b;
+  line-height: 1.35;
+  margin-bottom: 24px;
+}
+
+.vf-btns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.vf-btn {
+  border: 3px solid transparent;
+  border-radius: 18px;
+  padding: 18px 12px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 900;
+  cursor: pointer;
+  min-height: 72px;
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+.vf-btn:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(10,172,232,0.2); }
+.btn-verdadeiro { background: #d1fae5; color: #166534; border-color: #22c55e; }
+.btn-falso { background: #fee2e2; color: #991b1b; border-color: #ef4444; }
+.vf-btn.selecionado-certo { background: #22c55e; color: #fff; border-color: #16a34a; }
+.vf-btn.selecionado-errado { background: #ef4444; color: #fff; border-color: #dc2626; }
+.vf-btn.apagado { opacity: 0.35; }
+
+.feedback-vf {
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  display: none;
+}
+.feedback-vf.show { display: block; }
+.feedback-vf.ok { background: #d1fae5; color: #166534; }
+.feedback-vf.nok { background: #fee2e2; color: #991b1b; }
+
+.btn-prox {
+  display: none;
+  margin: 0 auto;
+  background: linear-gradient(135deg, var(--primary), var(--light));
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 16px 40px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(10,172,232,0.25);
+  min-height: 54px;
+}
+
+/* Resultado */
+.resultado-final {
+  display: none;
+  background: #fff;
+  border-radius: 24px;
+  padding: 36px 28px;
+  text-align: center;
+  box-shadow: 0 4px 24px rgba(10,172,232,0.15);
+  margin-bottom: 20px;
+}
+.resultado-final.show { display: block; }
+.resultado-final .big-emoji { font-size: 4rem; margin-bottom: 12px; }
+.resultado-final h2 { font-family: 'Baloo 2', sans-serif; font-size: 2rem; font-weight: 900; color: var(--primary); }
+.resultado-final .score { font-size: 1.5rem; font-weight: 800; color: #1a2e3b; margin: 10px 0; }
+.resultado-final .mensagem { font-size: 1.1rem; color: #475569; }
+
+.btn-retry {
+  margin-top: 16px;
+  background: #f0f9ff;
+  border: 2.5px solid var(--primary);
+  color: var(--primary);
+  border-radius: 50px;
+  padding: 14px 32px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  min-height: 50px;
+}
+
+.footer { text-align: center; padding: 24px 16px 32px; }
+.btn-back {
+  background: transparent;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  border-radius: 50px;
+  padding: 12px 28px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  min-height: 44px;
+}
+
+@media (max-width: 480px) {
+  .grupo-visual { font-size: 2.2rem; }
+  .afirmacao { font-size: 1.3rem; }
+  .vf-btn { font-size: 1.3rem; padding: 14px 8px; }
+  .header h1 { font-size: 1.25rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="emoji">🎲</span>
+  <h1>Verdadeiro ou Falso?</h1>
+  <p>Olhe o grupo e decida: a afirmação é verdadeira?</p>
+</div>
+
+<div class="container">
+  <div class="progresso-txt" id="progressoTxt">Questão 1 de 10</div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+
+  <div class="vf-card" id="vfCard">
+    <div class="grupo-visual" id="grupoVisual"></div>
+    <div class="quantidade-label" id="qtdLabel"></div>
+    <div class="afirmacao" id="afirmacaoTxt"></div>
+    <div class="vf-btns">
+      <button class="vf-btn btn-verdadeiro" id="btnV" onclick="responder(true)">✅ Verdadeiro</button>
+      <button class="vf-btn btn-falso" id="btnF" onclick="responder(false)">❌ Falso</button>
+    </div>
+    <div class="feedback-vf" id="feedbackVf"></div>
+    <button class="btn-prox" id="btnProx" onclick="proxQuestao()">Próxima →</button>
+  </div>
+
+  <div class="resultado-final" id="resultadoFinal">
+    <div class="big-emoji" id="finalEmoji">🎉</div>
+    <h2>Atividade concluída!</h2>
+    <div class="score" id="finalScore"></div>
+    <div class="mensagem" id="finalMensagem"></div>
+    <button class="btn-retry" onclick="reiniciar()">Tentar novamente 🔄</button>
+  </div>
+</div>
+
+<div class="footer">
+  <button class="btn-back" onclick="voltarAoPortal()">← Voltar ao Portal</button>
+</div>
+
+<!-- GAMIFICAÇÃO -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'pares-impares-dezenas-exatas';
+  var DISCIPLINE    = 'matematica';
+  var ACTIVITY_TYPE = 'vf';
+  var TOTAL_ATIV    = 5;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Duo',
+        characterEmoji:  '🎲',
+        characterImg:    'chars/duo.png',
+        themeLabel:      'Pares, Ímpares e Dezenas Exatas · Matemática',
+        totalActivities: TOTAL_ATIV,
+        activityType:    ACTIVITY_TYPE,
+        primaryColor:    '#0AACE8',
+        lightColor:      '#5AC8FB',
+        bgColor:         '#EFF9FF',
+        glowRgb:         '10,172,232',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _scoreVal = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _scoreVal = v;
+      var btn = document.getElementById('gamificacao-btn');
+      if (btn) btn.style.display = 'block';
+    },
+    get: function () { return _scoreVal; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#0AACE8,#5AC8FB);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+
+<script>
+// Questões — gabarito em variável JS, nunca em atributo DOM
+// Cada afirmação determinável pelo grupo visual mostrado na tela
+var todasQuestoes = [
+  { emoji: '⭐⭐⭐⭐⭐⭐', qtd: 6, afirmacao: '6 estrelas é um número PAR.', gabarito: true, ok: 'Sim! 6 termina em 6 — número par! ✅', nok: 'Não! 6 termina em 6 — é um número par.' },
+  { emoji: '🌸🌸🌸🌸🌸🌸🌸', qtd: 7, afirmacao: '7 flores é um número ÍMPAR.', gabarito: true, ok: 'Certo! 7 termina em 7 — número ímpar! ✅', nok: 'Não! 7 termina em 7 — é ímpar.' },
+  { emoji: '🍎🍎🍎🍎🍎🍎🍎🍎', qtd: 8, afirmacao: '8 maçãs é um número ÍMPAR.', gabarito: false, ok: '', nok: 'Não! 8 termina em 8 — é um número PAR, não ímpar!' },
+  { emoji: '🐢🐢🐢🐢🐢', qtd: 5, afirmacao: '5 tartarugas é um número PAR.', gabarito: false, ok: '', nok: 'Não! 5 termina em 5 — é um número ÍMPAR!' },
+  { emoji: '🦋🦋🦋🦋', qtd: 4, afirmacao: '4 borboletas é um número PAR.', gabarito: true, ok: 'Sim! 4 termina em 4 — número par! ✅', nok: 'Não! 4 termina em 4 — é par.' },
+  { emoji: '🍭🍭🍭🍭🍭🍭🍭🍭🍭', qtd: 9, afirmacao: '9 pirulitos é um número ÍMPAR.', gabarito: true, ok: 'Certo! 9 termina em 9 — ímpar! ✅', nok: 'Não! 9 é ímpar.' },
+  { emoji: '🏀🏀', qtd: 2, afirmacao: '2 bolas é um número PAR.', gabarito: true, ok: 'Sim! 2 termina em 2 — par! ✅', nok: 'Não! 2 termina em 2 — é par.' },
+  { emoji: '🐸🐸🐸', qtd: 3, afirmacao: '3 sapos é um número PAR.', gabarito: false, ok: '', nok: 'Não! 3 termina em 3 — é ÍMPAR!' },
+  { emoji: '🌙🌙🌙🌙🌙🌙🌙🌙🌙🌙', qtd: 10, afirmacao: '10 luas é uma dezena exata E um número PAR.', gabarito: true, ok: 'Perfeito! 10 termina em 0 — par e dezena exata! ✅', nok: 'Não! 10 termina em 0 — é par e dezena exata.' },
+  { emoji: '🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈', qtd: 11, afirmacao: '11 balões é um número ÍMPAR.', gabarito: true, ok: 'Certo! 11 termina em 1 — ímpar! ✅', nok: 'Não! 11 termina em 1 — é ímpar.' }
+];
+
+var questoes = [];
+var indice = 0;
+var acertos = 0;
+
+function embaralhar(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+function playSound(tipo) {
+  try {
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    var o = ctx.createOscillator();
+    var g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    if (tipo === 'correct') {
+      o.frequency.setValueAtTime(523, ctx.currentTime);
+      o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+      o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+      o.start(); o.stop(ctx.currentTime + 0.5);
+    } else {
+      o.frequency.setValueAtTime(300, ctx.currentTime);
+      o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      o.start(); o.stop(ctx.currentTime + 0.4);
+    }
+  } catch(e) {}
+}
+
+function iniciar() {
+  questoes = embaralhar(todasQuestoes);
+  indice = 0;
+  acertos = 0;
+  document.getElementById('resultadoFinal').classList.remove('show');
+  document.getElementById('vfCard').style.display = 'block';
+  renderizar();
+}
+
+function renderizar() {
+  var q = questoes[indice];
+  document.getElementById('grupoVisual').textContent = q.emoji;
+  document.getElementById('qtdLabel').textContent = q.qtd + ' ' + (q.qtd === 1 ? 'item' : 'itens');
+  document.getElementById('afirmacaoTxt').textContent = '"' + q.afirmacao + '"';
+  document.getElementById('progressoTxt').textContent = 'Questão ' + (indice + 1) + ' de ' + questoes.length;
+  document.getElementById('progressBar').style.width = (indice / questoes.length * 100) + '%';
+  document.getElementById('feedbackVf').className = 'feedback-vf';
+  document.getElementById('feedbackVf').textContent = '';
+  document.getElementById('btnV').disabled = false;
+  document.getElementById('btnF').disabled = false;
+  document.getElementById('btnV').className = 'vf-btn btn-verdadeiro';
+  document.getElementById('btnF').className = 'vf-btn btn-falso';
+  document.getElementById('btnProx').style.display = 'none';
+}
+
+function responder(escolha) {
+  var q = questoes[indice];
+  var acertou = escolha === q.gabarito;
+  if (acertou) acertos++;
+  playSound(acertou ? 'correct' : 'wrong');
+
+  document.getElementById('btnV').disabled = true;
+  document.getElementById('btnF').disabled = true;
+
+  if (escolha === true) {
+    document.getElementById('btnV').className = 'vf-btn btn-verdadeiro ' + (acertou ? 'selecionado-certo' : 'selecionado-errado');
+    document.getElementById('btnF').className = 'vf-btn btn-falso apagado';
+  } else {
+    document.getElementById('btnF').className = 'vf-btn btn-falso ' + (acertou ? 'selecionado-certo' : 'selecionado-errado');
+    document.getElementById('btnV').className = 'vf-btn btn-verdadeiro apagado';
+  }
+
+  var fb = document.getElementById('feedbackVf');
+  fb.textContent = acertou ? q.ok : q.nok;
+  fb.className = 'feedback-vf show ' + (acertou ? 'ok' : 'nok');
+
+  document.getElementById('btnProx').style.display = 'block';
+  document.getElementById('btnProx').textContent = indice < questoes.length - 1 ? 'Próxima →' : 'Ver resultado 🏆';
+}
+
+function proxQuestao() {
+  indice++;
+  if (indice < questoes.length) {
+    renderizar();
+  } else {
+    mostrarResultado();
+  }
+}
+
+function mostrarResultado() {
+  var pct = Math.round((acertos / questoes.length) * 100);
+  window.sabendoScore = pct;
+
+  document.getElementById('vfCard').style.display = 'none';
+  document.getElementById('progressBar').style.width = '100%';
+  document.getElementById('progressoTxt').textContent = 'Concluído!';
+
+  var rf = document.getElementById('resultadoFinal');
+  rf.classList.add('show');
+  document.getElementById('finalEmoji').textContent = pct >= 80 ? '🎉' : pct >= 50 ? '😊' : '💪';
+  document.getElementById('finalScore').textContent = acertos + ' de ' + questoes.length + ' acertos!';
+  var msgs = [
+    'Continue praticando! Você vai melhorar! 💪',
+    'Bom trabalho! Quase lá! 😊',
+    'Você arrasou! Conhece muito bem pares e ímpares! 🌟'
+  ];
+  document.getElementById('finalMensagem').textContent = pct >= 80 ? msgs[2] : pct >= 50 ? msgs[1] : msgs[0];
+}
+
+function reiniciar() { iniciar(); }
+
+window.responder = responder;
+window.proxQuestao = proxQuestao;
+window.reiniciar = reiniciar;
+
+iniciar();
+</script>
+
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>

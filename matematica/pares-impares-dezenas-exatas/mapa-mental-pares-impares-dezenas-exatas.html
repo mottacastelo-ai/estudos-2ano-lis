@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapa Mental — Pares, Ímpares e Dezenas Exatas | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #0AACE8;
+  --light: #5AC8FB;
+  --bg: #EFF9FF;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100vh; }
+
+.header {
+  background: linear-gradient(135deg, #044A7A, #0AACE8 60%, #5AC8FB);
+  color: #fff;
+  padding: 20px 24px;
+  text-align: center;
+}
+.header .emoji { font-size: 2.4rem; display: block; margin-bottom: 6px; }
+.header h1 { font-family: 'Baloo 2', sans-serif; font-size: 1.5rem; font-weight: 900; }
+.header p { font-size: 1rem; opacity: 0.9; margin-top: 4px; }
+
+.container { max-width: 720px; margin: 0 auto; padding: 24px 16px; }
+
+.instrucao {
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px 20px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1a2e3b;
+  margin-bottom: 20px;
+  border-left: 5px solid var(--primary);
+  box-shadow: 0 2px 10px rgba(10,172,232,0.1);
+}
+
+/* Banco de nodes */
+.banco-titulo { text-align: center; font-size: 1rem; font-weight: 700; color: #64748b; margin-bottom: 10px; }
+.banco-nodes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 24px;
+  background: #fff;
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 2px 12px rgba(10,172,232,0.08);
+  min-height: 70px;
+}
+.node-chip {
+  background: var(--bg);
+  border: 2.5px solid var(--primary);
+  color: #0369a1;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 900;
+  border-radius: 12px;
+  padding: 10px 18px;
+  min-height: 48px;
+  min-width: 60px;
+  cursor: grab;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  transition: transform 0.12s, box-shadow 0.12s;
+  touch-action: none;
+}
+.node-chip:hover:not(.usado) { transform: scale(1.06); box-shadow: 0 4px 14px rgba(10,172,232,0.2); }
+.node-chip.dragging { opacity: 0.45; }
+.node-chip.usado { opacity: 0.3; pointer-events: none; }
+
+/* Slots */
+.slots-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.slot-card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 2px 12px rgba(10,172,232,0.1);
+  border: 2px solid #e0f2fe;
+  transition: border-color 0.2s, background 0.2s;
+}
+.slot-card.over { border-color: var(--primary); background: #daf1fc; }
+.slot-label {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #475569;
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+.slot-drop {
+  min-height: 52px;
+  border: 2.5px dashed #c7eaf9;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8fafc;
+  transition: border-color 0.2s;
+  cursor: pointer;
+}
+.slot-drop.preenchido { border-style: solid; border-color: var(--primary); background: #daf1fc; }
+.slot-drop.certo { border-color: #22c55e; background: #d1fae5; }
+.slot-drop.errado { border-color: #ef4444; background: #fee2e2; }
+.slot-drop-txt {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: var(--primary);
+}
+.slot-drop.certo .slot-drop-txt { color: #166534; }
+.slot-drop.errado .slot-drop-txt { color: #991b1b; }
+.slot-placeholder { font-size: 1rem; color: #cbd5e1; font-weight: 700; }
+
+.btn-verificar {
+  display: block;
+  margin: 0 auto 16px;
+  background: linear-gradient(135deg, var(--primary), var(--light));
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 16px 40px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(10,172,232,0.25);
+  min-height: 54px;
+}
+
+.feedback-mapa {
+  text-align: center;
+  font-size: 1.15rem;
+  font-weight: 700;
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  display: none;
+}
+.feedback-mapa.show { display: block; }
+.feedback-mapa.ok { background: #d1fae5; color: #166534; }
+.feedback-mapa.parcial { background: #fef9c3; color: #854d0e; }
+
+.btn-tentar {
+  display: none;
+  margin: 0 auto 16px;
+  background: #f0f9ff;
+  border: 2.5px solid var(--primary);
+  color: var(--primary);
+  border-radius: 50px;
+  padding: 14px 32px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  min-height: 50px;
+}
+
+.footer { text-align: center; padding: 24px 16px 32px; }
+.btn-back {
+  background: transparent;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  border-radius: 50px;
+  padding: 12px 28px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  min-height: 44px;
+}
+
+@media (max-width: 480px) {
+  .slots-grid { grid-template-columns: 1fr; }
+  .header h1 { font-size: 1.25rem; }
+  .node-chip { font-size: 1.1rem; padding: 8px 14px; }
+  .slot-label { font-size: 0.95rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="emoji">🎲</span>
+  <h1>Mapa Mental — Pares, Ímpares e Dezenas</h1>
+  <p>Arraste cada resposta para o slot correto!</p>
+</div>
+
+<div class="container">
+  <div class="instrucao">
+    🧩 Arraste (ou toque e solte) cada cartão de resposta para completar as afirmações abaixo.
+  </div>
+
+  <div class="banco-titulo">Respostas disponíveis:</div>
+  <div class="banco-nodes" id="bancoNodes"></div>
+
+  <div class="slots-grid" id="slotsGrid"></div>
+
+  <div class="feedback-mapa" id="feedbackMapa"></div>
+  <button class="btn-verificar" id="btnVerificar" onclick="verificar()">Verificar ✔</button>
+  <button class="btn-tentar" id="btnTentar" onclick="reiniciar()">Tentar novamente 🔄</button>
+</div>
+
+<div class="footer">
+  <button class="btn-back" onclick="voltarAoPortal()">← Voltar ao Portal</button>
+</div>
+
+<!-- GAMIFICAÇÃO -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'pares-impares-dezenas-exatas';
+  var DISCIPLINE    = 'matematica';
+  var ACTIVITY_TYPE = 'mapa-mental';
+  var TOTAL_ATIV    = 5;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Duo',
+        characterEmoji:  '🎲',
+        characterImg:    'chars/duo.png',
+        themeLabel:      'Pares, Ímpares e Dezenas Exatas · Matemática',
+        totalActivities: TOTAL_ATIV,
+        activityType:    ACTIVITY_TYPE,
+        primaryColor:    '#0AACE8',
+        lightColor:      '#5AC8FB',
+        bgColor:         '#EFF9FF',
+        glowRgb:         '10,172,232',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _scoreVal = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _scoreVal = v;
+      var btn = document.getElementById('gamificacao-btn');
+      if (btn) btn.style.display = 'block';
+    },
+    get: function () { return _scoreVal; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#0AACE8,#5AC8FB);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+
+<script>
+// Slots: característica/definição → node: resposta correta
+// Cada par é uma afirmação pedagógica válida derivada do conteúdo do livro
+var dados = [
+  { id: 'slot0', label: 'Números pares terminam em:', resposta: '0,2,4,6,8' },
+  { id: 'slot1', label: 'Números ímpares terminam em:', resposta: '1,3,5,7,9' },
+  { id: 'slot2', label: '30 + 20 =', resposta: '50' },
+  { id: 'slot3', label: 'Dezena exata depois de 50:', resposta: '60' },
+  { id: 'slot4', label: 'Um par tem ___ elementos:', resposta: '2' },
+  { id: 'slot5', label: 'Agrupar de ___ em ___:', resposta: '2 em 2' }
+];
+
+// Estado: slotId → node colocado (string) ou null
+var colocados = {};
+var arrastando = null;
+var touchClone = null;
+
+function embaralhar(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+function playSound(tipo) {
+  try {
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    var o = ctx.createOscillator();
+    var g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    if (tipo === 'correct') {
+      o.frequency.setValueAtTime(523, ctx.currentTime);
+      o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+      o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+      o.start(); o.stop(ctx.currentTime + 0.5);
+    } else {
+      o.frequency.setValueAtTime(300, ctx.currentTime);
+      o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      o.start(); o.stop(ctx.currentTime + 0.4);
+    }
+  } catch(e) {}
+}
+
+function renderizar() {
+  colocados = {};
+  dados.forEach(function(d) { colocados[d.id] = null; });
+
+  // Banco de nodes embaralhado
+  var banco = document.getElementById('bancoNodes');
+  banco.innerHTML = '';
+  var nodes = embaralhar(dados.map(function(d) { return d.resposta; }));
+  nodes.forEach(function(val) {
+    var chip = criarNodeChip(val);
+    banco.appendChild(chip);
+  });
+
+  // Slots
+  var grid = document.getElementById('slotsGrid');
+  grid.innerHTML = '';
+  dados.forEach(function(d) {
+    var card = document.createElement('div');
+    card.className = 'slot-card';
+    card.id = d.id + '-card';
+
+    var lbl = document.createElement('div');
+    lbl.className = 'slot-label';
+    lbl.textContent = d.label;
+
+    var drop = document.createElement('div');
+    drop.className = 'slot-drop';
+    drop.id = d.id + '-drop';
+
+    var ph = document.createElement('span');
+    ph.className = 'slot-placeholder';
+    ph.textContent = '↓ soltar aqui';
+    drop.appendChild(ph);
+
+    // Mouse drop
+    drop.addEventListener('dragover', function(e) { e.preventDefault(); card.classList.add('over'); });
+    drop.addEventListener('dragleave', function() { card.classList.remove('over'); });
+    drop.addEventListener('drop', function(e) {
+      e.preventDefault();
+      card.classList.remove('over');
+      var val = e.dataTransfer.getData('text/plain');
+      soltarNoSlot(d.id, val);
+    });
+
+    card.appendChild(lbl);
+    card.appendChild(drop);
+    grid.appendChild(card);
+  });
+
+  document.getElementById('feedbackMapa').className = 'feedback-mapa';
+  document.getElementById('feedbackMapa').textContent = '';
+  document.getElementById('btnVerificar').style.display = 'block';
+  document.getElementById('btnTentar').style.display = 'none';
+}
+
+function criarNodeChip(val) {
+  var chip = document.createElement('div');
+  chip.className = 'node-chip';
+  chip.textContent = val;
+  chip.draggable = true;
+  chip.setAttribute('data-val', val);
+
+  chip.addEventListener('dragstart', function(e) {
+    e.dataTransfer.setData('text/plain', val);
+    chip.classList.add('dragging');
+  });
+  chip.addEventListener('dragend', function() { chip.classList.remove('dragging'); });
+
+  // Touch — ERR-004: passive:false
+  chip.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    arrastando = val;
+    var toque = e.touches[0];
+    touchClone = chip.cloneNode(true);
+    touchClone.style.position = 'fixed';
+    touchClone.style.opacity = '0.85';
+    touchClone.style.pointerEvents = 'none';
+    touchClone.style.zIndex = '9999';
+    touchClone.style.width = chip.offsetWidth + 'px';
+    touchClone.style.left = (toque.clientX - chip.offsetWidth / 2) + 'px';
+    touchClone.style.top = (toque.clientY - chip.offsetHeight / 2) + 'px';
+    document.body.appendChild(touchClone);
+    chip.style.opacity = '0.4';
+  }, { passive: false });
+
+  chip.addEventListener('touchmove', function(e) {
+    e.preventDefault();
+    if (!touchClone) return;
+    var toque = e.touches[0];
+    touchClone.style.left = (toque.clientX - touchClone.offsetWidth / 2) + 'px';
+    touchClone.style.top = (toque.clientY - touchClone.offsetHeight / 2) + 'px';
+  }, { passive: false });
+
+  chip.addEventListener('touchend', function(e) {
+    if (touchClone) { touchClone.remove(); touchClone = null; }
+    chip.style.opacity = '1';
+    if (arrastando === null) return;
+    var toque = e.changedTouches[0];
+    var elAbaixo = document.elementFromPoint(toque.clientX, toque.clientY);
+    var slotId = null;
+    if (elAbaixo) {
+      var p = elAbaixo;
+      while (p) {
+        if (p.id && p.id.endsWith('-card')) {
+          slotId = p.id.replace('-card', '');
+          break;
+        }
+        p = p.parentElement;
+      }
+    }
+    if (slotId) soltarNoSlot(slotId, arrastando);
+    arrastando = null;
+  });
+
+  return chip;
+}
+
+function soltarNoSlot(slotId, val) {
+  // Se o slot já tem um node, devolver ao banco
+  var anterior = colocados[slotId];
+  if (anterior !== null) {
+    // Reativar chip anterior no banco
+    document.querySelectorAll('.node-chip').forEach(function(c) {
+      if (c.getAttribute('data-val') === anterior) {
+        c.classList.remove('usado');
+        c.style.opacity = '1';
+        c.style.pointerEvents = '';
+      }
+    });
+  }
+
+  // Se o val já estava em outro slot, limpar esse slot
+  dados.forEach(function(d) {
+    if (d.id !== slotId && colocados[d.id] === val) {
+      colocados[d.id] = null;
+      var drop = document.getElementById(d.id + '-drop');
+      drop.className = 'slot-drop';
+      drop.innerHTML = '<span class="slot-placeholder">↓ soltar aqui</span>';
+    }
+  });
+
+  colocados[slotId] = val;
+
+  // Marcar chip como usado
+  document.querySelectorAll('.node-chip').forEach(function(c) {
+    if (c.getAttribute('data-val') === val) {
+      c.classList.add('usado');
+    }
+  });
+
+  // Atualizar slot visual
+  var drop = document.getElementById(slotId + '-drop');
+  drop.className = 'slot-drop preenchido';
+  drop.innerHTML = '<span class="slot-drop-txt">' + val + '</span>';
+}
+
+function verificar() {
+  var certas = 0;
+  dados.forEach(function(d) {
+    var drop = document.getElementById(d.id + '-drop');
+    var val = colocados[d.id];
+    if (val === d.resposta) {
+      drop.className = 'slot-drop certo';
+      certas++;
+    } else {
+      drop.className = 'slot-drop errado';
+      if (val === null) {
+        drop.innerHTML = '<span class="slot-drop-txt" style="color:#991b1b">→ ' + d.resposta + '</span>';
+      }
+    }
+  });
+
+  playSound(certas === dados.length ? 'correct' : 'wrong');
+  window.sabendoScore = Math.round((certas / dados.length) * 100);
+
+  var fb = document.getElementById('feedbackMapa');
+  if (certas === dados.length) {
+    fb.textContent = '🎉 Perfeito! Você completou o mapa mental todo certo!';
+    fb.className = 'feedback-mapa show ok';
+  } else {
+    fb.textContent = '🔍 Você acertou ' + certas + ' de ' + dados.length + '. Os errados estão em vermelho.';
+    fb.className = 'feedback-mapa show parcial';
+  }
+
+  document.getElementById('btnVerificar').style.display = 'none';
+  document.getElementById('btnTentar').style.display = 'block';
+}
+
+function reiniciar() { renderizar(); }
+
+window.verificar = verificar;
+window.reiniciar = reiniciar;
+
+renderizar();
+</script>
+
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>

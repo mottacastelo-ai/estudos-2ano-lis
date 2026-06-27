@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapa Mental — A Centena e o Número 1.000 | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root { --primary: #0AACE8; --light: #5AC8FB; --bg: #EFF9FF; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100vh; }
+.header { background: linear-gradient(135deg, #044A7A, #0AACE8 60%, #5AC8FB); color: #fff; padding: 20px 24px; text-align: center; }
+.header h1 { font-family: 'Baloo 2', sans-serif; font-size: 1.5rem; font-weight: 900; }
+.header p { font-size: 1rem; opacity: .85; margin-top: 4px; }
+.container { max-width: 720px; margin: 0 auto; padding: 24px 16px; }
+.instrucao { background: #fff; border-radius: 14px; padding: 16px 20px; margin-bottom: 18px; box-shadow: 0 2px 10px rgba(10,172,232,.10); font-size: 1.05rem; color: #444; }
+.instrucao strong { color: var(--primary); }
+
+/* Nodes disponíveis */
+.nodes-area { background: #fff; border-radius: 16px; padding: 18px 20px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(10,172,232,.10); }
+.nodes-titulo { font-weight: 800; font-size: 1rem; color: #555; margin-bottom: 14px; }
+.nodes-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+.node {
+  background: linear-gradient(135deg, var(--primary), var(--light));
+  color: #fff; border-radius: 12px; padding: 12px 18px;
+  font-family: 'Baloo 2', sans-serif; font-size: 1.2rem; font-weight: 900;
+  cursor: grab; user-select: none; min-height: 44px; min-width: 44px;
+  box-shadow: 0 3px 10px rgba(10,172,232,.25); transition: transform .1s;
+}
+.node:active { cursor: grabbing; transform: scale(1.05); }
+.node.usada { opacity: .3; pointer-events: none; }
+
+/* Slots */
+.slots-lista { display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; }
+.slot-row { background: #fff; border-radius: 14px; padding: 16px 20px; box-shadow: 0 2px 10px rgba(10,172,232,.10); display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.slot-label { font-size: 1.1rem; font-weight: 700; color: #1a3a4a; flex: 1; min-width: 180px; }
+.slot-drop {
+  min-width: 90px; min-height: 44px; border: 2.5px dashed #5AC8FB;
+  border-radius: 10px; background: #f0faff;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Baloo 2', sans-serif; font-size: 1.2rem; font-weight: 900; color: #999;
+  transition: background .2s, border-color .2s;
+  padding: 6px 10px;
+}
+.slot-drop.dragover { background: #baeeff; border-color: var(--primary); }
+.slot-drop.filled { background: #dcf5ff; border-color: var(--primary); color: #1a3a4a; }
+.slot-drop.correta { background: #dcfce7; border-color: #22c55e; color: #15803d; }
+.slot-drop.errada  { background: #fee2e2; border-color: #ef4444; color: #b91c1c; }
+
+.verificar-btn {
+  width: 100%; padding: 16px; background: linear-gradient(135deg, var(--primary), var(--light));
+  color: #fff; border: none; border-radius: 50px;
+  font-family: 'Baloo 2', sans-serif; font-size: 1.2rem; font-weight: 900; cursor: pointer;
+  margin-bottom: 14px;
+}
+.result-card { display: none; background: #fff; border-radius: 20px; padding: 32px 24px; text-align: center; box-shadow: 0 4px 20px rgba(10,172,232,.15); margin-bottom: 16px; }
+.result-emoji { font-size: 3.5rem; margin-bottom: 10px; }
+.result-score { font-family: 'Baloo 2', sans-serif; font-size: 2rem; font-weight: 900; color: var(--primary); }
+.result-msg { font-size: 1.1rem; font-weight: 700; color: #1a3a4a; margin-top: 8px; }
+.reiniciar-btn {
+  margin-top: 16px; padding: 14px 32px;
+  background: linear-gradient(135deg, var(--primary), var(--light));
+  color: #fff; border: none; border-radius: 50px;
+  font-family: 'Baloo 2', sans-serif; font-size: 1.1rem; font-weight: 900; cursor: pointer;
+}
+.back-btn { display: block; text-align: center; margin: 20px auto 0; color: var(--primary); font-weight: 700; background: none; border: none; cursor: pointer; text-decoration: underline; }
+@media (max-width: 480px) {
+  .slot-row { flex-direction: column; align-items: flex-start; }
+  .slot-drop { min-width: 100%; }
+  .node { font-size: 1rem; padding: 10px 14px; }
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>🟦 Mapa Mental — A Centena e o Número 1.000</h1>
+  <p>Arraste cada resposta para o lugar certo!</p>
+</div>
+<div class="container">
+  <div class="instrucao">
+    <strong>Como jogar:</strong> Arraste cada ficha colorida para completar a frase correta. Cada ficha só pode ser usada uma vez!
+  </div>
+
+  <div class="nodes-area">
+    <div class="nodes-titulo">Fichas para arrastar:</div>
+    <div class="nodes-grid" id="nodesGrid"></div>
+  </div>
+
+  <div class="slots-lista" id="slotsLista"></div>
+
+  <button class="verificar-btn" id="verificarBtn" onclick="verificar()">Ver gabarito ✔</button>
+
+  <div class="result-card" id="rcard">
+    <div class="result-emoji" id="remoji"></div>
+    <div class="result-score" id="rscore"></div>
+    <div class="result-msg" id="rmsg"></div>
+    <button class="reiniciar-btn" onclick="reiniciar()">Tentar de novo 🔄</button>
+  </div>
+  <button class="back-btn" onclick="voltarAoPortal()">← Voltar ao Portal</button>
+</div>
+<script>
+(function () {
+  // Slots: label = característica/definição; gabarito = node correto
+  var slots = [
+    { id: 's0', label: '1 centena = ___ dezenas',              gabarito: '10'        },
+    { id: 's1', label: '1 centena = ___ unidades',             gabarito: '100'       },
+    { id: 's2', label: '136 decomposto é:',                    gabarito: '100+30+6'  },
+    { id: 's3', label: 'Centena exata depois de 400:',         gabarito: '500'       },
+    { id: 's4', label: '1.000 = ___ centenas',                 gabarito: '10'        },
+    { id: 's5', label: 'Eixo vertical do gráfico mostra:',     gabarito: 'quantidade'}
+  ];
+
+  // Nodes disponíveis (embaralhados)
+  // Atenção: '10' aparece duas vezes (para slots 0 e 4)
+  var nodesOriginais = ['10', '100', '100+30+6', '500', '10', 'quantidade'];
+
+  var arrastando = null;
+  var slotFilled = {}; // slotId → nodeVal
+  var nodeUsada  = {}; // índice → bool
+  var verificado = false;
+
+  function embaralhar(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  // Mapeamento embaralhado de índices para manter rastreabilidade
+  var ordemNodes = embaralhar([0,1,2,3,4,5]);
+  var nodeEls = []; // por índice original
+
+  function iniciar() {
+    verificado = false;
+    slotFilled = {};
+    nodeUsada  = {};
+    arrastando = null;
+
+    // Criar nodes
+    var grid = document.getElementById('nodesGrid');
+    grid.innerHTML = '';
+    nodeEls = [];
+    ordemNodes.forEach(function(origIdx) {
+      var el = document.createElement('div');
+      el.className = 'node';
+      el.textContent = nodesOriginais[origIdx];
+      el.setAttribute('data-idx', origIdx);
+      el.setAttribute('draggable', 'true');
+      el.addEventListener('dragstart', function(e) {
+        arrastando = { idx: origIdx, val: nodesOriginais[origIdx], el: el };
+        e.dataTransfer.effectAllowed = 'move';
+      });
+      el.addEventListener('touchstart', onTouchStart, { passive: false });
+      el.addEventListener('touchmove', onTouchMove, { passive: false });
+      el.addEventListener('touchend', onTouchEnd);
+      grid.appendChild(el);
+      nodeEls[origIdx] = el;
+    });
+
+    // Criar slots
+    var lista = document.getElementById('slotsLista');
+    lista.innerHTML = '';
+    slots.forEach(function(s) {
+      var row = document.createElement('div');
+      row.className = 'slot-row';
+
+      var lbl = document.createElement('div');
+      lbl.className = 'slot-label';
+      lbl.textContent = s.label;
+
+      var drop = document.createElement('div');
+      drop.className = 'slot-drop';
+      drop.id = s.id;
+      drop.textContent = '?';
+      drop.setAttribute('data-slot', s.id);
+
+      drop.addEventListener('dragover', function(e) { e.preventDefault(); drop.classList.add('dragover'); });
+      drop.addEventListener('dragleave', function() { drop.classList.remove('dragover'); });
+      drop.addEventListener('drop', function(e) {
+        e.preventDefault();
+        drop.classList.remove('dragover');
+        if (arrastando && !verificado) soltarNaSlot(s.id, arrastando);
+      });
+
+      row.appendChild(lbl);
+      row.appendChild(drop);
+      lista.appendChild(row);
+    });
+
+    document.getElementById('rcard').style.display = 'none';
+    document.getElementById('verificarBtn').style.display = 'block';
+  }
+
+  function soltarNaSlot(slotId, arr) {
+    // Devolver node anterior desta slot
+    var anterior = slotFilled[slotId];
+    if (anterior !== undefined) {
+      nodeUsada[anterior.idx] = false;
+      nodeEls[anterior.idx].classList.remove('usada');
+    }
+    // Devolver node que já estava em outro slot com o mesmo índice
+    // (busca se esse índice já está em outra slot)
+    for (var sid in slotFilled) {
+      if (slotFilled[sid] && slotFilled[sid].idx === arr.idx && sid !== slotId) {
+        var drop2 = document.getElementById(sid);
+        drop2.textContent = '?';
+        drop2.className = 'slot-drop';
+        delete slotFilled[sid];
+      }
+    }
+    slotFilled[slotId] = { idx: arr.idx, val: arr.val };
+    nodeUsada[arr.idx] = true;
+    nodeEls[arr.idx].classList.add('usada');
+    var drop = document.getElementById(slotId);
+    drop.textContent = arr.val;
+    drop.classList.add('filled');
+    drop.classList.remove('dragover');
+    arrastando = null;
+  }
+
+  // Touch
+  var touchNode = null;
+  var touchClone = null;
+  function onTouchStart(e) {
+    e.preventDefault();
+    var origIdx = parseInt(this.getAttribute('data-idx'));
+    if (nodeUsada[origIdx]) return;
+    arrastando = { idx: origIdx, val: nodesOriginais[origIdx], el: this };
+    touchNode = this;
+    var t = e.touches[0];
+    touchClone = this.cloneNode(true);
+    touchClone.style.cssText = 'position:fixed;z-index:999;opacity:.85;pointer-events:none;left:' + (t.clientX - 40) + 'px;top:' + (t.clientY - 24) + 'px;';
+    document.body.appendChild(touchClone);
+  }
+  function onTouchMove(e) {
+    e.preventDefault();
+    if (!touchClone) return;
+    var t = e.touches[0];
+    touchClone.style.left = (t.clientX - 40) + 'px';
+    touchClone.style.top  = (t.clientY - 24) + 'px';
+  }
+  function onTouchEnd(e) {
+    if (touchClone) { document.body.removeChild(touchClone); touchClone = null; }
+    if (!arrastando) return;
+    var t = e.changedTouches[0];
+    for (var i = 0; i < slots.length; i++) {
+      var drop = document.getElementById(slots[i].id);
+      var r = drop.getBoundingClientRect();
+      if (t.clientX >= r.left && t.clientX <= r.right && t.clientY >= r.top && t.clientY <= r.bottom) {
+        soltarNaSlot(slots[i].id, arrastando);
+        return;
+      }
+    }
+    arrastando = null;
+  }
+
+  function verificar() {
+    verificado = true;
+    var acertos = 0;
+    slots.forEach(function(s) {
+      var drop = document.getElementById(s.id);
+      var preenchido = slotFilled[s.id] ? slotFilled[s.id].val : null;
+      if (preenchido === s.gabarito) {
+        drop.classList.add('correta');
+        acertos++;
+      } else {
+        drop.classList.add('errada');
+        // Mostrar resposta certa
+        drop.textContent = s.gabarito;
+      }
+    });
+    window.sabendoScore = 100;
+    var rc = document.getElementById('rcard');
+    rc.style.display = 'block';
+    document.getElementById('remoji').textContent = acertos >= 5 ? '🎉🟦🏆' : acertos >= 3 ? '⭐👏' : '💪📚';
+    document.getElementById('rscore').textContent = acertos + ' de ' + slots.length + ' corretos!';
+    document.getElementById('rmsg').textContent = acertos >= 5 ? 'Uau! Você dominou a centena e o 1.000!' : 'Veja as respostas certas e tente de novo!';
+    document.getElementById('verificarBtn').style.display = 'none';
+    if (acertos === slots.length) playSound('correct'); else playSound('wrong');
+  }
+
+  function reiniciar() { iniciar(); }
+
+  function playSound(type) {
+    try {
+      var ctx = new (window.AudioContext || window.webkitAudioContext)();
+      var o = ctx.createOscillator();
+      var g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      if (type === 'correct') {
+        o.frequency.setValueAtTime(523, ctx.currentTime);
+        o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+        o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+        g.gain.setValueAtTime(0.3, ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+        o.start(); o.stop(ctx.currentTime + 0.5);
+      } else {
+        o.frequency.setValueAtTime(300, ctx.currentTime);
+        o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+        g.gain.setValueAtTime(0.3, ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+        o.start(); o.stop(ctx.currentTime + 0.4);
+      }
+    } catch(e) {}
+  }
+
+  window.verificar = verificar;
+  window.reiniciar = reiniciar;
+
+  iniciar();
+})();
+</script>
+
+<!-- GAMIFICAÇÃO -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'centena-e-mil';
+  var DISCIPLINE    = 'matematica';
+  var ACTIVITY_TYPE = 'mapa-mental';
+  var TOTAL_ATIV    = 5;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Cento',
+        characterEmoji:  '🟦',
+        characterImg:    'chars/cento.png',
+        themeLabel:      'A Centena e o Número 1.000 · Matemática',
+        totalActivities: TOTAL_ATIV,
+        activityType:    ACTIVITY_TYPE,
+        primaryColor:    '#0AACE8',
+        lightColor:      '#5AC8FB',
+        bgColor:         '#EFF9FF',
+        glowRgb:         '10,172,232',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _s = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _s = v;
+      var btn = document.getElementById('gamificacao-btn');
+      if (btn) btn.style.display = 'block';
+    },
+    get: function () { return _s; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#0AACE8,#5AC8FB);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>

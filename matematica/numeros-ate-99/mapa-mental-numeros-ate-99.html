@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapa Mental — Números até 99 | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root { --primary: #0AACE8; --light: #5AC8FB; --bg: #EFF9FF; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100vh; }
+
+.header {
+  background: linear-gradient(135deg, #044A7A, #0AACE8 60%, #5AC8FB);
+  color: #fff; padding: 20px 24px; text-align: center;
+}
+.header .emoji { font-size: 2.5rem; }
+.header h1 { font-family: 'Baloo 2', sans-serif; font-size: 1.6rem; font-weight: 900; margin-top: 4px; }
+.header p { font-size: 1rem; opacity: 0.9; }
+
+.container { max-width: 720px; margin: 0 auto; padding: 20px 16px 32px; }
+
+.instrucao {
+  background: #fff; border-radius: 14px; padding: 14px 18px;
+  font-size: 1.1rem; color: #1a3a50; font-weight: 600;
+  box-shadow: 0 2px 10px rgba(10,172,232,0.1); margin-bottom: 20px;
+}
+
+/* Nodes disponíveis */
+.nodes-wrap {
+  display: flex; flex-wrap: wrap; gap: 12px;
+  justify-content: center; margin-bottom: 24px;
+}
+.node {
+  background: linear-gradient(135deg, #0AACE8, #5AC8FB);
+  color: #fff; border-radius: 50px;
+  padding: 12px 22px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.1rem; font-weight: 800;
+  cursor: grab;
+  box-shadow: 0 3px 12px rgba(10,172,232,0.3);
+  user-select: none;
+  transition: transform 0.15s, opacity 0.2s;
+  touch-action: none;
+  min-height: 44px;
+  display: flex; align-items: center;
+}
+.node:active { transform: scale(1.07); cursor: grabbing; }
+.node.usada { opacity: 0.3; pointer-events: none; }
+.node.selecionada {
+  outline: 3px solid #fff;
+  box-shadow: 0 0 0 5px var(--primary);
+  transform: scale(1.08);
+}
+
+/* Slots */
+.slots-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.slot-wrap {
+  background: #fff;
+  border-radius: 16px;
+  padding: 14px 16px;
+  box-shadow: 0 2px 12px rgba(10,172,232,0.1);
+}
+.slot-label {
+  font-size: 1rem; font-weight: 700; color: #5a7a8a;
+  margin-bottom: 10px; line-height: 1.4;
+}
+.slot {
+  min-height: 52px;
+  border: 3px dashed #bce4f8;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.05rem; font-weight: 800;
+  color: #bce4f8;
+  background: #f5fbff;
+  transition: all 0.2s;
+  padding: 8px;
+  text-align: center;
+  cursor: pointer;
+}
+.slot.over { border-color: var(--primary); background: #dbeeff; }
+.slot.preenchido { border-color: var(--primary); color: var(--primary); background: #d0f0ff; border-style: solid; }
+.slot.correto   { border-color: #22c55e; color: #22c55e; background: #d1fae5; border-style: solid; }
+.slot.errado    { border-color: #ef4444; color: #ef4444; background: #fee2e2; border-style: solid; }
+
+.botoes-wrap { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-bottom: 16px; }
+.btn-verificar {
+  background: linear-gradient(135deg, #0AACE8, #5AC8FB);
+  color: #fff; border: none; border-radius: 50px;
+  padding: 14px 36px; font-family: 'Baloo 2', sans-serif;
+  font-size: 1.2rem; font-weight: 800; cursor: pointer;
+  box-shadow: 0 4px 16px rgba(10,172,232,0.3);
+}
+.btn-limpar {
+  background: #fff; color: #888; border: 2px solid #ddd;
+  border-radius: 50px; padding: 14px 24px;
+  font-family: 'Baloo 2', sans-serif; font-size: 1.1rem; font-weight: 800;
+  cursor: pointer;
+}
+
+.gabarito-box {
+  display: none; background: #fff; border-radius: 16px;
+  padding: 20px; box-shadow: 0 4px 16px rgba(10,172,232,0.12);
+  margin-bottom: 16px;
+}
+.gabarito-box h3 { font-family: 'Baloo 2', sans-serif; color: var(--primary); font-size: 1.3rem; margin-bottom: 12px; }
+.gabarito-item { font-size: 1rem; color: #1a3a50; margin-bottom: 8px; }
+.gabarito-item strong { color: var(--primary); }
+
+.resultado-box {
+  display: none; text-align: center;
+  background: #fff; border-radius: 20px; padding: 32px 24px;
+  box-shadow: 0 4px 20px rgba(10,172,232,0.14); margin-bottom: 16px;
+}
+.resultado-box .emoji-final { font-size: 3.5rem; }
+.resultado-box h2 { font-family: 'Baloo 2', sans-serif; font-size: 2rem; color: var(--primary); margin: 10px 0 6px; }
+.resultado-box p { font-size: 1.15rem; color: #1a3a50; }
+
+.btn-voltar {
+  background: transparent; border: 2px solid var(--primary); color: var(--primary);
+  border-radius: 50px; padding: 12px 28px;
+  font-family: 'Baloo 2', sans-serif; font-size: 1.1rem; font-weight: 800;
+  cursor: pointer; display: block; margin: 0 auto 24px;
+}
+
+@media (max-width: 480px) {
+  .slots-grid { grid-template-columns: 1fr; }
+  .header h1 { font-size: 1.3rem; }
+  .node { font-size: 1rem; padding: 10px 16px; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="emoji">🧮</div>
+  <h1>Mapa Mental</h1>
+  <p>Coloque cada conceito no lugar certo!</p>
+</div>
+
+<div class="container">
+
+  <div class="instrucao">
+    🎯 Arraste (ou toque para selecionar) cada ficha azul e coloque-a no espaço que combina com ela!
+  </div>
+
+  <!-- Nodes disponíveis -->
+  <div class="nodes-wrap" id="nodes-wrap">
+    <div class="node" id="node-0" draggable="true"
+      ondragstart="onDragStart(event,0)"
+      ontouchstart="onTouchNode(event,0)">40 + 7</div>
+    <div class="node" id="node-1" draggable="true"
+      ondragstart="onDragStart(event,1)"
+      ontouchstart="onTouchNode(event,1)">79</div>
+    <div class="node" id="node-2" draggable="true"
+      ondragstart="onDragStart(event,2)"
+      ontouchstart="onTouchNode(event,2)">60</div>
+    <div class="node" id="node-3" draggable="true"
+      ondragstart="onDragStart(event,3)"
+      ontouchstart="onTouchNode(event,3)">10</div>
+    <div class="node" id="node-4" draggable="true"
+      ondragstart="onDragStart(event,4)"
+      ontouchstart="onTouchNode(event,4)">quarenta e sete</div>
+    <div class="node" id="node-5" draggable="true"
+      ondragstart="onDragStart(event,5)"
+      ontouchstart="onTouchNode(event,5)">comparar quantidades</div>
+  </div>
+
+  <!-- Slots -->
+  <div class="slots-grid">
+    <div class="slot-wrap">
+      <div class="slot-label">__ + __ = 47<br><small>(dezenas + unidades)</small></div>
+      <div class="slot" id="slot-0"
+        ondragover="onDragOver(event)" ondrop="onDrop(event,0)" onclick="onSlotClick(0)">
+        solte aqui
+      </div>
+    </div>
+    <div class="slot-wrap">
+      <div class="slot-label">Vizinho anterior de 80 é __</div>
+      <div class="slot" id="slot-1"
+        ondragover="onDragOver(event)" ondrop="onDrop(event,1)" onclick="onSlotClick(1)">
+        solte aqui
+      </div>
+    </div>
+    <div class="slot-wrap">
+      <div class="slot-label">Vizinho posterior de 59 é __</div>
+      <div class="slot" id="slot-2"
+        ondragover="onDragOver(event)" ondrop="onDrop(event,2)" onclick="onSlotClick(2)">
+        solte aqui
+      </div>
+    </div>
+    <div class="slot-wrap">
+      <div class="slot-label">O sistema decimal tem __ algarismos (do 0 ao 9)</div>
+      <div class="slot" id="slot-3"
+        ondragover="onDragOver(event)" ondrop="onDrop(event,3)" onclick="onSlotClick(3)">
+        solte aqui
+      </div>
+    </div>
+    <div class="slot-wrap">
+      <div class="slot-label">47 escrito por extenso:</div>
+      <div class="slot" id="slot-4"
+        ondragover="onDragOver(event)" ondrop="onDrop(event,4)" onclick="onSlotClick(4)">
+        solte aqui
+      </div>
+    </div>
+    <div class="slot-wrap">
+      <div class="slot-label">Mais do que / Menos do que serve para __</div>
+      <div class="slot" id="slot-5"
+        ondragover="onDragOver(event)" ondrop="onDrop(event,5)" onclick="onSlotClick(5)">
+        solte aqui
+      </div>
+    </div>
+  </div>
+
+  <!-- Gabarito (aparece após verificar) -->
+  <div class="gabarito-box" id="gabarito-box">
+    <h3>Gabarito</h3>
+    <div class="gabarito-item">__ + __ = 47 → <strong>40 + 7</strong></div>
+    <div class="gabarito-item">Vizinho anterior de 80 → <strong>79</strong></div>
+    <div class="gabarito-item">Vizinho posterior de 59 → <strong>60</strong></div>
+    <div class="gabarito-item">Sistema decimal tem → <strong>10</strong> algarismos</div>
+    <div class="gabarito-item">47 por extenso → <strong>quarenta e sete</strong></div>
+    <div class="gabarito-item">Mais do que / Menos do que serve para → <strong>comparar quantidades</strong></div>
+  </div>
+
+  <div class="resultado-box" id="resultado-box">
+    <div class="emoji-final" id="emoji-final">🎉</div>
+    <h2 id="res-titulo">Incrível!</h2>
+    <p id="res-msg">Você completou o mapa mental!</p>
+  </div>
+
+  <div class="botoes-wrap">
+    <button class="btn-verificar" onclick="verificar()">Ver Gabarito ✔</button>
+    <button class="btn-limpar" onclick="limpar()">Recomeçar 🔄</button>
+  </div>
+
+  <button class="btn-voltar" onclick="voltarAoPortal()">⬅ Voltar ao Portal</button>
+</div>
+
+<script>
+(function () {
+
+// gabarito: slotIndex → nodeIndex
+var gabarito = { 0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5 };
+// nodeTexts para exibição
+var nodeTexts = ['40 + 7', '79', '60', '10', 'quarenta e sete', 'comparar quantidades'];
+
+// Estado: slotIndex → nodeIndex colocado (ou null)
+var slotState = { 0: null, 1: null, 2: null, 3: null, 4: null, 5: null };
+
+var draggingNode = null;
+var nodeSelected = null;
+
+function playSound(tipo) {
+  try {
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    var o = ctx.createOscillator(); var g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    if (tipo === 'correct') {
+      o.frequency.setValueAtTime(523, ctx.currentTime);
+      o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+      o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+      o.start(); o.stop(ctx.currentTime + 0.5);
+    } else {
+      o.frequency.setValueAtTime(300, ctx.currentTime);
+      o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      o.start(); o.stop(ctx.currentTime + 0.4);
+    }
+  } catch(e) {}
+}
+
+function onDragStart(e, nodeIdx) {
+  draggingNode = nodeIdx;
+}
+
+function onDragOver(e) {
+  e.preventDefault();
+  e.currentTarget.classList.add('over');
+}
+
+function onDrop(e, slotIdx) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('over');
+  if (draggingNode === null) return;
+  colocarNode(slotIdx, draggingNode);
+  draggingNode = null;
+}
+
+// Touch: tap node → seleciona; tap slot → coloca
+function onTouchNode(e, nodeIdx) {
+  e.preventDefault();
+  // desselecionar anterior
+  if (nodeSelected !== null) {
+    var prev = document.getElementById('node-' + nodeSelected);
+    if (prev) prev.classList.remove('selecionada');
+  }
+  nodeSelected = nodeIdx;
+  var el = document.getElementById('node-' + nodeIdx);
+  if (el) el.classList.add('selecionada');
+}
+
+function onSlotClick(slotIdx) {
+  if (nodeSelected !== null) {
+    colocarNode(slotIdx, nodeSelected);
+    var el = document.getElementById('node-' + nodeSelected);
+    if (el) el.classList.remove('selecionada');
+    nodeSelected = null;
+  }
+}
+
+function colocarNode(slotIdx, nodeIdx) {
+  // Se o node já está em outro slot, liberar
+  for (var s in slotState) {
+    if (slotState[s] === nodeIdx) {
+      slotState[s] = null;
+      var oldSlot = document.getElementById('slot-' + s);
+      if (oldSlot) {
+        oldSlot.textContent = 'solte aqui';
+        oldSlot.className = 'slot';
+      }
+    }
+  }
+  // Se o slot já tem algo, devolver ao banco
+  if (slotState[slotIdx] !== null) {
+    var prev = slotState[slotIdx];
+    var prevNode = document.getElementById('node-' + prev);
+    if (prevNode) prevNode.classList.remove('usada');
+  }
+
+  slotState[slotIdx] = nodeIdx;
+  var slotEl = document.getElementById('slot-' + slotIdx);
+  if (slotEl) {
+    slotEl.textContent = nodeTexts[nodeIdx];
+    slotEl.className = 'slot preenchido';
+  }
+  var nodeEl = document.getElementById('node-' + nodeIdx);
+  if (nodeEl) nodeEl.classList.add('usada');
+}
+
+function verificar() {
+  var acertos = 0;
+  for (var s = 0; s < 6; s++) {
+    var slotEl = document.getElementById('slot-' + s);
+    if (slotState[s] === gabarito[s]) {
+      acertos++;
+      slotEl.className = 'slot correto';
+    } else if (slotState[s] !== null) {
+      slotEl.className = 'slot errado';
+    }
+  }
+
+  document.getElementById('gabarito-box').style.display = 'block';
+  var res = document.getElementById('resultado-box');
+  res.style.display = 'block';
+
+  window.sabendoScore = 100;
+
+  if (acertos === 6) {
+    document.getElementById('emoji-final').textContent = '🏆';
+    document.getElementById('res-titulo').textContent = 'Perfeito!';
+    document.getElementById('res-msg').textContent = 'Você acertou todos os 6 conceitos!';
+    playSound('correct');
+  } else {
+    document.getElementById('emoji-final').textContent = '💡';
+    document.getElementById('res-titulo').textContent = acertos + ' de 6 acertos!';
+    document.getElementById('res-msg').textContent = 'Veja o gabarito e tente de novo!';
+    playSound('wrong');
+  }
+}
+
+function limpar() {
+  slotState = { 0: null, 1: null, 2: null, 3: null, 4: null, 5: null };
+  nodeSelected = null;
+  for (var s = 0; s < 6; s++) {
+    var slotEl = document.getElementById('slot-' + s);
+    if (slotEl) { slotEl.textContent = 'solte aqui'; slotEl.className = 'slot'; }
+  }
+  for (var n = 0; n < 6; n++) {
+    var nodeEl = document.getElementById('node-' + n);
+    if (nodeEl) { nodeEl.classList.remove('usada','selecionada'); }
+  }
+  document.getElementById('gabarito-box').style.display = 'none';
+  document.getElementById('resultado-box').style.display = 'none';
+}
+
+window.onDragStart = onDragStart;
+window.onDragOver = onDragOver;
+window.onDrop = onDrop;
+window.onTouchNode = onTouchNode;
+window.onSlotClick = onSlotClick;
+window.verificar = verificar;
+window.limpar = limpar;
+
+})();
+</script>
+
+<!-- ── GAMIFICAÇÃO ─────────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'numeros-ate-99';
+  var DISCIPLINE    = 'matematica';
+  var ACTIVITY_TYPE = 'mapa-mental';
+  var TOTAL_ATIV    = 5;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Centão',
+        characterEmoji:  '🧮',
+        characterImg:    'chars/centao.png',
+        themeLabel:      'Números até 99 · Matemática',
+        totalActivities: TOTAL_ATIV,
+        activityType:    ACTIVITY_TYPE,
+        primaryColor:    '#0AACE8',
+        lightColor:      '#5AC8FB',
+        bgColor:         '#EFF9FF',
+        glowRgb:         '10,172,232',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _s = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _s = v;
+      var b = document.getElementById('gamificacao-btn');
+      if (b) b.style.display = 'block';
+    },
+    get: function () { return _s; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#0AACE8,#5AC8FB);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>

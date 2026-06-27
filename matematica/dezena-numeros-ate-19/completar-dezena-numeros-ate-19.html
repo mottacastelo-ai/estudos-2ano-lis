@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Complete a Palavra — A Dezena e os Números até 19 | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root { --primary: #0AACE8; --light: #5AC8FB; --bg: #EFF9FF; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100vh; }
+.header { background: linear-gradient(135deg, #044A7A, #0AACE8 60%, #5AC8FB); color: #fff; padding: 20px 24px; text-align: center; }
+.header h1 { font-family: 'Baloo 2', sans-serif; font-size: 1.5rem; font-weight: 900; }
+.header p { font-size: 1rem; opacity: 0.9; margin-top: 4px; }
+.container { max-width: 680px; margin: 0 auto; padding: 20px 16px; }
+.progresso { text-align: center; font-size: 1rem; font-weight: 700; color: var(--primary); margin-bottom: 14px; }
+.card { background: #fff; border-radius: 20px; padding: 28px 24px; box-shadow: 0 4px 20px rgba(10,172,232,.12); margin-bottom: 18px; }
+.numero-display { font-family: 'Baloo 2', sans-serif; font-size: 4rem; font-weight: 900; color: var(--primary); text-align: center; margin-bottom: 6px; line-height: 1; }
+.enunciado { font-size: 1.3rem; font-weight: 700; color: #555; text-align: center; margin-bottom: 20px; }
+.palavra-area { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; min-height: 54px; }
+.letra-box { width: 44px; height: 52px; border-radius: 10px; border: 2.5px solid #C8E8F8; background: #F0F8FF; display: flex; align-items: center; justify-content: center; font-family: 'Baloo 2', sans-serif; font-size: 1.4rem; font-weight: 900; color: #1a2a3a; cursor: pointer; transition: all .15s; position: relative; }
+.letra-box.fixa { background: var(--primary); color: #fff; border-color: var(--primary); cursor: default; }
+.letra-box.preenchida { background: #DCF0FA; border-color: var(--primary); cursor: pointer; }
+.letra-box.correta { background: #D1FAE5; border-color: #10B981; color: #065F46; cursor: default; }
+.letra-box.errada { background: #FEE2E2; border-color: #EF4444; color: #7F1D1D; }
+.silabas { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 18px; }
+.silaba-btn { background: linear-gradient(135deg, #0AACE8, #5AC8FB); color: #fff; border: none; border-radius: 10px; padding: 10px 16px; font-family: 'Baloo 2', sans-serif; font-size: 1.1rem; font-weight: 800; cursor: pointer; min-height: 44px; min-width: 44px; transition: transform .15s, opacity .15s; }
+.silaba-btn:hover { transform: scale(1.1); }
+.silaba-btn:disabled { opacity: 0.35; cursor: default; transform: none; }
+.acoes { display: flex; gap: 10px; justify-content: center; margin-bottom: 14px; }
+.btn-apagar { padding: 10px 20px; background: #FEE2E2; color: #7F1D1D; border: none; border-radius: 10px; font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 800; cursor: pointer; min-height: 44px; }
+.btn-verificar-p { padding: 10px 24px; background: var(--primary); color: #fff; border: none; border-radius: 10px; font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 800; cursor: pointer; min-height: 44px; }
+.feedback { text-align: center; font-size: 1.2rem; font-weight: 800; padding: 10px; border-radius: 12px; margin-bottom: 12px; display: none; }
+.feedback.ok { background: #D1FAE5; color: #065F46; display: block; }
+.feedback.nao { background: #FEE2E2; color: #7F1D1D; display: block; }
+.btn-prox { display: none; margin: 0 auto; padding: 12px 28px; background: var(--primary); color: #fff; border: none; border-radius: 14px; font-family: 'Baloo 2', sans-serif; font-size: 1.1rem; font-weight: 800; cursor: pointer; }
+.btn-prox.show { display: block; }
+.resultado { background: #fff; border-radius: 20px; padding: 36px 24px; text-align: center; box-shadow: 0 4px 20px rgba(10,172,232,.12); display: none; }
+.resultado.show { display: block; }
+.resultado h2 { font-family: 'Baloo 2', sans-serif; font-size: 2rem; color: var(--primary); }
+.resultado .nota { font-size: 3rem; font-weight: 900; color: #1a2a3a; margin: 10px 0; }
+.resultado p { font-size: 1.2rem; color: #444; margin-bottom: 20px; }
+.btn-reiniciar { padding: 14px 32px; background: linear-gradient(135deg, var(--primary), var(--light)); color: #fff; border: none; border-radius: 50px; font-family: 'Baloo 2', sans-serif; font-size: 1.1rem; font-weight: 800; cursor: pointer; }
+.voltar { display: block; text-align: center; margin-top: 20px; color: var(--primary); font-weight: 700; cursor: pointer; font-size: 1rem; }
+@media (max-width: 480px) {
+  .header h1 { font-size: 1.2rem; }
+  .numero-display { font-size: 3rem; }
+  .letra-box { width: 38px; height: 46px; font-size: 1.2rem; }
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <div style="font-size:2.5rem;margin-bottom:6px;">🟨</div>
+  <h1>Complete a Palavra — Números até 19</h1>
+  <p>Clique nas sílabas para escrever o nome do número! ✏️</p>
+</div>
+<div class="container">
+  <div class="progresso" id="progresso">Palavra 1 de 9</div>
+  <div id="area-jogo">
+    <div class="card">
+      <div class="numero-display" id="num-display"></div>
+      <div class="enunciado">Como se escreve este número por extenso?</div>
+      <div class="palavra-area" id="palavra-area"></div>
+      <div class="silabas" id="silabas"></div>
+      <div class="acoes">
+        <button class="btn-apagar" onclick="apagar()">⌫ Apagar</button>
+        <button class="btn-verificar-p" onclick="verificarPalavra()">Verificar ✅</button>
+      </div>
+      <div class="feedback" id="feedback"></div>
+      <button class="btn-prox" id="btn-prox" onclick="proximaPalavra()">Próxima →</button>
+    </div>
+  </div>
+  <div class="resultado" id="resultado">
+    <div style="font-size:3rem;">🟨</div>
+    <h2>Muito bem!</h2>
+    <div class="nota" id="nota-final"></div>
+    <p id="msg-final"></p>
+    <button class="btn-reiniciar" onclick="reiniciar()">Jogar de Novo 🔄</button>
+  </div>
+  <span class="voltar" onclick="voltarAoPortal()">← Voltar ao Portal</span>
+</div>
+
+<script>
+(function () {
+  // Palavras: answer = letras individuais (sem acento, maiúsculas)
+  // fixed: índice 0 (primeira) e índice length-1 (última) — conferidos letra a letra
+  // ONZE:      O(0)N(1)Z(2)E(3)         → fixed {0:'O', 3:'E'}
+  // DOZE:      D(0)O(1)Z(2)E(3)         → fixed {0:'D', 3:'E'}
+  // TREZE:     T(0)R(1)E(2)Z(3)E(4)     → fixed {0:'T', 4:'E'}
+  // CATORZE:   C(0)A(1)T(2)O(3)R(4)Z(5)E(6) → fixed {0:'C', 6:'E'}
+  // QUINZE:    Q(0)U(1)I(2)N(3)Z(4)E(5) → fixed {0:'Q', 5:'E'}
+  // DEZESSEIS: D(0)E(1)Z(2)E(3)S(4)S(5)E(6)I(7)S(8) → fixed {0:'D', 8:'S'}
+  // DEZESSETE: D(0)E(1)Z(2)E(3)S(4)S(5)E(6)T(7)E(8) → fixed {0:'D', 8:'E'}
+  // DEZOITO:   D(0)E(1)Z(2)O(3)I(4)T(5)O(6) → fixed {0:'D', 6:'O'}
+  // DEZENOVE:  D(0)E(1)Z(2)E(3)N(4)O(5)V(6)E(7) → fixed {0:'D', 7:'E'}
+
+  var palavras = [
+    { num: 11, answer: ['O','N','Z','E'], fixed: {0:'O', 3:'E'},
+      silabas: ['ON','NZ','ZE','ZA','OB'] },
+    { num: 12, answer: ['D','O','Z','E'], fixed: {0:'D', 3:'E'},
+      silabas: ['DO','OZ','ZE','ZI','DU'] },
+    { num: 13, answer: ['T','R','E','Z','E'], fixed: {0:'T', 4:'E'},
+      silabas: ['TR','RE','EZ','ZE','ZA','TE'] },
+    { num: 14, answer: ['C','A','T','O','R','Z','E'], fixed: {0:'C', 6:'E'},
+      silabas: ['CA','AT','TO','OR','RZ','ZE','ZI','CO'] },
+    { num: 15, answer: ['Q','U','I','N','Z','E'], fixed: {0:'Q', 5:'E'},
+      silabas: ['QU','UI','IN','NZ','ZE','ZA','QI'] },
+    { num: 16, answer: ['D','E','Z','E','S','S','E','I','S'], fixed: {0:'D', 8:'S'},
+      silabas: ['DE','EZ','ZE','ES','SS','SE','EI','IS','DA','SI'] },
+    { num: 17, answer: ['D','E','Z','E','S','S','E','T','E'], fixed: {0:'D', 8:'E'},
+      silabas: ['DE','EZ','ZE','ES','SS','SE','ET','TE','DA','TI'] },
+    { num: 18, answer: ['D','E','Z','O','I','T','O'], fixed: {0:'D', 6:'O'},
+      silabas: ['DE','EZ','ZO','OI','IT','TO','DA','OA'] },
+    { num: 19, answer: ['D','E','Z','E','N','O','V','E'], fixed: {0:'D', 7:'E'},
+      silabas: ['DE','EZ','ZE','EN','NO','OV','VE','DA','NI'] }
+  ];
+
+  var atual = 0;
+  var acertos = 0;
+  var sequencia = []; // letras digitadas (posicoes nao fixas)
+  var posAtual = 0;   // proxima posicao livre
+
+  function embaralhar(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  function playSound(tipo) {
+    try {
+      var ctx = new (window.AudioContext || window.webkitAudioContext)();
+      var o = ctx.createOscillator(); var g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      if (tipo === 'correct') {
+        o.frequency.setValueAtTime(523, ctx.currentTime);
+        o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+        o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+        g.gain.setValueAtTime(0.3, ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+        o.start(); o.stop(ctx.currentTime + 0.5);
+      } else {
+        o.frequency.setValueAtTime(300, ctx.currentTime);
+        o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+        g.gain.setValueAtTime(0.3, ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+        o.start(); o.stop(ctx.currentTime + 0.4);
+      }
+    } catch (e) {}
+  }
+
+  // Posicoes livres (nao fixas) da palavra atual
+  function posicoesLivres(p) {
+    var livres = [];
+    for (var i = 0; i < p.answer.length; i++) {
+      if (p.fixed[i] === undefined) livres.push(i);
+    }
+    return livres;
+  }
+
+  function renderPalavra() {
+    sequencia = [];
+    posAtual = 0;
+    var p = palavras[atual];
+    document.getElementById('num-display').textContent = p.num;
+    document.getElementById('progresso').textContent = 'Palavra ' + (atual + 1) + ' de 9';
+    document.getElementById('feedback').className = 'feedback';
+    document.getElementById('feedback').textContent = '';
+    document.getElementById('btn-prox').className = 'btn-prox';
+    // caixas de letras
+    var area = document.getElementById('palavra-area');
+    area.innerHTML = '';
+    p.answer.forEach(function (letra, i) {
+      var box = document.createElement('div');
+      box.className = 'letra-box' + (p.fixed[i] !== undefined ? ' fixa' : '');
+      box.setAttribute('data-pos', i);
+      box.textContent = p.fixed[i] !== undefined ? letra : '';
+      area.appendChild(box);
+    });
+    // silabas embaralhadas
+    var sils = embaralhar(p.silabas);
+    var cont = document.getElementById('silabas');
+    cont.innerHTML = '';
+    sils.forEach(function (sil) {
+      var btn = document.createElement('button');
+      btn.className = 'silaba-btn';
+      btn.textContent = sil;
+      btn.onclick = function () { clicarSilaba(sil, btn); };
+      cont.appendChild(btn);
+    });
+    // habilitar apagar e verificar
+    document.querySelector('.btn-apagar').disabled = false;
+    document.querySelector('.btn-verificar-p').disabled = false;
+  }
+
+  function clicarSilaba(sil, btn) {
+    var p = palavras[atual];
+    var livres = posicoesLivres(p);
+    // adicionar letras da silaba nas proximas posicoes livres
+    var letras = sil.split('');
+    letras.forEach(function (l) {
+      if (posAtual < livres.length) {
+        var posReal = livres[posAtual];
+        var box = document.querySelector('[data-pos="' + posReal + '"]');
+        if (box) { box.textContent = l; box.classList.add('preenchida'); }
+        sequencia.push({ pos: posReal, letra: l, btn: btn });
+        posAtual++;
+      }
+    });
+    btn.disabled = true;
+  }
+
+  function apagar() {
+    if (sequencia.length === 0) return;
+    var ultimo = sequencia.pop();
+    posAtual = Math.max(0, posAtual - 1);
+    var box = document.querySelector('[data-pos="' + ultimo.pos + '"]');
+    if (box) { box.textContent = ''; box.classList.remove('preenchida', 'correta', 'errada'); }
+    if (ultimo.btn) ultimo.btn.disabled = false;
+  }
+
+  function verificarPalavra() {
+    var p = palavras[atual];
+    var livres = posicoesLivres(p);
+    // montar resposta atual
+    var montada = p.answer.slice(); // copia com fixas
+    sequencia.forEach(function (s) { montada[s.pos] = s.letra; });
+    var correto = montada.join('') === p.answer.join('');
+    var boxes = document.querySelectorAll('.letra-box:not(.fixa)');
+    boxes.forEach(function (box, i) {
+      var pos = parseInt(box.getAttribute('data-pos'));
+      var esperada = p.answer[pos];
+      var atual_l = box.textContent;
+      box.classList.remove('preenchida');
+      box.classList.add(atual_l === esperada ? 'correta' : 'errada');
+    });
+    var fb = document.getElementById('feedback');
+    if (correto) {
+      fb.textContent = 'Certo! ' + p.num + ' = ' + p.answer.join('').toLowerCase() + '! 🎉';
+      fb.className = 'feedback ok';
+      acertos++;
+      playSound('correct');
+    } else {
+      fb.textContent = 'Quase! A resposta é: ' + p.answer.join('').toLowerCase() + ' 💪';
+      fb.className = 'feedback nao';
+      playSound('wrong');
+    }
+    document.getElementById('btn-prox').className = 'btn-prox show';
+    document.querySelector('.btn-apagar').disabled = true;
+    document.querySelector('.btn-verificar-p').disabled = true;
+    document.querySelectorAll('.silaba-btn').forEach(function (b) { b.disabled = true; });
+  }
+
+  function proximaPalavra() {
+    atual++;
+    if (atual >= palavras.length) {
+      mostrarResultado();
+    } else {
+      renderPalavra();
+    }
+  }
+
+  function mostrarResultado() {
+    document.getElementById('area-jogo').style.display = 'none';
+    var pct = Math.round((acertos / palavras.length) * 100);
+    window.sabendoScore = pct;
+    var res = document.getElementById('resultado');
+    res.className = 'resultado show';
+    document.getElementById('nota-final').textContent = acertos + '/' + palavras.length;
+    var msgs = [
+      [9, 'Incrível! Você conhece todos os números! 🏆🟨'],
+      [7, 'Muito bom! Dezi está orgulhosa! ✨'],
+      [5, 'Bom trabalho! Pratique mais! 💪'],
+      [0, 'Continue tentando! Você vai conseguir! 🌟']
+    ];
+    var msg = msgs.find(function (m) { return acertos >= m[0]; });
+    document.getElementById('msg-final').textContent = msg ? msg[1] : msgs[3][1];
+    playSound('correct');
+  }
+
+  function reiniciar() {
+    atual = 0; acertos = 0;
+    document.getElementById('area-jogo').style.display = 'block';
+    document.getElementById('resultado').className = 'resultado';
+    renderPalavra();
+  }
+
+  window.apagar = apagar;
+  window.verificarPalavra = verificarPalavra;
+  window.proximaPalavra = proximaPalavra;
+  window.reiniciar = reiniciar;
+
+  renderPalavra();
+})();
+</script>
+
+<!-- ── GAMIFICAÇÃO ─────────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'dezena-numeros-ate-19';
+  var DISCIPLINE    = 'matematica';
+  var ACTIVITY_TYPE = 'completar';
+  var TOTAL_ATIV    = 5;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({ user_id: uid, discipline: DISCIPLINE, theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE, score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0 });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName: 'Dezi', characterEmoji: '🟨',
+        characterImg: 'chars/dezi.png',
+        themeLabel: 'A Dezena e os Números até 19 · Matemática',
+        totalActivities: TOTAL_ATIV, activityType: ACTIVITY_TYPE,
+        primaryColor: '#0AACE8', lightColor: '#5AC8FB', bgColor: '#EFF9FF',
+        glowRgb: '10,172,232', backUrl: '../../index.html'
+      });
+    });
+  }
+  var _scoreVal = null;
+  Object.defineProperty(window, 'sabendoScore', { configurable: true,
+    set: function (v) { _scoreVal = v; var btn = document.getElementById('gamificacao-btn'); if (btn) btn.style.display = 'block'; },
+    get: function () { return _scoreVal; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+<button id="gamificacao-btn" onclick="window._abrirGamificacao()" style="display:none;margin:24px auto;padding:16px 32px;background:linear-gradient(135deg,#0AACE8,#5AC8FB);color:#fff;border:none;border-radius:50px;font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);width:fit-content;">Coletar minha carta! 🃏</button>
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>

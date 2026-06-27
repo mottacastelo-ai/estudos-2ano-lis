@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verdadeiro ou Falso — Números até 99 | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root { --primary: #0AACE8; --light: #5AC8FB; --bg: #EFF9FF; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100vh; }
+
+.header {
+  background: linear-gradient(135deg, #044A7A, #0AACE8 60%, #5AC8FB);
+  color: #fff; padding: 20px 24px; text-align: center;
+}
+.header .emoji { font-size: 2.5rem; }
+.header h1 { font-family: 'Baloo 2', sans-serif; font-size: 1.6rem; font-weight: 900; margin-top: 4px; }
+.header p { font-size: 1rem; opacity: 0.9; }
+
+.container { max-width: 640px; margin: 0 auto; padding: 24px 16px; }
+
+.progress-bar-wrap { background: #dbeeff; border-radius: 99px; height: 10px; margin-bottom: 10px; }
+.progress-bar { background: var(--primary); height: 10px; border-radius: 99px; transition: width 0.4s; }
+.placar { text-align: right; font-size: 1rem; font-weight: 700; color: var(--primary); margin-bottom: 16px; }
+
+.card {
+  background: #fff; border-radius: 20px;
+  padding: 32px 24px; box-shadow: 0 4px 20px rgba(10,172,232,0.12);
+  margin-bottom: 20px;
+}
+.num-questao { font-size: 0.9rem; font-weight: 700; color: var(--light); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+.afirmacao { font-size: 1.45rem; font-weight: 700; color: #1a3a50; line-height: 1.4; margin-bottom: 28px; }
+
+.botoes-vf { display: flex; gap: 16px; }
+.btn-vf {
+  flex: 1;
+  padding: 18px 10px;
+  border: 3px solid transparent;
+  border-radius: 16px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 900;
+  cursor: pointer;
+  transition: all 0.18s;
+  min-height: 64px;
+}
+.btn-v { background: #d1fae5; color: #166534; border-color: #22c55e; }
+.btn-f { background: #fee2e2; color: #7f1d1d; border-color: #ef4444; }
+.btn-vf:hover:not(:disabled) { transform: scale(1.04); box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
+.btn-vf:disabled { opacity: 0.6; cursor: default; transform: none; }
+.btn-vf.selecionado-certo { box-shadow: 0 0 0 4px #22c55e; transform: scale(1.04); }
+.btn-vf.selecionado-errado { box-shadow: 0 0 0 4px #ef4444; opacity: 0.5; }
+
+.feedback-box {
+  border-radius: 14px; padding: 14px 18px;
+  font-size: 1.1rem; font-weight: 700; margin-top: 16px; display: none;
+}
+.feedback-box.ok  { background: #d1fae5; color: #166534; }
+.feedback-box.err { background: #fee2e2; color: #7f1d1d; }
+
+.btn-proxima {
+  background: linear-gradient(135deg, #0AACE8, #5AC8FB);
+  color: #fff; border: none; border-radius: 50px;
+  padding: 14px 36px; font-family: 'Baloo 2', sans-serif;
+  font-size: 1.2rem; font-weight: 800; cursor: pointer;
+  box-shadow: 0 4px 16px rgba(10,172,232,0.3);
+  display: none; margin-top: 16px;
+}
+
+.resultado {
+  display: none; text-align: center;
+  background: #fff; border-radius: 20px; padding: 36px 24px;
+  box-shadow: 0 4px 20px rgba(10,172,232,0.14);
+}
+.resultado .emoji-final { font-size: 4rem; }
+.resultado h2 { font-family: 'Baloo 2', sans-serif; font-size: 2rem; color: var(--primary); margin: 12px 0 6px; }
+.resultado .score-grande { font-size: 3rem; font-weight: 900; color: var(--primary); }
+.resultado .msg { font-size: 1.2rem; color: #1a3a50; margin: 8px 0 20px; }
+.btn-voltar {
+  background: transparent; border: 2px solid var(--primary); color: var(--primary);
+  border-radius: 50px; padding: 12px 28px;
+  font-family: 'Baloo 2', sans-serif; font-size: 1.1rem; font-weight: 800;
+  cursor: pointer; margin-top: 10px;
+}
+
+@media (max-width: 480px) {
+  body { padding: 0; }
+  .header h1 { font-size: 1.3rem; }
+  .afirmacao { font-size: 1.25rem; }
+  .botoes-vf { flex-direction: column; }
+  .btn-vf { min-height: 54px; font-size: 1.3rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="emoji">🧮</div>
+  <h1>Verdadeiro ou Falso?</h1>
+  <p>Ajude o Centão a descobrir a verdade!</p>
+</div>
+
+<div class="container">
+  <div class="placar">Acertos: <span id="acertos">0</span>/10</div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="progresso" style="width:0%"></div></div>
+
+  <div class="card" id="card-questao">
+    <div class="num-questao" id="num-questao">Afirmação 1 de 10</div>
+    <div class="afirmacao" id="afirmacao"></div>
+    <div class="botoes-vf">
+      <button class="btn-vf btn-v" id="btn-v" onclick="responder(true)">✅ Verdadeiro</button>
+      <button class="btn-vf btn-f" id="btn-f" onclick="responder(false)">❌ Falso</button>
+    </div>
+    <div class="feedback-box" id="feedback"></div>
+    <button class="btn-proxima" id="btn-proxima" onclick="proximaQuestao()">Próxima →</button>
+  </div>
+
+  <div class="resultado" id="resultado">
+    <div class="emoji-final" id="emoji-final"></div>
+    <h2>Resultado!</h2>
+    <div class="score-grande"><span id="res-acertos">0</span>/10</div>
+    <div class="msg" id="res-msg"></div>
+    <button class="btn-voltar" onclick="voltarAoPortal()">⬅ Voltar ao Portal</button>
+  </div>
+</div>
+
+<script>
+(function () {
+
+var afirmacoes = [
+  { texto: "O vizinho imediatamente anterior de 45 é 44.", correto: true },
+  { texto: "O número 35 tem 3 dezenas e 5 centenas.", correto: false, explicacao: "35 tem 3 dezenas e 5 unidades, não centenas!" },
+  { texto: "O sistema decimal usa 10 algarismos diferentes: do 0 ao 9.", correto: true },
+  { texto: "O vizinho imediatamente posterior de 79 é 80.", correto: true },
+  { texto: "O número 62 se escreve por extenso como 'sessenta e três'.", correto: false, explicacao: "62 se escreve 'sessenta e dois'." },
+  { texto: "90 tem 9 dezenas e 0 unidades.", correto: true },
+  { texto: "O número 47 é composto por 4 dezenas e 7 unidades.", correto: true },
+  { texto: "O vizinho imediatamente anterior de 20 é 19.", correto: true },
+  { texto: "88 é menor do que 78.", correto: false, explicacao: "88 é maior do que 78!" },
+  { texto: "O número 'trinta e um' em algarismos é 31.", correto: true }
+];
+
+var indice = 0;
+var acertos = 0;
+var respondida = false;
+
+function playSound(tipo) {
+  try {
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    var o = ctx.createOscillator(); var g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    if (tipo === 'correct') {
+      o.frequency.setValueAtTime(523, ctx.currentTime);
+      o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+      o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+      o.start(); o.stop(ctx.currentTime + 0.5);
+    } else {
+      o.frequency.setValueAtTime(300, ctx.currentTime);
+      o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      o.start(); o.stop(ctx.currentTime + 0.4);
+    }
+  } catch(e) {}
+}
+
+function renderQuestao() {
+  var q = afirmacoes[indice];
+  document.getElementById('num-questao').textContent = 'Afirmação ' + (indice + 1) + ' de 10';
+  document.getElementById('afirmacao').textContent = q.texto;
+  document.getElementById('progresso').style.width = (indice / 10 * 100) + '%';
+  document.getElementById('feedback').style.display = 'none';
+  document.getElementById('btn-proxima').style.display = 'none';
+  var bv = document.getElementById('btn-v');
+  var bf = document.getElementById('btn-f');
+  bv.disabled = false; bf.disabled = false;
+  bv.className = 'btn-vf btn-v';
+  bf.className = 'btn-vf btn-f';
+  respondida = false;
+}
+
+function responder(respostaVerdadeiro) {
+  if (respondida) return;
+  respondida = true;
+  var q = afirmacoes[indice];
+  var bv = document.getElementById('btn-v');
+  var bf = document.getElementById('btn-f');
+  bv.disabled = true; bf.disabled = true;
+
+  var acertou = (respostaVerdadeiro === q.correto);
+  var fb = document.getElementById('feedback');
+
+  if (acertou) {
+    acertos++;
+    document.getElementById('acertos').textContent = acertos;
+    playSound('correct');
+    if (respostaVerdadeiro) bv.classList.add('selecionado-certo');
+    else bf.classList.add('selecionado-certo');
+    fb.className = 'feedback-box ok';
+    fb.textContent = '✅ Correto! ' + (q.correto ? 'É verdadeiro mesmo!' : 'É falso mesmo!');
+  } else {
+    playSound('wrong');
+    if (respostaVerdadeiro) bv.classList.add('selecionado-errado');
+    else bf.classList.add('selecionado-errado');
+    // Mostrar a correta em destaque
+    if (q.correto) bv.classList.add('selecionado-certo');
+    else bf.classList.add('selecionado-certo');
+    fb.className = 'feedback-box err';
+    fb.textContent = '❌ ' + (q.explicacao || (q.correto ? 'Essa afirmação é verdadeira!' : 'Essa afirmação é falsa!'));
+  }
+  fb.style.display = 'block';
+  document.getElementById('btn-proxima').style.display = 'block';
+}
+
+function proximaQuestao() {
+  indice++;
+  if (indice < 10) {
+    renderQuestao();
+  } else {
+    mostrarResultado();
+  }
+}
+
+function mostrarResultado() {
+  document.getElementById('card-questao').style.display = 'none';
+  document.getElementById('progresso').style.width = '100%';
+  var pct = Math.round((acertos / 10) * 100);
+  window.sabendoScore = pct;
+  var res = document.getElementById('resultado');
+  res.style.display = 'block';
+  document.getElementById('res-acertos').textContent = acertos;
+  var emoji, msg;
+  if (acertos >= 9) { emoji = '🏆'; msg = 'Incrível! Você é um expert em números até 99!'; }
+  else if (acertos >= 7) { emoji = '⭐'; msg = 'Muito bem! Você conhece bem os números!'; }
+  else { emoji = '💪'; msg = 'Continue praticando! Você vai melhorar!'; }
+  document.getElementById('emoji-final').textContent = emoji;
+  document.getElementById('res-msg').textContent = msg;
+}
+
+window.responder = responder;
+window.proximaQuestao = proximaQuestao;
+
+renderQuestao();
+
+})();
+</script>
+
+<!-- ── GAMIFICAÇÃO ─────────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'numeros-ate-99';
+  var DISCIPLINE    = 'matematica';
+  var ACTIVITY_TYPE = 'vf';
+  var TOTAL_ATIV    = 5;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Centão',
+        characterEmoji:  '🧮',
+        characterImg:    'chars/centao.png',
+        themeLabel:      'Números até 99 · Matemática',
+        totalActivities: TOTAL_ATIV,
+        activityType:    ACTIVITY_TYPE,
+        primaryColor:    '#0AACE8',
+        lightColor:      '#5AC8FB',
+        bgColor:         '#EFF9FF',
+        glowRgb:         '10,172,232',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _s = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _s = v;
+      var b = document.getElementById('gamificacao-btn');
+      if (b) b.style.display = 'block';
+    },
+    get: function () { return _s; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#0AACE8,#5AC8FB);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>

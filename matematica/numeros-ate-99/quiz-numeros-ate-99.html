@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz — Números até 99 | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #0AACE8;
+  --light: #5AC8FB;
+  --bg: #EFF9FF;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; font-size: 1.1rem; background: var(--bg); min-height: 100vh; }
+
+.header {
+  background: linear-gradient(135deg, #044A7A, #0AACE8 60%, #5AC8FB);
+  color: #fff;
+  padding: 20px 24px;
+  text-align: center;
+}
+.header .emoji { font-size: 2.5rem; }
+.header h1 { font-family: 'Baloo 2', sans-serif; font-size: 1.6rem; font-weight: 900; margin-top: 4px; }
+.header p { font-size: 1rem; opacity: 0.9; }
+
+.container { max-width: 680px; margin: 0 auto; padding: 24px 16px; }
+
+.progress-bar-wrap { background: #dbeeff; border-radius: 99px; height: 10px; margin-bottom: 20px; }
+.progress-bar { background: var(--primary); height: 10px; border-radius: 99px; transition: width 0.4s; }
+
+.placar { text-align: right; font-size: 1rem; font-weight: 700; color: var(--primary); margin-bottom: 10px; }
+
+.card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 28px 24px;
+  box-shadow: 0 4px 20px rgba(10,172,232,0.12);
+  margin-bottom: 20px;
+}
+.numero-questao { font-size: 0.9rem; font-weight: 700; color: var(--light); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.enunciado { font-size: 1.4rem; font-weight: 700; color: #1a3a50; line-height: 1.4; margin-bottom: 20px; }
+
+.opcoes { display: flex; flex-direction: column; gap: 12px; }
+.opcao-btn {
+  background: #EFF9FF;
+  border: 2.5px solid #bce4f8;
+  border-radius: 14px;
+  padding: 16px 20px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1a3a50;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.18s;
+  min-height: 54px;
+}
+.opcao-btn:hover:not(:disabled) { background: #d0f0ff; border-color: var(--primary); transform: translateX(4px); }
+.opcao-btn.correta { background: #d1fae5; border-color: #22c55e; color: #166534; }
+.opcao-btn.errada  { background: #fee2e2; border-color: #ef4444; color: #7f1d1d; }
+.opcao-btn:disabled { cursor: default; }
+
+.feedback-box {
+  border-radius: 14px;
+  padding: 14px 18px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 14px;
+  display: none;
+}
+.feedback-box.ok  { background: #d1fae5; color: #166534; }
+.feedback-box.err { background: #fee2e2; color: #7f1d1d; }
+
+.btn-proxima {
+  background: linear-gradient(135deg, #0AACE8, #5AC8FB);
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 14px 36px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(10,172,232,0.35);
+  display: none;
+  margin-top: 8px;
+}
+.btn-proxima:hover { filter: brightness(1.08); }
+
+.resultado {
+  display: none;
+  text-align: center;
+  background: #fff;
+  border-radius: 20px;
+  padding: 36px 24px;
+  box-shadow: 0 4px 20px rgba(10,172,232,0.14);
+}
+.resultado .emoji-final { font-size: 4rem; }
+.resultado h2 { font-family: 'Baloo 2', sans-serif; font-size: 2rem; font-weight: 900; color: var(--primary); margin: 12px 0 6px; }
+.resultado .msg { font-size: 1.2rem; color: #1a3a50; margin-bottom: 20px; }
+.resultado .score-grande { font-size: 3rem; font-weight: 900; color: var(--primary); }
+
+.btn-voltar {
+  background: transparent;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  border-radius: 50px;
+  padding: 12px 28px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  margin-top: 12px;
+}
+
+@media (max-width: 480px) {
+  body { padding: 0; font-size: 1.15rem; }
+  .header h1 { font-size: 1.3rem; }
+  .enunciado { font-size: 1.25rem; }
+  .opcao-btn { font-size: 1.1rem; min-height: 54px; width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="emoji">🧮</div>
+  <h1>Quiz — Números até 99</h1>
+  <p>Centão quer ver o que você aprendeu!</p>
+</div>
+
+<div class="container">
+  <div class="placar">Acertos: <span id="acertos">0</span> / 8</div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="progresso" style="width:0%"></div></div>
+
+  <div class="card" id="card-questao">
+    <div class="numero-questao" id="num-questao">Questão 1 de 8</div>
+    <div class="enunciado" id="enunciado"></div>
+    <div class="opcoes" id="opcoes"></div>
+    <div class="feedback-box" id="feedback"></div>
+    <button class="btn-proxima" id="btn-proxima" onclick="proximaPergunta()">Próxima →</button>
+  </div>
+
+  <div class="resultado" id="resultado">
+    <div class="emoji-final" id="emoji-final"></div>
+    <h2>Resultado!</h2>
+    <div class="score-grande"><span id="res-acertos">0</span>/8</div>
+    <div class="msg" id="res-msg"></div>
+    <div style="margin-top:16px;" id="gamificacao-wrap"></div>
+    <button class="btn-voltar" onclick="voltarAoPortal()">⬅ Voltar ao Portal</button>
+  </div>
+</div>
+
+<script>
+(function () {
+
+var todasPerguntas = [
+  {
+    enunciado: "O número 47 tem quantas dezenas e quantas unidades?",
+    opcoes: ["4 dezenas e 7 unidades", "7 dezenas e 4 unidades", "4 dezenas e 4 unidades"],
+    correta: 0
+  },
+  {
+    enunciado: "Qual é o vizinho imediatamente anterior de 80?",
+    opcoes: ["81", "79", "78"],
+    correta: 1
+  },
+  {
+    enunciado: "Qual é o vizinho imediatamente posterior de 59?",
+    opcoes: ["58", "61", "60"],
+    correta: 2
+  },
+  {
+    enunciado: "Como se escreve por extenso o número 35?",
+    opcoes: ["trinta e cinco", "três e cinco", "trinta e três"],
+    correta: 0
+  },
+  {
+    enunciado: "Qual número tem 6 dezenas e 8 unidades?",
+    opcoes: ["86", "68", "60"],
+    correta: 1
+  },
+  {
+    enunciado: "O sistema decimal usa quantos algarismos diferentes?",
+    opcoes: ["9", "8", "10"],
+    correta: 2
+  },
+  {
+    enunciado: "Uma caixa tem 72 laranjas e outra tem 65 laranjas. Qual caixa tem mais?",
+    opcoes: ["A caixa com 65 laranjas", "A caixa com 72 laranjas", "As duas têm a mesma quantidade"],
+    correta: 1
+  },
+  {
+    enunciado: "Qual número vem na sequência? 75, 76, 77, ___",
+    opcoes: ["79", "76", "78"],
+    correta: 2
+  }
+];
+
+function embaralhar(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+// Embaralhar perguntas e alternativas de cada pergunta
+var perguntas = embaralhar(todasPerguntas).map(function(q) {
+  var opcIndexes = [0, 1, 2];
+  var ordem = embaralhar(opcIndexes);
+  var novasOpcoes = ordem.map(function(i) { return q.opcoes[i]; });
+  var novaCorreta = ordem.indexOf(q.correta);
+  return { enunciado: q.enunciado, opcoes: novasOpcoes, correta: novaCorreta };
+});
+
+var indice = 0;
+var acertos = 0;
+var respondida = false;
+
+function playSound(tipo) {
+  try {
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    var o = ctx.createOscillator();
+    var g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    if (tipo === 'correct') {
+      o.frequency.setValueAtTime(523, ctx.currentTime);
+      o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+      o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+      o.start(); o.stop(ctx.currentTime + 0.5);
+    } else {
+      o.frequency.setValueAtTime(300, ctx.currentTime);
+      o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      o.start(); o.stop(ctx.currentTime + 0.4);
+    }
+  } catch(e) {}
+}
+
+function renderPergunta() {
+  var q = perguntas[indice];
+  document.getElementById('num-questao').textContent = 'Questão ' + (indice + 1) + ' de 8';
+  document.getElementById('enunciado').textContent = q.enunciado;
+  document.getElementById('progresso').style.width = (indice / 8 * 100) + '%';
+  document.getElementById('feedback').style.display = 'none';
+  document.getElementById('btn-proxima').style.display = 'none';
+  respondida = false;
+
+  var opcoesEl = document.getElementById('opcoes');
+  opcoesEl.innerHTML = '';
+  q.opcoes.forEach(function(txt, i) {
+    var btn = document.createElement('button');
+    btn.className = 'opcao-btn';
+    btn.textContent = txt;
+    btn.setAttribute('data-idx', i);
+    btn.onclick = function() { responder(i); };
+    opcoesEl.appendChild(btn);
+  });
+}
+
+function responder(idx) {
+  if (respondida) return;
+  respondida = true;
+  var q = perguntas[indice];
+  var botoes = document.querySelectorAll('.opcao-btn');
+  botoes.forEach(function(b) { b.disabled = true; });
+
+  var fb = document.getElementById('feedback');
+  if (idx === q.correta) {
+    acertos++;
+    document.getElementById('acertos').textContent = acertos;
+    botoes[idx].classList.add('correta');
+    playSound('correct');
+    fb.className = 'feedback-box ok';
+    fb.textContent = '✅ Correto! Muito bem!';
+  } else {
+    botoes[idx].classList.add('errada');
+    botoes[q.correta].classList.add('correta');
+    playSound('wrong');
+    fb.className = 'feedback-box err';
+    fb.textContent = '❌ Ops! A resposta certa é: ' + q.opcoes[q.correta];
+  }
+  fb.style.display = 'block';
+  document.getElementById('btn-proxima').style.display = 'block';
+}
+
+function proximaPergunta() {
+  indice++;
+  if (indice < 8) {
+    renderPergunta();
+  } else {
+    mostrarResultado();
+  }
+}
+
+function mostrarResultado() {
+  document.getElementById('card-questao').style.display = 'none';
+  var res = document.getElementById('resultado');
+  res.style.display = 'block';
+  document.getElementById('progresso').style.width = '100%';
+
+  var pct = Math.round((acertos / 8) * 100);
+  window.sabendoScore = pct;
+
+  document.getElementById('res-acertos').textContent = acertos;
+  var emoji, msg;
+  if (acertos >= 7) { emoji = '🏆'; msg = 'Incrível! Você é um expert em números até 99!'; }
+  else if (acertos >= 5) { emoji = '⭐'; msg = 'Muito bem! Continue praticando!'; }
+  else { emoji = '💪'; msg = 'Continue tentando! Você vai conseguir!'; }
+  document.getElementById('emoji-final').textContent = emoji;
+  document.getElementById('res-msg').textContent = msg;
+}
+
+window.proximaPergunta = proximaPergunta;
+
+renderPergunta();
+
+})();
+</script>
+
+<!-- ── GAMIFICAÇÃO ─────────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'numeros-ate-99';
+  var DISCIPLINE    = 'matematica';
+  var ACTIVITY_TYPE = 'quiz';
+  var TOTAL_ATIV    = 5;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Centão',
+        characterEmoji:  '🧮',
+        characterImg:    'chars/centao.png',
+        themeLabel:      'Números até 99 · Matemática',
+        totalActivities: TOTAL_ATIV,
+        activityType:    ACTIVITY_TYPE,
+        primaryColor:    '#0AACE8',
+        lightColor:      '#5AC8FB',
+        bgColor:         '#EFF9FF',
+        glowRgb:         '10,172,232',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _s = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _s = v;
+      var b = document.getElementById('gamificacao-btn');
+      if (b) b.style.display = 'block';
+    },
+    get: function () { return _s; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#0AACE8,#5AC8FB);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>

@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gráfico de Barras — A Centena e o Número 1.000 | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root { --primary: #0AACE8; --light: #5AC8FB; --bg: #EFF9FF; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100vh; }
+.header { background: linear-gradient(135deg, #044A7A, #0AACE8 60%, #5AC8FB); color: #fff; padding: 20px 24px; text-align: center; }
+.header h1 { font-family: 'Baloo 2', sans-serif; font-size: 1.5rem; font-weight: 900; }
+.header p { font-size: 1rem; opacity: .85; margin-top: 4px; }
+.container { max-width: 720px; margin: 0 auto; padding: 24px 16px; }
+.instrucao-card { background: #fff; border-radius: 16px; padding: 20px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(10,172,232,.10); }
+.instrucao-card h2 { font-family: 'Baloo 2', sans-serif; font-size: 1.25rem; color: var(--primary); margin-bottom: 10px; }
+.instrucao-card p { font-size: 1.1rem; color: #333; line-height: 1.5; }
+.tabela-wrap { background: #fff; border-radius: 16px; padding: 20px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(10,172,232,.10); }
+.tabela-titulo { font-family: 'Baloo 2', sans-serif; font-size: 1.1rem; color: #333; margin-bottom: 14px; font-weight: 800; }
+table { width: 100%; border-collapse: collapse; }
+th { background: var(--primary); color: #fff; padding: 10px 14px; text-align: left; font-size: 1rem; font-weight: 800; }
+td { padding: 10px 14px; border-bottom: 1px solid #e0f0fa; font-size: 1.05rem; font-weight: 700; }
+tr:last-child td { border-bottom: none; }
+.grafico-card { background: #fff; border-radius: 16px; padding: 24px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(10,172,232,.10); }
+.grafico-titulo { font-family: 'Baloo 2', sans-serif; font-size: 1.1rem; color: #333; font-weight: 900; text-align: center; margin-bottom: 6px; }
+.grafico-fonte { font-size: .85rem; color: #888; text-align: center; margin-bottom: 18px; }
+.grafico-area { display: flex; align-items: flex-end; gap: 16px; height: 240px; padding: 0 8px; border-left: 3px solid #444; border-bottom: 3px solid #444; position: relative; }
+.eixo-y { position: absolute; left: -48px; top: 0; height: 100%; display: flex; flex-direction: column-reverse; justify-content: space-between; }
+.eixo-y span { font-size: .85rem; font-weight: 700; color: #555; }
+.coluna-wrap { display: flex; flex-direction: column; align-items: center; flex: 1; gap: 6px; height: 100%; justify-content: flex-end; }
+.barra-outer { width: 100%; display: flex; flex-direction: column; justify-content: flex-end; height: 220px; }
+.barra-inner { width: 100%; border-radius: 8px 8px 0 0; background: #d0edfb; cursor: pointer; min-height: 8px; transition: height .3s; position: relative; }
+.barra-inner.ativa { background: linear-gradient(180deg, var(--light), var(--primary)); }
+.barra-label { font-size: .85rem; font-weight: 800; color: #333; text-align: center; margin-top: 6px; }
+.barra-val { font-size: .8rem; color: #fff; font-weight: 900; text-align: center; padding: 2px 0; display: none; }
+.barra-inner.ativa .barra-val { display: block; }
+.clique-info { font-size: .9rem; color: #666; text-align: center; margin-bottom: 16px; }
+.controles { display: flex; gap: 10px; justify-content: center; margin-bottom: 8px; flex-wrap: wrap; }
+.ctrl-btn {
+  padding: 10px 20px; border-radius: 50px; border: 2.5px solid var(--primary);
+  font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 800;
+  cursor: pointer; background: #fff; color: var(--primary);
+  min-height: 44px; min-width: 44px;
+}
+.ctrl-btn:hover { background: #e0f5fd; }
+.verificar-btn {
+  display: block; width: 100%; padding: 16px;
+  background: linear-gradient(135deg, var(--primary), var(--light));
+  color: #fff; border: none; border-radius: 50px;
+  font-family: 'Baloo 2', sans-serif; font-size: 1.2rem; font-weight: 900; cursor: pointer;
+  margin-bottom: 16px;
+}
+.perguntas-card { background: #fff; border-radius: 16px; padding: 20px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(10,172,232,.10); display: none; }
+.perguntas-card h3 { font-family: 'Baloo 2', sans-serif; font-size: 1.15rem; color: var(--primary); margin-bottom: 16px; }
+.pergunta-item { margin-bottom: 20px; }
+.pergunta-item p { font-size: 1.1rem; font-weight: 700; color: #1a3a4a; margin-bottom: 10px; }
+.opcoes-interp { display: flex; flex-direction: column; gap: 8px; }
+.opt-interp {
+  padding: 12px 16px; border-radius: 12px; border: 2.5px solid #c0e6f7;
+  background: #f0faff; font-size: 1rem; font-weight: 700; cursor: pointer; text-align: left;
+  min-height: 44px; transition: border-color .15s;
+}
+.opt-interp:hover { border-color: var(--primary); background: #e0f5fd; }
+.opt-interp.correta { border-color: #22c55e; background: #dcfce7; color: #15803d; }
+.opt-interp.errada { border-color: #ef4444; background: #fee2e2; color: #b91c1c; }
+.fb-interp { padding: 10px 14px; border-radius: 10px; font-size: 1rem; font-weight: 700; display: none; margin-top: 8px; }
+.fb-interp.show { display: block; }
+.fb-interp.ok { background: #dcfce7; color: #15803d; }
+.fb-interp.err { background: #fee2e2; color: #b91c1c; }
+.result-card { display: none; background: #fff; border-radius: 20px; padding: 36px 24px; text-align: center; box-shadow: 0 4px 20px rgba(10,172,232,.15); margin-bottom: 16px; }
+.result-emoji { font-size: 3.5rem; margin-bottom: 12px; }
+.result-msg { font-family: 'Baloo 2', sans-serif; font-size: 1.4rem; font-weight: 900; color: var(--primary); }
+.back-btn { display: block; text-align: center; margin: 20px auto 0; color: var(--primary); font-weight: 700; background: none; border: none; cursor: pointer; text-decoration: underline; }
+@media (max-width: 480px) {
+  .grafico-area { gap: 8px; height: 200px; }
+  .barra-outer { height: 180px; }
+  .ctrl-btn { font-size: .9rem; padding: 8px 14px; }
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>🟦 Gráfico de Barras — Monte e Leia!</h1>
+  <p>Clique nas barras para preencher o gráfico!</p>
+</div>
+<div class="container">
+  <div class="instrucao-card">
+    <h2>Como jogar?</h2>
+    <p>Veja a tabela abaixo. Use os botões <strong>+</strong> e <strong>−</strong> para ajustar cada barra até o valor certo. Depois responda às perguntas de interpretação!</p>
+  </div>
+
+  <div class="tabela-wrap">
+    <div class="tabela-titulo">Frutas preferidas da turma da Lis</div>
+    <table>
+      <tr><th>Fruta</th><th>Número de alunos</th></tr>
+      <tr><td>🍎 Maçã</td><td>8</td></tr>
+      <tr><td>🍌 Banana</td><td>5</td></tr>
+      <tr><td>🍓 Morango</td><td>10</td></tr>
+      <tr><td>🍊 Laranja</td><td>3</td></tr>
+    </table>
+  </div>
+
+  <div class="grafico-card">
+    <div class="grafico-titulo">Frutas preferidas da turma da Lis</div>
+    <div class="grafico-fonte">Fonte: turma da Lis, 2026</div>
+    <div style="position:relative; padding-left: 48px;">
+      <div class="eixo-y" id="eixoY"></div>
+      <div class="grafico-area" id="grafArea"></div>
+    </div>
+    <div style="text-align:center; font-size:.9rem; font-weight:700; color:#555; margin-top:8px;">Frutas</div>
+    <div style="text-align:center; font-size:.85rem; color:#888;">← Eixo horizontal</div>
+  </div>
+
+  <div class="clique-info">Use os botões + e − abaixo de cada barra para ajustar o valor!</div>
+  <div class="controles" id="controles"></div>
+
+  <button class="verificar-btn" id="verificarBtn" onclick="verificarGrafico()">Verificar gráfico ✔</button>
+
+  <div class="perguntas-card" id="perguntasCard">
+    <h3>📊 Agora interprete o gráfico!</h3>
+    <div class="pergunta-item" id="p1">
+      <p>1. Qual fruta foi escolhida por mais alunos?</p>
+      <div class="opcoes-interp">
+        <button class="opt-interp" onclick="respInterp(1,'maca',this)">🍎 Maçã</button>
+        <button class="opt-interp" onclick="respInterp(1,'morango',this)">🍓 Morango</button>
+        <button class="opt-interp" onclick="respInterp(1,'banana',this)">🍌 Banana</button>
+      </div>
+      <div class="fb-interp" id="fb1"></div>
+    </div>
+    <div class="pergunta-item" id="p2">
+      <p>2. Qual fruta foi escolhida por menos alunos?</p>
+      <div class="opcoes-interp">
+        <button class="opt-interp" onclick="respInterp(2,'banana',this)">🍌 Banana</button>
+        <button class="opt-interp" onclick="respInterp(2,'laranja',this)">🍊 Laranja</button>
+        <button class="opt-interp" onclick="respInterp(2,'maca',this)">🍎 Maçã</button>
+      </div>
+      <div class="fb-interp" id="fb2"></div>
+    </div>
+  </div>
+
+  <div class="result-card" id="rcard">
+    <div class="result-emoji">🎉🟦📊</div>
+    <div class="result-msg">Parabéns! Você montou e leu o gráfico de barras!</div>
+  </div>
+  <button class="back-btn" onclick="voltarAoPortal()">← Voltar ao Portal</button>
+</div>
+<script>
+(function () {
+  var dados = [
+    { label: '🍎 Maçã',    valor: 8,  atual: 0 },
+    { label: '🍌 Banana',  valor: 5,  atual: 0 },
+    { label: '🍓 Morango', valor: 10, atual: 0 },
+    { label: '🍊 Laranja', valor: 3,  atual: 0 }
+  ];
+  var MAX = 12;
+  var graficoOk = false;
+  var p1ok = false;
+  var p2ok = false;
+
+  // Eixo Y
+  var eixoY = document.getElementById('eixoY');
+  for (var y = 0; y <= MAX; y += 2) {
+    var sp = document.createElement('span');
+    sp.textContent = y;
+    eixoY.appendChild(sp);
+  }
+
+  // Barras
+  var grafArea = document.getElementById('grafArea');
+  var controles = document.getElementById('controles');
+  dados.forEach(function(d, i) {
+    // coluna
+    var wrap = document.createElement('div');
+    wrap.className = 'coluna-wrap';
+
+    var outer = document.createElement('div');
+    outer.className = 'barra-outer';
+
+    var inner = document.createElement('div');
+    inner.className = 'barra-inner';
+    inner.id = 'barra' + i;
+    inner.style.height = '0px';
+
+    var val = document.createElement('div');
+    val.className = 'barra-val';
+    val.id = 'barraVal' + i;
+    val.textContent = '0';
+    inner.appendChild(val);
+    outer.appendChild(inner);
+
+    var lbl = document.createElement('div');
+    lbl.className = 'barra-label';
+    lbl.textContent = d.label;
+
+    wrap.appendChild(outer);
+    wrap.appendChild(lbl);
+    grafArea.appendChild(wrap);
+
+    // Controles +/-
+    var ctrlWrap = document.createElement('div');
+    ctrlWrap.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:4px;';
+
+    var labelCtrl = document.createElement('div');
+    labelCtrl.textContent = d.label;
+    labelCtrl.style.cssText = 'font-size:.85rem;font-weight:800;color:#444;text-align:center;';
+
+    var btnMais = document.createElement('button');
+    btnMais.className = 'ctrl-btn';
+    btnMais.textContent = '+';
+    btnMais.addEventListener('click', (function(idx){ return function(){ ajustar(idx, 1); }; })(i));
+
+    var valCtrl = document.createElement('div');
+    valCtrl.id = 'ctrlVal' + i;
+    valCtrl.textContent = '0';
+    valCtrl.style.cssText = 'font-family:Baloo 2,sans-serif;font-size:1.4rem;font-weight:900;color:var(--primary);min-width:36px;text-align:center;';
+
+    var btnMenos = document.createElement('button');
+    btnMenos.className = 'ctrl-btn';
+    btnMenos.textContent = '−';
+    btnMenos.addEventListener('click', (function(idx){ return function(){ ajustar(idx, -1); }; })(i));
+
+    ctrlWrap.appendChild(labelCtrl);
+    ctrlWrap.appendChild(btnMais);
+    ctrlWrap.appendChild(valCtrl);
+    ctrlWrap.appendChild(btnMenos);
+    controles.appendChild(ctrlWrap);
+  });
+
+  function ajustar(idx, delta) {
+    if (graficoOk) return;
+    dados[idx].atual = Math.max(0, Math.min(MAX, dados[idx].atual + delta));
+    renderBarra(idx);
+  }
+
+  function renderBarra(i) {
+    var d = dados[i];
+    var pct = d.atual / MAX;
+    var barra = document.getElementById('barra' + i);
+    barra.style.height = (pct * 220) + 'px';
+    document.getElementById('barraVal' + i).textContent = d.atual;
+    document.getElementById('ctrlVal' + i).textContent = d.atual;
+    if (d.atual > 0) barra.classList.add('ativa'); else barra.classList.remove('ativa');
+  }
+
+  function verificarGrafico() {
+    var tudo = dados.every(function(d) { return d.atual === d.valor; });
+    if (tudo) {
+      graficoOk = true;
+      dados.forEach(function(_, i) {
+        var b = document.getElementById('barra' + i);
+        b.style.background = 'linear-gradient(180deg, #6ee7a0, #22c55e)';
+      });
+      playSound('correct');
+      document.getElementById('verificarBtn').textContent = '✅ Gráfico correto! Agora responda as perguntas!';
+      document.getElementById('verificarBtn').style.background = 'linear-gradient(135deg,#22c55e,#6ee7a0)';
+      document.getElementById('perguntasCard').style.display = 'block';
+    } else {
+      playSound('wrong');
+      // Mostrar dica visual
+      dados.forEach(function(d, i) {
+        var b = document.getElementById('barra' + i);
+        if (d.atual !== d.valor) {
+          b.style.outline = '3px solid #ef4444';
+        } else {
+          b.style.outline = '3px solid #22c55e';
+        }
+      });
+      document.getElementById('verificarBtn').textContent = 'Ajuste as barras em vermelho e tente novamente!';
+    }
+  }
+
+  var respP1 = false;
+  var respP2 = false;
+
+  function respInterp(num, resp, btn) {
+    if (num === 1 && respP1) return;
+    if (num === 2 && respP2) return;
+    var corretas = { 1: 'morango', 2: 'laranja' };
+    var certo = resp === corretas[num];
+    var fb = document.getElementById('fb' + num);
+    var btns = document.querySelectorAll('#p' + num + ' .opt-interp');
+    btns.forEach(function(b) { b.disabled = true; });
+    if (certo) {
+      btn.classList.add('correta');
+      fb.textContent = num === 1 ? '✅ Correto! Morango teve 10 alunos — a maior barra!' : '✅ Correto! Laranja teve apenas 3 alunos — a menor barra!';
+      fb.className = 'fb-interp show ok';
+      playSound('correct');
+      if (num === 1) respP1 = true; else respP2 = true;
+    } else {
+      btn.classList.add('errada');
+      fb.textContent = num === 1 ? '❌ Olhe a barra mais alta — é o Morango (10 alunos)!' : '❌ Olhe a barra mais baixa — é a Laranja (3 alunos)!';
+      fb.className = 'fb-interp show err';
+      playSound('wrong');
+      if (num === 1) respP1 = true; else respP2 = true;
+    }
+    if (respP1 && respP2) {
+      setTimeout(function() {
+        window.sabendoScore = 100;
+        document.getElementById('rcard').style.display = 'block';
+      }, 600);
+    }
+  }
+
+  function playSound(type) {
+    try {
+      var ctx = new (window.AudioContext || window.webkitAudioContext)();
+      var o = ctx.createOscillator();
+      var g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      if (type === 'correct') {
+        o.frequency.setValueAtTime(523, ctx.currentTime);
+        o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+        o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+        g.gain.setValueAtTime(0.3, ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+        o.start(); o.stop(ctx.currentTime + 0.5);
+      } else {
+        o.frequency.setValueAtTime(300, ctx.currentTime);
+        o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+        g.gain.setValueAtTime(0.3, ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+        o.start(); o.stop(ctx.currentTime + 0.4);
+      }
+    } catch(e) {}
+  }
+
+  window.verificarGrafico = verificarGrafico;
+  window.respInterp = respInterp;
+})();
+</script>
+
+<!-- GAMIFICAÇÃO -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'centena-e-mil';
+  var DISCIPLINE    = 'matematica';
+  var ACTIVITY_TYPE = 'grafico';
+  var TOTAL_ATIV    = 5;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Cento',
+        characterEmoji:  '🟦',
+        characterImg:    'chars/cento.png',
+        themeLabel:      'A Centena e o Número 1.000 · Matemática',
+        totalActivities: TOTAL_ATIV,
+        activityType:    ACTIVITY_TYPE,
+        primaryColor:    '#0AACE8',
+        lightColor:      '#5AC8FB',
+        bgColor:         '#EFF9FF',
+        glowRgb:         '10,172,232',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _s = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _s = v;
+      var btn = document.getElementById('gamificacao-btn');
+      if (btn) btn.style.display = 'block';
+    },
+    get: function () { return _s; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#0AACE8,#5AC8FB);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>

@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arrastar — Pares e Ímpares | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #0AACE8;
+  --light: #5AC8FB;
+  --bg: #EFF9FF;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100vh; }
+
+.header {
+  background: linear-gradient(135deg, #044A7A, #0AACE8 60%, #5AC8FB);
+  color: #fff;
+  padding: 20px 24px;
+  text-align: center;
+}
+.header .emoji { font-size: 2.4rem; display: block; margin-bottom: 6px; }
+.header h1 { font-family: 'Baloo 2', sans-serif; font-size: 1.5rem; font-weight: 900; }
+.header p { font-size: 1rem; opacity: 0.9; margin-top: 4px; }
+
+.container { max-width: 760px; margin: 0 auto; padding: 24px 16px; }
+
+.instrucao {
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px 20px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1a2e3b;
+  margin-bottom: 20px;
+  border-left: 5px solid var(--primary);
+  box-shadow: 0 2px 10px rgba(10,172,232,0.1);
+}
+
+.placar {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 20px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+.placar span {
+  background: #fff;
+  border-radius: 50px;
+  padding: 8px 20px;
+  box-shadow: 0 2px 10px rgba(10,172,232,0.1);
+  color: var(--primary);
+}
+
+/* Banco de números */
+.banco {
+  background: #fff;
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 12px rgba(10,172,232,0.1);
+  min-height: 100px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+}
+.banco-label {
+  width: 100%;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #64748b;
+  margin-bottom: 4px;
+}
+
+.numero-chip {
+  background: var(--bg);
+  border: 2.5px solid var(--primary);
+  color: #1a2e3b;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 900;
+  border-radius: 14px;
+  padding: 10px 18px;
+  min-width: 60px;
+  min-height: 54px;
+  cursor: grab;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  transition: transform 0.15s, box-shadow 0.15s;
+  touch-action: none;
+}
+.numero-chip:hover { transform: scale(1.08); box-shadow: 0 4px 14px rgba(10,172,232,0.25); }
+.numero-chip.dragging { opacity: 0.5; transform: scale(1.1); }
+
+/* Colunas drop */
+.colunas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.coluna {
+  background: #fff;
+  border-radius: 20px;
+  padding: 16px;
+  box-shadow: 0 2px 12px rgba(10,172,232,0.1);
+  min-height: 180px;
+  border: 3px dashed #c7eaf9;
+  transition: border-color 0.2s, background 0.2s;
+}
+.coluna.over { border-color: var(--primary); background: #daf1fc; }
+.coluna-header {
+  text-align: center;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 900;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #e0f2fe;
+}
+.coluna-par .coluna-header { color: #0369a1; }
+.coluna-impar .coluna-header { color: #7c3aed; }
+.coluna-drop {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 80px;
+  justify-content: center;
+  align-items: flex-start;
+}
+.chip-colocado {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 900;
+  border-radius: 12px;
+  padding: 8px 16px;
+  min-height: 48px;
+  min-width: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.chip-certo { background: #d1fae5; color: #166534; border: 2px solid #22c55e; }
+.chip-errado { background: #fee2e2; color: #991b1b; border: 2px solid #ef4444; }
+
+.btn-verificar {
+  display: block;
+  margin: 0 auto 16px;
+  background: linear-gradient(135deg, var(--primary), var(--light));
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 16px 40px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(10,172,232,0.25);
+  min-height: 54px;
+}
+.btn-prox {
+  display: none;
+  margin: 0 auto 16px;
+  background: #f0f9ff;
+  border: 2.5px solid var(--primary);
+  color: var(--primary);
+  border-radius: 50px;
+  padding: 14px 36px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  min-height: 54px;
+}
+
+.feedback-geral {
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 700;
+  padding: 12px;
+  border-radius: 14px;
+  margin-bottom: 16px;
+  display: none;
+}
+.feedback-geral.show { display: block; }
+.feedback-geral.ok { background: #d1fae5; color: #166534; }
+.feedback-geral.parcial { background: #fef9c3; color: #854d0e; }
+
+.resultado-final {
+  display: none;
+  background: #fff;
+  border-radius: 24px;
+  padding: 36px 28px;
+  text-align: center;
+  box-shadow: 0 4px 24px rgba(10,172,232,0.15);
+  margin-bottom: 20px;
+}
+.resultado-final.show { display: block; }
+.resultado-final .big-emoji { font-size: 4rem; margin-bottom: 12px; }
+.resultado-final h2 { font-family: 'Baloo 2', sans-serif; font-size: 2rem; font-weight: 900; color: var(--primary); }
+.resultado-final .score { font-size: 1.5rem; font-weight: 800; color: #1a2e3b; margin: 10px 0; }
+
+.footer { text-align: center; padding: 24px 16px 32px; }
+.btn-back {
+  background: transparent;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  border-radius: 50px;
+  padding: 12px 28px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  min-height: 44px;
+}
+
+@media (max-width: 480px) {
+  .colunas { grid-template-columns: 1fr; }
+  .header h1 { font-size: 1.25rem; }
+  .coluna-header { font-size: 1.15rem; }
+  .numero-chip { font-size: 1.3rem; padding: 10px 14px; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="emoji">🎲</span>
+  <h1>Par ou Ímpar?</h1>
+  <p>Arraste cada número para a coluna certa!</p>
+</div>
+
+<div class="container">
+  <div class="instrucao" id="instrucao">
+    🎯 Arraste (ou toque e solte) cada número para a coluna <strong>Par 👑</strong> ou <strong>Ímpar 🎩</strong>.
+  </div>
+
+  <div class="placar">
+    <span id="placarTexto">Rodada 1 de 2</span>
+  </div>
+
+  <div class="banco" id="banco">
+    <div class="banco-label">Números para classificar:</div>
+  </div>
+
+  <div class="colunas">
+    <div class="coluna coluna-par" id="colunaPar" ondragover="allowDrop(event)" ondrop="onDrop(event,'par')">
+      <div class="coluna-header">Par 👑</div>
+      <div class="coluna-drop" id="dropPar"></div>
+    </div>
+    <div class="coluna coluna-impar" id="colunaImpar" ondragover="allowDrop(event)" ondrop="onDrop(event,'impar')">
+      <div class="coluna-header">Ímpar 🎩</div>
+      <div class="coluna-drop" id="dropImpar"></div>
+    </div>
+  </div>
+
+  <div class="feedback-geral" id="feedbackGeral"></div>
+  <button class="btn-verificar" id="btnVerificar" onclick="verificar()">Verificar ✔</button>
+  <button class="btn-prox" id="btnProx" onclick="proximaRodada()">Próxima rodada →</button>
+
+  <div class="resultado-final" id="resultadoFinal">
+    <div class="big-emoji" id="finalEmoji">🎉</div>
+    <h2>Atividade concluída!</h2>
+    <div class="score" id="finalScore"></div>
+    <p style="color:#475569;font-size:1.1rem;margin:8px 0 16px">Você classificou todos os números!</p>
+  </div>
+</div>
+
+<div class="footer">
+  <button class="btn-back" onclick="voltarAoPortal()">← Voltar ao Portal</button>
+</div>
+
+<!-- GAMIFICAÇÃO -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'pares-impares-dezenas-exatas';
+  var DISCIPLINE    = 'matematica';
+  var ACTIVITY_TYPE = 'arrastar';
+  var TOTAL_ATIV    = 5;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Duo',
+        characterEmoji:  '🎲',
+        characterImg:    'chars/duo.png',
+        themeLabel:      'Pares, Ímpares e Dezenas Exatas · Matemática',
+        totalActivities: TOTAL_ATIV,
+        activityType:    ACTIVITY_TYPE,
+        primaryColor:    '#0AACE8',
+        lightColor:      '#5AC8FB',
+        bgColor:         '#EFF9FF',
+        glowRgb:         '10,172,232',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _scoreVal = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _scoreVal = v;
+      var btn = document.getElementById('gamificacao-btn');
+      if (btn) btn.style.display = 'block';
+    },
+    get: function () { return _scoreVal; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#0AACE8,#5AC8FB);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+
+<script>
+// Rodadas: 1..10 e 11..20
+var rodadas = [
+  [1,2,3,4,5,6,7,8,9,10],
+  [11,12,13,14,15,16,17,18,19,20]
+];
+var rodadaAtual = 0;
+var acertosTotais = 0;
+var totalNumeros = 20;
+var arrastando = null;  // chip sendo arrastado (touch)
+var touchClone = null;
+
+// Mapa: número → classificação correta
+function ehPar(n) { return n % 2 === 0; }
+
+// Estado da rodada
+var colocados = {}; // numero -> 'par'|'impar'
+
+function playSound(tipo) {
+  try {
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    var o = ctx.createOscillator();
+    var g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    if (tipo === 'correct') {
+      o.frequency.setValueAtTime(523, ctx.currentTime);
+      o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+      o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+      o.start(); o.stop(ctx.currentTime + 0.5);
+    } else {
+      o.frequency.setValueAtTime(300, ctx.currentTime);
+      o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      o.start(); o.stop(ctx.currentTime + 0.4);
+    }
+  } catch(e) {}
+}
+
+function renderizarRodada() {
+  colocados = {};
+  document.getElementById('dropPar').innerHTML = '';
+  document.getElementById('dropImpar').innerHTML = '';
+  document.getElementById('feedbackGeral').className = 'feedback-geral';
+  document.getElementById('feedbackGeral').textContent = '';
+  document.getElementById('btnVerificar').style.display = 'block';
+  document.getElementById('btnProx').style.display = 'none';
+
+  var nums = rodadas[rodadaAtual].slice();
+  // embaralhar
+  for (var i = nums.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = nums[i]; nums[i] = nums[j]; nums[j] = tmp;
+  }
+
+  var banco = document.getElementById('banco');
+  banco.innerHTML = '<div class="banco-label">Números para classificar:</div>';
+  nums.forEach(function(n) {
+    var chip = criarChip(n);
+    banco.appendChild(chip);
+  });
+
+  document.getElementById('placarTexto').textContent = 'Rodada ' + (rodadaAtual + 1) + ' de 2';
+}
+
+function criarChip(num) {
+  var chip = document.createElement('div');
+  chip.className = 'numero-chip';
+  chip.textContent = num;
+  chip.draggable = true;
+  chip.setAttribute('data-num', num);
+
+  // Mouse drag
+  chip.addEventListener('dragstart', function(e) {
+    e.dataTransfer.setData('text/plain', num);
+    chip.classList.add('dragging');
+  });
+  chip.addEventListener('dragend', function() {
+    chip.classList.remove('dragging');
+  });
+
+  // Touch drag (ERR-004: passive:false)
+  chip.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    arrastando = num;
+    var toque = e.touches[0];
+    // cria clone visual
+    touchClone = chip.cloneNode(true);
+    touchClone.style.position = 'fixed';
+    touchClone.style.opacity = '0.85';
+    touchClone.style.pointerEvents = 'none';
+    touchClone.style.zIndex = '9999';
+    touchClone.style.width = chip.offsetWidth + 'px';
+    touchClone.style.left = (toque.clientX - chip.offsetWidth / 2) + 'px';
+    touchClone.style.top = (toque.clientY - chip.offsetHeight / 2) + 'px';
+    document.body.appendChild(touchClone);
+    chip.style.opacity = '0.4';
+  }, { passive: false });
+
+  chip.addEventListener('touchmove', function(e) {
+    e.preventDefault();
+    if (!touchClone) return;
+    var toque = e.touches[0];
+    touchClone.style.left = (toque.clientX - touchClone.offsetWidth / 2) + 'px';
+    touchClone.style.top = (toque.clientY - touchClone.offsetHeight / 2) + 'px';
+  }, { passive: false });
+
+  chip.addEventListener('touchend', function(e) {
+    if (touchClone) { touchClone.remove(); touchClone = null; }
+    chip.style.opacity = '1';
+    if (arrastando === null) return;
+    var toque = e.changedTouches[0];
+    var elAbaixo = document.elementFromPoint(toque.clientX, toque.clientY);
+    var col = null;
+    if (elAbaixo) {
+      var parent = elAbaixo;
+      while (parent && !parent.classList.contains('coluna')) parent = parent.parentElement;
+      if (parent && parent.id === 'colunaPar') col = 'par';
+      if (parent && parent.id === 'colunaImpar') col = 'impar';
+    }
+    if (col) { soltar(arrastando, col, chip); }
+    arrastando = null;
+  });
+
+  return chip;
+}
+
+function allowDrop(e) { e.preventDefault(); }
+
+function onDrop(e, coluna) {
+  e.preventDefault();
+  var num = parseInt(e.dataTransfer.getData('text/plain'));
+  var chipOrigem = document.querySelector('[data-num="' + num + '"]');
+  soltar(num, coluna, chipOrigem);
+}
+
+function soltar(num, coluna, chipOrigem) {
+  if (!chipOrigem) return;
+  // Remove do banco e colunas
+  chipOrigem.remove();
+
+  // Registra posição
+  colocados[num] = coluna;
+
+  // Adiciona na coluna (sem feedback de certo/errado ainda)
+  var chip = document.createElement('div');
+  chip.className = 'chip-colocado';
+  chip.textContent = num;
+  chip.setAttribute('data-num', num);
+  chip.style.background = coluna === 'par' ? '#e0f2fe' : '#f3e8ff';
+  chip.style.color = coluna === 'par' ? '#0369a1' : '#7c3aed';
+  chip.style.border = '2px solid ' + (coluna === 'par' ? '#0AACE8' : '#a855f7');
+  document.getElementById(coluna === 'par' ? 'dropPar' : 'dropImpar').appendChild(chip);
+}
+
+function verificar() {
+  var nums = rodadas[rodadaAtual];
+  var acertosRodada = 0;
+
+  // Colorir chips nas colunas
+  ['par','impar'].forEach(function(col) {
+    var drop = document.getElementById(col === 'par' ? 'dropPar' : 'dropImpar');
+    drop.querySelectorAll('.chip-colocado').forEach(function(chip) {
+      var n = parseInt(chip.getAttribute('data-num'));
+      var correto = (col === 'par') ? ehPar(n) : !ehPar(n);
+      chip.className = 'chip-colocado ' + (correto ? 'chip-certo' : 'chip-errado');
+      if (correto) acertosRodada++;
+    });
+  });
+
+  // Números não arrastados ficam no banco — contar como errados
+  document.querySelectorAll('.banco .numero-chip').forEach(function(chip) {
+    chip.style.opacity = '0.4';
+    chip.draggable = false;
+  });
+
+  acertosTotais += acertosRodada;
+  playSound(acertosRodada === nums.length ? 'correct' : 'wrong');
+
+  var fb = document.getElementById('feedbackGeral');
+  if (acertosRodada === nums.length) {
+    fb.textContent = '🎉 Perfeito! Todos os ' + nums.length + ' números no lugar certo!';
+    fb.className = 'feedback-geral show ok';
+  } else {
+    fb.textContent = '🔍 Você acertou ' + acertosRodada + ' de ' + nums.length + '. Os errados estão em vermelho.';
+    fb.className = 'feedback-geral show parcial';
+  }
+
+  document.getElementById('btnVerificar').style.display = 'none';
+  if (rodadaAtual < rodadas.length - 1) {
+    document.getElementById('btnProx').style.display = 'block';
+    document.getElementById('btnProx').textContent = 'Próxima rodada →';
+  } else {
+    document.getElementById('btnProx').style.display = 'block';
+    document.getElementById('btnProx').textContent = 'Ver resultado 🏆';
+  }
+}
+
+function proximaRodada() {
+  if (rodadaAtual < rodadas.length - 1) {
+    rodadaAtual++;
+    renderizarRodada();
+  } else {
+    mostrarResultadoFinal();
+  }
+}
+
+function mostrarResultadoFinal() {
+  var pct = Math.round((acertosTotais / totalNumeros) * 100);
+  window.sabendoScore = pct;
+
+  document.getElementById('banco').style.display = 'none';
+  document.getElementById('instrucao').style.display = 'none';
+  document.querySelector('.colunas').style.display = 'none';
+  document.getElementById('feedbackGeral').style.display = 'none';
+  document.getElementById('btnProx').style.display = 'none';
+  document.getElementById('placarTexto').textContent = 'Concluído!';
+
+  var rf = document.getElementById('resultadoFinal');
+  rf.classList.add('show');
+  document.getElementById('finalEmoji').textContent = pct >= 80 ? '🎉' : pct >= 50 ? '😊' : '💪';
+  document.getElementById('finalScore').textContent = acertosTotais + ' de ' + totalNumeros + ' acertos (' + pct + '%)';
+}
+
+window.verificar = verificar;
+window.proximaRodada = proximaRodada;
+window.allowDrop = allowDrop;
+window.onDrop = onDrop;
+
+renderizarRodada();
+</script>
+
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>

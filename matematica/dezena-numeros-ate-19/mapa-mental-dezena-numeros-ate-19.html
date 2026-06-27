@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapa Mental — A Dezena e os Números até 19 | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root { --primary: #0AACE8; --light: #5AC8FB; --bg: #EFF9FF; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100vh; }
+.header { background: linear-gradient(135deg, #044A7A, #0AACE8 60%, #5AC8FB); color: #fff; padding: 20px 24px; text-align: center; }
+.header h1 { font-family: 'Baloo 2', sans-serif; font-size: 1.5rem; font-weight: 900; }
+.header p { font-size: 1rem; opacity: 0.9; margin-top: 4px; }
+.container { max-width: 760px; margin: 0 auto; padding: 20px 16px; }
+.instrucao { background: #fff; border-radius: 14px; padding: 14px 18px; margin-bottom: 18px; font-size: 1.2rem; font-weight: 700; color: #1a2a3a; text-align: center; box-shadow: 0 2px 8px rgba(10,172,232,.1); }
+.banco-nodes { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; background: #fff; border-radius: 16px; padding: 16px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(10,172,232,.1); min-height: 60px; }
+.node { background: linear-gradient(135deg, #0AACE8, #5AC8FB); color: #fff; border-radius: 14px; padding: 10px 18px; font-family: 'Baloo 2', sans-serif; font-size: 1.2rem; font-weight: 800; cursor: grab; user-select: none; min-height: 44px; min-width: 60px; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 8px rgba(10,172,232,.3); transition: transform .15s; touch-action: none; }
+.node:hover { transform: scale(1.07); }
+.node.arrastando { opacity: 0.45; }
+.slots-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+.slot-card { background: #fff; border-radius: 16px; padding: 14px; box-shadow: 0 2px 10px rgba(10,172,232,.1); }
+.slot-label { font-size: 1rem; font-weight: 800; color: #1a2a3a; margin-bottom: 10px; text-align: center; line-height: 1.3; }
+.slot-drop { min-height: 52px; border-radius: 10px; border: 2.5px dashed #C8E8F8; display: flex; align-items: center; justify-content: center; transition: background .2s; }
+.slot-drop.over { background: #EFF9FF; border-color: var(--primary); }
+.slot-drop .node { font-size: 1.1rem; padding: 8px 14px; }
+.slot-drop.correto { border-color: #10B981; background: #D1FAE5; }
+.slot-drop.errado { border-color: #EF4444; background: #FEE2E2; }
+.slot-drop.correto .node { background: linear-gradient(135deg, #059669, #10B981); }
+.slot-drop.errado .node { background: linear-gradient(135deg, #DC2626, #EF4444); }
+.acoes { display: flex; gap: 12px; justify-content: center; margin-bottom: 16px; flex-wrap: wrap; }
+.btn-verificar { padding: 14px 32px; background: var(--primary); color: #fff; border: none; border-radius: 50px; font-family: 'Baloo 2', sans-serif; font-size: 1.1rem; font-weight: 800; cursor: pointer; min-height: 48px; }
+.btn-reiniciar { padding: 14px 32px; background: #fff; color: var(--primary); border: 2.5px solid var(--primary); border-radius: 50px; font-family: 'Baloo 2', sans-serif; font-size: 1.1rem; font-weight: 800; cursor: pointer; display: none; }
+.feedback-geral { text-align: center; font-size: 1.2rem; font-weight: 800; padding: 14px; border-radius: 14px; margin-bottom: 16px; display: none; }
+.feedback-geral.ok { background: #D1FAE5; color: #065F46; display: block; }
+.feedback-geral.nao { background: #FEE2E2; color: #7F1D1D; display: block; }
+.gabarito { background: #fff; border-radius: 14px; padding: 16px; margin-bottom: 16px; display: none; box-shadow: 0 2px 8px rgba(10,172,232,.1); }
+.gabarito.show { display: block; }
+.gabarito h3 { font-family: 'Baloo 2', sans-serif; font-size: 1.1rem; color: var(--primary); margin-bottom: 10px; }
+.gabarito ul { list-style: none; padding: 0; }
+.gabarito li { font-size: 1rem; font-weight: 700; padding: 4px 0; color: #1a2a3a; }
+.voltar { display: block; text-align: center; margin-top: 12px; color: var(--primary); font-weight: 700; cursor: pointer; font-size: 1rem; }
+@media (max-width: 480px) {
+  .slots-grid { grid-template-columns: 1fr; }
+  .header h1 { font-size: 1.2rem; }
+  .node { font-size: 1rem; padding: 8px 14px; }
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <div style="font-size:2.5rem;margin-bottom:6px;">🟨</div>
+  <h1>Mapa Mental — Dezena e Ábaco</h1>
+  <p>Arraste cada resposta para o lugar certo! 🧠</p>
+</div>
+<div class="container">
+  <div class="instrucao">Arraste as respostas para completar as afirmações sobre a dezena!</div>
+  <div class="banco-nodes" id="banco"></div>
+  <div class="slots-grid" id="slots-grid"></div>
+  <div class="feedback-geral" id="feedback-geral"></div>
+  <div class="gabarito" id="gabarito">
+    <h3>Gabarito:</h3>
+    <ul id="lista-gabarito"></ul>
+  </div>
+  <div class="acoes">
+    <button class="btn-verificar" id="btn-verificar" onclick="verificar()">Verificar ✅</button>
+    <button class="btn-reiniciar" id="btn-reiniciar" onclick="reiniciar()">Tentar de Novo 🔄</button>
+  </div>
+  <span class="voltar" onclick="voltarAoPortal()">← Voltar ao Portal</span>
+</div>
+
+<script>
+(function () {
+  // Slots = afirmações pedagógicas válidas do livro
+  // Nodes = respostas certas
+  var slots = [
+    { id: 's1', label: '1 dezena tem ____ unidades', correta: '10' },
+    { id: 's2', label: 'A barrinha do material dourado representa ____', correta: '1 dezena' },
+    { id: 's3', label: 'O cubinho do material dourado representa ____', correta: '1 unidade' },
+    { id: 's4', label: 'No ábaco, a casa D representa as ____', correta: 'dezenas' },
+    { id: 's5', label: 'No ábaco, a casa U representa as ____', correta: 'unidades' },
+    { id: 's6', label: 'No quadro de ordens, a letra D significa ____', correta: 'Dezenas' }
+  ];
+
+  var nodes = ['10', '1 dezena', '1 unidade', 'dezenas', 'unidades', 'Dezenas'];
+
+  var arrastando = null;
+  var touchEl = null;
+  var ghostEl = null;
+  var touchOffX = 0, touchOffY = 0;
+
+  function embaralhar(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  function playSound(tipo) {
+    try {
+      var ctx = new (window.AudioContext || window.webkitAudioContext)();
+      var o = ctx.createOscillator(); var g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      if (tipo === 'correct') {
+        o.frequency.setValueAtTime(523, ctx.currentTime);
+        o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+        o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+        g.gain.setValueAtTime(0.3, ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+        o.start(); o.stop(ctx.currentTime + 0.5);
+      } else {
+        o.frequency.setValueAtTime(300, ctx.currentTime);
+        o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+        g.gain.setValueAtTime(0.3, ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+        o.start(); o.stop(ctx.currentTime + 0.4);
+      }
+    } catch (e) {}
+  }
+
+  function criarNode(texto) {
+    var el = document.createElement('div');
+    el.className = 'node';
+    el.textContent = texto;
+    el.setAttribute('data-val', texto);
+    el.draggable = true;
+    el.addEventListener('dragstart', function (e) {
+      arrastando = el;
+      el.classList.add('arrastando');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    el.addEventListener('dragend', function () {
+      el.classList.remove('arrastando');
+      arrastando = null;
+    });
+    el.addEventListener('touchstart', function (e) {
+      e.preventDefault();
+      touchEl = el;
+      var t = e.touches[0];
+      var r = el.getBoundingClientRect();
+      touchOffX = t.clientX - r.left;
+      touchOffY = t.clientY - r.top;
+      ghostEl = el.cloneNode(true);
+      ghostEl.style.cssText = 'position:fixed;opacity:.85;pointer-events:none;z-index:9999;width:' + r.width + 'px;';
+      ghostEl.style.left = (t.clientX - touchOffX) + 'px';
+      ghostEl.style.top  = (t.clientY - touchOffY) + 'px';
+      document.body.appendChild(ghostEl);
+      el.style.opacity = '0.4';
+    }, { passive: false });
+    el.addEventListener('touchmove', function (e) {
+      e.preventDefault();
+      var t = e.touches[0];
+      if (ghostEl) {
+        ghostEl.style.left = (t.clientX - touchOffX) + 'px';
+        ghostEl.style.top  = (t.clientY - touchOffY) + 'px';
+      }
+    }, { passive: false });
+    el.addEventListener('touchend', function (e) {
+      e.preventDefault();
+      if (ghostEl) { document.body.removeChild(ghostEl); ghostEl = null; }
+      if (touchEl) touchEl.style.opacity = '';
+      var t = e.changedTouches[0];
+      var alvo = document.elementFromPoint(t.clientX, t.clientY);
+      var drop = alvo ? alvo.closest('.slot-drop') : null;
+      if (drop && touchEl) {
+        // devolver node anterior ao banco
+        var prev = drop.querySelector('.node');
+        if (prev) document.getElementById('banco').appendChild(prev);
+        drop.appendChild(touchEl);
+      }
+      touchEl = null;
+    }, { passive: false });
+    return el;
+  }
+
+  function iniciar() {
+    document.getElementById('feedback-geral').className = 'feedback-geral';
+    document.getElementById('gabarito').className = 'gabarito';
+    document.getElementById('btn-verificar').style.display = 'block';
+    document.getElementById('btn-reiniciar').style.display = 'none';
+    // banco
+    var banco = document.getElementById('banco');
+    banco.innerHTML = '';
+    var shuffled = embaralhar(nodes);
+    shuffled.forEach(function (n) { banco.appendChild(criarNode(n)); });
+    // slots
+    var grid = document.getElementById('slots-grid');
+    grid.innerHTML = '';
+    slots.forEach(function (s) {
+      var card = document.createElement('div');
+      card.className = 'slot-card';
+      var label = document.createElement('div');
+      label.className = 'slot-label';
+      label.textContent = s.label;
+      var drop = document.createElement('div');
+      drop.className = 'slot-drop';
+      drop.setAttribute('data-slot', s.id);
+      drop.setAttribute('data-correta', s.correta);
+      drop.addEventListener('dragover', function (e) { e.preventDefault(); drop.classList.add('over'); });
+      drop.addEventListener('dragleave', function () { drop.classList.remove('over'); });
+      drop.addEventListener('drop', function (e) {
+        e.preventDefault();
+        drop.classList.remove('over');
+        if (arrastando) {
+          var prev = drop.querySelector('.node');
+          if (prev) document.getElementById('banco').appendChild(prev);
+          drop.appendChild(arrastando);
+        }
+      });
+      card.appendChild(label);
+      card.appendChild(drop);
+      grid.appendChild(card);
+    });
+  }
+
+  function verificar() {
+    var drops = document.querySelectorAll('.slot-drop');
+    var acertos = 0;
+    drops.forEach(function (drop) {
+      var correta = drop.getAttribute('data-correta');
+      var node = drop.querySelector('.node');
+      var val = node ? node.getAttribute('data-val') : null;
+      drop.classList.remove('correto', 'errado');
+      if (val === correta) { drop.classList.add('correto'); acertos++; }
+      else { drop.classList.add('errado'); }
+    });
+    window.sabendoScore = 100; // mapa mental: score 100 ao concluir
+    var fb = document.getElementById('feedback-geral');
+    if (acertos === slots.length) {
+      fb.textContent = 'Perfeito! Você completou o mapa mental! 🟨🎉';
+      fb.className = 'feedback-geral ok';
+      playSound('correct');
+    } else {
+      fb.textContent = 'Você acertou ' + acertos + ' de ' + slots.length + '. Veja o gabarito! 💪';
+      fb.className = 'feedback-geral nao';
+      playSound('wrong');
+      // mostrar gabarito
+      var gab = document.getElementById('gabarito');
+      gab.className = 'gabarito show';
+      var lista = document.getElementById('lista-gabarito');
+      lista.innerHTML = '';
+      slots.forEach(function (s) {
+        var li = document.createElement('li');
+        li.textContent = '• ' + s.label.replace('____', '"' + s.correta + '"');
+        lista.appendChild(li);
+      });
+    }
+    document.getElementById('btn-verificar').style.display = 'none';
+    document.getElementById('btn-reiniciar').style.display = 'block';
+  }
+
+  function reiniciar() { iniciar(); }
+
+  window.verificar = verificar;
+  window.reiniciar = reiniciar;
+  iniciar();
+})();
+</script>
+
+<!-- ── GAMIFICAÇÃO ─────────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'dezena-numeros-ate-19';
+  var DISCIPLINE    = 'matematica';
+  var ACTIVITY_TYPE = 'mapa-mental';
+  var TOTAL_ATIV    = 5;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({ user_id: uid, discipline: DISCIPLINE, theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE, score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0 });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName: 'Dezi', characterEmoji: '🟨',
+        characterImg: 'chars/dezi.png',
+        themeLabel: 'A Dezena e os Números até 19 · Matemática',
+        totalActivities: TOTAL_ATIV, activityType: ACTIVITY_TYPE,
+        primaryColor: '#0AACE8', lightColor: '#5AC8FB', bgColor: '#EFF9FF',
+        glowRgb: '10,172,232', backUrl: '../../index.html'
+      });
+    });
+  }
+  var _scoreVal = null;
+  Object.defineProperty(window, 'sabendoScore', { configurable: true,
+    set: function (v) { _scoreVal = v; var btn = document.getElementById('gamificacao-btn'); if (btn) btn.style.display = 'block'; },
+    get: function () { return _scoreVal; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+<button id="gamificacao-btn" onclick="window._abrirGamificacao()" style="display:none;margin:24px auto;padding:16px 32px;background:linear-gradient(135deg,#0AACE8,#5AC8FB);color:#fff;border:none;border-radius:50px;font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);width:fit-content;">Coletar minha carta! 🃏</button>
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>

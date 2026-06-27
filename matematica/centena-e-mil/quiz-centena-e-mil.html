@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz — A Centena e o Número 1.000 | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root { --primary: #0AACE8; --light: #5AC8FB; --bg: #EFF9FF; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; font-size: 1.1rem; background: var(--bg); min-height: 100vh; }
+.header { background: linear-gradient(135deg, #044A7A, #0AACE8 60%, #5AC8FB); color: #fff; padding: 20px 24px; text-align: center; }
+.header h1 { font-family: 'Baloo 2', sans-serif; font-size: 1.6rem; font-weight: 900; }
+.header p { font-size: 1rem; opacity: .85; margin-top: 4px; }
+.container { max-width: 680px; margin: 0 auto; padding: 24px 16px; }
+.progress { background: #d0edfb; border-radius: 20px; height: 12px; margin-bottom: 20px; }
+.progress-bar { background: linear-gradient(90deg, var(--primary), var(--light)); height: 12px; border-radius: 20px; transition: width .4s; }
+.question-card { background: #fff; border-radius: 20px; padding: 28px 24px; box-shadow: 0 4px 20px rgba(10,172,232,.12); }
+.question-num { font-size: .9rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+.question-text { font-size: 1.4rem; font-weight: 800; color: #1a3a4a; margin-bottom: 24px; line-height: 1.4; }
+.options { display: flex; flex-direction: column; gap: 12px; }
+.option-btn {
+  background: #f0faff; border: 2.5px solid #c0e6f7;
+  border-radius: 14px; padding: 16px 20px;
+  font-family: 'Nunito', sans-serif; font-size: 1.15rem; font-weight: 700;
+  color: #1a3a4a; cursor: pointer; text-align: left; min-height: 52px;
+  transition: border-color .15s, background .15s;
+}
+.option-btn:hover { border-color: var(--primary); background: #e0f5fd; }
+.option-btn.correct { border-color: #22c55e; background: #dcfce7; color: #15803d; }
+.option-btn.wrong { border-color: #ef4444; background: #fee2e2; color: #b91c1c; }
+.option-btn:disabled { cursor: default; }
+.feedback { margin-top: 16px; padding: 12px 16px; border-radius: 12px; font-size: 1.05rem; font-weight: 700; display: none; }
+.feedback.show { display: block; }
+.feedback.ok { background: #dcfce7; color: #15803d; }
+.feedback.err { background: #fee2e2; color: #b91c1c; }
+.next-btn {
+  display: none; margin-top: 20px; width: 100%;
+  background: linear-gradient(135deg, var(--primary), var(--light));
+  color: #fff; border: none; border-radius: 50px;
+  padding: 16px 24px; font-family: 'Baloo 2', sans-serif;
+  font-size: 1.15rem; font-weight: 900; cursor: pointer;
+}
+.result-card { display: none; background: #fff; border-radius: 20px; padding: 36px 28px; text-align: center; box-shadow: 0 4px 20px rgba(10,172,232,.15); }
+.result-emoji { font-size: 4rem; margin-bottom: 12px; }
+.result-score { font-family: 'Baloo 2', sans-serif; font-size: 2.8rem; font-weight: 900; color: var(--primary); }
+.result-msg { font-size: 1.2rem; font-weight: 700; color: #1a3a4a; margin-top: 8px; }
+.restart-btn {
+  margin-top: 20px; padding: 14px 32px;
+  background: linear-gradient(135deg, var(--primary), var(--light));
+  color: #fff; border: none; border-radius: 50px;
+  font-family: 'Baloo 2', sans-serif; font-size: 1.1rem; font-weight: 900; cursor: pointer;
+}
+.back-btn {
+  display: block; text-align: center; margin: 24px auto 0;
+  color: var(--primary); font-weight: 700; font-size: 1rem;
+  background: none; border: none; cursor: pointer; text-decoration: underline;
+}
+@media (max-width: 480px) {
+  body { padding: 0; font-size: 1.15rem; }
+  .question-text { font-size: 1.25rem; }
+  .option-btn { font-size: 1.1rem; }
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>🟦 Quiz — A Centena e o Número 1.000</h1>
+  <p>Cento quer saber o que você aprendeu!</p>
+</div>
+<div class="container">
+  <div class="progress"><div class="progress-bar" id="prog"></div></div>
+  <div class="question-card" id="qcard">
+    <div class="question-num" id="qnum"></div>
+    <div class="question-text" id="qtext"></div>
+    <div class="options" id="opts"></div>
+    <div class="feedback" id="fb"></div>
+    <button class="next-btn" id="nextBtn" onclick="proximaPergunta()">Próxima →</button>
+  </div>
+  <div class="result-card" id="rcard">
+    <div class="result-emoji" id="remoji"></div>
+    <div class="result-score" id="rscore"></div>
+    <div class="result-msg" id="rmsg"></div>
+    <button class="restart-btn" onclick="reiniciar()">Jogar de novo 🔄</button>
+    <div id="gamificacao-container"></div>
+  </div>
+  <button class="back-btn" onclick="voltarAoPortal()">← Voltar ao Portal</button>
+</div>
+<script>
+(function () {
+  var perguntas = [
+    {
+      q: 'Quantas unidades formam 1 centena?',
+      ops: ['100 unidades', '10 unidades', '1.000 unidades'],
+      c: 0,
+      ok: '100 unidades = 1 centena! Certinho! 🎉',
+      err: 'São 100 unidades que formam 1 centena.'
+    },
+    {
+      q: 'Quantas dezenas formam 1 centena?',
+      ops: ['100 dezenas', '10 dezenas', '5 dezenas'],
+      c: 1,
+      ok: '10 dezenas = 1 centena! Muito bem! ⭐',
+      err: 'São 10 dezenas que formam 1 centena.'
+    },
+    {
+      q: 'Como se lê o número 500?',
+      ops: ['Cinquenta', 'Quinhentos', 'Cinco mil'],
+      c: 1,
+      ok: '500 = quinhentos! Arrasou! 🎊',
+      err: '500 se lê "quinhentos".'
+    },
+    {
+      q: 'O número 136 decomposto é:',
+      ops: ['100 + 30 + 6', '1 + 3 + 6', '100 + 3 + 6'],
+      c: 0,
+      ok: '136 = 100 + 30 + 6. Perfeito! 🌟',
+      err: '136 = 100 (centena) + 30 (dezenas) + 6 (unidades).'
+    },
+    {
+      q: 'No quadro de ordens, a letra C representa:',
+      ops: ['Centenas', 'Cálculo', 'Conta'],
+      c: 0,
+      ok: 'C = Centenas no quadro de ordens! 🏆',
+      err: 'No quadro de ordens C = Centenas.'
+    },
+    {
+      q: 'Qual é a centena exata que vem depois de 400?',
+      ops: ['450', '500', '410'],
+      c: 1,
+      ok: '500 (quinhentos) vem depois de 400! 🎯',
+      err: 'A centena exata depois de 400 é 500 (quinhentos).'
+    },
+    {
+      q: '1.000 é igual a quantas centenas?',
+      ops: ['100 centenas', '1 centena', '10 centenas'],
+      c: 2,
+      ok: '10 centenas = 1.000! Excelente! 💯',
+      err: '10 centenas formam o número 1.000 (mil).'
+    },
+    {
+      q: 'A placa do material dourado tem formato de uma grade com quantos quadradinhos?',
+      ops: ['10 quadradinhos', '1.000 quadradinhos', '100 quadradinhos'],
+      c: 2,
+      ok: '100 quadradinhos na placa! Incrível! 🟦',
+      err: 'A placa do material dourado tem 100 quadradinhos (grade 10x10).'
+    }
+  ];
+
+  var ordem = [];
+  var atual = 0;
+  var acertos = 0;
+  var respondeu = false;
+  var total = perguntas.length;
+
+  function embaralhar(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  function iniciar() {
+    ordem = embaralhar(perguntas.map(function(_, i){ return i; }));
+    atual = 0; acertos = 0; respondeu = false;
+    document.getElementById('qcard').style.display = '';
+    document.getElementById('rcard').style.display = 'none';
+    mostrarPergunta();
+  }
+
+  function mostrarPergunta() {
+    respondeu = false;
+    var p = perguntas[ordem[atual]];
+    document.getElementById('qnum').textContent = 'Pergunta ' + (atual + 1) + ' de ' + total;
+    document.getElementById('qtext').textContent = p.q;
+    document.getElementById('prog').style.width = (((atual) / total) * 100) + '%';
+    var fb = document.getElementById('fb');
+    fb.className = 'feedback'; fb.textContent = '';
+    var nextBtn = document.getElementById('nextBtn');
+    nextBtn.style.display = 'none';
+
+    // Embaralhar opções
+    var idxs = embaralhar([0, 1, 2]);
+    var corretaOrig = p.c;
+    var optsEl = document.getElementById('opts');
+    optsEl.innerHTML = '';
+    idxs.forEach(function(origIdx) {
+      var btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.textContent = p.ops[origIdx];
+      btn.setAttribute('data-orig', origIdx);
+      btn.addEventListener('click', function() { responder(origIdx === corretaOrig, btn, p); });
+      optsEl.appendChild(btn);
+    });
+  }
+
+  function responder(certo, btn, p) {
+    if (respondeu) return;
+    respondeu = true;
+    var btns = document.querySelectorAll('.option-btn');
+    btns.forEach(function(b) {
+      b.disabled = true;
+      if (parseInt(b.getAttribute('data-orig')) === p.c) b.classList.add('correct');
+    });
+    var fb = document.getElementById('fb');
+    if (certo) {
+      acertos++;
+      btn.classList.add('correct');
+      fb.textContent = '✅ ' + p.ok;
+      fb.className = 'feedback show ok';
+      playSound('correct');
+    } else {
+      btn.classList.add('wrong');
+      fb.textContent = '❌ ' + p.err;
+      fb.className = 'feedback show err';
+      playSound('wrong');
+    }
+    var nextBtn = document.getElementById('nextBtn');
+    nextBtn.style.display = 'block';
+    nextBtn.textContent = atual < total - 1 ? 'Próxima →' : 'Ver resultado 🏁';
+  }
+
+  function proximaPergunta() {
+    atual++;
+    if (atual >= total) {
+      mostrarResultado();
+    } else {
+      mostrarPergunta();
+    }
+  }
+
+  function mostrarResultado() {
+    document.getElementById('qcard').style.display = 'none';
+    var rc = document.getElementById('rcard');
+    rc.style.display = 'block';
+    document.getElementById('prog').style.width = '100%';
+    var pct = Math.round((acertos / total) * 100);
+    window.sabendoScore = pct;
+    var emojis = pct >= 90 ? '🎉🏆🟦' : pct >= 60 ? '⭐😊' : '💪📚';
+    document.getElementById('remoji').textContent = emojis;
+    document.getElementById('rscore').textContent = acertos + ' de ' + total + ' (' + pct + '%)';
+    var msgs = [
+      { min: 90, txt: 'Incrível! Você dominou a centena! 🌟' },
+      { min: 70, txt: 'Muito bem! Está quase mestre! 👏' },
+      { min: 50, txt: 'Bom esforço! Pratique mais um pouco! 💪' },
+      { min: 0,  txt: 'Continue tentando, você consegue! 📚' }
+    ];
+    var msg = msgs.find(function(m){ return pct >= m.min; });
+    document.getElementById('rmsg').textContent = msg.txt;
+  }
+
+  function reiniciar() {
+    iniciar();
+  }
+
+  function playSound(type) {
+    try {
+      var ctx = new (window.AudioContext || window.webkitAudioContext)();
+      var o = ctx.createOscillator();
+      var g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      if (type === 'correct') {
+        o.frequency.setValueAtTime(523, ctx.currentTime);
+        o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+        o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+        g.gain.setValueAtTime(0.3, ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+        o.start(); o.stop(ctx.currentTime + 0.5);
+      } else {
+        o.frequency.setValueAtTime(300, ctx.currentTime);
+        o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+        g.gain.setValueAtTime(0.3, ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+        o.start(); o.stop(ctx.currentTime + 0.4);
+      }
+    } catch(e){}
+  }
+
+  window.proximaPergunta = proximaPergunta;
+  window.reiniciar = reiniciar;
+
+  iniciar();
+})();
+</script>
+
+<!-- GAMIFICAÇÃO -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'centena-e-mil';
+  var DISCIPLINE    = 'matematica';
+  var ACTIVITY_TYPE = 'quiz';
+  var TOTAL_ATIV    = 5;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Cento',
+        characterEmoji:  '🟦',
+        characterImg:    'chars/cento.png',
+        themeLabel:      'A Centena e o Número 1.000 · Matemática',
+        totalActivities: TOTAL_ATIV,
+        activityType:    ACTIVITY_TYPE,
+        primaryColor:    '#0AACE8',
+        lightColor:      '#5AC8FB',
+        bgColor:         '#EFF9FF',
+        glowRgb:         '10,172,232',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _s = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _s = v;
+      var btn = document.getElementById('gamificacao-btn');
+      if (btn) btn.style.display = 'block';
+    },
+    get: function () { return _s; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#0AACE8,#5AC8FB);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>

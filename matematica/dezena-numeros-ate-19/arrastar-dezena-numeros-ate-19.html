@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arrastar e Soltar — A Dezena e os Números até 19 | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root { --primary: #0AACE8; --light: #5AC8FB; --bg: #EFF9FF; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100vh; }
+.header { background: linear-gradient(135deg, #044A7A, #0AACE8 60%, #5AC8FB); color: #fff; padding: 20px 24px; text-align: center; }
+.header h1 { font-family: 'Baloo 2', sans-serif; font-size: 1.5rem; font-weight: 900; }
+.header p { font-size: 1rem; opacity: 0.9; margin-top: 4px; }
+.container { max-width: 720px; margin: 0 auto; padding: 20px 16px; }
+.instrucao { background: #fff; border-radius: 14px; padding: 14px 18px; margin-bottom: 18px; font-size: 1.3rem; font-weight: 800; color: #1a2a3a; text-align: center; box-shadow: 0 2px 8px rgba(10,172,232,.1); }
+.legenda { display: flex; gap: 12px; margin-bottom: 14px; justify-content: center; }
+.legenda-item { display: flex; align-items: center; gap: 6px; font-size: 1rem; font-weight: 700; color: #444; }
+.legenda-cor { width: 18px; height: 18px; border-radius: 50%; }
+.banco { background: #fff; border-radius: 16px; padding: 16px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(10,172,232,.1); min-height: 70px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+.token { background: linear-gradient(135deg, #0AACE8, #5AC8FB); color: #fff; border-radius: 12px; padding: 12px 20px; font-family: 'Baloo 2', sans-serif; font-size: 1.4rem; font-weight: 900; cursor: grab; user-select: none; min-height: 48px; min-width: 64px; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 8px rgba(10,172,232,.3); transition: transform .15s, box-shadow .15s; touch-action: none; }
+.token:hover { transform: scale(1.08); box-shadow: 0 5px 14px rgba(10,172,232,.4); }
+.token.arrastando { opacity: 0.5; }
+.colunas { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+.coluna { background: #fff; border-radius: 16px; padding: 14px; box-shadow: 0 2px 10px rgba(10,172,232,.1); min-height: 160px; }
+.coluna-titulo { font-family: 'Baloo 2', sans-serif; font-size: 1.1rem; font-weight: 900; text-align: center; padding: 8px 12px; border-radius: 10px; margin-bottom: 12px; }
+.coluna-titulo.dezena { background: #DBEAFE; color: #1E40AF; }
+.coluna-titulo.mais { background: #FCE7F3; color: #9D174D; }
+.coluna-drop { min-height: 100px; border-radius: 10px; border: 2.5px dashed #C8E8F8; padding: 8px; display: flex; flex-wrap: wrap; gap: 8px; align-content: flex-start; transition: background .2s; }
+.coluna-drop.over { background: #EFF9FF; border-color: var(--primary); }
+.coluna-drop .token { background: linear-gradient(135deg, #1E40AF, #3B82F6); font-size: 1.2rem; padding: 10px 16px; }
+.coluna-drop.mais-drop .token { background: linear-gradient(135deg, #9D174D, #EC4899); }
+.token.correto { background: linear-gradient(135deg, #059669, #10B981) !important; }
+.token.errado { background: linear-gradient(135deg, #DC2626, #EF4444) !important; }
+.btn-verificar { display: block; margin: 0 auto 16px; padding: 14px 36px; background: linear-gradient(135deg, var(--primary), var(--light)); color: #fff; border: none; border-radius: 50px; font-family: 'Baloo 2', sans-serif; font-size: 1.2rem; font-weight: 800; cursor: pointer; }
+.btn-reiniciar { display: none; margin: 0 auto 16px; padding: 14px 36px; background: #fff; color: var(--primary); border: 2.5px solid var(--primary); border-radius: 50px; font-family: 'Baloo 2', sans-serif; font-size: 1.1rem; font-weight: 800; cursor: pointer; }
+.feedback-geral { text-align: center; font-size: 1.2rem; font-weight: 800; margin-bottom: 14px; display: none; padding: 12px; border-radius: 12px; }
+.feedback-geral.ok { background: #D1FAE5; color: #065F46; display: block; }
+.feedback-geral.nao { background: #FEE2E2; color: #7F1D1D; display: block; }
+.voltar { display: block; text-align: center; margin-top: 12px; color: var(--primary); font-weight: 700; cursor: pointer; font-size: 1rem; }
+@media (max-width: 480px) {
+  .colunas { grid-template-columns: 1fr; }
+  .header h1 { font-size: 1.2rem; }
+  .instrucao { font-size: 1.1rem; }
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <div style="font-size:2.5rem;margin-bottom:6px;">🟨</div>
+  <h1>Arrastar e Soltar — Dezena</h1>
+  <p>Classifique os números nas colunas certas! 🎯</p>
+</div>
+<div class="container">
+  <div class="instrucao">Arraste cada número para a coluna correta do quadro de ordens!</div>
+  <div class="legenda">
+    <div class="legenda-item"><div class="legenda-cor" style="background:#1E40AF;"></div>D — Dezenas</div>
+    <div class="legenda-item"><div class="legenda-cor" style="background:#9D174D;"></div>U — Unidades</div>
+  </div>
+  <div class="banco" id="banco"></div>
+  <div class="colunas">
+    <div class="coluna">
+      <div class="coluna-titulo dezena">D — Dezenas<br><small style="font-size:.8rem;font-weight:600;">Números com 1 dezena (10–19)</small></div>
+      <div class="coluna-drop dezena-drop" id="drop-dezena"></div>
+    </div>
+    <div class="coluna">
+      <div class="coluna-titulo mais">U — Unidades<br><small style="font-size:.8rem;font-weight:600;">Números menores que 10</small></div>
+      <div class="coluna-drop mais-drop" id="drop-unidade"></div>
+    </div>
+  </div>
+  <div class="feedback-geral" id="feedback-geral"></div>
+  <button class="btn-verificar" id="btn-verificar" onclick="verificar()">Verificar ✅</button>
+  <button class="btn-reiniciar" id="btn-reiniciar" onclick="reiniciar()">Tentar de Novo 🔄</button>
+  <span class="voltar" onclick="voltarAoPortal()">← Voltar ao Portal</span>
+</div>
+
+<script>
+(function () {
+  // numeros com 1 dezena = 10-19; unidades = 1-9
+  var itens = [
+    { val: '10', grupo: 'dezena' },
+    { val: '13', grupo: 'dezena' },
+    { val: '16', grupo: 'dezena' },
+    { val: '19', grupo: 'dezena' },
+    { val: '11', grupo: 'dezena' },
+    { val: '3',  grupo: 'unidade' },
+    { val: '7',  grupo: 'unidade' },
+    { val: '5',  grupo: 'unidade' },
+    { val: '2',  grupo: 'unidade' },
+    { val: '9',  grupo: 'unidade' }
+  ];
+
+  var arrastando = null;
+  var touchEl = null;
+  var touchOffX = 0, touchOffY = 0;
+  var ghostEl = null;
+
+  function embaralhar(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  function playSound(tipo) {
+    try {
+      var ctx = new (window.AudioContext || window.webkitAudioContext)();
+      var o = ctx.createOscillator(); var g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      if (tipo === 'correct') {
+        o.frequency.setValueAtTime(523, ctx.currentTime);
+        o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+        o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+        g.gain.setValueAtTime(0.3, ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+        o.start(); o.stop(ctx.currentTime + 0.5);
+      } else {
+        o.frequency.setValueAtTime(300, ctx.currentTime);
+        o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+        g.gain.setValueAtTime(0.3, ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+        o.start(); o.stop(ctx.currentTime + 0.4);
+      }
+    } catch (e) {}
+  }
+
+  function criarToken(item) {
+    var el = document.createElement('div');
+    el.className = 'token';
+    el.textContent = item.val;
+    el.setAttribute('data-grupo', item.grupo);
+    el.setAttribute('data-val', item.val);
+    el.draggable = true;
+    el.addEventListener('dragstart', function (e) {
+      arrastando = el;
+      el.classList.add('arrastando');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    el.addEventListener('dragend', function () {
+      el.classList.remove('arrastando');
+      arrastando = null;
+    });
+    // Touch
+    el.addEventListener('touchstart', function (e) {
+      e.preventDefault();
+      touchEl = el;
+      var t = e.touches[0];
+      var r = el.getBoundingClientRect();
+      touchOffX = t.clientX - r.left;
+      touchOffY = t.clientY - r.top;
+      ghostEl = el.cloneNode(true);
+      ghostEl.style.cssText = 'position:fixed;opacity:.85;pointer-events:none;z-index:9999;width:' + r.width + 'px;';
+      ghostEl.style.left = (t.clientX - touchOffX) + 'px';
+      ghostEl.style.top  = (t.clientY - touchOffY) + 'px';
+      document.body.appendChild(ghostEl);
+      el.style.opacity = '0.4';
+    }, { passive: false });
+    el.addEventListener('touchmove', function (e) {
+      e.preventDefault();
+      var t = e.touches[0];
+      if (ghostEl) {
+        ghostEl.style.left = (t.clientX - touchOffX) + 'px';
+        ghostEl.style.top  = (t.clientY - touchOffY) + 'px';
+      }
+    }, { passive: false });
+    el.addEventListener('touchend', function (e) {
+      e.preventDefault();
+      if (ghostEl) { document.body.removeChild(ghostEl); ghostEl = null; }
+      if (touchEl) touchEl.style.opacity = '';
+      var t = e.changedTouches[0];
+      var alvo = document.elementFromPoint(t.clientX, t.clientY);
+      var drop = alvo ? alvo.closest('.coluna-drop') : null;
+      if (drop && touchEl) {
+        drop.appendChild(touchEl);
+      }
+      touchEl = null;
+    }, { passive: false });
+    return el;
+  }
+
+  function iniciar() {
+    var banco = document.getElementById('banco');
+    var dropD = document.getElementById('drop-dezena');
+    var dropU = document.getElementById('drop-unidade');
+    banco.innerHTML = ''; dropD.innerHTML = ''; dropU.innerHTML = '';
+    document.getElementById('feedback-geral').className = 'feedback-geral';
+    document.getElementById('btn-verificar').style.display = 'block';
+    document.getElementById('btn-reiniciar').style.display = 'none';
+    var shuffled = embaralhar(itens);
+    shuffled.forEach(function (item) {
+      banco.appendChild(criarToken(item));
+    });
+    [dropD, dropU].forEach(function (drop) {
+      drop.addEventListener('dragover', function (e) { e.preventDefault(); drop.classList.add('over'); });
+      drop.addEventListener('dragleave', function () { drop.classList.remove('over'); });
+      drop.addEventListener('drop', function (e) {
+        e.preventDefault();
+        drop.classList.remove('over');
+        if (arrastando) drop.appendChild(arrastando);
+      });
+    });
+  }
+
+  function verificar() {
+    var dropD = document.getElementById('drop-dezena');
+    var dropU = document.getElementById('drop-unidade');
+    var tokens = document.querySelectorAll('.token');
+    var acertos = 0;
+    tokens.forEach(function (tk) {
+      var grupo = tk.getAttribute('data-grupo');
+      var pai = tk.parentElement;
+      var correto = (pai.id === 'drop-dezena' && grupo === 'dezena') ||
+                    (pai.id === 'drop-unidade' && grupo === 'unidade');
+      tk.classList.add(correto ? 'correto' : 'errado');
+      if (correto) acertos++;
+    });
+    var fb = document.getElementById('feedback-geral');
+    var total = itens.length;
+    var pct = Math.round((acertos / total) * 100);
+    window.sabendoScore = pct;
+    if (acertos === total) {
+      fb.textContent = 'Perfeito! Todos os ' + total + ' números no lugar certo! 🟨🎉';
+      fb.className = 'feedback-geral ok';
+      playSound('correct');
+    } else {
+      fb.textContent = 'Você acertou ' + acertos + ' de ' + total + '. Tente de novo! 💪';
+      fb.className = 'feedback-geral nao';
+      playSound('wrong');
+    }
+    document.getElementById('btn-verificar').style.display = 'none';
+    document.getElementById('btn-reiniciar').style.display = 'block';
+  }
+
+  function reiniciar() { iniciar(); }
+
+  window.verificar = verificar;
+  window.reiniciar = reiniciar;
+  iniciar();
+})();
+</script>
+
+<!-- ── GAMIFICAÇÃO ─────────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'dezena-numeros-ate-19';
+  var DISCIPLINE    = 'matematica';
+  var ACTIVITY_TYPE = 'arrastar';
+  var TOTAL_ATIV    = 5;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({ user_id: uid, discipline: DISCIPLINE, theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE, score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0 });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName: 'Dezi', characterEmoji: '🟨',
+        characterImg: 'chars/dezi.png',
+        themeLabel: 'A Dezena e os Números até 19 · Matemática',
+        totalActivities: TOTAL_ATIV, activityType: ACTIVITY_TYPE,
+        primaryColor: '#0AACE8', lightColor: '#5AC8FB', bgColor: '#EFF9FF',
+        glowRgb: '10,172,232', backUrl: '../../index.html'
+      });
+    });
+  }
+  var _scoreVal = null;
+  Object.defineProperty(window, 'sabendoScore', { configurable: true,
+    set: function (v) { _scoreVal = v; var btn = document.getElementById('gamificacao-btn'); if (btn) btn.style.display = 'block'; },
+    get: function () { return _scoreVal; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+<button id="gamificacao-btn" onclick="window._abrirGamificacao()" style="display:none;margin:24px auto;padding:16px 32px;background:linear-gradient(135deg,#0AACE8,#5AC8FB);color:#fff;border:none;border-radius:50px;font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);width:fit-content;">Coletar minha carta! 🃏</button>
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>

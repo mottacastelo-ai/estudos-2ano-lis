@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verdadeiro ou Falso — A Centena e o Número 1.000 | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root { --primary: #0AACE8; --light: #5AC8FB; --bg: #EFF9FF; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100vh; }
+.header { background: linear-gradient(135deg, #044A7A, #0AACE8 60%, #5AC8FB); color: #fff; padding: 20px 24px; text-align: center; }
+.header h1 { font-family: 'Baloo 2', sans-serif; font-size: 1.5rem; font-weight: 900; }
+.header p { font-size: 1rem; opacity: .85; margin-top: 4px; }
+.container { max-width: 680px; margin: 0 auto; padding: 24px 16px; }
+.progress { background: #d0edfb; border-radius: 20px; height: 12px; margin-bottom: 20px; }
+.progress-bar { background: linear-gradient(90deg, var(--primary), var(--light)); height: 12px; border-radius: 20px; transition: width .4s; }
+.card { background: #fff; border-radius: 20px; padding: 28px 24px; box-shadow: 0 4px 20px rgba(10,172,232,.12); margin-bottom: 20px; }
+.qnum { font-size: .9rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+.afirmacao { font-size: 1.4rem; font-weight: 800; color: #1a3a4a; line-height: 1.4; margin-bottom: 28px; }
+.botoes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.vf-btn {
+  padding: 20px 16px; border-radius: 18px; border: 3px solid transparent;
+  font-family: 'Baloo 2', sans-serif; font-size: 1.5rem; font-weight: 900;
+  cursor: pointer; min-height: 72px; transition: all .15s;
+}
+.btn-v { background: #dcfce7; color: #15803d; border-color: #86efac; }
+.btn-v:hover { background: #bbf7d0; border-color: #22c55e; }
+.btn-f { background: #fee2e2; color: #b91c1c; border-color: #fca5a5; }
+.btn-f:hover { background: #fecaca; border-color: #ef4444; }
+.btn-v.selecionado { border-color: #15803d; box-shadow: 0 0 0 3px #86efac; }
+.btn-f.selecionado { border-color: #b91c1c; box-shadow: 0 0 0 3px #fca5a5; }
+.btn-v.acertou { background: #16a34a; color: #fff; border-color: #16a34a; }
+.btn-f.errou-aqui { background: #dc2626; color: #fff; border-color: #dc2626; }
+.btn-v.certa-era, .btn-f.certa-era { outline: 4px solid #16a34a; }
+.feedback { margin-top: 16px; padding: 12px 16px; border-radius: 12px; font-size: 1.05rem; font-weight: 700; display: none; }
+.feedback.show { display: block; }
+.feedback.ok { background: #dcfce7; color: #15803d; }
+.feedback.err { background: #fee2e2; color: #b91c1c; }
+.next-btn {
+  width: 100%; padding: 16px; background: linear-gradient(135deg, var(--primary), var(--light));
+  color: #fff; border: none; border-radius: 50px;
+  font-family: 'Baloo 2', sans-serif; font-size: 1.15rem; font-weight: 900; cursor: pointer;
+  display: none; margin-top: 12px;
+}
+.result-card { display: none; background: #fff; border-radius: 20px; padding: 36px 24px; text-align: center; box-shadow: 0 4px 20px rgba(10,172,232,.15); }
+.result-emoji { font-size: 3.5rem; margin-bottom: 12px; }
+.result-score { font-family: 'Baloo 2', sans-serif; font-size: 2.5rem; font-weight: 900; color: var(--primary); }
+.result-msg { font-size: 1.15rem; font-weight: 700; color: #1a3a4a; margin-top: 8px; }
+.reiniciar-btn {
+  margin-top: 18px; padding: 14px 32px;
+  background: linear-gradient(135deg, var(--primary), var(--light));
+  color: #fff; border: none; border-radius: 50px;
+  font-family: 'Baloo 2', sans-serif; font-size: 1.1rem; font-weight: 900; cursor: pointer;
+}
+.back-btn { display: block; text-align: center; margin: 20px auto 0; color: var(--primary); font-weight: 700; background: none; border: none; cursor: pointer; text-decoration: underline; }
+@media (max-width: 480px) {
+  .afirmacao { font-size: 1.2rem; }
+  .vf-btn { font-size: 1.3rem; padding: 16px 8px; }
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>🟦 Verdadeiro ou Falso?</h1>
+  <p>Cento quer saber se você sabe a diferença!</p>
+</div>
+<div class="container">
+  <div class="progress"><div class="progress-bar" id="prog"></div></div>
+  <div class="card" id="qcard">
+    <div class="qnum" id="qnum"></div>
+    <div class="afirmacao" id="afirmacao"></div>
+    <div class="botoes">
+      <button class="vf-btn btn-v" id="btnV" onclick="responder(true)">✅ Verdadeiro</button>
+      <button class="vf-btn btn-f" id="btnF" onclick="responder(false)">❌ Falso</button>
+    </div>
+    <div class="feedback" id="fb"></div>
+    <button class="next-btn" id="nextBtn" onclick="proxima()">Próxima →</button>
+  </div>
+  <div class="result-card" id="rcard">
+    <div class="result-emoji" id="remoji"></div>
+    <div class="result-score" id="rscore"></div>
+    <div class="result-msg" id="rmsg"></div>
+    <button class="reiniciar-btn" onclick="reiniciar()">Jogar de novo 🔄</button>
+  </div>
+  <button class="back-btn" onclick="voltarAoPortal()">← Voltar ao Portal</button>
+</div>
+<script>
+(function () {
+  var itens = [
+    { a: '100 unidades formam 1 centena.', v: true,  ok: 'Certo! 100 unidades = 1 centena! 🎉', err: '' },
+    { a: 'A placa do material dourado tem 100 quadradinhos.', v: true, ok: 'Certo! A placa é uma grade 10×10 = 100 quadradinhos! 🟦', err: '' },
+    { a: '1.000 é igual a 9 centenas.', v: false, ok: '', err: 'Falso! 1.000 = 10 centenas, não 9.' },
+    { a: '10 dezenas formam 1 centena.', v: true, ok: 'Certo! 10 dezenas = 1 centena! ⭐', err: '' },
+    { a: 'No quadro de ordens, a letra D representa as Dezenas.', v: true, ok: 'Certo! D = Dezenas no quadro de ordens! 📊', err: '' },
+    { a: '136 decomposto é 100 + 30 + 6.', v: true, ok: 'Certo! 1 centena + 3 dezenas + 6 unidades = 136! 💯', err: '' },
+    { a: 'O número 500 se lê "cinquenta".', v: false, ok: '', err: 'Falso! 500 se lê "quinhentos".' },
+    { a: '999 + 1 = 1.000.', v: true, ok: 'Certo! 999 mais 1 chegamos ao mil! 🏆', err: '' },
+    { a: 'No gráfico de barras, o eixo vertical mostra as quantidades.', v: true, ok: 'Certo! O eixo vertical tem a escala de quantidades! 📊', err: '' },
+    { a: 'A centena que vem depois de 700 é 900.', v: false, ok: '', err: 'Falso! A centena depois de 700 é 800 (oitocentos).' }
+  ];
+
+  var ordem = [];
+  var atual = 0;
+  var acertos = 0;
+  var respondeu = false;
+  var total = itens.length;
+
+  function embaralhar(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  function iniciar() {
+    ordem = embaralhar(itens.map(function(_, i){ return i; }));
+    atual = 0; acertos = 0; respondeu = false;
+    document.getElementById('qcard').style.display = '';
+    document.getElementById('rcard').style.display = 'none';
+    mostrar();
+  }
+
+  function mostrar() {
+    respondeu = false;
+    var item = itens[ordem[atual]];
+    document.getElementById('qnum').textContent = 'Afirmação ' + (atual + 1) + ' de ' + total;
+    document.getElementById('afirmacao').textContent = item.a;
+    document.getElementById('prog').style.width = ((atual / total) * 100) + '%';
+    var fb = document.getElementById('fb');
+    fb.className = 'feedback'; fb.textContent = '';
+    document.getElementById('nextBtn').style.display = 'none';
+    var bv = document.getElementById('btnV');
+    var bf = document.getElementById('btnF');
+    bv.className = 'vf-btn btn-v'; bv.disabled = false;
+    bf.className = 'vf-btn btn-f'; bf.disabled = false;
+  }
+
+  function responder(escolheuVerdadeiro) {
+    if (respondeu) return;
+    respondeu = true;
+    var item = itens[ordem[atual]];
+    var certo = escolheuVerdadeiro === item.v;
+    var bv = document.getElementById('btnV');
+    var bf = document.getElementById('btnF');
+    bv.disabled = true; bf.disabled = true;
+    var fb = document.getElementById('fb');
+    if (certo) {
+      acertos++;
+      if (escolheuVerdadeiro) bv.classList.add('acertou'); else bf.classList.add('acertou');
+      fb.textContent = '✅ ' + item.ok;
+      fb.className = 'feedback show ok';
+      playSound('correct');
+    } else {
+      if (escolheuVerdadeiro) bv.classList.add('errou-aqui'); else bf.classList.add('errou-aqui');
+      fb.textContent = '❌ ' + item.err;
+      fb.className = 'feedback show err';
+      playSound('wrong');
+    }
+    var nb = document.getElementById('nextBtn');
+    nb.style.display = 'block';
+    nb.textContent = atual < total - 1 ? 'Próxima →' : 'Ver resultado 🏁';
+  }
+
+  function proxima() {
+    atual++;
+    if (atual >= total) mostrarResultado();
+    else mostrar();
+  }
+
+  function mostrarResultado() {
+    document.getElementById('qcard').style.display = 'none';
+    document.getElementById('prog').style.width = '100%';
+    var pct = Math.round((acertos / total) * 100);
+    window.sabendoScore = pct;
+    var rc = document.getElementById('rcard');
+    rc.style.display = 'block';
+    document.getElementById('remoji').textContent = pct >= 80 ? '🎉🏆🟦' : pct >= 60 ? '⭐😊' : '💪📚';
+    document.getElementById('rscore').textContent = acertos + ' de ' + total + ' (' + pct + '%)';
+    document.getElementById('rmsg').textContent = pct >= 80 ? 'Você arrasouu! Expert em centenas! 🌟' : pct >= 60 ? 'Boa! Está quase lá! 👏' : 'Continue tentando, você consegue! 💪';
+  }
+
+  function reiniciar() { iniciar(); }
+
+  function playSound(type) {
+    try {
+      var ctx = new (window.AudioContext || window.webkitAudioContext)();
+      var o = ctx.createOscillator();
+      var g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      if (type === 'correct') {
+        o.frequency.setValueAtTime(523, ctx.currentTime);
+        o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+        o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+        g.gain.setValueAtTime(0.3, ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+        o.start(); o.stop(ctx.currentTime + 0.5);
+      } else {
+        o.frequency.setValueAtTime(300, ctx.currentTime);
+        o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+        g.gain.setValueAtTime(0.3, ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+        o.start(); o.stop(ctx.currentTime + 0.4);
+      }
+    } catch(e) {}
+  }
+
+  window.responder = responder;
+  window.proxima = proxima;
+  window.reiniciar = reiniciar;
+
+  iniciar();
+})();
+</script>
+
+<!-- GAMIFICAÇÃO -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'centena-e-mil';
+  var DISCIPLINE    = 'matematica';
+  var ACTIVITY_TYPE = 'vf';
+  var TOTAL_ATIV    = 5;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Cento',
+        characterEmoji:  '🟦',
+        characterImg:    'chars/cento.png',
+        themeLabel:      'A Centena e o Número 1.000 · Matemática',
+        totalActivities: TOTAL_ATIV,
+        activityType:    ACTIVITY_TYPE,
+        primaryColor:    '#0AACE8',
+        lightColor:      '#5AC8FB',
+        bgColor:         '#EFF9FF',
+        glowRgb:         '10,172,232',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _s = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _s = v;
+      var btn = document.getElementById('gamificacao-btn');
+      if (btn) btn.style.display = 'block';
+    },
+    get: function () { return _s; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#0AACE8,#5AC8FB);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>

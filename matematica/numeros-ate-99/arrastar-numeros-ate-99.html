@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comparar Quantidades — Números até 99 | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root { --primary: #0AACE8; --light: #5AC8FB; --bg: #EFF9FF; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100vh; }
+
+.header {
+  background: linear-gradient(135deg, #044A7A, #0AACE8 60%, #5AC8FB);
+  color: #fff; padding: 20px 24px; text-align: center;
+}
+.header .emoji { font-size: 2.5rem; }
+.header h1 { font-family: 'Baloo 2', sans-serif; font-size: 1.6rem; font-weight: 900; margin-top: 4px; }
+.header p { font-size: 1rem; opacity: 0.9; }
+
+.container { max-width: 680px; margin: 0 auto; padding: 24px 16px; }
+
+.placar { text-align: right; font-size: 1rem; font-weight: 700; color: var(--primary); margin-bottom: 8px; }
+.progress-bar-wrap { background: #dbeeff; border-radius: 99px; height: 10px; margin-bottom: 20px; }
+.progress-bar { background: var(--primary); height: 10px; border-radius: 99px; transition: width 0.4s; }
+
+.card {
+  background: #fff; border-radius: 20px;
+  padding: 28px 24px; box-shadow: 0 4px 20px rgba(10,172,232,0.12);
+  margin-bottom: 20px;
+}
+.instrucao-card { font-size: 1rem; color: #5a7a8a; margin-bottom: 6px; font-weight: 600; }
+.enunciado-card { font-size: 1.3rem; font-weight: 800; color: #1a3a50; margin-bottom: 24px; }
+
+/* Linha de comparação */
+.linha-comparacao {
+  display: flex; align-items: center; justify-content: center;
+  gap: 16px; flex-wrap: wrap; margin-bottom: 24px;
+}
+.numero-box {
+  background: linear-gradient(135deg, #EFF9FF, #dbeeff);
+  border: 3px solid var(--light);
+  border-radius: 16px;
+  padding: 18px 28px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--primary);
+  min-width: 110px;
+  text-align: center;
+  line-height: 1;
+}
+
+/* Slot central para o símbolo */
+.slot-simbolo {
+  width: 80px; height: 72px;
+  border: 3px dashed #bce4f8;
+  border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.2rem; font-weight: 900; color: #bce4f8;
+  background: #f5fbff;
+  transition: all 0.2s;
+  font-family: 'Baloo 2', sans-serif;
+  user-select: none;
+}
+.slot-simbolo.over { border-color: var(--primary); background: #dbeeff; }
+.slot-simbolo.preenchido { border-color: var(--primary); color: var(--primary); background: #d0f0ff; border-style: solid; }
+.slot-simbolo.correto   { border-color: #22c55e; color: #22c55e; background: #d1fae5; border-style: solid; }
+.slot-simbolo.errado    { border-color: #ef4444; color: #ef4444; background: #fee2e2; border-style: solid; }
+
+/* Fichas de símbolo */
+.fichas-wrap { display: flex; justify-content: center; gap: 20px; margin-bottom: 20px; }
+.ficha-simbolo {
+  width: 80px; height: 72px;
+  background: linear-gradient(135deg, #0AACE8, #5AC8FB);
+  border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.2rem; font-weight: 900; color: #fff;
+  cursor: grab;
+  font-family: 'Baloo 2', sans-serif;
+  box-shadow: 0 4px 14px rgba(10,172,232,0.3);
+  transition: transform 0.15s;
+  user-select: none;
+  touch-action: none;
+  min-height: 44px; min-width: 44px;
+}
+.ficha-simbolo:active { transform: scale(1.1); cursor: grabbing; }
+.ficha-simbolo.usada { opacity: 0.35; pointer-events: none; }
+
+/* Alternativa tap-to-select para touch */
+.ficha-simbolo.selecionada {
+  outline: 4px solid #fff;
+  box-shadow: 0 0 0 6px var(--primary);
+  transform: scale(1.1);
+}
+
+.feedback-box {
+  border-radius: 14px; padding: 14px 18px;
+  font-size: 1.1rem; font-weight: 700; margin-bottom: 14px; display: none;
+}
+.feedback-box.ok  { background: #d1fae5; color: #166534; }
+.feedback-box.err { background: #fee2e2; color: #7f1d1d; }
+
+.btn-verificar {
+  background: linear-gradient(135deg, #0AACE8, #5AC8FB);
+  color: #fff; border: none; border-radius: 50px;
+  padding: 14px 36px; font-family: 'Baloo 2', sans-serif;
+  font-size: 1.2rem; font-weight: 800; cursor: pointer;
+  box-shadow: 0 4px 16px rgba(10,172,232,0.3);
+  margin-right: 10px;
+}
+.btn-proxima {
+  background: #fff; color: var(--primary);
+  border: 2px solid var(--primary); border-radius: 50px;
+  padding: 14px 36px; font-family: 'Baloo 2', sans-serif;
+  font-size: 1.2rem; font-weight: 800; cursor: pointer;
+  display: none;
+}
+
+.resultado {
+  display: none; text-align: center;
+  background: #fff; border-radius: 20px; padding: 36px 24px;
+  box-shadow: 0 4px 20px rgba(10,172,232,0.14);
+}
+.resultado .emoji-final { font-size: 4rem; }
+.resultado h2 { font-family: 'Baloo 2', sans-serif; font-size: 2rem; color: var(--primary); margin: 12px 0 6px; }
+.resultado .score-grande { font-size: 3rem; font-weight: 900; color: var(--primary); }
+.resultado .msg { font-size: 1.2rem; color: #1a3a50; margin: 8px 0 20px; }
+.btn-voltar {
+  background: transparent; border: 2px solid var(--primary); color: var(--primary);
+  border-radius: 50px; padding: 12px 28px;
+  font-family: 'Baloo 2', sans-serif; font-size: 1.1rem; font-weight: 800;
+  cursor: pointer; margin-top: 10px;
+}
+
+@media (max-width: 480px) {
+  body { padding: 0; }
+  .header h1 { font-size: 1.3rem; }
+  .numero-box { font-size: 2.2rem; padding: 14px 18px; min-width: 80px; }
+  .slot-simbolo, .ficha-simbolo { width: 66px; height: 60px; font-size: 1.8rem; }
+  .fichas-wrap { gap: 14px; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="emoji">🧮</div>
+  <h1>Comparar Quantidades</h1>
+  <p>Coloque o símbolo certo entre os números!</p>
+</div>
+
+<div class="container">
+  <div class="placar">Acertos: <span id="acertos">0</span>/8</div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="progresso" style="width:0%"></div></div>
+
+  <div class="card" id="card-desafio">
+    <div class="instrucao-card" id="instrucao-card">Arraste ou toque o símbolo correto para o centro!</div>
+    <div class="enunciado-card" id="enunciado-card">Qual é maior?</div>
+
+    <div class="linha-comparacao">
+      <div class="numero-box" id="num-esq">--</div>
+      <div class="slot-simbolo" id="slot" ondragover="onDragOver(event)" ondrop="onDrop(event)" onclick="onSlotClick()">?</div>
+      <div class="numero-box" id="num-dir">--</div>
+    </div>
+
+    <div class="fichas-wrap" id="fichas-wrap">
+      <div class="ficha-simbolo" id="ficha-maior" draggable="true"
+        ondragstart="onDragStart(event,'>')"
+        ontouchstart="onTouchStartFicha(event,'>')" ontouchend="onTouchEndFicha(event)">&gt;</div>
+      <div class="ficha-simbolo" id="ficha-igual" draggable="true"
+        ondragstart="onDragStart(event,'=')"
+        ontouchstart="onTouchStartFicha(event,'=')" ontouchend="onTouchEndFicha(event)">=</div>
+      <div class="ficha-simbolo" id="ficha-menor" draggable="true"
+        ondragstart="onDragStart(event,'<')"
+        ontouchstart="onTouchStartFicha(event,'<')" ontouchend="onTouchEndFicha(event)">&lt;</div>
+    </div>
+
+    <div class="feedback-box" id="feedback"></div>
+    <button class="btn-verificar" id="btn-verificar" onclick="verificar()">Verificar ✔</button>
+    <button class="btn-proxima" id="btn-proxima" onclick="proximoDesafio()">Próximo →</button>
+  </div>
+
+  <div class="resultado" id="resultado">
+    <div class="emoji-final" id="emoji-final"></div>
+    <h2>Resultado!</h2>
+    <div class="score-grande"><span id="res-acertos">0</span>/8</div>
+    <div class="msg" id="res-msg"></div>
+    <button class="btn-voltar" onclick="voltarAoPortal()">⬅ Voltar ao Portal</button>
+  </div>
+</div>
+
+<script>
+(function () {
+
+// Desafios: esquerda op direita
+// op é a resposta correta: '>', '<', '='
+var desafios = [
+  { esq: 72, dir: 65, op: '>' },
+  { esq: 31, dir: 48, op: '<' },
+  { esq: 90, dir: 90, op: '=' },
+  { esq: 57, dir: 75, op: '<' },
+  { esq: 83, dir: 38, op: '>' },
+  { esq: 44, dir: 44, op: '=' },
+  { esq: 20, dir: 29, op: '<' },
+  { esq: 99, dir: 89, op: '>' }
+];
+
+var indice = 0;
+var acertos = 0;
+var simboloSelecionado = null;
+var respondida = false;
+
+function playSound(tipo) {
+  try {
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    var o = ctx.createOscillator(); var g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    if (tipo === 'correct') {
+      o.frequency.setValueAtTime(523, ctx.currentTime);
+      o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+      o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+      o.start(); o.stop(ctx.currentTime + 0.5);
+    } else {
+      o.frequency.setValueAtTime(300, ctx.currentTime);
+      o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      o.start(); o.stop(ctx.currentTime + 0.4);
+    }
+  } catch(e) {}
+}
+
+function renderDesafio() {
+  var d = desafios[indice];
+  document.getElementById('num-esq').textContent = d.esq;
+  document.getElementById('num-dir').textContent = d.dir;
+  document.getElementById('progresso').style.width = (indice / 8 * 100) + '%';
+  var slot = document.getElementById('slot');
+  slot.textContent = '?';
+  slot.className = 'slot-simbolo';
+  document.getElementById('feedback').style.display = 'none';
+  document.getElementById('btn-proxima').style.display = 'none';
+  document.getElementById('btn-verificar').style.display = 'inline-block';
+  simboloSelecionado = null;
+  respondida = false;
+  // Resetar fichas
+  ['ficha-maior','ficha-igual','ficha-menor'].forEach(function(id) {
+    var f = document.getElementById(id);
+    f.classList.remove('usada','selecionada');
+  });
+}
+
+// Drag and drop (desktop)
+var draggingSimbol = null;
+function onDragStart(e, simb) {
+  draggingSimbol = simb;
+}
+function onDragOver(e) {
+  e.preventDefault();
+  document.getElementById('slot').classList.add('over');
+}
+function onDrop(e) {
+  e.preventDefault();
+  document.getElementById('slot').classList.remove('over');
+  if (draggingSimbol && !respondida) colocarSimboloNoSlot(draggingSimbol);
+}
+
+// Touch: tap-to-select + tap-slot-to-place
+function onTouchStartFicha(e, simb) {
+  e.preventDefault();
+  if (respondida) return;
+  // Desselecionar todas
+  ['ficha-maior','ficha-igual','ficha-menor'].forEach(function(id) {
+    document.getElementById(id).classList.remove('selecionada');
+  });
+  simboloSelecionado = simb;
+  // Marcar a ficha tocada como selecionada
+  var alvo = e.currentTarget;
+  alvo.classList.add('selecionada');
+}
+function onTouchEndFicha(e) {
+  e.preventDefault(); // evita click duplo
+}
+function onSlotClick() {
+  if (respondida) return;
+  if (simboloSelecionado) colocarSimboloNoSlot(simboloSelecionado);
+}
+
+function colocarSimboloNoSlot(simb) {
+  simboloSelecionado = simb;
+  var slot = document.getElementById('slot');
+  slot.textContent = simb;
+  slot.className = 'slot-simbolo preenchido';
+  // Destacar ficha usada
+  ['ficha-maior','ficha-igual','ficha-menor'].forEach(function(id) {
+    var f = document.getElementById(id);
+    f.classList.remove('selecionada');
+    var s = f.textContent.trim().replace('&gt;','>').replace('&lt;','<');
+    // comparar via innerHTML-decoded
+    var decode = {'&gt;':'>','&lt;':'<','=':'='};
+    // ficha textContent já está decodificado pelo DOM
+    if (f.textContent.trim() === simb) {
+      f.classList.add('usada');
+    } else {
+      f.classList.remove('usada');
+    }
+  });
+}
+
+function verificar() {
+  if (!simboloSelecionado) {
+    var fb = document.getElementById('feedback');
+    fb.className = 'feedback-box err';
+    fb.textContent = '⚠️ Escolha um símbolo primeiro!';
+    fb.style.display = 'block';
+    return;
+  }
+  if (respondida) return;
+  respondida = true;
+  var d = desafios[indice];
+  var slot = document.getElementById('slot');
+  var fb = document.getElementById('feedback');
+  document.getElementById('btn-verificar').style.display = 'none';
+  document.getElementById('btn-proxima').style.display = 'inline-block';
+
+  // Desabilitar fichas
+  ['ficha-maior','ficha-igual','ficha-menor'].forEach(function(id) {
+    document.getElementById(id).style.pointerEvents = 'none';
+  });
+
+  if (simboloSelecionado === d.op) {
+    acertos++;
+    document.getElementById('acertos').textContent = acertos;
+    slot.className = 'slot-simbolo correto';
+    playSound('correct');
+    var labels = {'>':'maior do que','<':'menor do que','=':'igual a'};
+    fb.className = 'feedback-box ok';
+    fb.textContent = '✅ Correto! ' + d.esq + ' é ' + labels[d.op] + ' ' + d.dir + '!';
+  } else {
+    slot.className = 'slot-simbolo errado';
+    playSound('wrong');
+    var labelsErro = {'>':'maior do que','<':'menor do que','=':'igual a'};
+    fb.className = 'feedback-box err';
+    fb.textContent = '❌ Ops! ' + d.esq + ' é ' + labelsErro[d.op] + ' ' + d.dir + '. O símbolo correto é "' + d.op + '".';
+  }
+  fb.style.display = 'block';
+}
+
+function proximoDesafio() {
+  indice++;
+  if (indice < 8) {
+    renderDesafio();
+  } else {
+    mostrarResultado();
+  }
+}
+
+function mostrarResultado() {
+  document.getElementById('card-desafio').style.display = 'none';
+  document.getElementById('progresso').style.width = '100%';
+  var pct = Math.round((acertos / 8) * 100);
+  window.sabendoScore = pct;
+  var res = document.getElementById('resultado');
+  res.style.display = 'block';
+  document.getElementById('res-acertos').textContent = acertos;
+  var emoji, msg;
+  if (acertos >= 7) { emoji = '🏆'; msg = 'Você é craque em comparar números!'; }
+  else if (acertos >= 5) { emoji = '⭐'; msg = 'Muito bem! Continue praticando!'; }
+  else { emoji = '💪'; msg = 'Continue tentando! Você vai conseguir!'; }
+  document.getElementById('emoji-final').textContent = emoji;
+  document.getElementById('res-msg').textContent = msg;
+}
+
+window.onDragOver = onDragOver;
+window.onDrop = onDrop;
+window.onDragStart = onDragStart;
+window.onTouchStartFicha = onTouchStartFicha;
+window.onTouchEndFicha = onTouchEndFicha;
+window.onSlotClick = onSlotClick;
+window.verificar = verificar;
+window.proximoDesafio = proximoDesafio;
+
+renderDesafio();
+
+})();
+</script>
+
+<!-- ── GAMIFICAÇÃO ─────────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'numeros-ate-99';
+  var DISCIPLINE    = 'matematica';
+  var ACTIVITY_TYPE = 'arrastar';
+  var TOTAL_ATIV    = 5;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Centão',
+        characterEmoji:  '🧮',
+        characterImg:    'chars/centao.png',
+        themeLabel:      'Números até 99 · Matemática',
+        totalActivities: TOTAL_ATIV,
+        activityType:    ACTIVITY_TYPE,
+        primaryColor:    '#0AACE8',
+        lightColor:      '#5AC8FB',
+        bgColor:         '#EFF9FF',
+        glowRgb:         '10,172,232',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _s = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _s = v;
+      var b = document.getElementById('gamificacao-btn');
+      if (b) b.style.display = 'block';
+    },
+    get: function () { return _s; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#0AACE8,#5AC8FB);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>

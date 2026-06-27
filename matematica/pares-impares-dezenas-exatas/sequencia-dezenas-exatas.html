@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sequência de Dezenas Exatas | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #0AACE8;
+  --light: #5AC8FB;
+  --bg: #EFF9FF;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100vh; }
+
+.header {
+  background: linear-gradient(135deg, #044A7A, #0AACE8 60%, #5AC8FB);
+  color: #fff;
+  padding: 20px 24px;
+  text-align: center;
+}
+.header .emoji { font-size: 2.4rem; display: block; margin-bottom: 6px; }
+.header h1 { font-family: 'Baloo 2', sans-serif; font-size: 1.5rem; font-weight: 900; }
+.header p { font-size: 1rem; opacity: 0.9; margin-top: 4px; }
+
+.container { max-width: 700px; margin: 0 auto; padding: 24px 16px; }
+
+.progresso-txt {
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #64748b;
+  margin-bottom: 8px;
+}
+.progress-bar-wrap { background: #c7eaf9; border-radius: 20px; height: 10px; margin-bottom: 20px; }
+.progress-bar { background: var(--primary); height: 10px; border-radius: 20px; transition: width 0.4s; }
+
+/* Card de sequência */
+.seq-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 28px 24px 24px;
+  box-shadow: 0 4px 20px rgba(10,172,232,0.12);
+  margin-bottom: 20px;
+}
+.seq-enunciado {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #1a2e3b;
+  margin-bottom: 20px;
+  line-height: 1.4;
+}
+.seq-tipo {
+  display: inline-block;
+  background: var(--bg);
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  border-radius: 50px;
+  padding: 4px 14px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+/* Trilha de números */
+.trilha {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+.num-fixo {
+  background: #e0f2fe;
+  border: 2.5px solid #0AACE8;
+  color: #0369a1;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 900;
+  border-radius: 14px;
+  width: 72px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.lacuna {
+  background: #f8fafc;
+  border: 3px dashed #94a3b8;
+  color: #cbd5e1;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 900;
+  border-radius: 14px;
+  width: 72px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  position: relative;
+}
+.lacuna.preenchida { border-style: solid; border-color: var(--primary); color: var(--primary); background: #daf1fc; }
+.lacuna.certa { border-color: #22c55e; background: #d1fae5; color: #166534; }
+.lacuna.errada { border-color: #ef4444; background: #fee2e2; color: #991b1b; }
+.seta {
+  font-size: 1.4rem;
+  color: #94a3b8;
+  font-weight: 900;
+}
+
+/* Banco de respostas */
+.banco-titulo {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #64748b;
+  text-align: center;
+  margin-bottom: 10px;
+}
+.banco-resp {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.resp-chip {
+  background: var(--bg);
+  border: 2.5px solid var(--primary);
+  color: var(--primary);
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 900;
+  border-radius: 12px;
+  padding: 10px 18px;
+  min-width: 64px;
+  min-height: 52px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.12s, background 0.12s;
+}
+.resp-chip:hover:not(.usado) { transform: scale(1.08); background: #daf1fc; }
+.resp-chip.usado { opacity: 0.3; cursor: default; pointer-events: none; }
+.resp-chip.selecionado { background: #0AACE8; color: #fff; transform: scale(1.05); }
+
+.feedback-seq {
+  text-align: center;
+  font-size: 1.15rem;
+  font-weight: 700;
+  border-radius: 14px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  display: none;
+}
+.feedback-seq.show { display: block; }
+.feedback-seq.ok { background: #d1fae5; color: #166534; }
+.feedback-seq.nok { background: #fee2e2; color: #991b1b; }
+
+.btn-verificar {
+  display: block;
+  margin: 0 auto 12px;
+  background: linear-gradient(135deg, var(--primary), var(--light));
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 16px 40px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(10,172,232,0.25);
+  min-height: 54px;
+}
+.btn-prox {
+  display: none;
+  margin: 0 auto 12px;
+  background: #f0f9ff;
+  border: 2.5px solid var(--primary);
+  color: var(--primary);
+  border-radius: 50px;
+  padding: 14px 36px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  min-height: 54px;
+}
+
+/* Resultado final */
+.resultado-final {
+  display: none;
+  background: #fff;
+  border-radius: 24px;
+  padding: 36px 28px;
+  text-align: center;
+  box-shadow: 0 4px 24px rgba(10,172,232,0.15);
+  margin-bottom: 20px;
+}
+.resultado-final.show { display: block; }
+.resultado-final .big-emoji { font-size: 4rem; margin-bottom: 12px; }
+.resultado-final h2 { font-family: 'Baloo 2', sans-serif; font-size: 2rem; font-weight: 900; color: var(--primary); }
+.resultado-final .score { font-size: 1.5rem; font-weight: 800; color: #1a2e3b; margin: 10px 0; }
+.resultado-final .msg { font-size: 1.1rem; color: #475569; }
+
+.footer { text-align: center; padding: 24px 16px 32px; }
+.btn-back {
+  background: transparent;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  border-radius: 50px;
+  padding: 12px 28px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  min-height: 44px;
+}
+
+@media (max-width: 480px) {
+  .num-fixo, .lacuna { width: 58px; height: 54px; font-size: 1.4rem; }
+  .resp-chip { font-size: 1.3rem; min-width: 56px; padding: 8px 14px; }
+  .header h1 { font-size: 1.25rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="emoji">🎲</span>
+  <h1>Sequência de Dezenas Exatas</h1>
+  <p>Complete a sequência clicando nos números certos!</p>
+</div>
+
+<div class="container">
+  <div class="progresso-txt" id="progressoTxt">Sequência 1 de 6</div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+
+  <div class="seq-card" id="seqCard">
+    <div class="seq-tipo" id="seqTipo"></div>
+    <div class="seq-enunciado" id="seqEnunciado"></div>
+    <div class="trilha" id="trilha"></div>
+    <div class="banco-titulo">Escolha as respostas:</div>
+    <div class="banco-resp" id="bancoResp"></div>
+    <div class="feedback-seq" id="feedbackSeq"></div>
+    <button class="btn-verificar" id="btnVerificar" onclick="verificar()">Verificar ✔</button>
+    <button class="btn-prox" id="btnProx" onclick="proxSequencia()">Próxima →</button>
+  </div>
+
+  <div class="resultado-final" id="resultadoFinal">
+    <div class="big-emoji" id="finalEmoji">🎉</div>
+    <h2>Muito bem!</h2>
+    <div class="score" id="finalScore"></div>
+    <div class="msg" id="finalMsg"></div>
+  </div>
+</div>
+
+<div class="footer">
+  <button class="btn-back" onclick="voltarAoPortal()">← Voltar ao Portal</button>
+</div>
+
+<!-- GAMIFICAÇÃO -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'pares-impares-dezenas-exatas';
+  var DISCIPLINE    = 'matematica';
+  var ACTIVITY_TYPE = 'sequencia';
+  var TOTAL_ATIV    = 5;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Duo',
+        characterEmoji:  '🎲',
+        characterImg:    'chars/duo.png',
+        themeLabel:      'Pares, Ímpares e Dezenas Exatas · Matemática',
+        totalActivities: TOTAL_ATIV,
+        activityType:    ACTIVITY_TYPE,
+        primaryColor:    '#0AACE8',
+        lightColor:      '#5AC8FB',
+        bgColor:         '#EFF9FF',
+        glowRgb:         '10,172,232',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _scoreVal = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _scoreVal = v;
+      var btn = document.getElementById('gamificacao-btn');
+      if (btn) btn.style.display = 'block';
+    },
+    get: function () { return _scoreVal; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#0AACE8,#5AC8FB);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+
+<script>
+// Sequências — itens null = lacuna a preencher
+// Gabarito armazenado apenas em variável JS
+var sequencias = [
+  {
+    tipo: '📈 Crescente',
+    enunciado: 'Complete a sequência crescente de dezenas:',
+    itens: [10, 20, null, 40, null],
+    gabarito: [30, 50],
+    banco: [30, 50, 60, 70]
+  },
+  {
+    tipo: '📉 Decrescente',
+    enunciado: 'Complete a sequência decrescente de dezenas:',
+    itens: [90, 80, null, 60, null],
+    gabarito: [70, 50],
+    banco: [70, 50, 40, 20]
+  },
+  {
+    tipo: '📈 Crescente',
+    enunciado: 'Complete a sequência crescente de dezenas:',
+    itens: [null, 20, 30, null, 50],
+    gabarito: [10, 40],
+    banco: [10, 40, 60, 80]
+  },
+  {
+    tipo: '📉 Decrescente',
+    enunciado: 'Complete a sequência decrescente de dezenas:',
+    itens: [null, 70, null, 50, 40],
+    gabarito: [80, 60],
+    banco: [80, 60, 30, 10]
+  },
+  {
+    tipo: '📈 Crescente',
+    enunciado: 'Complete a sequência crescente de dezenas:',
+    itens: [20, null, 40, 50, null],
+    gabarito: [30, 60],
+    banco: [30, 60, 10, 70]
+  },
+  {
+    tipo: '📉 Decrescente',
+    enunciado: 'Complete a sequência decrescente de dezenas:',
+    itens: [60, null, 40, null, 20],
+    gabarito: [50, 30],
+    banco: [50, 30, 80, 10]
+  }
+];
+
+var indice = 0;
+var acertos = 0;
+// respostas[i] = valor escolhido para a i-ésima lacuna (null se não preenchida)
+var respostas = [];
+var lacunaAtiva = null; // índice da lacuna selecionada
+var lacunaEls = [];
+
+function playSound(tipo) {
+  try {
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    var o = ctx.createOscillator();
+    var g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    if (tipo === 'correct') {
+      o.frequency.setValueAtTime(523, ctx.currentTime);
+      o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+      o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+      o.start(); o.stop(ctx.currentTime + 0.5);
+    } else {
+      o.frequency.setValueAtTime(300, ctx.currentTime);
+      o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      o.start(); o.stop(ctx.currentTime + 0.4);
+    }
+  } catch(e) {}
+}
+
+function embaralhar(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+function renderizar() {
+  var seq = sequencias[indice];
+  respostas = seq.gabarito.map(function() { return null; });
+  lacunaAtiva = null;
+  lacunaEls = [];
+
+  document.getElementById('seqTipo').textContent = seq.tipo;
+  document.getElementById('seqEnunciado').textContent = seq.enunciado;
+  document.getElementById('progressoTxt').textContent = 'Sequência ' + (indice + 1) + ' de ' + sequencias.length;
+  document.getElementById('progressBar').style.width = (indice / sequencias.length * 100) + '%';
+  document.getElementById('feedbackSeq').className = 'feedback-seq';
+  document.getElementById('feedbackSeq').textContent = '';
+  document.getElementById('btnVerificar').style.display = 'block';
+  document.getElementById('btnProx').style.display = 'none';
+
+  // Trilha
+  var trilha = document.getElementById('trilha');
+  trilha.innerHTML = '';
+  var lacunaIdx = 0;
+  seq.itens.forEach(function(item, i) {
+    if (i > 0) {
+      var seta = document.createElement('span');
+      seta.className = 'seta';
+      seta.textContent = '→';
+      trilha.appendChild(seta);
+    }
+    if (item !== null) {
+      var el = document.createElement('div');
+      el.className = 'num-fixo';
+      el.textContent = item;
+      trilha.appendChild(el);
+    } else {
+      var lac = document.createElement('div');
+      lac.className = 'lacuna';
+      lac.textContent = '?';
+      lac.setAttribute('data-lacuna', lacunaIdx);
+      (function(li) {
+        lac.onclick = function() { selecionarLacuna(li); };
+      })(lacunaIdx);
+      lacunaEls.push(lac);
+      trilha.appendChild(lac);
+      lacunaIdx++;
+    }
+  });
+
+  // Banco embaralhado
+  var banco = document.getElementById('bancoResp');
+  banco.innerHTML = '';
+  embaralhar(seq.banco).forEach(function(val) {
+    var chip = document.createElement('div');
+    chip.className = 'resp-chip';
+    chip.textContent = val;
+    chip.setAttribute('data-val', val);
+    chip.onclick = function() { escolherResposta(val, chip); };
+    banco.appendChild(chip);
+  });
+
+  // Selecionar primeira lacuna automaticamente
+  if (lacunaEls.length > 0) selecionarLacuna(0);
+}
+
+function selecionarLacuna(li) {
+  lacunaAtiva = li;
+  lacunaEls.forEach(function(el, i) {
+    if (i === li) {
+      el.style.borderColor = '#0AACE8';
+      el.style.boxShadow = '0 0 0 3px rgba(10,172,232,0.3)';
+    } else {
+      el.style.borderColor = '';
+      el.style.boxShadow = '';
+    }
+  });
+}
+
+function escolherResposta(val, chip) {
+  if (lacunaAtiva === null) return;
+
+  // Desmarcar chip anterior se havia na mesma lacuna
+  var anterior = respostas[lacunaAtiva];
+  if (anterior !== null) {
+    document.querySelectorAll('.resp-chip').forEach(function(c) {
+      if (parseInt(c.getAttribute('data-val')) === anterior) {
+        c.classList.remove('selecionado', 'usado');
+      }
+    });
+  }
+
+  respostas[lacunaAtiva] = val;
+  lacunaEls[lacunaAtiva].textContent = val;
+  lacunaEls[lacunaAtiva].className = 'lacuna preenchida';
+  lacunaEls[lacunaAtiva].style.borderColor = '';
+  lacunaEls[lacunaAtiva].style.boxShadow = '';
+
+  // Marcar chip como usado
+  chip.classList.add('selecionado', 'usado');
+
+  // Avançar para próxima lacuna vazia
+  var proxVazia = null;
+  for (var i = 0; i < respostas.length; i++) {
+    if (respostas[i] === null) { proxVazia = i; break; }
+  }
+  if (proxVazia !== null) selecionarLacuna(proxVazia);
+  else lacunaAtiva = null;
+}
+
+function verificar() {
+  var seq = sequencias[indice];
+  var certas = 0;
+  respostas.forEach(function(r, i) {
+    if (r === seq.gabarito[i]) {
+      lacunaEls[i].className = 'lacuna certa';
+      certas++;
+    } else {
+      lacunaEls[i].className = 'lacuna errada';
+      lacunaEls[i].textContent = (r === null ? '?' : r) + ' → ' + seq.gabarito[i];
+    }
+  });
+
+  var fb = document.getElementById('feedbackSeq');
+  if (certas === seq.gabarito.length) {
+    fb.textContent = '🎉 Perfeito! Sequência completa!';
+    fb.className = 'feedback-seq show ok';
+    acertos++;
+    playSound('correct');
+  } else {
+    fb.textContent = '🔍 Quase! As respostas certas estão em verde.';
+    fb.className = 'feedback-seq show nok';
+    playSound('wrong');
+  }
+
+  document.getElementById('btnVerificar').style.display = 'none';
+  document.getElementById('btnProx').style.display = 'block';
+  document.getElementById('btnProx').textContent = indice < sequencias.length - 1 ? 'Próxima →' : 'Ver resultado 🏆';
+
+  // Desabilitar banco
+  document.querySelectorAll('.resp-chip').forEach(function(c) { c.style.pointerEvents = 'none'; });
+}
+
+function proxSequencia() {
+  indice++;
+  if (indice < sequencias.length) {
+    renderizar();
+  } else {
+    mostrarResultado();
+  }
+}
+
+function mostrarResultado() {
+  var pct = Math.round((acertos / sequencias.length) * 100);
+  window.sabendoScore = pct;
+
+  document.getElementById('seqCard').style.display = 'none';
+  document.getElementById('progressBar').style.width = '100%';
+  document.getElementById('progressoTxt').textContent = 'Concluído!';
+
+  var rf = document.getElementById('resultadoFinal');
+  rf.classList.add('show');
+  document.getElementById('finalEmoji').textContent = pct >= 80 ? '🎉' : pct >= 50 ? '😊' : '💪';
+  document.getElementById('finalScore').textContent = acertos + ' de ' + sequencias.length + ' sequências certas!';
+  var msgs = ['Continue praticando! 💪', 'Bom trabalho! 😊', 'Você arrasouu nas dezenas! 🌟'];
+  document.getElementById('finalMsg').textContent = pct >= 80 ? msgs[2] : pct >= 50 ? msgs[1] : msgs[0];
+}
+
+window.verificar = verificar;
+window.proxSequencia = proxSequencia;
+
+renderizar();
+</script>
+
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>
