@@ -187,6 +187,44 @@ $json = "{`"raiz`": `"$($path -replace '\\','\\\\')`"}"
 
 ---
 
+## ERR-007 — `touchend` no slot-alvo nunca dispara em drag touch
+
+**Arquivos afetados:** `arrastar-numeros-ordinais.html`
+**Data:** 2026-06
+**Tipo:** Touch — evento disparado no elemento de origem, não no destino
+
+### Causa raiz
+
+Em touch events, `touchend` sempre dispara no elemento onde o toque **começou** (o card arrastado), nunca no elemento onde o dedo foi solto (o slot alvo). `slot.addEventListener('touchend', () => drop(slot))` nunca executa.
+
+### Correção aplicada
+
+Remover o `touchend` dos slots. Adicionar um handler global no `document` que usa `document.elementFromPoint()` para identificar o slot sob o dedo no momento do `touchend`:
+
+```javascript
+// ❌ ERRADO — touchend no slot nunca dispara durante drag touch
+slot.addEventListener('touchend', () => drop(slot), { passive: true });
+
+// ✅ CORRETO — handler global com elementFromPoint
+document.addEventListener('touchend', function(e) {
+  if (!draggingCar) return;
+  var touch = e.changedTouches[0];
+  var el = document.elementFromPoint(touch.clientX, touch.clientY);
+  document.querySelectorAll('.slot').forEach(function(s) { s.classList.remove('over'); });
+  while (el && !el.classList.contains('slot')) el = el.parentElement;
+  if (el) drop(el);
+  else draggingCar = null;
+}, { passive: true });
+```
+
+O `touchmove` global também deve usar `elementFromPoint` para destacar visualmente o slot sob o dedo.
+
+### Regra para a squad
+
+Nunca registrar `touchend` no elemento-alvo de um drag. Usar sempre `document.addEventListener('touchend', ...)` + `elementFromPoint` para localizar o destino.
+
+---
+
 ## Checklist anti-bug para `gerador-atividades`
 
 Antes de finalizar qualquer HTML de atividade, verificar:
@@ -199,3 +237,4 @@ Antes de finalizar qualquer HTML de atividade, verificar:
 - [ ] Toda função chamada via `onclick="fn()"` no HTML está exportada com `window.fn = fn` antes do fechamento do IIFE? (ERR-003)
 - [ ] Elementos arrastáveis: `touchstart` e `touchmove` com `{ passive: false }` + `e.preventDefault()`? (ERR-004)
 - [ ] O config de `SabendoGamification.run()` inclui `activityType: ACTIVITY_TYPE`? (ERR-005)
+- [ ] Drop em touch usa `document.touchend` + `elementFromPoint`, nunca `slot.touchend`? (ERR-007)

@@ -257,7 +257,6 @@ function buildTrack() {
     slot.addEventListener('dragover', e => { e.preventDefault(); if (!slot.dataset.filled) slot.classList.add('over'); });
     slot.addEventListener('dragleave', () => slot.classList.remove('over'));
     slot.addEventListener('drop', e => { e.preventDefault(); slot.classList.remove('over'); drop(slot); });
-    slot.addEventListener('touchend', () => drop(slot), { passive: true });
 
     track.appendChild(slot);
   });
@@ -307,8 +306,27 @@ function drop(slot) {
   draggingCar = null;
 }
 
-// Impede scroll durante drag no touch
-document.addEventListener('touchmove', e => { if (draggingCar) e.preventDefault(); }, { passive:false });
+// Touch drag: impede scroll e destaca slot sob o dedo
+document.addEventListener('touchmove', function(e) {
+  if (!draggingCar) return;
+  e.preventDefault();
+  var touch = e.touches[0];
+  var el = document.elementFromPoint(touch.clientX, touch.clientY);
+  document.querySelectorAll('.slot').forEach(function(s) { s.classList.remove('over'); });
+  while (el && !el.classList.contains('slot')) el = el.parentElement;
+  if (el && !el.dataset.filled) el.classList.add('over');
+}, { passive: false });
+
+// Touch drag: drop no slot sob o dedo ao soltar
+document.addEventListener('touchend', function(e) {
+  if (!draggingCar) return;
+  var touch = e.changedTouches[0];
+  var el = document.elementFromPoint(touch.clientX, touch.clientY);
+  document.querySelectorAll('.slot').forEach(function(s) { s.classList.remove('over'); });
+  while (el && !el.classList.contains('slot')) el = el.parentElement;
+  if (el) drop(el);
+  else draggingCar = null;
+}, { passive: true });
 
 function embaralhar() {
   acertos = 0;
@@ -345,7 +363,7 @@ embaralhar();
       SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
         characterName:   'Primo',
         characterEmoji:  '🎖️',
-        characterImg:    'chars/primo.png',
+        characterImg:    'chars/numeros-ordinais-hd.png',
         themeLabel:      'Números Ordinais · Matemática',
         totalActivities: TOTAL_ATIV,
         activityType:    ACTIVITY_TYPE,
