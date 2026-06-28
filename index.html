@@ -2251,6 +2251,10 @@ var THEME_CATALOG = [
   {slug:'regras-convivencia',          disc:'hist', label:'Regras de Convivência',           emoji:'📋', charName:'Combi',   charImg:'chars/regras-convivencia-hd.png'},
   {slug:'mudancas-convivencia',        disc:'hist', label:'Mudanças na Convivência',         emoji:'⏳', charName:'Tempa',   charImg:'chars/mudancas-convivencia-hd.png'},
   {slug:'numeros-ordinais',            disc:'mat',  label:'Números Ordinais',                emoji:'🏆', charName:'Primo',   charImg:'chars/numeros-ordinais-hd.png'},
+  {slug:'dezena-numeros-ate-19',       disc:'mat',  label:'A Dezena e os Números até 19',    emoji:'🟨', charName:'Dezi',    charImg:'chars/dezena-numeros-ate-19-hd.png'},
+  {slug:'pares-impares-dezenas-exatas',disc:'mat',  label:'Pares, Ímpares e Dezenas Exatas', emoji:'🎲', charName:'Duo',     charImg:'chars/pares-impares-dezenas-exatas-hd.png'},
+  {slug:'numeros-ate-99',              disc:'mat',  label:'Números até 99 e Comparar Quantidades', emoji:'🧮', charName:'Centão', charImg:'chars/numeros-ate-99-hd.png'},
+  {slug:'centena-e-mil',               disc:'mat',  label:'A Centena e o Número 1.000',      emoji:'🟦', charName:'Cento',   charImg:'chars/centena-e-mil-hd.png'},
   {slug:'bilhete-cartao-pessoal',      disc:'port', label:'Bilhete e Cartão Pessoal',        emoji:'📝', charName:'Bilheto', charImg:'chars/bilhete-cartao-pessoal-hd.png'},
   {slug:'letras-silabas-pontuacao',    disc:'port', label:'Letras, Sílabas e Pontuação',     emoji:'❗', charName:'Pontinho',charImg:'chars/letras-silabas-pontuacao-hd.png'}
 ];
@@ -2313,7 +2317,27 @@ var HREF_MAP = {
   'portugues/letras-silabas-pontuacao/complete-pontuacao.html':     'letras-silabas-pontuacao|completar',
   'portugues/letras-silabas-pontuacao/memoria-letras.html':         'letras-silabas-pontuacao|memoria',
   'portugues/letras-silabas-pontuacao/ordena-alfabeto.html':        'letras-silabas-pontuacao|ordena',
-  'portugues/letras-silabas-pontuacao/mapa-mental-letras.html':     'letras-silabas-pontuacao|mapa-mental'
+  'portugues/letras-silabas-pontuacao/mapa-mental-letras.html':     'letras-silabas-pontuacao|mapa-mental',
+  'matematica/dezena-numeros-ate-19/quiz-dezena-numeros-ate-19.html':         'dezena-numeros-ate-19|quiz',
+  'matematica/dezena-numeros-ate-19/memoria-dezena-numeros-ate-19.html':      'dezena-numeros-ate-19|memoria',
+  'matematica/dezena-numeros-ate-19/arrastar-dezena-numeros-ate-19.html':     'dezena-numeros-ate-19|arrastar',
+  'matematica/dezena-numeros-ate-19/completar-dezena-numeros-ate-19.html':    'dezena-numeros-ate-19|completar',
+  'matematica/dezena-numeros-ate-19/mapa-mental-dezena-numeros-ate-19.html':  'dezena-numeros-ate-19|mapa-mental',
+  'matematica/pares-impares-dezenas-exatas/quiz-pares-impares-dezenas-exatas.html':          'pares-impares-dezenas-exatas|quiz',
+  'matematica/pares-impares-dezenas-exatas/arrastar-pares-impares-dezenas-exatas.html':      'pares-impares-dezenas-exatas|arrastar',
+  'matematica/pares-impares-dezenas-exatas/sequencia-dezenas-exatas.html':                   'pares-impares-dezenas-exatas|sequencia',
+  'matematica/pares-impares-dezenas-exatas/verdadeiro-ou-falso-pares-impares-dezenas-exatas.html': 'pares-impares-dezenas-exatas|vf',
+  'matematica/pares-impares-dezenas-exatas/mapa-mental-pares-impares-dezenas-exatas.html':   'pares-impares-dezenas-exatas|mapa-mental',
+  'matematica/numeros-ate-99/quiz-numeros-ate-99.html':             'numeros-ate-99|quiz',
+  'matematica/numeros-ate-99/memoria-numeros-ate-99.html':          'numeros-ate-99|memoria',
+  'matematica/numeros-ate-99/verdadeiro-ou-falso-numeros-ate-99.html': 'numeros-ate-99|vf',
+  'matematica/numeros-ate-99/arrastar-numeros-ate-99.html':         'numeros-ate-99|arrastar',
+  'matematica/numeros-ate-99/mapa-mental-numeros-ate-99.html':      'numeros-ate-99|mapa-mental',
+  'matematica/centena-e-mil/quiz-centena-e-mil.html':               'centena-e-mil|quiz',
+  'matematica/centena-e-mil/verdadeiro-ou-falso-centena-e-mil.html':'centena-e-mil|vf',
+  'matematica/centena-e-mil/arrastar-centena-e-mil.html':           'centena-e-mil|arrastar',
+  'matematica/centena-e-mil/mapa-mental-centena-e-mil.html':        'centena-e-mil|mapa-mental',
+  'matematica/centena-e-mil/grafico-de-barras.html':                'centena-e-mil|grafico'
 };
 
 var DISC_LABEL_MAP = { cien:'Ciências', geo:'Geografia', hist:'História', mat:'Matemática', port:'Português' };
@@ -2404,7 +2428,7 @@ async function loadCartas() {
     var label    = theme ? theme.label    : card.theme_slug;
     var disc     = DISC_LABEL_MAP[card.discipline] || card.discipline;
     var glow     = GLOW_RGB[card.discipline] || '100,100,200';
-    var cardSlug = themeToCardSlug(card.theme_slug);
+    var cardSlug = card.card_slug || themeToCardSlug(card.theme_slug);
     var cardBgUrl = BASE + 'cartas/carta-fundo-' + cardSlug + '.png';
     var charInner = charImg
       ? '<img src="' + BASE + charImg + '" alt="' + charName + '" style="width:72px;height:72px;object-fit:cover;border-radius:50%;border:3px solid rgba(255,255,255,.6)">'
