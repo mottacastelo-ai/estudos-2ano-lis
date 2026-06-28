@@ -432,6 +432,7 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
 /* ===== ACT BADGE ===== */
 .act-badge { position:absolute;top:10px;right:10px;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;line-height:1.6;pointer-events:none; }
 .act-badge-done { background:#ECFDF5;color:#065F46; }
+.act-badge-new  { background:#F3F0FF;color:#5B21B6; }
 .act-score-line { font-size:11px;color:#059669;font-weight:700;margin-top:5px; }
 .theme-progress-dot { display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;vertical-align:middle;flex-shrink:0; }
 .theme-progress-dot--done    { background:#34D399; }
@@ -2362,15 +2363,22 @@ async function loadActivityStatus() {
   });
   document.querySelectorAll('.act-card[href]').forEach(function(card) {
     var key = HREF_MAP[card.getAttribute('href')];
-    if (!key || !doneMap.hasOwnProperty(key)) return;
+    if (!key) return;
     var badge = document.createElement('span');
-    badge.className = 'act-badge act-badge-done';
-    badge.textContent = '✓ Feito';
-    card.appendChild(badge);
-    var line = document.createElement('div');
-    line.className = 'act-score-line';
-    line.textContent = doneMap[key] > 0 ? 'Melhor: ' + doneMap[key] + '%' : '✓ Concluído';
-    card.appendChild(line);
+    badge.className = 'act-badge';
+    if (doneMap.hasOwnProperty(key)) {
+      badge.classList.add('act-badge-done');
+      badge.textContent = '✓ Feito';
+      card.appendChild(badge);
+      var line = document.createElement('div');
+      line.className = 'act-score-line';
+      line.textContent = doneMap[key] > 0 ? 'Melhor: ' + doneMap[key] + '%' : '✓ Concluído';
+      card.appendChild(line);
+    } else {
+      badge.classList.add('act-badge-new');
+      badge.textContent = '▶ Jogar';
+      card.appendChild(badge);
+    }
   });
   document.querySelectorAll('.theme-link').forEach(function(btn) {
     var m = (btn.getAttribute('onclick') || '').match(/showTheme\('(\w+)','([\w-]+)'\)/);
