@@ -309,6 +309,15 @@ footer {
   <button class="btn-play-again" onclick="initGame(); document.getElementById('win-overlay').classList.remove('show')">
     Jogar de novo 🔄
   </button>
+  <button id="gamificacao-btn-overlay"
+    onclick="window._abrirGamificacao()"
+    style="display:none;padding:16px 32px;
+      background:linear-gradient(135deg,#0AACE8,#5AC8FB);
+      color:#fff;border:none;border-radius:50px;
+      font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+      cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);">
+    Coletar minha carta! 🃏
+  </button>
 </div>
 
 <script>
@@ -507,6 +516,8 @@ initGame();
       _scoreVal = v;
       var btn = document.getElementById('gamificacao-btn');
       if (btn) btn.style.display = 'block';
+      var btnOverlay = document.getElementById('gamificacao-btn-overlay');
+      if (btnOverlay) btnOverlay.style.display = 'block';
     },
     get: function () { return _scoreVal; }
   });
