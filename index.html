@@ -2194,6 +2194,14 @@ async function doLogout() {
   window.location.href = 'https://sabendo.app';
 }
 
+/* Atualiza badges quando o portal volta ao foco (após fechar aba de atividade) */
+document.addEventListener('visibilitychange', function() {
+  if (document.visibilityState === 'visible' && sbUser) {
+    loadActivityStatus();
+    loadCartasCount();
+  }
+});
+
 async function loadStreak() {
   if (!sbUser) return;
   var result = await supa.from('streaks').select('*').eq('user_id', sbUser.id).single();
@@ -2361,6 +2369,8 @@ async function loadActivityStatus() {
     if (doneMap[key] === undefined || (row.score !== null && row.score > doneMap[key]))
       doneMap[key] = row.score !== null ? row.score : 0;
   });
+  /* Limpar badges anteriores para evitar duplicatas ao recarregar */
+  document.querySelectorAll('.act-badge, .act-score-line, .theme-progress-dot').forEach(function(el) { el.remove(); });
   document.querySelectorAll('.act-card[href]').forEach(function(card) {
     var key = HREF_MAP[card.getAttribute('href')];
     if (!key) return;
