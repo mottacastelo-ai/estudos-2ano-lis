@@ -223,6 +223,37 @@ O `touchmove` global também deve usar `elementFromPoint` para destacar visualme
 
 Nunca registrar `touchend` no elemento-alvo de um drag. Usar sempre `document.addEventListener('touchend', ...)` + `elementFromPoint` para localizar o destino.
 
+
+---
+
+## ERR-008 — Botão de gamificação oculto atrás de win-overlay
+
+**Arquivos afetados:** `jogo-memoria-numeros-ordinais.html` (e qualquer jogo com overlay de vitória `position:fixed`)
+**Data:** 2026-06-30
+**Tipo:** CSS — z-index/stacking context cobre elemento fora do overlay
+
+### Causa raiz
+
+O `win-overlay` usa `position: fixed; inset: 0; z-index: 100`, cobrindo a tela inteira quando o jogo termina. O botão `#gamificacao-btn` fica fora do overlay no DOM — ele é mostrado corretamente pelo setter do `sabendoScore`, mas fica visualmente escondido atrás do overlay. O usuário não consegue clicar.
+
+### Correção aplicada
+
+Adicionado um segundo botão `#gamificacao-btn-overlay` diretamente dentro do `win-overlay`. O setter do `sabendoScore` foi atualizado para mostrar ambos os botões:
+
+```javascript
+set: function (v) {
+  _scoreVal = v;
+  var btn = document.getElementById('gamificacao-btn');
+  if (btn) btn.style.display = 'block';
+  var btnOverlay = document.getElementById('gamificacao-btn-overlay');
+  if (btnOverlay) btnOverlay.style.display = 'block';
+}
+```
+
+### Regra para a squad
+
+Sempre que uma atividade usa overlay de vitória com `position: fixed` ou `z-index` alto, incluir uma segunda instância do botão de gamificação **dentro do overlay**. O setter deve referenciar ambos os IDs. Alternativa: mover o overlay para dentro do mesmo stacking context do botão.
+
 ---
 
 ## Checklist anti-bug para `gerador-atividades`
@@ -238,3 +269,4 @@ Antes de finalizar qualquer HTML de atividade, verificar:
 - [ ] Elementos arrastáveis: `touchstart` e `touchmove` com `{ passive: false }` + `e.preventDefault()`? (ERR-004)
 - [ ] O config de `SabendoGamification.run()` inclui `activityType: ACTIVITY_TYPE`? (ERR-005)
 - [ ] Drop em touch usa `document.touchend` + `elementFromPoint`, nunca `slot.touchend`? (ERR-007)
+- [ ] Jogos com overlay de vitória position:fixed: botão gamificação duplicado dentro do overlay? (ERR-008)
