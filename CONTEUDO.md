@@ -1,6 +1,6 @@
 # Inventário do Portal — Lis (2º Ano)
 
-> Gerado automaticamente por `scripts/update-docs.py` em 2026-06-22.
+> Gerado automaticamente por `scripts/update-docs.py` em 2026-06-30.
 > Fonte primária: `index.html`. Existência de arquivos validada no filesystem.
 
 ---
@@ -9,11 +9,39 @@
 
 | Disciplina | Temas | Atividades | HQs completas |
 |---|---|---|---|
-| 🔢 Matemática | 1 | 5 | 1/1 |
+| 📝 Português | 2 | 9 | 2/2 |
+| 🔢 Matemática | 5 | 25 | 5/5 |
 | 🔬 Ciências | 4 | 16 | 4/4 |
 | 🌍 Geografia | 2 | 8 | 2/2 |
 | 📜 História | 5 | 20 | 5/5 |
-| **Total** | **12** | **49** | **12/12** |
+| **Total** | **18** | **78** | **18/18** |
+
+---
+
+## 📝 Português (`port`)
+
+### bilhete-cartao-pessoal
+
+**HQ:** `hq-bilhete-cartao-pessoal-pg1.png` — ✅ p1 · ✅ p2 · ✅ p3 · ✅ p4 | ❌ prompt.md ausente
+
+**Atividades (4):**
+
+- ✅ [Quiz: Bilhete e Cartão](portugues/bilhete-cartao-pessoal/quiz-bilhete.html)
+- ✅ [Complete o Bilhete](portugues/bilhete-cartao-pessoal/complete-bilhete.html)
+- ✅ [Jogo da Memória](portugues/bilhete-cartao-pessoal/memoria-bilhete.html)
+- ✅ [Mapa Mental](portugues/bilhete-cartao-pessoal/mapa-mental-bilhete.html)
+
+### letras-silabas-pontuacao
+
+**HQ:** `hq-letras-silabas-pontuacao-pg1.png` — ✅ p1 · ✅ p2 · ✅ p3 · ✅ p4 | ❌ prompt.md ausente
+
+**Atividades (5):**
+
+- ✅ [Quiz: Letras e Sons](portugues/letras-silabas-pontuacao/quiz-letras.html)
+- ✅ [Complete a Pontuação](portugues/letras-silabas-pontuacao/complete-pontuacao.html)
+- ✅ [Jogo da Memória](portugues/letras-silabas-pontuacao/memoria-letras.html)
+- ✅ [Ordena o Alfabeto](portugues/letras-silabas-pontuacao/ordena-alfabeto.html)
+- ✅ [Mapa Mental](portugues/letras-silabas-pontuacao/mapa-mental-letras.html)
 
 ---
 
@@ -30,6 +58,54 @@
 - ✅ [Pódio da Corrida](matematica/numeros-ordinais/arrastar-numeros-ordinais.html)
 - ✅ [Criador de Frase](matematica/numeros-ordinais/criador-frase-numeros-ordinais.html)
 - ✅ [Mapa Mental](matematica/numeros-ordinais/mapa-mental-numeros-ordinais.html)
+
+### dezena-numeros-ate-19
+
+**HQ:** `hq-dezena-numeros-ate-19-pg1.png` — ✅ p1 · ✅ p2 · ✅ p3 · ✅ p4 | ✅ prompt.md
+
+**Atividades (5):**
+
+- ✅ [(sem título)](matematica/dezena-numeros-ate-19/quiz-dezena-numeros-ate-19.html)
+- ✅ [(sem título)](matematica/dezena-numeros-ate-19/memoria-dezena-numeros-ate-19.html)
+- ✅ [(sem título)](matematica/dezena-numeros-ate-19/arrastar-dezena-numeros-ate-19.html)
+- ✅ [(sem título)](matematica/dezena-numeros-ate-19/completar-dezena-numeros-ate-19.html)
+- ✅ [(sem título)](matematica/dezena-numeros-ate-19/mapa-mental-dezena-numeros-ate-19.html)
+
+### pares-impares-dezenas-exatas
+
+**HQ:** `hq-pares-impares-dezenas-exatas-pg1.png` — ✅ p1 · ✅ p2 · ✅ p3 · ✅ p4 | ✅ prompt.md
+
+**Atividades (5):**
+
+- ✅ [(sem título)](matematica/pares-impares-dezenas-exatas/quiz-pares-impares-dezenas-exatas.html)
+- ✅ [(sem título)](matematica/pares-impares-dezenas-exatas/arrastar-pares-impares-dezenas-exatas.html)
+- ✅ [(sem título)](matematica/pares-impares-dezenas-exatas/sequencia-dezenas-exatas.html)
+- ✅ [(sem título)](matematica/pares-impares-dezenas-exatas/verdadeiro-ou-falso-pares-impares-dezenas-exatas.html)
+- ✅ [(sem título)](matematica/pares-impares-dezenas-exatas/mapa-mental-pares-impares-dezenas-exatas.html)
+
+### numeros-ate-99
+
+**HQ:** `hq-numeros-ate-99-pg1.png` — ✅ p1 · ✅ p2 · ✅ p3 · ✅ p4 | ✅ prompt.md
+
+**Atividades (5):**
+
+- ✅ [(sem título)](matematica/numeros-ate-99/quiz-numeros-ate-99.html)
+- ✅ [(sem título)](matematica/numeros-ate-99/memoria-numeros-ate-99.html)
+- ✅ [(sem título)](matematica/numeros-ate-99/verdadeiro-ou-falso-numeros-ate-99.html)
+- ✅ [(sem título)](matematica/numeros-ate-99/arrastar-numeros-ate-99.html)
+- ✅ [(sem título)](matematica/numeros-ate-99/mapa-mental-numeros-ate-99.html)
+
+### centena-e-mil
+
+**HQ:** `hq-centena-e-mil-pg1.png` — ✅ p1 · ✅ p2 · ✅ p3 · ✅ p4 | ✅ prompt.md
+
+**Atividades (5):**
+
+- ✅ [(sem título)](matematica/centena-e-mil/quiz-centena-e-mil.html)
+- ✅ [(sem título)](matematica/centena-e-mil/arrastar-centena-e-mil.html)
+- ✅ [(sem título)](matematica/centena-e-mil/verdadeiro-ou-falso-centena-e-mil.html)
+- ✅ [(sem título)](matematica/centena-e-mil/grafico-de-barras.html)
+- ✅ [(sem título)](matematica/centena-e-mil/mapa-mental-centena-e-mil.html)
 
 ---
 

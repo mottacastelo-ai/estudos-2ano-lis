@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teste Carta</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="shared/gamification.js"></script>
+</head>
+<body style="background:#111;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;">
+<button onclick="testar()" style="padding:20px 40px;font-size:1.5rem;background:#E8430A;color:#fff;border:none;border-radius:50px;cursor:pointer;font-family:sans-serif;">
+  Testar Carta 🃏
+</button>
+<script>
+function testar() {
+  var supa = supabase.createClient(
+    'https://mmtrzxmitklpibfilbio.supabase.co',
+    'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_'
+  );
+  SabendoGamification.run(supa, 'anonimo', 'bilhete-cartao-pessoal', 'port', {
+    characterName:   'Bilheto',
+    characterEmoji:  '📝',
+    characterImg:    '_landing/chars/bilhete-cartao-pessoal-hd.png',
+    themeLabel:      'Bilhete e Cartão Pessoal · Português',
+    totalActivities: 4,
+    activityType:    'quiz',
+    primaryColor:    '#E8430A',
+    lightColor:      '#FB8C5A',
+    bgColor:         '#FFF4EF',
+    glowRgb:         '232,67,10',
+    backUrl:         'index.html'
+  });
+}
+</script>
+</body>
+</html>

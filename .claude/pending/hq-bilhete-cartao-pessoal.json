@@ -1,0 +1,14 @@
+{
+  "slug": "bilhete-cartao-pessoal",
+  "disciplina": "portugues",
+  "raiz": "C:\\Users\\wizar\\OneDrive\\Documentos\\Projeto Estudos\\estudos-2ano",
+  "prompt_path": "portugues/bilhete-cartao-pessoal/hq-bilhete-cartao-pessoal.md",
+  "canonicas_path": "C:\\Users\\wizar\\OneDrive\\Documentos\\Projeto Estudos\\Personagens\\2o ano",
+  "output_dir": "portugues/bilhete-cartao-pessoal",
+  "expected_outputs": [
+    "hq-bilhete-cartao-pessoal-pg1.png",
+    "hq-bilhete-cartao-pessoal-pg2.png",
+    "hq-bilhete-cartao-pessoal-pg3.png",
+    "hq-bilhete-cartao-pessoal-pg4.png"
+  ]
+}

@@ -256,6 +256,32 @@ Sempre que uma atividade usa overlay de vitória com `position: fixed` ou `z-ind
 
 ---
 
+## ERR-009 — `characterImg` com apelido curto em vez do slug do tema
+
+**Arquivos afetados:** todos os HTMLs dos 4 temas de matemática novos (dezena, pares, numeros-99, centena)
+**Data:** 2026-06-30
+**Tipo:** Asset — caminho de imagem errado, portrait não carrega
+
+### Causa raiz
+
+Os HTMLs foram gerados com `characterImg: 'chars/dezi.png'` (apelido curto do personagem), mas os portraits são salvos pelo Codex com o slug completo do tema: `dezena-numeros-ate-19-hd.png`. A imagem não carrega — o modal mostra emoji de fallback e o reveal mostra imagem quebrada.
+
+### Regra para a squad
+
+**`characterImg` SEMPRE deve usar o slug completo do tema + `-hd.png`.**
+
+```javascript
+// ✅ CORRETO
+characterImg: 'chars/dezena-numeros-ate-19-hd.png'
+
+// ❌ ERRADO — arquivo não existe
+characterImg: 'chars/dezi.png'
+```
+
+Padrão obrigatório: `chars/[THEME_SLUG]-hd.png` — o mesmo valor usado em `output_path` do `portraits-batch.json`.
+
+---
+
 ## Checklist anti-bug para `gerador-atividades`
 
 Antes de finalizar qualquer HTML de atividade, verificar:
@@ -270,3 +296,4 @@ Antes de finalizar qualquer HTML de atividade, verificar:
 - [ ] O config de `SabendoGamification.run()` inclui `activityType: ACTIVITY_TYPE`? (ERR-005)
 - [ ] Drop em touch usa `document.touchend` + `elementFromPoint`, nunca `slot.touchend`? (ERR-007)
 - [ ] Jogos com overlay de vitória position:fixed: botão gamificação duplicado dentro do overlay? (ERR-008)
+- [ ] `characterImg` usa `chars/[THEME_SLUG]-hd.png` (slug completo), não apelido curto do personagem? (ERR-009)
