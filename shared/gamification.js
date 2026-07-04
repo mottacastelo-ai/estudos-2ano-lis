@@ -818,8 +818,30 @@
   async function run(supa, uid, themeSlug, discipline, config) {
     loadSpaceMono();
 
+    // Re-fetch sessão se uid for anônimo — snippet HTML pode ter chamado getSession antes do token estar disponível
+    var finalUid = uid;
+    if (!finalUid || finalUid === 'anonimo') {
+      try {
+        var sr = await supa.auth.getSession();
+        if (sr.data && sr.data.session) finalUid = sr.data.session.user.id;
+      } catch(e) {}
+    }
+
     // Salvar imediatamente no localStorage (não depende do DB)
-    lsSave(themeSlug, uid, config.activityType);
+    lsSave(themeSlug, finalUid, config.activityType);
+
+    // Garantir INSERT no activity_log com uid correto (o snippet HTML pode ter gravado 'anonimo')
+    if (finalUid && finalUid !== 'anonimo') {
+      try {
+        supa.from('activity_log').insert({
+          user_id:       finalUid,
+          discipline:    discipline,
+          theme_slug:    themeSlug,
+          activity_type: config.activityType,
+          score:         typeof window.sabendoScore === 'number' ? window.sabendoScore : null
+        });
+      } catch(e) {}
+    }
 
     var totalActivities = config.totalActivities || 5;
     var stages          = getStages(totalActivities);
@@ -827,7 +849,7 @@
 
     injectStyles(config.primaryColor, config.lightColor, config.bgColor, config.glowRgb || "167,139,250");
 
-    var progress   = await fetchProgress(supa, uid, themeSlug, config.activityType);
+    var progress   = await fetchProgress(supa, finalUid, themeSlug, config.activityType);
     var stageIndex = Math.min(progress.completedCount, totalActivities);
     var isComplete = stageIndex >= totalActivities;
 
@@ -836,12 +858,12 @@
 
     if (isComplete) {
       var cardRes = await supa.from("cards").select("card_slug")
-        .eq("user_id", uid).eq("theme_slug", themeSlug).maybeSingle();
+        .eq("user_id", finalUid).eq("theme_slug", themeSlug).maybeSingle();
 
       if (!cardRes.data) {
         isFirstCompletion = true;
         cardSlug = randomCard();
-        await saveCard(supa, uid, themeSlug, discipline, cardSlug);
+        await saveCard(supa, finalUid, themeSlug, discipline, cardSlug);
       } else {
         cardSlug = cardRes.data.card_slug;
       }

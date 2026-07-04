@@ -1,6 +1,6 @@
 # Inventário do Portal — Lis (2º Ano)
 
-> Gerado automaticamente por `scripts/update-docs.py` em 2026-06-30.
+> Gerado automaticamente por `scripts/update-docs.py` em 2026-07-04.
 > Fonte primária: `index.html`. Existência de arquivos validada no filesystem.
 
 ---

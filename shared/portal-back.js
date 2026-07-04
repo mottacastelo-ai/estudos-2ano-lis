@@ -5,6 +5,10 @@ function voltarAoPortal() {
     try {
       var active = window.opener.document.querySelector('.theme-content.active');
       if (active && active.id) themeHash = '#' + active.id;
+      // Atualizar badges no portal imediatamente, sem depender de visibilitychange
+      if (typeof window.opener.loadActivityStatus === 'function') {
+        window.opener.loadActivityStatus();
+      }
     } catch (e) {}
   }
 
