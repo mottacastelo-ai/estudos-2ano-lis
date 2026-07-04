@@ -250,6 +250,7 @@ function renderDesafio() {
   ['ficha-maior','ficha-igual','ficha-menor'].forEach(function(id) {
     var f = document.getElementById(id);
     f.classList.remove('usada','selecionada');
+    f.style.pointerEvents = '';
   });
 }
 
