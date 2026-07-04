@@ -2409,7 +2409,7 @@ async function loadActivityStatus() {
 
 async function loadCartasCount() {
   if (!sbUser) return;
-  var res = await supa.from('cards').select('id', {count:'exact', head:true}).eq('user_id', sbUser.id);
+  var res = await supa.from('cards').select('card_slug', {count:'exact', head:true}).eq('user_id', sbUser.id);
   var count = res.count || 0;
   var el = document.getElementById('cartas-sidebar-count');
   if (el) el.textContent = count > 0 ? count : '';

@@ -342,6 +342,7 @@
         color:#fff; text-shadow:0 2px 12px rgba(0,0,0,.6);
         opacity:0; transform:translateY(16px);
         transition:opacity .5s ease,transform .5s ease;
+        text-align:center;
       }
       #sgami-rev-card-name.visible { opacity:1; transform:translateY(0); }
       #sgami-rev-hint {
