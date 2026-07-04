@@ -2183,6 +2183,7 @@ async function initAuth() {
     await loadStreak();
     loadActivityStatus();
     loadCartasCount();
+    rescueActivityLog();
     rescueCards();
     routeFromHash();
   } else {
@@ -2414,6 +2415,29 @@ async function loadCartasCount() {
   var count = res.count || 0;
   var el = document.getElementById('cartas-sidebar-count');
   if (el) el.textContent = count > 0 ? count : '';
+}
+
+async function rescueActivityLog() {
+  if (!sbUser) return;
+  var uid = sbUser.id;
+  // Atividades já gravadas com uid correto
+  var existing = await supa.from('activity_log').select('theme_slug,activity_type').eq('user_id', uid);
+  var doneSet = new Set((existing.data || []).map(function(r) { return r.theme_slug + '|' + r.activity_type; }));
+  // Ler localStorage para encontrar atividades completas não gravadas
+  var toInsert = [];
+  THEME_CATALOG.forEach(function(theme) {
+    var types = {};
+    try { Object.assign(types, JSON.parse(localStorage.getItem('sgami_prog_' + theme.slug + '_' + uid) || '{}')); } catch(e) {}
+    try { Object.assign(types, JSON.parse(localStorage.getItem('sgami_prog_' + theme.slug) || '{}')); } catch(e) {}
+    Object.keys(types).forEach(function(actType) {
+      if (!doneSet.has(theme.slug + '|' + actType)) {
+        toInsert.push({ user_id: uid, discipline: theme.disc, theme_slug: theme.slug, activity_type: actType, score: null });
+      }
+    });
+  });
+  if (toInsert.length === 0) return;
+  await supa.from('activity_log').insert(toInsert);
+  loadActivityStatus();
 }
 
 async function rescueCards() {
