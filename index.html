@@ -2183,6 +2183,7 @@ async function initAuth() {
     await loadStreak();
     loadActivityStatus();
     loadCartasCount();
+    rescueCards();
     routeFromHash();
   } else {
     window.location.href = 'https://sabendo.app';
@@ -2413,6 +2414,35 @@ async function loadCartasCount() {
   var count = res.count || 0;
   var el = document.getElementById('cartas-sidebar-count');
   if (el) el.textContent = count > 0 ? count : '';
+}
+
+async function rescueCards() {
+  if (!sbUser) return;
+  // Contar total de atividades por tema
+  var countByTheme = {};
+  Object.values(HREF_MAP).forEach(function(key) {
+    var slug = key.split('|')[0];
+    countByTheme[slug] = (countByTheme[slug] || 0) + 1;
+  });
+  // Verificar quais cartas já estão salvas
+  var existing = await supa.from('cards').select('theme_slug').eq('user_id', sbUser.id);
+  var savedSlugs = new Set((existing.data || []).map(function(r) { return r.theme_slug; }));
+  // Para cada tema, checar localStorage
+  var uid = sbUser.id;
+  var toSave = [];
+  THEME_CATALOG.forEach(function(theme) {
+    if (savedSlugs.has(theme.slug)) return;
+    var total = countByTheme[theme.slug] || 5;
+    var types = {};
+    try { Object.assign(types, JSON.parse(localStorage.getItem('sgami_prog_' + theme.slug + '_' + uid) || '{}')); } catch(e) {}
+    try { Object.assign(types, JSON.parse(localStorage.getItem('sgami_prog_' + theme.slug) || '{}')); } catch(e) {}
+    if (Object.keys(types).length >= total) {
+      toSave.push({ user_id: uid, theme_slug: theme.slug, discipline: theme.disc, card_slug: themeToCardSlug(theme.slug) });
+    }
+  });
+  if (toSave.length === 0) return;
+  await supa.from('cards').upsert(toSave, { onConflict: 'user_id,theme_slug' });
+  loadCartasCount();
 }
 
 function showCartas() {
