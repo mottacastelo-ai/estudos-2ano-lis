@@ -2428,6 +2428,8 @@ async function rescueActivityLog() {
   THEME_CATALOG.forEach(function(theme) {
     var types = {};
     try { Object.assign(types, JSON.parse(localStorage.getItem('sgami_prog_' + theme.slug + '_' + uid) || '{}')); } catch(e) {}
+    try { Object.assign(types, JSON.parse(localStorage.getItem('sgami_prog_' + theme.slug + '_anonimo') || '{}')); } catch(e) {}
+    try { Object.assign(types, JSON.parse(localStorage.getItem('sgami_prog_' + theme.slug + '_anon') || '{}')); } catch(e) {}
     try { Object.assign(types, JSON.parse(localStorage.getItem('sgami_prog_' + theme.slug) || '{}')); } catch(e) {}
     Object.keys(types).forEach(function(actType) {
       if (!doneSet.has(theme.slug + '|' + actType)) {
