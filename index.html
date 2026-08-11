@@ -513,7 +513,7 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
     <button class="disc-nav-btn hist-active" id="nav-hist" onclick="showDisc('hist')">
       <span class="d-icon">📜</span>
       <span class="d-name">História</span>
-      <span class="d-count" id="count-hist">5 temas</span>
+      <span class="d-count" id="count-hist">6 temas</span>
     </button>
     <div class="theme-sub" id="sub-hist">
       <button class="theme-link" onclick="showTheme('hist','memorias-lugares')">🏛️ Memórias dos Lugares</button>
@@ -521,6 +521,7 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
       <button class="theme-link" onclick="showTheme('hist','convivencia-pessoas')">🤝 Convivência entre as Pessoas</button>
       <button class="theme-link" onclick="showTheme('hist','regras-convivencia')">📋 Regras de Convivência</button>
       <button class="theme-link" onclick="showTheme('hist','mudancas-convivencia')">⏳ Mudanças na Convivência</button>
+      <button class="theme-link" onclick="showTheme('hist','convivencia-transportes-coletivos')">🔔 Convivência nos Transportes Coletivos</button>
     </div>
 
     <button class="disc-nav-btn port-active" id="nav-port" onclick="showDisc('port')">
@@ -549,8 +550,8 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
       <div class="home-subtitle">Escolha uma disciplina e vamos aprender juntos! 🎉</div>
       <div class="home-stats">
         <div class="hstat"><span class="hstat-num">5</span><span class="hstat-label">disciplinas</span></div>
-        <div class="hstat"><span class="hstat-num">17</span><span class="hstat-label">temas</span></div>
-        <div class="hstat"><span class="hstat-num">78</span><span class="hstat-label">atividades</span></div>
+        <div class="hstat"><span class="hstat-num">19</span><span class="hstat-label">temas</span></div>
+        <div class="hstat"><span class="hstat-num">83</span><span class="hstat-label">atividades</span></div>
       </div>
       <div class="home-stats" id="streak-banner" style="margin-top:16px;">
         <div class="hstat"><span class="hstat-num" id="streak-count">0</span><span class="hstat-label">🔥 dias seguidos</span></div>
@@ -592,8 +593,8 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
           <div class="dhc-name">História</div>
           <div class="dhc-desc">Histórias, memórias e como vivemos juntos 🏘️</div>
           <div class="dhc-chips">
-            <span class="chip" style="background:#F3E8FF;color:#6D28D9">5 temas</span>
-            <span class="chip" style="background:#FAF5FF;color:#7E22CE">20 atividades</span>
+            <span class="chip" style="background:#F3E8FF;color:#6D28D9">6 temas</span>
+            <span class="chip" style="background:#FAF5FF;color:#7E22CE">25 atividades</span>
           </div>
         </button>
         <button class="disc-home-card port" onclick="showDisc('port')">
@@ -1083,6 +1084,7 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
         <button class="theme-tab-btn hist-tab" id="tab-hist-convivencia-pessoas"   onclick="showTheme('hist','convivencia-pessoas')">🤝 Convivência entre as Pessoas</button>
         <button class="theme-tab-btn hist-tab" id="tab-hist-regras-convivencia"    onclick="showTheme('hist','regras-convivencia')">📋 Regras de Convivência</button>
         <button class="theme-tab-btn hist-tab" id="tab-hist-mudancas-convivencia"  onclick="showTheme('hist','mudancas-convivencia')">⏳ Mudanças na Convivência</button>
+        <button class="theme-tab-btn hist-tab" id="tab-hist-convivencia-transportes-coletivos" onclick="showTheme('hist','convivencia-transportes-coletivos')">🔔 Convivência nos Transportes Coletivos</button>
       </div>
 
       <!-- ── TEMA 1: MEMÓRIAS DOS LUGARES ── -->
@@ -1504,6 +1506,101 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
           <div class="sched-row"><span class="sched-day" style="color:var(--hist-color)">Dia 1</span><span class="sched-acts">HQ + Quiz Interativo</span></div>
           <div class="sched-row"><span class="sched-day" style="color:var(--hist-color)">Dia 2</span><span class="sched-acts">Jogo da Memória + Ordene as Sílabas</span></div>
           <div class="sched-row"><span class="sched-day" style="color:var(--hist-color)">Dia 3</span><span class="sched-acts">Mapa Mental</span></div>
+        </div>
+      </div>
+
+      <!-- ── TEMA 6: CONVIVÊNCIA NOS TRANSPORTES COLETIVOS ── -->
+      <div class="theme-content" id="theme-hist-convivencia-transportes-coletivos" data-book="História" data-pages-start="50" data-pages-end="55">
+        <div class="hq-card">
+          <div class="hq-viewer-wrap">
+            <div class="hq-viewer-title">🔔 Convivência nos Transportes Coletivos</div>
+            <div class="hq-viewer-sub">Aventura com Lis e Trilim · 4 páginas</div>
+            <div class="hq-book-outer">
+              <div class="hq-book-shadow"></div>
+              <div class="hq-book-stack">
+                <div class="hq-page-base" id="hq-transportes-display">
+                  <img id="hq-transportes-img" src="historia/convivencia-transportes-coletivos/hq-convivencia-transportes-coletivos-pg1.png" alt="HQ Convivência nos Transportes Coletivos — Página 1" draggable="false" style="object-fit:contain; touch-action:auto;">
+                  <div class="hq-shine"></div>
+                </div>
+              </div>
+            </div>
+            <div class="hq-controls">
+              <button class="hq-btn" id="hq-transportes-prev" onclick="hqGoTo('transportes',hqCurrent['transportes']-1)" disabled>◀ Voltar</button>
+              <div class="hq-indicator" id="hq-transportes-ind">1 / 4</div>
+              <button class="hq-btn" id="hq-transportes-next" onclick="hqGoTo('transportes',hqCurrent['transportes']+1)">Próxima ▶</button>
+            </div>
+            <div class="hq-dots" id="hq-transportes-dots">
+              <div class="hq-dot active" onclick="hqGoTo('transportes',0)"></div>
+              <div class="hq-dot" onclick="hqGoTo('transportes',1)"></div>
+              <div class="hq-dot" onclick="hqGoTo('transportes',2)"></div>
+              <div class="hq-dot" onclick="hqGoTo('transportes',3)"></div>
+            </div>
+          </div>
+          <div class="hq-caption">
+            <span>📖</span>
+            <span>Convivência nos Transportes Coletivos — 4 páginas · Personagens: Lis e Trilim · Tema: Boas maneiras e convivência no ônibus e no bonde</span>
+            <span style="display:block;margin-top:4px;font-size:0.8em;opacity:0.75;">📚 Livro didático de História · pp. 50–55 · Cap. 7 — "Convivência nos Transportes Coletivos"</span>
+          </div>
+        </div>
+        <hr class="sdiv">
+        <div class="act-grid">
+          <a class="act-card hist" href="historia/convivencia-transportes-coletivos/quiz-convivencia-transportes-coletivos.html" target="_blank">
+            <div class="act-icon">❓</div>
+            <div class="act-title">Quiz Interativo</div>
+            <div class="act-desc">Perguntas sobre convivência e boas maneiras nos transportes coletivos.</div>
+            <div class="act-tags">
+              <span class="tag tag-hist">História</span>
+              <span class="tag tag-a">Ativo</span>
+            </div>
+            <span class="level lv4">📖 Retrieval practice</span>
+          </a>
+          <a class="act-card hist" href="historia/convivencia-transportes-coletivos/arrastar-convivencia-transportes-coletivos.html" target="_blank">
+            <div class="act-icon">🚌</div>
+            <div class="act-title">Arrastar e Soltar</div>
+            <div class="act-desc">Arraste cada atitude para o lugar certo: gentileza ou desrespeito no transporte!</div>
+            <div class="act-tags">
+              <span class="tag tag-hist">História</span>
+              <span class="tag tag-a">Visual</span>
+            </div>
+            <span class="level lv2">⚡ Praticar (80%)</span>
+          </a>
+          <a class="act-card hist" href="historia/convivencia-transportes-coletivos/completar-convivencia-transportes-coletivos.html" target="_blank">
+            <div class="act-icon">🔤</div>
+            <div class="act-title">Complete a Palavra</div>
+            <div class="act-desc">Complete as palavras sobre transportes coletivos e boa convivência!</div>
+            <div class="act-tags">
+              <span class="tag tag-hist">História</span>
+              <span class="tag tag-a">Prática</span>
+            </div>
+            <span class="level lv2">⚡ Praticar (80%)</span>
+          </a>
+          <a class="act-card hist" href="historia/convivencia-transportes-coletivos/ilustrador-convivencia-transportes-coletivos.html" target="_blank">
+            <div class="act-icon">🎨</div>
+            <div class="act-title">Ilustrador</div>
+            <div class="act-desc">Ilustre situações de boa convivência dentro do ônibus ou do bonde!</div>
+            <div class="act-tags">
+              <span class="tag tag-hist">História</span>
+              <span class="tag tag-a">Criação</span>
+            </div>
+            <span class="level lv3">🏆 Ensinar (90%)</span>
+          </a>
+          <a class="act-card hist" href="historia/convivencia-transportes-coletivos/mapa-mental-convivencia-transportes-coletivos.html" target="_blank">
+            <div class="act-icon">🗺️</div>
+            <div class="act-title">Mapa Mental</div>
+            <div class="act-desc">Monte o mapa com os conceitos de convivência nos transportes coletivos.</div>
+            <div class="act-tags">
+              <span class="tag tag-hist">História</span>
+              <span class="tag tag-a">Arrastar</span>
+            </div>
+            <span class="level lv3">🏆 Ensinar (90%)</span>
+          </a>
+        </div>
+        <hr class="sdiv">
+        <div class="sched-title">📅 Sugestão de uso</div>
+        <div class="sched">
+          <div class="sched-row"><span class="sched-day" style="color:var(--hist-color)">Dia 1</span><span class="sched-acts">HQ + Quiz Interativo</span></div>
+          <div class="sched-row"><span class="sched-day" style="color:var(--hist-color)">Dia 2</span><span class="sched-acts">Arrastar e Soltar + Complete a Palavra</span></div>
+          <div class="sched-row"><span class="sched-day" style="color:var(--hist-color)">Dia 3</span><span class="sched-acts">Ilustrador + Mapa Mental</span></div>
         </div>
       </div>
 
@@ -2088,6 +2185,7 @@ var hqPages = {
   convivencia:   ['historia/convivencia-pessoas/hq-convivencia-pessoas-pg1.png','historia/convivencia-pessoas/hq-convivencia-pessoas-pg2.png','historia/convivencia-pessoas/hq-convivencia-pessoas-pg3.png','historia/convivencia-pessoas/hq-convivencia-pessoas-pg4.png'],
   regrasconv:    ['historia/regras-convivencia/hq-regras-convivencia-pg1.png','historia/regras-convivencia/hq-regras-convivencia-pg2.png','historia/regras-convivencia/hq-regras-convivencia-pg3.png','historia/regras-convivencia/hq-regras-convivencia-pg4.png'],
   mudancasconv:  ['historia/mudancas-convivencia/hq-mudancas-convivencia-pg1.png','historia/mudancas-convivencia/hq-mudancas-convivencia-pg2.png','historia/mudancas-convivencia/hq-mudancas-convivencia-pg3.png','historia/mudancas-convivencia/hq-mudancas-convivencia-pg4.png'],
+  transportes:   ['historia/convivencia-transportes-coletivos/hq-convivencia-transportes-coletivos-pg1.png','historia/convivencia-transportes-coletivos/hq-convivencia-transportes-coletivos-pg2.png','historia/convivencia-transportes-coletivos/hq-convivencia-transportes-coletivos-pg3.png','historia/convivencia-transportes-coletivos/hq-convivencia-transportes-coletivos-pg4.png'],
   ordinais:      ['matematica/numeros-ordinais/hq-numeros-ordinais-pg1.png','matematica/numeros-ordinais/hq-numeros-ordinais-pg2.png','matematica/numeros-ordinais/hq-numeros-ordinais-pg3.png','matematica/numeros-ordinais/hq-numeros-ordinais-pg4.png'],
   dezena:        ['matematica/dezena-numeros-ate-19/hq-dezena-numeros-ate-19-pg1.png','matematica/dezena-numeros-ate-19/hq-dezena-numeros-ate-19-pg2.png','matematica/dezena-numeros-ate-19/hq-dezena-numeros-ate-19-pg3.png','matematica/dezena-numeros-ate-19/hq-dezena-numeros-ate-19-pg4.png'],
   pares:         ['matematica/pares-impares-dezenas-exatas/hq-pares-impares-dezenas-exatas-pg1.png','matematica/pares-impares-dezenas-exatas/hq-pares-impares-dezenas-exatas-pg2.png','matematica/pares-impares-dezenas-exatas/hq-pares-impares-dezenas-exatas-pg3.png','matematica/pares-impares-dezenas-exatas/hq-pares-impares-dezenas-exatas-pg4.png'],
@@ -2261,6 +2359,7 @@ var THEME_CATALOG = [
   {slug:'convivencia-pessoas',         disc:'hist', label:'Convivência entre as Pessoas',    emoji:'🥁', charName:'Tambô',   charImg:'chars/convivencia-pessoas-hd.png'},
   {slug:'regras-convivencia',          disc:'hist', label:'Regras de Convivência',           emoji:'📋', charName:'Combi',   charImg:'chars/regras-convivencia-hd.png'},
   {slug:'mudancas-convivencia',        disc:'hist', label:'Mudanças na Convivência',         emoji:'⏳', charName:'Tempa',   charImg:'chars/mudancas-convivencia-hd.png'},
+  {slug:'convivencia-transportes-coletivos', disc:'hist', label:'Convivência nos Transportes Coletivos', emoji:'🔔', charName:'Trilim', charImg:'chars/convivencia-transportes-coletivos-hd.png'},
   {slug:'numeros-ordinais',            disc:'mat',  label:'Números Ordinais',                emoji:'🏆', charName:'Primo',   charImg:'chars/numeros-ordinais-hd.png'},
   {slug:'dezena-numeros-ate-19',       disc:'mat',  label:'A Dezena e os Números até 19',    emoji:'🟨', charName:'Dezi',    charImg:'chars/dezena-numeros-ate-19-hd.png'},
   {slug:'pares-impares-dezenas-exatas',disc:'mat',  label:'Pares, Ímpares e Dezenas Exatas', emoji:'🎲', charName:'Duo',     charImg:'chars/pares-impares-dezenas-exatas-hd.png'},
@@ -2315,6 +2414,11 @@ var HREF_MAP = {
   'historia/mudancas-convivencia/memoria-mudancas-convivencia.html':'mudancas-convivencia|memoria',
   'historia/mudancas-convivencia/silabas-mudancas-convivencia.html':'mudancas-convivencia|silabas',
   'historia/mudancas-convivencia/mapa-mental-mudancas-convivencia.html':'mudancas-convivencia|mapa-mental',
+  'historia/convivencia-transportes-coletivos/quiz-convivencia-transportes-coletivos.html':        'convivencia-transportes-coletivos|quiz',
+  'historia/convivencia-transportes-coletivos/arrastar-convivencia-transportes-coletivos.html':    'convivencia-transportes-coletivos|arrastar',
+  'historia/convivencia-transportes-coletivos/completar-convivencia-transportes-coletivos.html':   'convivencia-transportes-coletivos|completar',
+  'historia/convivencia-transportes-coletivos/ilustrador-convivencia-transportes-coletivos.html':  'convivencia-transportes-coletivos|ilustrador',
+  'historia/convivencia-transportes-coletivos/mapa-mental-convivencia-transportes-coletivos.html': 'convivencia-transportes-coletivos|mapa-mental',
   'matematica/numeros-ordinais/quiz-numeros-ordinais.html':         'numeros-ordinais|quiz',
   'matematica/numeros-ordinais/jogo-memoria-numeros-ordinais.html': 'numeros-ordinais|memoria',
   'matematica/numeros-ordinais/arrastar-numeros-ordinais.html':     'numeros-ordinais|arrastar',

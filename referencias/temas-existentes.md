@@ -1,7 +1,7 @@
 # Temas Existentes — Portal da Lis (2º Ano)
 
 > Atualizar este arquivo após cada novo tema implementado.
-> Última atualização: 2026-06-30
+> Última atualização: 2026-08-11
 
 ---
 
@@ -21,7 +21,7 @@
 | Representar os Lugares | `representar-lugares` | Viu (drone) | quiz · arrastar-pontos-vista · jogo-memoria · mapa-mental |
 | A Paisagem dos Bairros | `paisagem-bairros` | Beto (ônibus) | quiz · arrastar-tipos-bairro · verdadeiro-falso · mapa-mental |
 
-## História (`hist`) — 5 temas
+## História (`hist`) — 6 temas
 
 | Tema | Slug | Personagem | Atividades |
 |---|---|---|---|
@@ -30,6 +30,7 @@
 | Convivência entre as Pessoas | `convivencia-pessoas` | Tambô (tambor) | quiz · ordena-silabas · criador-frase · mapa-mental |
 | Regras de Convivência | `regras-convivencia` | Combi (quadro-negro) | quiz · completar-regras · ilustrador · mapa-mental |
 | Mudanças na Convivência | `mudancas-convivencia` | Tempa (ampulheta) | quiz · jogo-memoria · silabas · mapa-mental |
+| Convivência nos Transportes Coletivos | `convivencia-transportes-coletivos` | Trilim (sino de bonde) | quiz · arrastar · completar · ilustrador · mapa-mental |
 
 ## Matemática (`mat`) — 5 temas
 
@@ -50,7 +51,7 @@
 
 ---
 
-**Total:** 5 disciplinas · 18 temas · 78 atividades
+**Total:** 5 disciplinas · 19 temas · 83 atividades
 
 ---
 
@@ -72,6 +73,7 @@ JSON de contrato para o Codex: `estudos\.claude\pending\portraits-batch.json`.
 | Tambô | `convivencia-pessoas-hd.png` | pendente |
 | Combi | `regras-convivencia-hd.png` | pendente |
 | Tempa | `mudancas-convivencia-hd.png` | pendente |
+| Trilim | `convivencia-transportes-coletivos-hd.png` | pendente |
 | Primo | `numeros-ordinais-hd.png` | pendente |
 | Bilheto | `bilhete-cartao-pessoal-hd.png` | pendente |
 | Pontinho | `letras-silabas-pontuacao-hd.png` | pendente |
