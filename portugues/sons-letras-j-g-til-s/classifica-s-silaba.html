@@ -365,6 +365,7 @@ footer { text-align: center; padding: 20px 16px; }
   ];
 
   var colocadas = {};      /* id da palavra -> 'inicio' | 'final' */
+  var ordemPool = [];      /* ordem sorteada uma vez por partida     */
   var arrastandoId = null;
   var cloneTouch = null;
 
@@ -407,7 +408,7 @@ footer { text-align: center; padding: 20px 16px; }
     var pool = document.getElementById('pool');
     pool.innerHTML = '';
 
-    embaralhar(palavras).forEach(function (p) {
+    ordemPool.forEach(function (p) {
       if (colocadas[p.id]) return;
       var chip = document.createElement('div');
       chip.className = 'chip';
@@ -557,7 +558,6 @@ footer { text-align: center; padding: 20px 16px; }
       el.classList.add(ok ? 'ok' : 'no');
       el.innerHTML = (ok ? '✅ ' : '❌ ') + p.texto +
         '<span class="silabas">' + p.silabas + '</span>';
-      el.addEventListener('click', function () { tirarDaCaixa(p.id); });
     });
 
     var pct = Math.round((acertos / total) * 100);
@@ -586,6 +586,7 @@ footer { text-align: center; padding: 20px 16px; }
   function reiniciarJogo() {
     colocadas = {};
     arrastandoId = null;
+    ordemPool = embaralhar(palavras);
     esconderResultado();
     renderTudo();
   }
@@ -594,6 +595,7 @@ footer { text-align: center; padding: 20px 16px; }
   window.reiniciarJogo = reiniciarJogo;
   window.tirarDaCaixa  = tirarDaCaixa;
 
+  ordemPool = embaralhar(palavras);
   renderTudo();
 
 })();

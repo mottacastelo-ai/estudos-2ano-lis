@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapa Mental — Sons e Letras: j, g, til e s | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #E8430A;
+  --light: #FB8C5A;
+  --bg: #FFF4EF;
+  --dark: #7A1F04;
+  --correct: #22C55E;
+  --wrong: #EF4444;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-size: 1.1rem;
+}
+
+header {
+  background: linear-gradient(135deg, #7A1F04, #E8430A 60%, #FB8C5A);
+  color: white;
+  padding: 24px 20px;
+  text-align: center;
+}
+
+header .emoji { font-size: 2.8rem; display: block; margin-bottom: 8px; }
+
+header h1 {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.8rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+header p { font-size: 1rem; opacity: 0.92; margin-top: 6px; }
+
+main {
+  flex: 1;
+  padding: 20px 16px;
+  max-width: 780px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.instruction {
+  background: white;
+  border-radius: 16px;
+  padding: 16px 20px;
+  box-shadow: 0 3px 12px rgba(232,67,10,0.15);
+  margin-bottom: 20px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--dark);
+  text-align: center;
+  line-height: 1.5;
+}
+
+.central-node {
+  background: linear-gradient(135deg, var(--primary), var(--light));
+  color: white;
+  border-radius: 20px;
+  padding: 18px 28px;
+  text-align: center;
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.35rem;
+  font-weight: 900;
+  box-shadow: 0 6px 24px rgba(232,67,10,0.4);
+  margin: 0 auto 24px;
+  max-width: 340px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.slots-container { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
+
+.slot-row { display: flex; align-items: stretch; gap: 10px; }
+
+.slot-label-box {
+  background: white;
+  border: 3px solid var(--light);
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--dark);
+  flex: 0 0 auto;
+  width: 300px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  line-height: 1.35;
+  box-shadow: 0 2px 8px rgba(232,67,10,0.12);
+}
+
+.slot-label-box .exemplo {
+  display: block;
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.05rem;
+  color: var(--primary);
+  margin-top: 3px;
+}
+
+.slot-arrow {
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.slot-drop {
+  flex: 1;
+  min-height: 62px;
+  border: 3px dashed #FEDCCB;
+  border-radius: 14px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  transition: all 0.2s ease;
+}
+
+.slot-drop.drag-over {
+  background: #FFE7DB;
+  border-color: var(--primary);
+  box-shadow: 0 0 14px rgba(232,67,10,0.3);
+}
+
+.slot-drop.correct { background: #DCFCE7; border-color: var(--correct); }
+.slot-drop.wrong { background: #FEE2E2; border-color: var(--wrong); }
+.slot-drop.filled { border-style: solid; border-color: var(--light); }
+
+.slot-placeholder {
+  color: #F0A98C;
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-style: italic;
+  pointer-events: none;
+}
+
+.nodes-area { margin-bottom: 20px; }
+
+.nodes-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--dark);
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.nodes-grid { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+
+.node {
+  background: linear-gradient(135deg, var(--dark), #B33207);
+  color: white;
+  border-radius: 14px;
+  padding: 12px 18px;
+  font-size: 1.02rem;
+  font-weight: 800;
+  cursor: grab;
+  box-shadow: 0 4px 14px rgba(122,31,4,0.3);
+  transition: transform 0.15s ease, opacity 0.2s ease;
+  border: 3px solid rgba(255,255,255,0.2);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+  min-height: 48px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+.node:hover { transform: translateY(-3px) scale(1.03); }
+.node.dragging { opacity: 0.4; cursor: grabbing; }
+.node.placed { opacity: 0.25; pointer-events: none; }
+
+.placed-node {
+  background: linear-gradient(135deg, var(--dark), #B33207);
+  color: white;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 1rem;
+  font-weight: 800;
+  box-shadow: 0 2px 8px rgba(122,31,4,0.25);
+  cursor: pointer;
+  text-align: center;
+  width: 100%;
+  min-height: 44px;
+}
+
+.placed-node:hover { opacity: 0.85; }
+
+.check-result {
+  display: none;
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(232,67,10,0.15);
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.check-result.show { display: block; }
+.check-result .res-emoji { font-size: 3rem; margin-bottom: 8px; }
+
+.check-result h3 {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.55rem;
+  color: var(--dark);
+  margin-bottom: 8px;
+}
+
+.check-result p { font-size: 1.1rem; color: #555; font-weight: 700; line-height: 1.5; }
+
+.score-chips { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 12px; }
+
+.score-chip {
+  background: var(--bg);
+  border-radius: 20px;
+  padding: 7px 14px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--dark);
+}
+
+.score-chip.chip-correct { background: #DCFCE7; color: #166534; }
+.score-chip.chip-wrong { background: #FEE2E2; color: #991B1B; }
+
+.controls { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 16px; }
+
+.btn-check {
+  background: linear-gradient(135deg, var(--primary), var(--light));
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 16px 30px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+  min-height: 52px;
+  min-width: 44px;
+}
+
+.btn-check:hover { transform: scale(1.04); }
+
+.btn-reset {
+  background: white;
+  border: 3px solid var(--primary);
+  color: var(--primary);
+  border-radius: 14px;
+  padding: 14px 26px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 52px;
+}
+
+.btn-reset:hover { background: var(--primary); color: white; }
+
+footer { text-align: center; padding: 20px 16px; }
+
+.btn-back {
+  background: white;
+  border: 3px solid var(--primary);
+  color: var(--primary);
+  border-radius: 14px;
+  padding: 14px 28px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 48px;
+}
+
+.btn-back:hover { background: var(--primary); color: white; }
+
+@media (max-width: 480px) {
+  body { font-size: 1.15rem; }
+  header h1 { font-size: 1.3rem; }
+  main { padding: 14px 10px; }
+  .slot-row { flex-direction: column; gap: 6px; }
+  .slot-label-box { width: 100%; font-size: 0.95rem; }
+  .slot-arrow { justify-content: center; font-size: 1.2rem; }
+  .node { font-size: 0.95rem; padding: 11px 14px; }
+  .central-node { font-size: 1.15rem; padding: 14px 20px; }
+  .btn-check, .btn-reset { width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="emoji">🗺️</span>
+  <h1>Mapa Mental — Sons e Letras</h1>
+  <p>Tilim quer montar o mapa dos sons com você!</p>
+</header>
+
+<main>
+  <div class="instruction">
+    Arraste cada conceito para a explicação certa.<br>
+    Toque num conceito já colocado para removê-lo.
+  </div>
+
+  <div class="central-node">〰️ Sons e Letras</div>
+
+  <div class="slots-container" id="slots-container"></div>
+
+  <div class="nodes-area">
+    <div class="nodes-title">Conceitos para encaixar:</div>
+    <div class="nodes-grid" id="nodes-grid"></div>
+  </div>
+
+  <div class="check-result" id="check-result">
+    <div class="res-emoji" id="res-emoji"></div>
+    <h3 id="res-title"></h3>
+    <p id="res-text"></p>
+    <div class="score-chips" id="score-chips"></div>
+  </div>
+
+  <div class="controls">
+    <button class="btn-check" onclick="checarMapa()">Ver gabarito ✅</button>
+    <button class="btn-reset" onclick="reiniciarMapa()">Recomeçar 🔁</button>
+  </div>
+</main>
+
+<footer>
+  <button class="btn-back" onclick="voltarAoPortal()">← Voltar ao Portal</button>
+</footer>
+
+<script>
+(function () {
+
+  /* Cada slot traz a característica + uma palavra-exemplo do banco do livro.
+     O critério de acerto está visível no próprio rótulo.                  */
+  var slotsData = [
+    { id: 's1', chip: 'Letra j',
+      label: '🔤 Tem sempre o mesmo som com a, e, i, o e u',
+      exemplo: 'exemplo: jegue', correctNodeId: 'nd-j' },
+    { id: 's2', chip: 'G antes de e/i',
+      label: '🍧 Antes de e ou i, tem som igual ao da letra j',
+      exemplo: 'exemplo: gelo', correctNodeId: 'nd-ge' },
+    { id: 's3', chip: 'G antes de a/o/u',
+      label: '🐔 Antes de a, o e u, tem um som diferente',
+      exemplo: 'exemplo: galo', correctNodeId: 'nd-ga' },
+    { id: 's4', chip: 'Til (~)',
+      label: '〰️ Marca o som nasal que a gente emite ao falar',
+      exemplo: 'exemplo: coração', correctNodeId: 'nd-til' },
+    { id: 's5', chip: 'S no início da sílaba',
+      label: '🚀 Abre a sílaba: sa, se, si, so, su',
+      exemplo: 'exemplo: salada', correctNodeId: 'nd-sini' },
+    { id: 's6', chip: 'S no final da sílaba',
+      label: '🏁 Fecha a sílaba: as, es, is, os, us',
+      exemplo: 'exemplo: lápis', correctNodeId: 'nd-sfim' }
+  ];
+
+  var nodesData = [
+    { id: 'nd-j',    text: 'Letra j' },
+    { id: 'nd-ge',   text: 'G antes de e/i' },
+    { id: 'nd-ga',   text: 'G antes de a/o/u' },
+    { id: 'nd-til',  text: 'Til (~)' },
+    { id: 'nd-sini', text: 'S no início da sílaba' },
+    { id: 'nd-sfim', text: 'S no final da sílaba' }
+  ];
+
+  var slotContents = {};
+  var draggedNodeId = null;
+  var cloneTouch = null;
+
+  function playSound(type) {
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    var o = ctx.createOscillator();
+    var g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    if (type === 'correct') {
+      o.frequency.setValueAtTime(523, ctx.currentTime);
+      o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+      o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+      o.start(); o.stop(ctx.currentTime + 0.5);
+    } else {
+      o.frequency.setValueAtTime(300, ctx.currentTime);
+      o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      o.start(); o.stop(ctx.currentTime + 0.4);
+    }
+  }
+
+  function embaralhar(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+
+  function acharNode(id) {
+    for (var i = 0; i < nodesData.length; i++) if (nodesData[i].id === id) return nodesData[i];
+    return null;
+  }
+
+  function montarSlots() {
+    var container = document.getElementById('slots-container');
+    container.innerHTML = '';
+
+    slotsData.forEach(function (slot) {
+      var row = document.createElement('div');
+      row.className = 'slot-row';
+
+      var labelBox = document.createElement('div');
+      labelBox.className = 'slot-label-box';
+      labelBox.innerHTML = '<span>' + slot.label +
+        '<span class="exemplo">' + slot.exemplo + '</span></span>';
+
+      var arrow = document.createElement('div');
+      arrow.className = 'slot-arrow';
+      arrow.textContent = '→';
+
+      var drop = document.createElement('div');
+      drop.className = 'slot-drop';
+      drop.id = 'slot-' + slot.id;
+      drop.dataset.slotid = slot.id;
+      drop.innerHTML = '<span class="slot-placeholder">Solte aqui...</span>';
+
+      drop.addEventListener('dragover', function (e) { e.preventDefault(); drop.classList.add('drag-over'); });
+      drop.addEventListener('dragleave', function () { drop.classList.remove('drag-over'); });
+      drop.addEventListener('drop', function (e) {
+        e.preventDefault();
+        drop.classList.remove('drag-over');
+        colocarNode(draggedNodeId, slot.id);
+        draggedNodeId = null;
+      });
+
+      row.appendChild(labelBox);
+      row.appendChild(arrow);
+      row.appendChild(drop);
+      container.appendChild(row);
+    });
+  }
+
+  function montarNodes(ordem) {
+    var grid = document.getElementById('nodes-grid');
+    grid.innerHTML = '';
+
+    ordem.forEach(function (nodeData) {
+      var el = document.createElement('div');
+      el.className = 'node';
+      el.id = nodeData.id;
+      el.dataset.nodeid = nodeData.id;
+      el.textContent = nodeData.text;
+      el.draggable = true;
+
+      el.addEventListener('dragstart', function (e) {
+        draggedNodeId = nodeData.id;
+        e.dataTransfer.effectAllowed = 'move';
+        setTimeout(function () { el.classList.add('dragging'); }, 0);
+      });
+      el.addEventListener('dragend', function () { el.classList.remove('dragging'); });
+      el.addEventListener('touchstart', onTouchStart, { passive: false });
+
+      grid.appendChild(el);
+    });
+  }
+
+  function colocarNode(nodeId, slotId) {
+    if (!nodeId) return;
+
+    Object.keys(slotContents).forEach(function (sid) {
+      if (slotContents[sid] === nodeId) { slotContents[sid] = null; renderSlot(sid); }
+    });
+
+    if (slotContents[slotId]) {
+      var prevEl = document.getElementById(slotContents[slotId]);
+      if (prevEl) prevEl.classList.remove('placed');
+      slotContents[slotId] = null;
+    }
+
+    slotContents[slotId] = nodeId;
+    var nodeEl = document.getElementById(nodeId);
+    if (nodeEl) nodeEl.classList.add('placed');
+
+    renderSlot(slotId);
+    limparResultado();
+  }
+
+  function removerDoSlot(slotId) {
+    var nodeId = slotContents[slotId];
+    if (!nodeId) return;
+    slotContents[slotId] = null;
+    var nodeEl = document.getElementById(nodeId);
+    if (nodeEl) nodeEl.classList.remove('placed');
+    renderSlot(slotId);
+    limparResultado();
+  }
+
+  function renderSlot(slotId) {
+    var drop = document.getElementById('slot-' + slotId);
+    if (!drop) return;
+    var nodeId = slotContents[slotId];
+    drop.className = 'slot-drop' + (nodeId ? ' filled' : '');
+    if (nodeId) {
+      var nodeData = acharNode(nodeId);
+      drop.innerHTML = '<div class="placed-node" title="Toque para remover" ' +
+        'onclick="removerDoSlot(\'' + slotId + '\')">' + nodeData.text + '</div>';
+    } else {
+      drop.innerHTML = '<span class="slot-placeholder">Solte aqui...</span>';
+    }
+  }
+
+  function limparResultado() {
+    document.getElementById('check-result').classList.remove('show');
+    slotsData.forEach(function (slot) {
+      var drop = document.getElementById('slot-' + slot.id);
+      if (drop) drop.classList.remove('correct', 'wrong');
+    });
+  }
+
+  function checarMapa() {
+    var acertos = 0;
+    var chips = [];
+
+    slotsData.forEach(function (slot) {
+      var drop = document.getElementById('slot-' + slot.id);
+      var colocado = slotContents[slot.id];
+      drop.classList.remove('correct', 'wrong');
+      if (colocado) {
+        if (colocado === slot.correctNodeId) {
+          acertos++;
+          drop.classList.add('correct');
+          chips.push({ label: slot.chip, ok: true });
+        } else {
+          drop.classList.add('wrong');
+          chips.push({ label: slot.chip, ok: false });
+        }
+      }
+    });
+
+    var total = slotsData.length;
+    var preenchidos = 0;
+    Object.keys(slotContents).forEach(function (k) { if (slotContents[k]) preenchidos++; });
+    var completou = (preenchidos === total);
+
+    /* Mapa mental não tem nota: concluir já vale 100. */
+    if (completou) window.sabendoScore = 100;
+
+    var emoji, titulo, texto;
+    if (!completou) {
+      emoji = '🤔'; titulo = 'Mapa incompleto!';
+      texto = 'Coloque os ' + total + ' conceitos no mapa antes de ver o gabarito. Faltam ' + (total - preenchidos) + '.';
+    } else if (acertos === total) {
+      emoji = '🏆'; titulo = 'Mapa perfeito!';
+      texto = 'Você ligou todos os conceitos certinho! Tilim está balançando de alegria!';
+      playSound('correct');
+    } else {
+      emoji = '📝'; titulo = acertos + ' de ' + total + ' corretos!';
+      texto = 'Os espaços vermelhos precisam de ajuste. Leia a explicação e a palavra-exemplo de cada linha!';
+      playSound('wrong');
+    }
+
+    document.getElementById('res-emoji').textContent = emoji;
+    document.getElementById('res-title').textContent = titulo;
+    document.getElementById('res-text').textContent = texto;
+
+    var chipsEl = document.getElementById('score-chips');
+    chipsEl.innerHTML = '';
+    chips.forEach(function (c) {
+      var chip = document.createElement('span');
+      chip.className = 'score-chip ' + (c.ok ? 'chip-correct' : 'chip-wrong');
+      chip.textContent = (c.ok ? '✅ ' : '❌ ') + c.label;
+      chipsEl.appendChild(chip);
+    });
+
+    document.getElementById('check-result').classList.add('show');
+  }
+
+  function reiniciarMapa() {
+    slotContents = {};
+    draggedNodeId = null;
+    limparResultado();
+    montarSlots();
+    montarNodes(embaralhar(nodesData));
+  }
+
+  /* ── Drag com toque (ERR-004 e ERR-007) ────────────── */
+  function onTouchStart(e) {
+    e.preventDefault();
+    var el = e.currentTarget;
+    draggedNodeId = el.dataset.nodeid;
+
+    cloneTouch = el.cloneNode(true);
+    cloneTouch.style.position = 'fixed';
+    cloneTouch.style.pointerEvents = 'none';
+    cloneTouch.style.zIndex = '9999';
+    cloneTouch.style.opacity = '0.9';
+    cloneTouch.style.transform = 'scale(1.08)';
+    cloneTouch.style.width = el.offsetWidth + 'px';
+    cloneTouch.style.maxWidth = '280px';
+    document.body.appendChild(cloneTouch);
+
+    moverClone(e.touches[0].clientX, e.touches[0].clientY);
+  }
+
+  document.addEventListener('touchmove', function (e) {
+    if (!cloneTouch) return;
+    e.preventDefault();
+    var t = e.touches[0];
+    moverClone(t.clientX, t.clientY);
+    document.querySelectorAll('.slot-drop').forEach(function (s) { s.classList.remove('drag-over'); });
+    var alvo = document.elementFromPoint(t.clientX, t.clientY);
+    var slot = alvo && alvo.closest ? alvo.closest('.slot-drop') : null;
+    if (slot) slot.classList.add('drag-over');
+  }, { passive: false });
+
+  document.addEventListener('touchend', function (e) {
+    if (!cloneTouch) return;
+    var t = e.changedTouches[0];
+    var alvo = document.elementFromPoint(t.clientX, t.clientY);
+    var slot = alvo && alvo.closest ? alvo.closest('.slot-drop') : null;
+
+    document.body.removeChild(cloneTouch);
+    cloneTouch = null;
+    document.querySelectorAll('.slot-drop').forEach(function (s) { s.classList.remove('drag-over'); });
+
+    if (slot) colocarNode(draggedNodeId, slot.dataset.slotid);
+    draggedNodeId = null;
+  }, { passive: true });
+
+  function moverClone(x, y) {
+    if (!cloneTouch) return;
+    cloneTouch.style.left = (x - cloneTouch.offsetWidth / 2) + 'px';
+    cloneTouch.style.top = (y - cloneTouch.offsetHeight / 2) + 'px';
+  }
+
+  window.checarMapa    = checarMapa;
+  window.reiniciarMapa = reiniciarMapa;
+  window.removerDoSlot = removerDoSlot;
+
+  montarSlots();
+  montarNodes(embaralhar(nodesData));
+
+})();
+</script>
+
+<!-- ── GAMIFICAÇÃO ─────────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'sons-letras-j-g-til-s';
+  var DISCIPLINE    = 'portugues';
+  var ACTIVITY_TYPE = 'mapa-mental';
+  var TOTAL_ATIV    = 5;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Tilim',
+        characterEmoji:  '〰️',
+        characterImg:    'chars/sons-letras-j-g-til-s-hd.png',
+        themeLabel:      'Sons e Letras: j, g, til e s · Português',
+        totalActivities: TOTAL_ATIV,
+        activityType:    ACTIVITY_TYPE,
+        primaryColor:    '#E8430A',
+        lightColor:      '#FB8C5A',
+        bgColor:         '#FFF4EF',
+        glowRgb:         '232,67,10',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _scoreVal = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _scoreVal = v;
+      var btn = document.getElementById('gamificacao-btn');
+      if (btn) btn.style.display = 'block';
+      var btnOverlay = document.getElementById('gamificacao-btn-overlay');
+      if (btnOverlay) btnOverlay.style.display = 'block';
+    },
+    get: function () { return _scoreVal; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#E8430A,#FB8C5A);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>

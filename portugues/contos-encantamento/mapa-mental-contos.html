@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapa Mental — Contos de Encantamento | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #E8430A;
+  --light: #FB8C5A;
+  --bg: #FFF4EF;
+  --dark: #7A1F04;
+  --correct: #22C55E;
+  --wrong: #EF4444;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  background: linear-gradient(135deg, #7A1F04, #E8430A 60%, #FB8C5A);
+  color: white;
+  padding: 24px 20px;
+  text-align: center;
+}
+
+header .emoji { font-size: 2.8rem; display: block; margin-bottom: 8px; }
+
+header h1 {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.8rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+header p { font-size: 1rem; opacity: 0.92; margin-top: 6px; }
+
+main {
+  flex: 1;
+  padding: 24px 16px;
+  max-width: 820px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.instrucao {
+  background: white;
+  border-left: 6px solid var(--primary);
+  border-radius: 14px;
+  padding: 18px 20px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--dark);
+  line-height: 1.45;
+  box-shadow: 0 4px 16px rgba(232, 67, 10, 0.12);
+  margin-bottom: 22px;
+}
+
+.centro {
+  background: linear-gradient(135deg, var(--primary), var(--light));
+  color: white;
+  border-radius: 20px;
+  padding: 20px;
+  text-align: center;
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.6rem;
+  font-weight: 900;
+  box-shadow: 0 6px 20px rgba(232, 67, 10, 0.25);
+  margin-bottom: 6px;
+}
+
+.tronco {
+  width: 6px;
+  height: 22px;
+  background: var(--light);
+  margin: 0 auto 12px;
+  border-radius: 4px;
+}
+
+.section-title {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--dark);
+  margin: 8px 0 12px;
+}
+
+.pool {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  background: #FFE7DB;
+  border: 3px dashed var(--light);
+  border-radius: 18px;
+  padding: 16px;
+  margin-bottom: 26px;
+  min-height: 80px;
+}
+
+.termo {
+  background: white;
+  border: 3px solid var(--light);
+  border-radius: 99px;
+  padding: 14px 22px;
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--dark);
+  cursor: grab;
+  min-height: 52px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 3px 10px rgba(232, 67, 10, 0.12);
+  touch-action: none;
+  user-select: none;
+  transition: transform 0.15s ease;
+}
+
+.termo:hover { transform: translateY(-3px); }
+.termo.dragging { opacity: 0.4; }
+.termo.placed { display: none; }
+
+.ramo {
+  display: grid;
+  grid-template-columns: 1fr 32px 1fr;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.ramo-label {
+  background: white;
+  border: 3px solid #FEDCCB;
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--dark);
+  line-height: 1.35;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+}
+
+.seta {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--light);
+}
+
+.alvo {
+  border: 3px dashed #FEDCCB;
+  border-radius: 14px;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--dark);
+  background: white;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.alvo.drag-over { border-color: var(--primary); background: #FFE7DB; }
+.alvo.filled { border-style: solid; border-color: var(--light); }
+.alvo.certo { border-color: var(--correct); background: #DCFCE7; }
+.alvo.errado { border-color: var(--wrong); background: #FEE2E2; }
+.alvo .vazio { color: #C08A72; }
+
+.termo-colocado {
+  cursor: pointer;
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.15rem;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.botoes { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
+
+.btn {
+  flex: 1;
+  border: none;
+  border-radius: 14px;
+  padding: 16px 24px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  min-height: 56px;
+  min-width: 44px;
+  transition: transform 0.15s ease;
+}
+
+.btn:hover { transform: scale(1.02); }
+.btn-check { background: linear-gradient(135deg, var(--primary), var(--light)); color: white; }
+.btn-reset { background: white; color: var(--primary); border: 3px solid var(--primary); }
+
+.resultado {
+  display: none;
+  background: white;
+  border-radius: 18px;
+  padding: 24px;
+  margin-top: 22px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(232, 67, 10, 0.15);
+}
+
+.resultado.show { display: block; }
+.resultado .icone { font-size: 3.5rem; display: block; margin-bottom: 8px; }
+
+.resultado h2 {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.6rem;
+  color: var(--dark);
+  margin-bottom: 8px;
+}
+
+.resultado p { font-size: 1.15rem; font-weight: 700; color: var(--dark); line-height: 1.45; }
+
+.gabarito {
+  display: none;
+  background: white;
+  border-radius: 18px;
+  padding: 20px;
+  margin-top: 16px;
+  box-shadow: 0 4px 20px rgba(232, 67, 10, 0.12);
+}
+
+.gabarito.show { display: block; }
+
+.gabarito h3 {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.3rem;
+  color: var(--dark);
+  margin-bottom: 10px;
+}
+
+.gabarito li {
+  list-style: none;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--dark);
+  padding: 8px 0;
+  border-bottom: 2px dashed #FEDCCB;
+  line-height: 1.35;
+}
+
+.gabarito li:last-child { border-bottom: none; }
+
+footer { text-align: center; padding: 20px 16px; }
+
+.btn-back {
+  background: white;
+  border: 3px solid var(--primary);
+  color: var(--primary);
+  border-radius: 14px;
+  padding: 14px 28px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  min-height: 48px;
+}
+
+.btn-back:hover { background: var(--primary); color: white; }
+
+@media (max-width: 620px) {
+  .ramo { grid-template-columns: 1fr; gap: 6px; }
+  .seta { transform: rotate(90deg); font-size: 1.2rem; }
+}
+
+@media (max-width: 480px) {
+  body { font-size: 1.15rem; }
+  header h1 { font-size: 1.3rem; }
+  main { padding: 16px 12px; }
+  .centro { font-size: 1.3rem; }
+  .termo { width: 100%; justify-content: center; }
+  .botoes { flex-direction: column; }
+  .btn { width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="emoji">🗺️</span>
+  <h1>Mapa Mental</h1>
+  <p>As partes de um conto de encantamento · com Flautim 🪈</p>
+</header>
+
+<main>
+  <div class="instrucao">
+    Arraste cada <strong>termo</strong> para o ramo que combina com ele.
+    No fim, clique em <strong>Verificar</strong> para ver o gabarito. 🗺️
+  </div>
+
+  <div class="centro">🪈 Conto de Encantamento</div>
+  <div class="tronco"></div>
+
+  <div class="section-title">🏷️ Termos para arrastar</div>
+  <div class="pool" id="pool"></div>
+
+  <div class="section-title">🌳 Os ramos do mapa</div>
+  <div id="ramos"></div>
+
+  <div class="botoes">
+    <button class="btn btn-check" onclick="verificarMapa()">Verificar ✅</button>
+    <button class="btn btn-reset" onclick="reiniciarMapa()">Começar de novo 🔄</button>
+  </div>
+
+  <div class="resultado" id="resultado">
+    <span class="icone" id="res-icone">🪈</span>
+    <h2 id="res-titulo"></h2>
+    <p id="res-texto"></p>
+  </div>
+
+  <div class="gabarito" id="gabarito">
+    <h3>📋 Gabarito do mapa</h3>
+    <ul id="gabarito-lista"></ul>
+  </div>
+</main>
+
+<footer>
+  <button class="btn-back" onclick="voltarAoPortal()">← Voltar ao Portal</button>
+</footer>
+
+<script>
+var ramosData = [
+  { id: 'r1', label: '🌟 A expressão que abre o conto',                     termoId: 't1' },
+  { id: 'r2', label: '👧 Quem participa e age na história',                 termoId: 't2' },
+  { id: 'r3', label: '⚡ O problema que complica a vida das personagens',   termoId: 't3' },
+  { id: 'r4', label: '✅ O final da história, quando o problema é resolvido', termoId: 't4' },
+  { id: 'r5', label: '💖 A expressão que mostra o final feliz',             termoId: 't5' },
+  { id: 'r6', label: '🪄 A flauta que encanta os ratos de Hamelin',         termoId: 't6' }
+];
+
+var termosData = [
+  { id: 't1', texto: '"Era uma vez"' },
+  { id: 't2', texto: 'Personagens' },
+  { id: 't3', texto: 'Conflito' },
+  { id: 't4', texto: 'Desfecho' },
+  { id: 't5', texto: '"E viveram felizes para sempre"' },
+  { id: 't6', texto: 'Elemento mágico' }
+];
+
+var TOTAL = ramosData.length;
+var conteudoAlvos = {};
+var termoArrastado = null;
+var cloneToque = null;
+
+function playSound(type) {
+  var ctx = new (window.AudioContext || window.webkitAudioContext)();
+  var o = ctx.createOscillator();
+  var g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  if (type === 'correct') {
+    o.frequency.setValueAtTime(523, ctx.currentTime);
+    o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+    o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    o.start(); o.stop(ctx.currentTime + 0.5);
+  } else {
+    o.frequency.setValueAtTime(300, ctx.currentTime);
+    o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    o.start(); o.stop(ctx.currentTime + 0.4);
+  }
+}
+
+function embaralhar(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+function montarRamos() {
+  var wrap = document.getElementById('ramos');
+  wrap.innerHTML = '';
+  ramosData.forEach(function (ramo) {
+    conteudoAlvos[ramo.id] = null;
+
+    var linha = document.createElement('div');
+    linha.className = 'ramo';
+
+    var label = document.createElement('div');
+    label.className = 'ramo-label';
+    label.textContent = ramo.label;
+
+    var seta = document.createElement('div');
+    seta.className = 'seta';
+    seta.textContent = '→';
+
+    var alvo = document.createElement('div');
+    alvo.className = 'alvo';
+    alvo.id = 'alvo-' + ramo.id;
+    alvo.dataset.ramoid = ramo.id;
+
+    alvo.addEventListener('dragover', function (e) {
+      e.preventDefault();
+      this.classList.add('drag-over');
+    });
+    alvo.addEventListener('dragleave', function () { this.classList.remove('drag-over'); });
+    alvo.addEventListener('drop', function (e) {
+      e.preventDefault();
+      this.classList.remove('drag-over');
+      colocarTermo(termoArrastado, this.dataset.ramoid);
+    });
+
+    linha.appendChild(label);
+    linha.appendChild(seta);
+    linha.appendChild(alvo);
+    wrap.appendChild(linha);
+    renderAlvo(ramo.id);
+  });
+}
+
+function montarPool() {
+  var pool = document.getElementById('pool');
+  pool.innerHTML = '';
+  embaralhar(termosData).forEach(function (termo) {
+    var el = document.createElement('div');
+    el.className = 'termo';
+    el.id = termo.id;
+    el.dataset.termoid = termo.id;
+    el.draggable = true;
+    el.textContent = termo.texto;
+
+    el.addEventListener('dragstart', function (e) {
+      termoArrastado = termo.id;
+      e.dataTransfer.effectAllowed = 'move';
+      var self = this;
+      setTimeout(function () { self.classList.add('dragging'); }, 0);
+    });
+    el.addEventListener('dragend', function () { this.classList.remove('dragging'); });
+
+    el.addEventListener('touchstart', aoTocarInicio, { passive: false });
+    el.addEventListener('touchmove', aoTocarMover, { passive: false });
+
+    pool.appendChild(el);
+  });
+}
+
+function colocarTermo(termoId, ramoId) {
+  if (!termoId) return;
+
+  Object.keys(conteudoAlvos).forEach(function (r) {
+    if (conteudoAlvos[r] === termoId) { conteudoAlvos[r] = null; renderAlvo(r); }
+  });
+
+  if (conteudoAlvos[ramoId]) {
+    var anterior = document.getElementById(conteudoAlvos[ramoId]);
+    if (anterior) anterior.classList.remove('placed');
+    conteudoAlvos[ramoId] = null;
+  }
+
+  conteudoAlvos[ramoId] = termoId;
+  var el = document.getElementById(termoId);
+  if (el) el.classList.add('placed');
+
+  renderAlvo(ramoId);
+  limparResultado();
+}
+
+function tirarDoAlvo(ramoId) {
+  var termoId = conteudoAlvos[ramoId];
+  if (!termoId) return;
+  conteudoAlvos[ramoId] = null;
+  var el = document.getElementById(termoId);
+  if (el) el.classList.remove('placed');
+  renderAlvo(ramoId);
+  limparResultado();
+}
+
+function renderAlvo(ramoId) {
+  var alvo = document.getElementById('alvo-' + ramoId);
+  if (!alvo) return;
+  var termoId = conteudoAlvos[ramoId];
+  alvo.className = 'alvo' + (termoId ? ' filled' : '');
+  alvo.innerHTML = '';
+
+  if (termoId) {
+    var termo = termosData.filter(function (t) { return t.id === termoId; })[0];
+    var box = document.createElement('div');
+    box.className = 'termo-colocado';
+    box.title = 'Clique para tirar daqui';
+    box.textContent = termo.texto;
+    box.addEventListener('click', function () { tirarDoAlvo(ramoId); });
+    alvo.appendChild(box);
+  } else {
+    var vazio = document.createElement('span');
+    vazio.className = 'vazio';
+    vazio.textContent = 'Solte o termo aqui...';
+    alvo.appendChild(vazio);
+  }
+}
+
+function limparResultado() {
+  document.getElementById('resultado').classList.remove('show');
+  document.getElementById('gabarito').classList.remove('show');
+  ramosData.forEach(function (r) {
+    var alvo = document.getElementById('alvo-' + r.id);
+    if (alvo) alvo.classList.remove('certo', 'errado');
+  });
+}
+
+function mostrarGabarito() {
+  var lista = document.getElementById('gabarito-lista');
+  lista.innerHTML = '';
+  ramosData.forEach(function (ramo) {
+    var termo = termosData.filter(function (t) { return t.id === ramo.termoId; })[0];
+    var li = document.createElement('li');
+    li.textContent = ramo.label + ' → ' + termo.texto;
+    lista.appendChild(li);
+  });
+  document.getElementById('gabarito').classList.add('show');
+}
+
+function verificarMapa() {
+  var certos = 0;
+  var preenchidos = 0;
+
+  ramosData.forEach(function (ramo) {
+    var alvo = document.getElementById('alvo-' + ramo.id);
+    var termoId = conteudoAlvos[ramo.id];
+    alvo.classList.remove('certo', 'errado');
+    if (!termoId) return;
+    preenchidos++;
+    if (termoId === ramo.termoId) { certos++; alvo.classList.add('certo'); }
+    else { alvo.classList.add('errado'); }
+  });
+
+  var res = document.getElementById('resultado');
+  res.classList.add('show');
+  var icone, titulo, texto;
+
+  if (preenchidos < TOTAL) {
+    icone = '🤔';
+    titulo = 'Ainda falta um pouquinho!';
+    texto = 'Coloque os ' + TOTAL + ' termos nos ramos antes de verificar.';
+    document.getElementById('gabarito').classList.remove('show');
+  } else {
+    window.sabendoScore = 100;
+    if (certos === TOTAL) {
+      icone = '🏆';
+      titulo = 'Mapa mental completo!';
+      texto = 'Perfeito! Você montou o mapa do conto de encantamento inteirinho. 🎵';
+      playSound('correct');
+    } else {
+      icone = '🗺️';
+      titulo = certos + ' de ' + TOTAL + ' no lugar certo!';
+      texto = 'Olhe o gabarito abaixo e tente montar de novo. Você consegue!';
+      playSound('wrong');
+    }
+    mostrarGabarito();
+  }
+
+  document.getElementById('res-icone').textContent = icone;
+  document.getElementById('res-titulo').textContent = titulo;
+  document.getElementById('res-texto').textContent = texto;
+}
+
+function reiniciarMapa() {
+  limparResultado();
+  conteudoAlvos = {};
+  montarRamos();
+  montarPool();
+}
+
+/* ---------- Arrastar no toque (celular/tablet) ---------- */
+function aoTocarInicio(e) {
+  e.preventDefault();
+  var el = e.currentTarget;
+  termoArrastado = el.dataset.termoid;
+
+  cloneToque = el.cloneNode(true);
+  cloneToque.style.position = 'fixed';
+  cloneToque.style.pointerEvents = 'none';
+  cloneToque.style.zIndex = '999';
+  cloneToque.style.opacity = '0.9';
+  cloneToque.style.width = el.offsetWidth + 'px';
+  cloneToque.style.maxWidth = '280px';
+  document.body.appendChild(cloneToque);
+
+  var t = e.touches[0];
+  moverClone(t.clientX, t.clientY);
+}
+
+function aoTocarMover(e) {
+  e.preventDefault();
+  if (!cloneToque) return;
+  var t = e.touches[0];
+  moverClone(t.clientX, t.clientY);
+  var todos = document.querySelectorAll('.alvo');
+  for (var i = 0; i < todos.length; i++) todos[i].classList.remove('drag-over');
+  var alvo = alvoEmPonto(t.clientX, t.clientY);
+  if (alvo) alvo.classList.add('drag-over');
+}
+
+function alvoEmPonto(x, y) {
+  var el = document.elementFromPoint(x, y);
+  while (el && !(el.classList && el.classList.contains('alvo'))) el = el.parentElement;
+  return el;
+}
+
+function moverClone(x, y) {
+  if (!cloneToque) return;
+  cloneToque.style.left = (x - cloneToque.offsetWidth / 2) + 'px';
+  cloneToque.style.top = (y - cloneToque.offsetHeight / 2) + 'px';
+}
+
+document.addEventListener('touchend', function (e) {
+  if (!cloneToque) return;
+  var t = e.changedTouches[0];
+  var alvo = alvoEmPonto(t.clientX, t.clientY);
+  if (alvo) colocarTermo(termoArrastado, alvo.dataset.ramoid);
+  document.body.removeChild(cloneToque);
+  cloneToque = null;
+  var todos = document.querySelectorAll('.alvo');
+  for (var i = 0; i < todos.length; i++) todos[i].classList.remove('drag-over');
+  termoArrastado = null;
+}, { passive: true });
+
+window.verificarMapa  = verificarMapa;
+window.reiniciarMapa  = reiniciarMapa;
+window.tirarDoAlvo    = tirarDoAlvo;
+
+montarRamos();
+montarPool();
+</script>
+<!-- ── GAMIFICAÇÃO ─────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'contos-encantamento';
+  var DISCIPLINE    = 'portugues';
+  var ACTIVITY_TYPE = 'mapa-mental';
+  var TOTAL_ATIV    = 5;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Flautim',
+        characterEmoji:  '🪈',
+        characterImg:    'chars/contos-encantamento-hd.png',
+        themeLabel:      'Contos de Encantamento · Português',
+        totalActivities: TOTAL_ATIV,
+        activityType:    ACTIVITY_TYPE,
+        primaryColor:    '#E8430A',
+        lightColor:      '#FB8C5A',
+        bgColor:         '#FFF4EF',
+        glowRgb:         '232,67,10',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _scoreVal = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _scoreVal = v;
+      var btn = document.getElementById('gamificacao-btn');
+      if (btn) btn.style.display = 'block';
+      var btnOverlay = document.getElementById('gamificacao-btn-overlay');
+      if (btnOverlay) btnOverlay.style.display = 'block';
+    },
+    get: function () { return _scoreVal; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#E8430A,#FB8C5A);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>
