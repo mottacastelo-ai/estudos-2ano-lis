@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monte o Envelope — Carta Pessoal | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #E8430A;
+  --light: #FB8C5A;
+  --bg: #FFF4EF;
+  --dark: #7A1F04;
+  --correct: #22C55E;
+  --wrong: #EF4444;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  background: linear-gradient(135deg, #7A1F04, #E8430A 60%, #FB8C5A);
+  color: white;
+  padding: 24px 20px;
+  text-align: center;
+}
+
+header .emoji { font-size: 2.8rem; display: block; margin-bottom: 8px; }
+
+header h1 {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.8rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+header p { font-size: 1rem; opacity: 0.9; margin-top: 4px; }
+
+main {
+  flex: 1;
+  padding: 20px 16px;
+  max-width: 780px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.instruction {
+  background: white;
+  border-radius: 16px;
+  padding: 16px 20px;
+  box-shadow: 0 3px 12px rgba(232,67,10,0.15);
+  margin-bottom: 20px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--dark);
+  text-align: center;
+  line-height: 1.5;
+}
+
+.pool-title, .cats-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--dark);
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+#pool {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  min-height: 70px;
+  background: white;
+  border: 3px dashed #FEDCCB;
+  border-radius: 16px;
+  padding: 14px;
+  margin-bottom: 24px;
+}
+
+.drag-card, .placed-card {
+  background: linear-gradient(135deg, var(--dark), #B33207);
+  color: white;
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: grab;
+  border: 3px solid rgba(255,255,255,0.2);
+  box-shadow: 0 4px 12px rgba(122,31,4,0.28);
+  user-select: none;
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  transition: transform 0.15s ease, opacity 0.2s ease;
+}
+
+.drag-card:hover { transform: translateY(-3px) scale(1.03); }
+.drag-card.dragging, .placed-card.dragging { opacity: 0.4; }
+
+.placed-card { font-size: 0.95rem; padding: 10px 14px; }
+.placed-card.correct { background: linear-gradient(135deg, #15803D, #22C55E); }
+.placed-card.wrong { background: linear-gradient(135deg, #991B1B, #EF4444); }
+
+.cats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.cat-box {
+  background: white;
+  border: 3px solid var(--light);
+  border-radius: 18px;
+  padding: 16px 14px;
+  min-height: 220px;
+  box-shadow: 0 4px 16px rgba(232,67,10,0.14);
+  transition: all 0.2s ease;
+}
+
+.cat-box.drag-over {
+  background: #FFE7DB;
+  border-color: var(--primary);
+  box-shadow: 0 0 18px rgba(232,67,10,0.34);
+}
+
+.cat-head {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: var(--dark);
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.cat-hint {
+  font-size: 0.9rem;
+  color: #A15C3D;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+/* Desenho do envelope */
+.env-art {
+  height: 74px;
+  border: 3px solid var(--light);
+  border-radius: 8px;
+  background: #FFFDF8;
+  margin: 0 auto 12px;
+  max-width: 170px;
+  position: relative;
+  overflow: hidden;
+}
+
+.env-art.frente::after {
+  content: '';
+  position: absolute;
+  top: 8px; right: 8px;
+  width: 26px; height: 30px;
+  border: 2px dashed var(--primary);
+  border-radius: 3px;
+}
+
+.env-art.verso::before {
+  content: '';
+  position: absolute;
+  top: -3px; left: 50%;
+  width: 120px; height: 120px;
+  border-left: 3px solid var(--light);
+  border-right: 3px solid var(--light);
+  transform: translateX(-50%) rotate(45deg) translateY(-62px);
+}
+
+.cat-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 60px;
+}
+
+.result-msg {
+  display: none;
+  background: white;
+  border-radius: 16px;
+  padding: 18px 20px;
+  box-shadow: 0 4px 20px rgba(232,67,10,0.15);
+  margin-bottom: 16px;
+  text-align: center;
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+.controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.btn-check {
+  background: linear-gradient(135deg, var(--primary), var(--light));
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 14px 28px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+  min-height: 52px;
+}
+
+.btn-check:hover:not(:disabled) { transform: scale(1.04); }
+.btn-check:disabled { opacity: 0.55; cursor: default; }
+
+.btn-reset {
+  background: white;
+  border: 3px solid var(--primary);
+  color: var(--primary);
+  border-radius: 14px;
+  padding: 14px 24px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 52px;
+}
+
+.btn-reset:hover { background: var(--primary); color: white; }
+
+footer { text-align: center; padding: 20px 16px; }
+
+.btn-back {
+  background: white;
+  border: 3px solid var(--primary);
+  color: var(--primary);
+  border-radius: 14px;
+  padding: 14px 28px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 48px;
+}
+
+.btn-back:hover { background: var(--primary); color: white; }
+
+@media (max-width: 480px) {
+  header h1 { font-size: 1.3rem; }
+  main { padding: 14px 10px; }
+  .cats { grid-template-columns: 1fr; }
+  .drag-card, .placed-card { font-size: 0.9rem; padding: 10px 12px; }
+  .cat-box { min-height: 150px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="emoji">📬</span>
+  <h1>Monte o Envelope</h1>
+  <p>O que vai na frente e o que vai no verso?</p>
+</header>
+
+<main>
+  <div class="instruction">
+    Arraste cada informação para a <strong>frente</strong> ou para o <strong>verso</strong> do envelope.
+    Clique num cartão já colocado para devolvê-lo.
+  </div>
+
+  <div class="pool-title">Informações para colocar:</div>
+  <div id="pool"></div>
+
+  <div class="cats">
+    <div class="cat-box" data-cat="frente">
+      <div class="cat-head">📮 Frente</div>
+      <div class="env-art frente"></div>
+      <div class="cat-hint">Para quem a carta vai</div>
+      <div class="cat-items" id="items-frente"></div>
+    </div>
+    <div class="cat-box" data-cat="verso">
+      <div class="cat-head">↩️ Verso</div>
+      <div class="env-art verso"></div>
+      <div class="cat-hint">De quem a carta veio</div>
+      <div class="cat-items" id="items-verso"></div>
+    </div>
+  </div>
+
+  <div class="result-msg" id="result-msg"></div>
+
+  <div class="controls">
+    <button class="btn-check" id="check-btn" onclick="checkEnvelope()">Verificar ✅</button>
+    <button class="btn-reset" onclick="resetEnvelope()">Recomeçar 🔀</button>
+  </div>
+</main>
+
+<footer>
+  <button class="btn-back" onclick="voltarAoPortal()">← Voltar ao Portal</button>
+</footer>
+
+<script>
+const items = [
+  { id: 'i1', emoji: '👤', text: 'Nome do destinatário',     cat: 'frente' },
+  { id: 'i2', emoji: '🏠', text: 'Endereço do destinatário', cat: 'frente' },
+  { id: 'i3', emoji: '🔢', text: 'CEP do destinatário',      cat: 'frente' },
+  { id: 'i4', emoji: '🏷️', text: 'Selo',                     cat: 'frente' },
+  { id: 'i5', emoji: '✍️', text: 'Nome do remetente',        cat: 'verso'  },
+  { id: 'i6', emoji: '🏡', text: 'Endereço do remetente',    cat: 'verso'  },
+  { id: 'i7', emoji: '🔢', text: 'CEP do remetente',         cat: 'verso'  }
+];
+
+let placed = {};
+let draggedId = null;
+
+function playSound(type) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  if (type === 'correct') {
+    o.frequency.setValueAtTime(523, ctx.currentTime);
+    o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+    o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    o.start(); o.stop(ctx.currentTime + 0.5);
+  } else {
+    o.frequency.setValueAtTime(300, ctx.currentTime);
+    o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    o.start(); o.stop(ctx.currentTime + 0.4);
+  }
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+let poolOrder = shuffle(items.map(i => i.id));
+
+function makeCard(item, loc) {
+  const card = document.createElement('div');
+  card.className = loc === 'pool' ? 'drag-card' : 'placed-card';
+  card.id = 'card-' + item.id;
+  card.draggable = true;
+  card.innerHTML = `${item.emoji} ${item.text}`;
+  card.dataset.id = item.id;
+
+  card.addEventListener('dragstart', () => { draggedId = item.id; card.classList.add('dragging'); });
+  card.addEventListener('dragend', () => card.classList.remove('dragging'));
+  card.addEventListener('touchstart', onTouchStart, { passive: false });
+
+  if (loc !== 'pool') {
+    card.title = 'Clique para devolver';
+    card.addEventListener('click', () => { delete placed[item.id]; buildBoard(); });
+  }
+
+  return card;
+}
+
+function buildBoard() {
+  const pool = document.getElementById('pool');
+  pool.innerHTML = '';
+  document.getElementById('items-frente').innerHTML = '';
+  document.getElementById('items-verso').innerHTML = '';
+
+  poolOrder.forEach(id => {
+    const item = items.find(i => i.id === id);
+    if (placed[id]) {
+      document.getElementById('items-' + placed[id]).appendChild(makeCard(item, placed[id]));
+    } else {
+      pool.appendChild(makeCard(item, 'pool'));
+    }
+  });
+}
+
+document.querySelectorAll('.cat-box').forEach(box => {
+  box.addEventListener('dragover', e => { e.preventDefault(); box.classList.add('drag-over'); });
+  box.addEventListener('dragleave', () => box.classList.remove('drag-over'));
+  box.addEventListener('drop', e => {
+    e.preventDefault();
+    box.classList.remove('drag-over');
+    if (!draggedId) return;
+    placed[draggedId] = box.dataset.cat;
+    draggedId = null;
+    clearResult();
+    buildBoard();
+  });
+});
+
+document.getElementById('pool').addEventListener('dragover', e => e.preventDefault());
+document.getElementById('pool').addEventListener('drop', e => {
+  e.preventDefault();
+  if (!draggedId) return;
+  delete placed[draggedId];
+  draggedId = null;
+  clearResult();
+  buildBoard();
+});
+
+/* Touch — ERR-004 (preventDefault) e ERR-007 (touchend no document) */
+function onTouchStart(e) {
+  e.preventDefault();
+  const card = e.currentTarget;
+  draggedId = card.dataset.id;
+  card.style.opacity = '0.5';
+}
+
+document.addEventListener('touchmove', function (e) {
+  if (!draggedId) return;
+  e.preventDefault();
+  const touch = e.touches[0];
+  document.querySelectorAll('.cat-box').forEach(b => b.classList.remove('drag-over'));
+  const el = document.elementFromPoint(touch.clientX, touch.clientY);
+  const catBox = el ? el.closest('.cat-box') : null;
+  if (catBox) catBox.classList.add('drag-over');
+}, { passive: false });
+
+document.addEventListener('touchend', function (e) {
+  if (!draggedId) return;
+  const touch = e.changedTouches[0];
+  const el = document.elementFromPoint(touch.clientX, touch.clientY);
+  const catBox = el ? el.closest('.cat-box') : null;
+  const pool = el ? el.closest('#pool') : null;
+
+  if (catBox) placed[draggedId] = catBox.dataset.cat;
+  else if (pool) delete placed[draggedId];
+
+  document.querySelectorAll('.cat-box').forEach(b => b.classList.remove('drag-over'));
+  document.querySelectorAll('.drag-card, .placed-card').forEach(c => c.style.opacity = '');
+  draggedId = null;
+  clearResult();
+  buildBoard();
+}, { passive: true });
+
+function clearResult() {
+  document.getElementById('result-msg').style.display = 'none';
+  document.getElementById('check-btn').disabled = false;
+}
+
+function checkEnvelope() {
+  const msg = document.getElementById('result-msg');
+  if (Object.keys(placed).length < items.length) {
+    msg.textContent = '⚠️ Coloque todos os cartões no envelope antes de verificar!';
+    msg.style.display = 'block';
+    msg.style.color = '#92400E';
+    return;
+  }
+
+  let correct = 0;
+  items.forEach(item => {
+    const card = document.getElementById('card-' + item.id);
+    if (!card) return;
+    card.classList.remove('correct', 'wrong');
+    if (placed[item.id] === item.cat) { card.classList.add('correct'); correct++; }
+    else card.classList.add('wrong');
+  });
+
+  window.sabendoScore = Math.round((correct / items.length) * 100);
+
+  msg.style.display = 'block';
+  if (correct === items.length) {
+    msg.textContent = `🏆 Envelope pronto para o correio! Você acertou os ${items.length} cartões!`;
+    msg.style.color = '#15803D';
+    playSound('correct');
+  } else {
+    msg.textContent = `✨ Você acertou ${correct} de ${items.length}! Os cartões vermelhos estão no lado errado.`;
+    msg.style.color = '#92400E';
+    playSound('wrong');
+  }
+  document.getElementById('check-btn').disabled = true;
+}
+
+function resetEnvelope() {
+  placed = {};
+  poolOrder = shuffle(items.map(i => i.id));
+  clearResult();
+  buildBoard();
+}
+
+window.checkEnvelope = checkEnvelope;
+window.resetEnvelope = resetEnvelope;
+
+buildBoard();
+</script>
+<!-- ── GAMIFICAÇÃO ─────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'carta-pessoal';
+  var DISCIPLINE    = 'portugues';
+  var ACTIVITY_TYPE = 'classificar';
+  var TOTAL_ATIV    = 6;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Postinho',
+        characterEmoji:  '📮',
+        characterImg:    'chars/carta-pessoal-hd.png',
+        themeLabel:      'Carta Pessoal · Português',
+        totalActivities: TOTAL_ATIV,
+        activityType:    ACTIVITY_TYPE,
+        primaryColor:    '#E8430A',
+        lightColor:      '#FB8C5A',
+        bgColor:         '#FFF4EF',
+        glowRgb:         '232,67,10',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _scoreVal = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _scoreVal = v;
+      var btn = document.getElementById('gamificacao-btn');
+      if (btn) btn.style.display = 'block';
+      var btnOverlay = document.getElementById('gamificacao-btn-overlay');
+      if (btnOverlay) btnOverlay.style.display = 'block';
+    },
+    get: function () { return _scoreVal; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#E8430A,#FB8C5A);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>

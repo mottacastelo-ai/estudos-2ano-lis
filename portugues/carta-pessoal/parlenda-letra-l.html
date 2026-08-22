@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parlenda da Letra L — Carta Pessoal | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #E8430A;
+  --light: #FB8C5A;
+  --bg: #FFF4EF;
+  --dark: #7A1F04;
+  --correct: #22C55E;
+  --wrong: #EF4444;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  background: linear-gradient(135deg, #7A1F04, #E8430A 60%, #FB8C5A);
+  color: white;
+  padding: 24px 20px;
+  text-align: center;
+}
+
+header .emoji { font-size: 2.8rem; display: block; margin-bottom: 8px; }
+
+header h1 {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.8rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+header p { font-size: 1rem; opacity: 0.9; margin-top: 4px; }
+
+main {
+  flex: 1;
+  padding: 20px 16px;
+  max-width: 700px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.instruction {
+  background: white;
+  border-radius: 16px;
+  padding: 16px 20px;
+  box-shadow: 0 3px 12px rgba(232,67,10,0.15);
+  margin-bottom: 20px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--dark);
+  text-align: center;
+  line-height: 1.5;
+}
+
+.tip {
+  background: #FFE7DB;
+  border-left: 6px solid var(--primary);
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--dark);
+  line-height: 1.5;
+}
+
+.round {
+  background: white;
+  border-radius: 20px;
+  padding: 22px 20px;
+  box-shadow: 0 4px 20px rgba(232,67,10,0.15);
+  margin-bottom: 22px;
+}
+
+.round-title {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: var(--dark);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bank {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  background: var(--bg);
+  border: 3px dashed #FEDCCB;
+  border-radius: 14px;
+  padding: 12px;
+  margin-bottom: 18px;
+  min-height: 66px;
+}
+
+.tile {
+  background: linear-gradient(135deg, var(--dark), #B33207);
+  color: white;
+  border: 3px solid rgba(255,255,255,0.22);
+  border-radius: 12px;
+  padding: 10px 18px;
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.3rem;
+  font-weight: 900;
+  cursor: pointer;
+  user-select: none;
+  min-height: 46px;
+  min-width: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 4px 12px rgba(122,31,4,0.28);
+}
+
+.tile:hover { transform: translateY(-3px) scale(1.05); }
+.tile.selected {
+  background: linear-gradient(135deg, var(--primary), var(--light));
+  box-shadow: 0 0 0 4px rgba(232,67,10,0.35), 0 6px 16px rgba(232,67,10,0.4);
+  transform: scale(1.08);
+}
+
+.verse {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #4a3128;
+  line-height: 2.4;
+  text-align: center;
+}
+
+.verse div { margin-bottom: 2px; }
+
+.blank {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 62px;
+  min-height: 44px;
+  padding: 2px 10px;
+  margin: 0 2px;
+  border-bottom: 4px solid var(--light);
+  border-radius: 8px 8px 4px 4px;
+  background: #FFF9F5;
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: var(--primary);
+  cursor: pointer;
+  vertical-align: middle;
+  transition: all 0.15s ease;
+}
+
+.blank:hover { background: #FFE7DB; }
+.blank.armed { box-shadow: 0 0 0 3px rgba(232,67,10,0.3); background: #FFE7DB; }
+.blank.filled { background: #FFE7DB; border-bottom-color: var(--primary); }
+.blank.correct { background: #DCFCE7; border-bottom-color: var(--correct); color: #166534; }
+.blank.wrong { background: #FEE2E2; border-bottom-color: var(--wrong); color: #991B1B; }
+
+.blank.wide { min-width: 116px; }
+
+.result-msg {
+  display: none;
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(232,67,10,0.15);
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.result-msg.show { display: block; }
+.result-msg .res-emoji { font-size: 3rem; margin-bottom: 8px; }
+
+.result-msg h3 {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.5rem;
+  color: var(--dark);
+  margin-bottom: 8px;
+}
+
+.result-msg p { font-size: 1.1rem; color: #555; font-weight: 700; }
+
+.controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.btn-check {
+  background: linear-gradient(135deg, var(--primary), var(--light));
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 14px 28px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+  min-height: 52px;
+}
+
+.btn-check:hover { transform: scale(1.04); }
+
+.btn-reset {
+  background: white;
+  border: 3px solid var(--primary);
+  color: var(--primary);
+  border-radius: 14px;
+  padding: 14px 24px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 52px;
+}
+
+.btn-reset:hover { background: var(--primary); color: white; }
+
+footer { text-align: center; padding: 20px 16px; }
+
+.btn-back {
+  background: white;
+  border: 3px solid var(--primary);
+  color: var(--primary);
+  border-radius: 14px;
+  padding: 14px 28px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 48px;
+}
+
+.btn-back:hover { background: var(--primary); color: white; }
+
+@media (max-width: 480px) {
+  header h1 { font-size: 1.3rem; }
+  main { padding: 14px 10px; }
+  .verse { font-size: 1.15rem; line-height: 2.3; }
+  .tile { font-size: 1.15rem; padding: 10px 14px; }
+  .blank { min-width: 54px; font-size: 1.15rem; }
+  .blank.wide { min-width: 100px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="emoji">🔤</span>
+  <h1>Parlenda da Letra L</h1>
+  <p>Complete as parlendas e ouça o som do L!</p>
+</header>
+
+<main>
+  <div class="instruction">
+    Clique numa peça e depois no espaço vazio da parlenda. Clique num espaço preenchido para desfazer.
+  </div>
+
+  <div class="tip">
+    💡 Na maior parte do Brasil, a letra <strong>L</strong> no final da sílaba tem o mesmo som da letra <strong>U</strong>.
+  </div>
+
+  <div class="round">
+    <div class="round-title">🥣 Parlenda 1 — escolha a letra</div>
+    <div class="bank" id="bank-1"></div>
+    <div class="verse" id="verse-1">
+      <div>Está de <span class="blank" data-blank="b1"></span>al</div>
+      <div>come <span class="blank" data-blank="b2"></span>al</div>
+      <div>na panela do mingau</div>
+      <div>deixe um pouco pro Na<span class="blank" data-blank="b3"></span>al</div>
+      <div>pendurado no va<span class="blank" data-blank="b4"></span>al.</div>
+    </div>
+  </div>
+
+  <div class="round">
+    <div class="round-title">🌙 Parlenda 2 — escolha a palavra</div>
+    <div class="bank" id="bank-2"></div>
+    <div class="verse" id="verse-2">
+      <div>Está no céu?</div>
+      <div>Come <span class="blank wide" data-blank="b5"></span></div>
+      <div>depois de comer <span class="blank wide" data-blank="b6"></span></div>
+      <div>Deixe um pouco pro <span class="blank wide" data-blank="b7"></span></div>
+      <div>Embalado com <span class="blank wide" data-blank="b8"></span>.</div>
+    </div>
+  </div>
+
+  <div class="result-msg" id="result-msg">
+    <div class="res-emoji" id="res-emoji"></div>
+    <h3 id="res-title"></h3>
+    <p id="res-text"></p>
+  </div>
+
+  <div class="controls">
+    <button class="btn-check" onclick="verificarParlenda()">Verificar ✅</button>
+    <button class="btn-reset" onclick="reiniciarParlenda()">Recomeçar 🔀</button>
+  </div>
+</main>
+
+<footer>
+  <button class="btn-back" onclick="voltarAoPortal()">← Voltar ao Portal</button>
+</footer>
+
+<script>
+const bank1 = [
+  { id: 't-m', text: 'M' },
+  { id: 't-s', text: 'S' },
+  { id: 't-t', text: 'T' },
+  { id: 't-r', text: 'R' }
+];
+
+const bank2 = [
+  { id: 'p-mel',    text: 'mel' },
+  { id: 'p-pastel', text: 'pastel' },
+  { id: 'p-miguel', text: 'Miguel' },
+  { id: 'p-papel',  text: 'papel' }
+];
+
+const answers = {
+  b1: 't-m', b2: 't-s', b3: 't-t', b4: 't-r',
+  b5: 'p-mel', b6: 'p-pastel', b7: 'p-miguel', b8: 'p-papel'
+};
+
+const bankOfBlank = { b1: 1, b2: 1, b3: 1, b4: 1, b5: 2, b6: 2, b7: 2, b8: 2 };
+
+let filled = {};          // blankId -> tileId
+let selectedTile = null;  // tileId
+
+function tileById(id) {
+  return bank1.concat(bank2).find(t => t.id === id);
+}
+
+function playSound(type) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  if (type === 'correct') {
+    o.frequency.setValueAtTime(523, ctx.currentTime);
+    o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+    o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    o.start(); o.stop(ctx.currentTime + 0.5);
+  } else {
+    o.frequency.setValueAtTime(300, ctx.currentTime);
+    o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    o.start(); o.stop(ctx.currentTime + 0.4);
+  }
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+let order1 = shuffle(bank1);
+let order2 = shuffle(bank2);
+
+function renderBanks() {
+  [[1, order1], [2, order2]].forEach(function (pair) {
+    const num = pair[0];
+    const bankEl = document.getElementById('bank-' + num);
+    bankEl.innerHTML = '';
+    pair[1].forEach(t => {
+      if (Object.values(filled).indexOf(t.id) !== -1) return;
+      const el = document.createElement('div');
+      el.className = 'tile' + (selectedTile === t.id ? ' selected' : '');
+      el.textContent = t.text;
+      el.onclick = () => {
+        selectedTile = (selectedTile === t.id) ? null : t.id;
+        renderAll();
+      };
+      bankEl.appendChild(el);
+    });
+    if (!bankEl.children.length) {
+      const done = document.createElement('div');
+      done.style.cssText = 'color:#F0A98C;font-weight:700;font-style:italic;padding:10px;';
+      done.textContent = 'Todas as peças foram usadas!';
+      bankEl.appendChild(done);
+    }
+  });
+}
+
+function renderBlanks() {
+  document.querySelectorAll('.blank').forEach(el => {
+    const bid = el.dataset.blank;
+    el.classList.remove('filled', 'armed', 'correct', 'wrong');
+    if (filled[bid]) {
+      el.textContent = tileById(filled[bid]).text;
+      el.classList.add('filled');
+    } else {
+      el.textContent = '';
+    }
+    if (selectedTile && bankOfBlank[bid] === (bank1.some(t => t.id === selectedTile) ? 1 : 2) && !filled[bid]) {
+      el.classList.add('armed');
+    }
+  });
+}
+
+function renderAll() { renderBanks(); renderBlanks(); }
+
+document.querySelectorAll('.blank').forEach(el => {
+  el.addEventListener('click', () => {
+    const bid = el.dataset.blank;
+    hideResult();
+    if (filled[bid]) {
+      delete filled[bid];
+      renderAll();
+      return;
+    }
+    if (!selectedTile) return;
+    const tileBank = bank1.some(t => t.id === selectedTile) ? 1 : 2;
+    if (tileBank !== bankOfBlank[bid]) return;
+    filled[bid] = selectedTile;
+    selectedTile = null;
+    renderAll();
+  });
+});
+
+function hideResult() {
+  document.getElementById('result-msg').classList.remove('show');
+}
+
+function verificarParlenda() {
+  const blankIds = Object.keys(answers);
+  const total = blankIds.length;
+  const allFilled = blankIds.every(b => filled[b]);
+
+  const resEl = document.getElementById('result-msg');
+  resEl.classList.add('show');
+
+  if (!allFilled) {
+    document.getElementById('res-emoji').textContent = '🤔';
+    document.getElementById('res-title').textContent = 'Parlenda incompleta!';
+    document.getElementById('res-text').textContent = 'Complete os ' + total + ' espaços antes de verificar.';
+    return;
+  }
+
+  let correct = 0;
+  blankIds.forEach(bid => {
+    const el = document.querySelector('.blank[data-blank="' + bid + '"]');
+    el.classList.remove('correct', 'wrong');
+    if (filled[bid] === answers[bid]) { correct++; el.classList.add('correct'); }
+    else el.classList.add('wrong');
+  });
+
+  window.sabendoScore = Math.round((correct / total) * 100);
+
+  let emoji, title, text;
+  if (correct === total) {
+    emoji = '🥇'; title = 'Parlendas completas!';
+    text = 'Você acertou tudo! Repare: sal, mel, pastel e papel terminam com o som de U.';
+    playSound('correct');
+  } else {
+    emoji = '📝'; title = correct + ' de ' + total + ' corretos!';
+    text = 'Os espaços em vermelho precisam de ajuste. Clique neles e tente outra peça!';
+    playSound('wrong');
+  }
+
+  document.getElementById('res-emoji').textContent = emoji;
+  document.getElementById('res-title').textContent = title;
+  document.getElementById('res-text').textContent = text;
+}
+
+function reiniciarParlenda() {
+  filled = {};
+  selectedTile = null;
+  order1 = shuffle(bank1);
+  order2 = shuffle(bank2);
+  hideResult();
+  renderAll();
+}
+
+window.verificarParlenda = verificarParlenda;
+window.reiniciarParlenda = reiniciarParlenda;
+
+renderAll();
+</script>
+<!-- ── GAMIFICAÇÃO ─────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'carta-pessoal';
+  var DISCIPLINE    = 'portugues';
+  var ACTIVITY_TYPE = 'completar';
+  var TOTAL_ATIV    = 6;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Postinho',
+        characterEmoji:  '📮',
+        characterImg:    'chars/carta-pessoal-hd.png',
+        themeLabel:      'Carta Pessoal · Português',
+        totalActivities: TOTAL_ATIV,
+        activityType:    ACTIVITY_TYPE,
+        primaryColor:    '#E8430A',
+        lightColor:      '#FB8C5A',
+        bgColor:         '#FFF4EF',
+        glowRgb:         '232,67,10',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _scoreVal = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _scoreVal = v;
+      var btn = document.getElementById('gamificacao-btn');
+      if (btn) btn.style.display = 'block';
+      var btnOverlay = document.getElementById('gamificacao-btn-overlay');
+      if (btnOverlay) btnOverlay.style.display = 'block';
+    },
+    get: function () { return _scoreVal; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#E8430A,#FB8C5A);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>

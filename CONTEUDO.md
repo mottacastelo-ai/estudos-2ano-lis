@@ -1,6 +1,6 @@
 # Inventário do Portal — Lis (2º Ano)
 
-> Gerado automaticamente por `scripts/update-docs.py` em 2026-08-11.
+> Gerado automaticamente por `scripts/update-docs.py` em 2026-08-22.
 > Fonte primária: `index.html`. Existência de arquivos validada no filesystem.
 
 ---
@@ -9,12 +9,12 @@
 
 | Disciplina | Temas | Atividades | HQs completas |
 |---|---|---|---|
-| 📝 Português | 2 | 9 | 2/2 |
+| 📝 Português | 3 | 15 | 3/3 |
 | 🔢 Matemática | 5 | 25 | 5/5 |
 | 🔬 Ciências | 4 | 16 | 4/4 |
 | 🌍 Geografia | 2 | 8 | 2/2 |
 | 📜 História | 6 | 25 | 6/6 |
-| **Total** | **19** | **83** | **19/19** |
+| **Total** | **20** | **89** | **20/20** |
 
 ---
 
@@ -42,6 +42,19 @@
 - ✅ [Jogo da Memória](portugues/letras-silabas-pontuacao/memoria-letras.html)
 - ✅ [Ordena o Alfabeto](portugues/letras-silabas-pontuacao/ordena-alfabeto.html)
 - ✅ [Mapa Mental](portugues/letras-silabas-pontuacao/mapa-mental-letras.html)
+
+### carta-pessoal
+
+**HQ:** `hq-carta-pessoal-pg1.png` — ✅ p1 · ✅ p2 · ✅ p3 · ✅ p4 | ✅ prompt.md
+
+**Atividades (6):**
+
+- ✅ [Quiz: Carta Pessoal](portugues/carta-pessoal/quiz-carta-pessoal.html)
+- ✅ [As Partes da Carta](portugues/carta-pessoal/partes-da-carta.html)
+- ✅ [Monte o Envelope](portugues/carta-pessoal/envelope-carta.html)
+- ✅ [Parlenda da Letra L](portugues/carta-pessoal/parlenda-letra-l.html)
+- ✅ [Jogo da Memória](portugues/carta-pessoal/memoria-carta.html)
+- ✅ [Mapa Mental](portugues/carta-pessoal/mapa-mental-carta.html)
 
 ---
 

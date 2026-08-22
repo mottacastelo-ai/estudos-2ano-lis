@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jogo da Memória — Carta Pessoal | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #E8430A;
+  --light: #FB8C5A;
+  --bg: #FFF4EF;
+  --dark: #7A1F04;
+  --correct: #22C55E;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  background: linear-gradient(135deg, #7A1F04, #E8430A 60%, #FB8C5A);
+  color: white;
+  padding: 24px 20px;
+  text-align: center;
+}
+
+header .emoji { font-size: 2.8rem; display: block; margin-bottom: 8px; }
+
+header h1 {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.8rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+header p { font-size: 1rem; opacity: 0.9; margin-top: 4px; }
+
+main {
+  flex: 1;
+  padding: 20px 16px;
+  max-width: 780px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.instruction {
+  background: white;
+  border-radius: 16px;
+  padding: 16px 20px;
+  box-shadow: 0 3px 12px rgba(232,67,10,0.15);
+  margin-bottom: 18px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--dark);
+  text-align: center;
+  line-height: 1.5;
+}
+
+.stats {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.stat {
+  background: white;
+  border: 3px solid var(--light);
+  border-radius: 20px;
+  padding: 8px 18px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--dark);
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.card {
+  aspect-ratio: 3 / 4;
+  perspective: 700px;
+  cursor: pointer;
+  min-height: 96px;
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.45s ease;
+  transform-style: preserve-3d;
+}
+
+.card.flipped .card-inner, .card.matched .card-inner { transform: rotateY(180deg); }
+
+.card-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  text-align: center;
+  box-shadow: 0 4px 14px rgba(122,31,4,0.22);
+}
+
+.card-back {
+  background: linear-gradient(135deg, var(--dark), #B33207);
+  color: white;
+  font-size: 2rem;
+  border: 3px solid rgba(255,255,255,0.22);
+}
+
+.card-front {
+  background: white;
+  border: 3px solid var(--light);
+  transform: rotateY(180deg);
+  color: var(--dark);
+  gap: 4px;
+}
+
+.card.matched .card-front {
+  background: #DCFCE7;
+  border-color: var(--correct);
+  color: #166534;
+}
+
+.card-emoji { font-size: 1.5rem; }
+
+.card-term {
+  font-family: 'Baloo 2', cursive;
+  font-size: 0.95rem;
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+.card-def {
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.btn-reset {
+  background: white;
+  border: 3px solid var(--primary);
+  color: var(--primary);
+  border-radius: 14px;
+  padding: 14px 24px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 52px;
+}
+
+.btn-reset:hover { background: var(--primary); color: white; }
+
+footer { text-align: center; padding: 20px 16px; }
+
+.btn-back {
+  background: white;
+  border: 3px solid var(--primary);
+  color: var(--primary);
+  border-radius: 14px;
+  padding: 14px 28px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 48px;
+}
+
+.btn-back:hover { background: var(--primary); color: white; }
+
+/* ── Overlay de vitória (ERR-008: botão duplicado dentro) ── */
+.win-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(122,31,4,0.82);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 100;
+}
+
+.win-overlay.show { display: flex; }
+
+.win-card {
+  background: white;
+  border-radius: 24px;
+  padding: 32px 26px;
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+}
+
+.win-card .win-emoji { font-size: 4rem; margin-bottom: 8px; }
+
+.win-card h2 {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.8rem;
+  color: var(--dark);
+  margin-bottom: 8px;
+}
+
+.win-card p {
+  font-size: 1.12rem;
+  font-weight: 700;
+  color: #555;
+  margin-bottom: 18px;
+  line-height: 1.45;
+}
+
+.win-card .btn-reset { width: 100%; }
+
+@media (max-width: 480px) {
+  header h1 { font-size: 1.3rem; }
+  main { padding: 14px 10px; }
+  .board { grid-template-columns: repeat(3, 1fr); gap: 9px; }
+  .card-term { font-size: 0.85rem; }
+  .card-def { font-size: 0.75rem; }
+  .card-emoji { font-size: 1.2rem; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="emoji">🃏</span>
+  <h1>Jogo da Memória da Carta</h1>
+  <p>Encontre o par de cada palavra com o seu significado!</p>
+</header>
+
+<main>
+  <div class="instruction">
+    Vire duas cartas de cada vez. Junte cada <strong>palavra</strong> com o seu <strong>significado</strong>.
+  </div>
+
+  <div class="stats">
+    <div class="stat" id="stat-pairs">Pares: 0 / 6</div>
+    <div class="stat" id="stat-moves">Jogadas: 0</div>
+  </div>
+
+  <div class="board" id="board"></div>
+
+  <div class="controls">
+    <button class="btn-reset" onclick="reiniciarMemoria()">Embaralhar de novo 🔀</button>
+  </div>
+</main>
+
+<footer>
+  <button class="btn-back" onclick="voltarAoPortal()">← Voltar ao Portal</button>
+</footer>
+
+<div class="win-overlay" id="win-overlay">
+  <div class="win-card">
+    <div class="win-emoji">🏆</div>
+    <h2>Você encontrou todos os pares!</h2>
+    <p id="win-text"></p>
+    <button id="gamificacao-btn-overlay"
+      onclick="window._abrirGamificacao()"
+      style="display:none;margin:0 auto 12px;padding:16px 32px;
+        background:linear-gradient(135deg,#E8430A,#FB8C5A);
+        color:#fff;border:none;border-radius:50px;
+        font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+        cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+        width:fit-content;">
+      Coletar minha carta! 🃏
+    </button>
+    <button class="btn-reset" onclick="reiniciarMemoria()">Jogar de novo 🔄</button>
+  </div>
+</div>
+
+<script>
+const pares = [
+  { id: 'p1', emoji: '✍️', termo: 'REMETENTE',        def: 'Quem escreve a carta' },
+  { id: 'p2', emoji: '📬', termo: 'DESTINATÁRIO',     def: 'Quem vai receber a carta' },
+  { id: 'p3', emoji: '📄', termo: 'PARÁGRAFO',        def: 'Espaço em branco no início da linha' },
+  { id: 'p4', emoji: '🖋️', termo: 'LETRA CURSIVA',    def: 'Letra de mão, com curvas emendadas' },
+  { id: 'p5', emoji: '⌨️', termo: 'LETRA DE IMPRENSA', def: 'Letra igual à do teclado' },
+  { id: 'p6', emoji: '🏷️', termo: 'SELO',             def: 'Vai colado na frente do envelope' }
+];
+
+let deck = [];
+let flipped = [];
+let matched = 0;
+let moves = 0;
+let locked = false;
+
+function playSound(type) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  if (type === 'correct') {
+    o.frequency.setValueAtTime(523, ctx.currentTime);
+    o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+    o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    o.start(); o.stop(ctx.currentTime + 0.5);
+  } else {
+    o.frequency.setValueAtTime(300, ctx.currentTime);
+    o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    o.start(); o.stop(ctx.currentTime + 0.4);
+  }
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function buildDeck() {
+  const cards = [];
+  pares.forEach(p => {
+    cards.push({ pairId: p.id, kind: 'termo', emoji: p.emoji, text: p.termo });
+    cards.push({ pairId: p.id, kind: 'def',   emoji: p.emoji, text: p.def });
+  });
+  return shuffle(cards);
+}
+
+function renderBoard() {
+  const board = document.getElementById('board');
+  board.innerHTML = '';
+  deck.forEach((c, i) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.dataset.index = i;
+    card.innerHTML =
+      '<div class="card-inner">' +
+        '<div class="card-face card-back">📮</div>' +
+        '<div class="card-face card-front">' +
+          '<div class="card-emoji">' + c.emoji + '</div>' +
+          '<div class="' + (c.kind === 'termo' ? 'card-term' : 'card-def') + '">' + c.text + '</div>' +
+        '</div>' +
+      '</div>';
+    card.addEventListener('click', () => virarCarta(i));
+    board.appendChild(card);
+  });
+}
+
+function atualizarStats() {
+  document.getElementById('stat-pairs').textContent = 'Pares: ' + matched + ' / ' + pares.length;
+  document.getElementById('stat-moves').textContent = 'Jogadas: ' + moves;
+}
+
+function virarCarta(index) {
+  if (locked) return;
+  const el = document.querySelector('.card[data-index="' + index + '"]');
+  if (!el || el.classList.contains('matched') || el.classList.contains('flipped')) return;
+
+  el.classList.add('flipped');
+  flipped.push(index);
+
+  if (flipped.length < 2) return;
+
+  moves++;
+  atualizarStats();
+  locked = true;
+
+  const a = deck[flipped[0]];
+  const b = deck[flipped[1]];
+
+  if (a.pairId === b.pairId && flipped[0] !== flipped[1]) {
+    setTimeout(() => {
+      flipped.forEach(i => {
+        const c = document.querySelector('.card[data-index="' + i + '"]');
+        c.classList.remove('flipped');
+        c.classList.add('matched');
+      });
+      matched++;
+      atualizarStats();
+      playSound('correct');
+      flipped = [];
+      locked = false;
+      if (matched === pares.length) finalizar();
+    }, 450);
+  } else {
+    setTimeout(() => {
+      flipped.forEach(i => {
+        const c = document.querySelector('.card[data-index="' + i + '"]');
+        c.classList.remove('flipped');
+      });
+      playSound('wrong');
+      flipped = [];
+      locked = false;
+    }, 950);
+  }
+}
+
+function finalizar() {
+  const minimo = pares.length;
+  const pct = Math.max(40, Math.round((minimo / moves) * 100));
+  window.sabendoScore = Math.min(100, pct);
+
+  document.getElementById('win-text').textContent =
+    'Você juntou os ' + pares.length + ' pares em ' + moves + ' jogadas. Postinho ficou orgulhoso!';
+  document.getElementById('win-overlay').classList.add('show');
+  playSound('correct');
+}
+
+function reiniciarMemoria() {
+  deck = buildDeck();
+  flipped = [];
+  matched = 0;
+  moves = 0;
+  locked = false;
+  document.getElementById('win-overlay').classList.remove('show');
+  renderBoard();
+  atualizarStats();
+}
+
+window.reiniciarMemoria = reiniciarMemoria;
+
+reiniciarMemoria();
+</script>
+<!-- ── GAMIFICAÇÃO ─────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'carta-pessoal';
+  var DISCIPLINE    = 'portugues';
+  var ACTIVITY_TYPE = 'memoria';
+  var TOTAL_ATIV    = 6;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Postinho',
+        characterEmoji:  '📮',
+        characterImg:    'chars/carta-pessoal-hd.png',
+        themeLabel:      'Carta Pessoal · Português',
+        totalActivities: TOTAL_ATIV,
+        activityType:    ACTIVITY_TYPE,
+        primaryColor:    '#E8430A',
+        lightColor:      '#FB8C5A',
+        bgColor:         '#FFF4EF',
+        glowRgb:         '232,67,10',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _scoreVal = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _scoreVal = v;
+      var btn = document.getElementById('gamificacao-btn');
+      if (btn) btn.style.display = 'block';
+      var btnOverlay = document.getElementById('gamificacao-btn-overlay');
+      if (btnOverlay) btnOverlay.style.display = 'block';
+    },
+    get: function () { return _scoreVal; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#E8430A,#FB8C5A);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>

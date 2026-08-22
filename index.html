@@ -527,11 +527,12 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
     <button class="disc-nav-btn port-active" id="nav-port" onclick="showDisc('port')">
       <span class="d-icon">✏️</span>
       <span class="d-name">Português</span>
-      <span class="d-count" id="count-port">2 temas</span>
+      <span class="d-count" id="count-port">3 temas</span>
     </button>
     <div class="theme-sub" id="sub-port">
       <button class="theme-link" onclick="showTheme('port','bilhete-cartao-pessoal')">✉️ Bilhete e Cartão Pessoal</button>
       <button class="theme-link" onclick="showTheme('port','letras-silabas-pontuacao')">🔤 Letras, Sílabas e Pontuação</button>
+      <button class="theme-link" onclick="showTheme('port','carta-pessoal')">📮 Carta Pessoal</button>
     </div>
   </div>
   <div style="padding:16px 20px;border-top:2px solid #E2E8F0;margin-top:auto;">
@@ -550,8 +551,8 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
       <div class="home-subtitle">Escolha uma disciplina e vamos aprender juntos! 🎉</div>
       <div class="home-stats">
         <div class="hstat"><span class="hstat-num">5</span><span class="hstat-label">disciplinas</span></div>
-        <div class="hstat"><span class="hstat-num">19</span><span class="hstat-label">temas</span></div>
-        <div class="hstat"><span class="hstat-num">83</span><span class="hstat-label">atividades</span></div>
+        <div class="hstat"><span class="hstat-num">20</span><span class="hstat-label">temas</span></div>
+        <div class="hstat"><span class="hstat-num">89</span><span class="hstat-label">atividades</span></div>
       </div>
       <div class="home-stats" id="streak-banner" style="margin-top:16px;">
         <div class="hstat"><span class="hstat-num" id="streak-count">0</span><span class="hstat-label">🔥 dias seguidos</span></div>
@@ -602,8 +603,8 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
           <div class="dhc-name">Português</div>
           <div class="dhc-desc">Bilhetes, letras, sílabas e pontuação ✉️</div>
           <div class="dhc-chips">
-            <span class="chip" style="background:#FFE8DE;color:#7A1F04">2 temas</span>
-            <span class="chip" style="background:#FFF4EF;color:#7A1F04">9 atividades</span>
+            <span class="chip" style="background:#FFE8DE;color:#7A1F04">3 temas</span>
+            <span class="chip" style="background:#FFF4EF;color:#7A1F04">15 atividades</span>
           </div>
         </button>
       </div>
@@ -1986,13 +1987,14 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
   <div class="screen" id="screen-port">
     <div class="disc-hero port">
       <div class="disc-hero-title">✏️ Português</div>
-      <div class="disc-hero-sub">2 temas · 7 atividades</div>
+      <div class="disc-hero-sub">3 temas · 15 atividades</div>
     </div>
     <div class="disc-body">
 
       <div class="theme-tabs">
         <button class="theme-tab-btn port-tab" id="tab-port-bilhete-cartao-pessoal" onclick="showTheme('port','bilhete-cartao-pessoal')">✉️ Bilhete e Cartão Pessoal</button>
         <button class="theme-tab-btn port-tab" id="tab-port-letras-silabas-pontuacao" onclick="showTheme('port','letras-silabas-pontuacao')">🔤 Letras, Sílabas e Pontuação</button>
+        <button class="theme-tab-btn port-tab" id="tab-port-carta-pessoal" onclick="showTheme('port','carta-pessoal')">📮 Carta Pessoal</button>
       </div>
 
       <!-- ── TEMA 1: BILHETE E CARTÃO PESSOAL ── -->
@@ -2148,6 +2150,94 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
         </div>
       </div>
 
+      <!-- ── TEMA 3: CARTA PESSOAL ── -->
+      <div class="theme-content" id="theme-port-carta-pessoal" data-pages-start="110" data-pages-end="137">
+        <div class="hq-card">
+          <div class="hq-viewer-wrap" style="background:#4A1200;">
+            <div class="hq-viewer-title" style="color:#FB8C5A;">📮 Carta à Vista!</div>
+            <div class="hq-viewer-sub" style="color:#FECDB2;">Aventura com Lis e Postinho · 4 páginas</div>
+            <div class="hq-book-outer">
+              <div class="hq-book-shadow"></div>
+              <div class="hq-book-stack">
+                <div class="hq-page-base" id="hq-carta-display">
+                  <img id="hq-carta-img" src="portugues/carta-pessoal/hq-carta-pessoal-pg1.png" alt="HQ Carta Pessoal — Página 1" draggable="false" style="object-fit:contain; touch-action:auto;">
+                  <div class="hq-shine"></div>
+                </div>
+              </div>
+            </div>
+            <div class="hq-controls">
+              <button class="hq-btn" id="hq-carta-prev" onclick="hqGoTo('carta',hqCurrent['carta']-1)" disabled>◀ Voltar</button>
+              <div class="hq-indicator" id="hq-carta-ind" style="color:#FB8C5A;">1 / 4</div>
+              <button class="hq-btn" id="hq-carta-next" onclick="hqGoTo('carta',hqCurrent['carta']+1)">Próxima ▶</button>
+            </div>
+            <div class="hq-dots" id="hq-carta-dots">
+              <div class="hq-dot active" onclick="hqGoTo('carta',0)"></div>
+              <div class="hq-dot" onclick="hqGoTo('carta',1)"></div>
+              <div class="hq-dot" onclick="hqGoTo('carta',2)"></div>
+              <div class="hq-dot" onclick="hqGoTo('carta',3)"></div>
+            </div>
+          </div>
+          <div class="hq-caption">
+            <span>📖</span>
+            <span>Carta à Vista! — 4 páginas · Personagens: Lis e Postinho 📮 · Tema: carta pessoal, envelope, letra cursiva e de imprensa</span>
+          </div>
+          <div class="livro-ref">📚 Livro pp. 110–137 (Capítulo 4)</div>
+        </div>
+        <hr class="sdiv">
+        <div class="act-grid">
+          <a class="act-card port" href="portugues/carta-pessoal/quiz-carta-pessoal.html" target="_blank">
+            <div class="act-icon">❓</div>
+            <div class="act-title">Quiz: Carta Pessoal</div>
+            <div class="act-desc">10 perguntas sobre a carta, o envelope e os tipos de letra.</div>
+            <div class="act-tags"><span class="tag tag-port">Português</span><span class="tag tag-a">Ativo</span></div>
+            <div class="level lv4">📖 Retrieval practice</div>
+          </a>
+          <a class="act-card port" href="portugues/carta-pessoal/partes-da-carta.html" target="_blank">
+            <div class="act-icon">✉️</div>
+            <div class="act-title">As Partes da Carta</div>
+            <div class="act-desc">Arraste o nome certo para cada parte da carta da Lis!</div>
+            <div class="act-tags"><span class="tag tag-port">Português</span><span class="tag tag-a">Visual</span></div>
+            <div class="level lv3">🏆 Ensinar (90%)</div>
+          </a>
+          <a class="act-card port" href="portugues/carta-pessoal/envelope-carta.html" target="_blank">
+            <div class="act-icon">📬</div>
+            <div class="act-title">Monte o Envelope</div>
+            <div class="act-desc">O que vai na frente e o que vai no verso do envelope?</div>
+            <div class="act-tags"><span class="tag tag-port">Português</span><span class="tag tag-a">Prática</span></div>
+            <div class="level lv2">⚡ Praticar (80%)</div>
+          </a>
+          <a class="act-card port" href="portugues/carta-pessoal/parlenda-letra-l.html" target="_blank">
+            <div class="act-icon">🔤</div>
+            <div class="act-title">Parlenda da Letra L</div>
+            <div class="act-desc">Complete as parlendas e descubra o som do L no fim da sílaba.</div>
+            <div class="act-tags"><span class="tag tag-port">Português</span><span class="tag tag-a">Prática</span></div>
+            <div class="level lv2">⚡ Praticar (80%)</div>
+          </a>
+          <a class="act-card port" href="portugues/carta-pessoal/memoria-carta.html" target="_blank">
+            <div class="act-icon">🃏</div>
+            <div class="act-title">Jogo da Memória</div>
+            <div class="act-desc">Junte cada palavra da carta com o seu significado!</div>
+            <div class="act-tags"><span class="tag tag-port">Português</span><span class="tag tag-a">Prática</span></div>
+            <div class="level lv2">⚡ Praticar (80%)</div>
+          </a>
+          <a class="act-card port" href="portugues/carta-pessoal/mapa-mental-carta.html" target="_blank">
+            <div class="act-icon">🗺️</div>
+            <div class="act-title">Mapa Mental</div>
+            <div class="act-desc">Conecte as ideias sobre a carta pessoal no mapa mental!</div>
+            <div class="act-tags"><span class="tag tag-port">Português</span><span class="tag tag-a">Síntese</span></div>
+            <div class="level lv3">🏆 Ensinar (90%)</div>
+          </a>
+        </div>
+        <hr class="sdiv">
+        <div class="sched-title">📅 Sugestão de uso</div>
+        <div class="sched">
+          <div class="sched-row"><span class="sched-day port">Dia 1</span><span class="sched-acts">HQ + Quiz: Carta Pessoal</span></div>
+          <div class="sched-row"><span class="sched-day port">Dia 2</span><span class="sched-acts">As Partes da Carta + Monte o Envelope</span></div>
+          <div class="sched-row"><span class="sched-day port">Dia 3</span><span class="sched-acts">Parlenda da Letra L + Jogo da Memória</span></div>
+          <div class="sched-row"><span class="sched-day port">Dia 4</span><span class="sched-acts">Mapa Mental</span></div>
+        </div>
+      </div>
+
     </div><!-- /disc-body -->
   </div><!-- /screen-port -->
 
@@ -2192,7 +2282,8 @@ var hqPages = {
   numeros99:     ['matematica/numeros-ate-99/hq-numeros-ate-99-pg1.png','matematica/numeros-ate-99/hq-numeros-ate-99-pg2.png','matematica/numeros-ate-99/hq-numeros-ate-99-pg3.png','matematica/numeros-ate-99/hq-numeros-ate-99-pg4.png'],
   centena:       ['matematica/centena-e-mil/hq-centena-e-mil-pg1.png','matematica/centena-e-mil/hq-centena-e-mil-pg2.png','matematica/centena-e-mil/hq-centena-e-mil-pg3.png','matematica/centena-e-mil/hq-centena-e-mil-pg4.png'],
   bilhete:       ['portugues/bilhete-cartao-pessoal/hq-bilhete-cartao-pessoal-pg1.png','portugues/bilhete-cartao-pessoal/hq-bilhete-cartao-pessoal-pg2.png','portugues/bilhete-cartao-pessoal/hq-bilhete-cartao-pessoal-pg3.png','portugues/bilhete-cartao-pessoal/hq-bilhete-cartao-pessoal-pg4.png'],
-  letras:        ['portugues/letras-silabas-pontuacao/hq-letras-silabas-pontuacao-pg1.png','portugues/letras-silabas-pontuacao/hq-letras-silabas-pontuacao-pg2.png','portugues/letras-silabas-pontuacao/hq-letras-silabas-pontuacao-pg3.png','portugues/letras-silabas-pontuacao/hq-letras-silabas-pontuacao-pg4.png']
+  letras:        ['portugues/letras-silabas-pontuacao/hq-letras-silabas-pontuacao-pg1.png','portugues/letras-silabas-pontuacao/hq-letras-silabas-pontuacao-pg2.png','portugues/letras-silabas-pontuacao/hq-letras-silabas-pontuacao-pg3.png','portugues/letras-silabas-pontuacao/hq-letras-silabas-pontuacao-pg4.png'],
+  carta:         ['portugues/carta-pessoal/hq-carta-pessoal-pg1.png','portugues/carta-pessoal/hq-carta-pessoal-pg2.png','portugues/carta-pessoal/hq-carta-pessoal-pg3.png','portugues/carta-pessoal/hq-carta-pessoal-pg4.png']
 };
 
 var firstTheme = { cien: 'animais-ciclo-vida', geo: 'representar-lugares', hist: 'memorias-lugares', mat: 'numeros-ordinais', port: 'bilhete-cartao-pessoal' };
@@ -2366,7 +2457,8 @@ var THEME_CATALOG = [
   {slug:'numeros-ate-99',              disc:'mat',  label:'Números até 99 e Comparar Quantidades', emoji:'🧮', charName:'Centão', charImg:'chars/numeros-ate-99-hd.png'},
   {slug:'centena-e-mil',               disc:'mat',  label:'A Centena e o Número 1.000',      emoji:'🟦', charName:'Cento',   charImg:'chars/centena-e-mil-hd.png'},
   {slug:'bilhete-cartao-pessoal',      disc:'port', label:'Bilhete e Cartão Pessoal',        emoji:'📝', charName:'Bilheto', charImg:'chars/bilhete-cartao-pessoal-hd.png'},
-  {slug:'letras-silabas-pontuacao',    disc:'port', label:'Letras, Sílabas e Pontuação',     emoji:'❗', charName:'Pontinho',charImg:'chars/letras-silabas-pontuacao-hd.png'}
+  {slug:'letras-silabas-pontuacao',    disc:'port', label:'Letras, Sílabas e Pontuação',     emoji:'❗', charName:'Pontinho',charImg:'chars/letras-silabas-pontuacao-hd.png'},
+  {slug:'carta-pessoal',               disc:'port', label:'Carta Pessoal',                   emoji:'📮', charName:'Postinho',charImg:'chars/carta-pessoal-hd.png'}
 ];
 
 var HREF_MAP = {
@@ -2433,6 +2525,12 @@ var HREF_MAP = {
   'portugues/letras-silabas-pontuacao/memoria-letras.html':         'letras-silabas-pontuacao|memoria',
   'portugues/letras-silabas-pontuacao/ordena-alfabeto.html':        'letras-silabas-pontuacao|ordena',
   'portugues/letras-silabas-pontuacao/mapa-mental-letras.html':     'letras-silabas-pontuacao|mapa-mental',
+  'portugues/carta-pessoal/quiz-carta-pessoal.html':                'carta-pessoal|quiz',
+  'portugues/carta-pessoal/partes-da-carta.html':                   'carta-pessoal|arrastar',
+  'portugues/carta-pessoal/envelope-carta.html':                    'carta-pessoal|classificar',
+  'portugues/carta-pessoal/parlenda-letra-l.html':                  'carta-pessoal|completar',
+  'portugues/carta-pessoal/memoria-carta.html':                     'carta-pessoal|memoria',
+  'portugues/carta-pessoal/mapa-mental-carta.html':                 'carta-pessoal|mapa-mental',
   'matematica/dezena-numeros-ate-19/quiz-dezena-numeros-ate-19.html':         'dezena-numeros-ate-19|quiz',
   'matematica/dezena-numeros-ate-19/memoria-dezena-numeros-ate-19.html':      'dezena-numeros-ate-19|memoria',
   'matematica/dezena-numeros-ate-19/arrastar-dezena-numeros-ate-19.html':     'dezena-numeros-ate-19|arrastar',

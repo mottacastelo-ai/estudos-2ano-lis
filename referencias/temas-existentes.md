@@ -1,7 +1,7 @@
 # Temas Existentes — Portal da Lis (2º Ano)
 
 > Atualizar este arquivo após cada novo tema implementado.
-> Última atualização: 2026-08-11
+> Última atualização: 2026-08-22
 
 ---
 
@@ -42,16 +42,17 @@
 | Números até 99 | `numeros-ate-99` | Centão (ábaco) | quiz · decompor-numeros · arrastar-dezenas-unidades · jogo-memoria · mapa-mental |
 | Centena e Mil | `centena-e-mil` | Cento (placa de centena) | quiz · montar-centena · arrastar-ordens · jogo-memoria · mapa-mental |
 
-## Português (`port`) — 2 temas
+## Português (`port`) — 3 temas
 
 | Tema | Slug | Personagem | Atividades | Páginas livro |
 |---|---|---|---|---|
 | Bilhete e Cartão Pessoal | `bilhete-cartao-pessoal` | Bilheto (papel dobrado) | quiz · complete-bilhete · memoria · mapa-mental | pp. 78–102 |
 | Letras, Sílabas e Pontuação | `letras-silabas-pontuacao` | Pontinho (ponto de exclamação) | quiz · complete-pontuacao · memoria · ordena-alfabeto · mapa-mental | pp. 78–109 |
+| Carta Pessoal | `carta-pessoal` | Postinho (caixa de correio) | quiz · arrastar-partes-da-carta · classificar-envelope · completar-parlenda · memoria · mapa-mental | pp. 110–137 |
 
 ---
 
-**Total:** 5 disciplinas · 19 temas · 83 atividades
+**Total:** 5 disciplinas · 20 temas · 89 atividades
 
 ---
 
@@ -77,6 +78,7 @@ JSON de contrato para o Codex: `estudos\.claude\pending\portraits-batch.json`.
 | Primo | `numeros-ordinais-hd.png` | pendente |
 | Bilheto | `bilhete-cartao-pessoal-hd.png` | pendente |
 | Pontinho | `letras-silabas-pontuacao-hd.png` | pendente |
+| Postinho | `carta-pessoal-hd.png` | gerado |
 | Dezi | `dezena-numeros-ate-19-hd.png` | gerado |
 | Duo | `pares-impares-dezenas-exatas-hd.png` | gerado |
 | Centão | `numeros-ate-99-hd.png` | gerado |
