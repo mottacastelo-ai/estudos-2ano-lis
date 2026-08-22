@@ -82,6 +82,47 @@ Se a tool retornar erro ou os arquivos não existirem após a chamada, registrar
 
 ---
 
+## Passo 1A-bis — Modo CLI direto (`codex exec`) — **validado em produção 2026-08-22**
+
+> Preferir este modo quando for preciso rodar o Codex **em paralelo** com o resto do pipeline.
+> A tool MCP `mcp__codex__codex` é **bloqueante** (a geração de 5 imagens leva ~10 min), o que trava
+> o orquestrador. O `codex exec` roda em background e libera a squad para gerar as atividades.
+
+```bash
+# cwd = "Projeto Estudos" (pasta-mãe), para o Codex poder escrever em estudos-2ano/ E em Personagens/
+cd "C:/Users/wizar/OneDrive/Documentos/Projeto Estudos"
+"C:/Users/wizar/AppData/Roaming/npm/codex.cmd" exec \
+  --sandbox workspace-write \
+  --skip-git-repo-check \
+  - < "<arquivo-de-instrucoes.txt>" > "<log.txt>" 2>&1
+```
+
+Rodar com `run_in_background: true` no Bash tool.
+
+### Regras deste modo
+
+- **`--sandbox workspace-write`**, nunca `danger-full-access`: o classificador do auto mode do Claude
+  Code **bloqueia** `danger-full-access`. `workspace-write` com cwd em `Projeto Estudos` já cobre
+  `estudos-2ano/` e `Personagens/2o ano/`.
+- O prompt vai por **stdin** (`-`), não como argumento — evita problemas de escaping no Windows.
+- O arquivo de instruções deve conter: caminho absoluto do `.md` de prompt, caminho da canônica
+  `Personagens\2o ano\Lis.png`, e os **5 caminhos absolutos de saída** (`chars`, `pg1`..`pg4`),
+  além de repetir as regras invioláveis (1024×1536, RESET obrigatório, textos em pt-BR, máx. 8
+  palavras por balão).
+- **Não** escrever JSON em `.claude/pending/` neste modo — se o Codex Desktop estiver aberto com as
+  automações ativas, o job seria processado duas vezes.
+- **Portrait HD**: fazer uma segunda chamada `codex exec` separada, pedindo a imagem única em
+  `estudos-2ano\_landing\chars\[slug]-hd.png`, usando `hq-[slug]-chars.png` como referência visual.
+  O `characterImg` da gamificação resolve como `_landing/` + o valor do config — por isso o valor
+  correto é sempre `chars/[slug]-hd.png` (ver ERR-009).
+
+### Validação
+
+Conferir os 5 PNGs em `pasta_tema` + o portrait em `_landing/chars/`. Se faltar algum arquivo ou o
+exit code for diferente de 0, cair para o **Passo 1B**.
+
+---
+
 ## Passo 1B — Modo legado (Codex Desktop + contrato JSON)
 
 > Usado quando o MCP não está disponível ou falhou no Passo 1A.
