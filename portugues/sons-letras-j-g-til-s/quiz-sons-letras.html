@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz: Sons e Letras — Sons e Letras: j, g, til e s | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #E8430A;
+  --light: #FB8C5A;
+  --bg: #FFF4EF;
+  --dark: #7A1F04;
+  --correct: #22C55E;
+  --wrong: #EF4444;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-size: 1.1rem;
+}
+
+header {
+  background: linear-gradient(135deg, #7A1F04, #E8430A 60%, #FB8C5A);
+  color: white;
+  padding: 24px 20px;
+  text-align: center;
+}
+
+header .emoji { font-size: 2.8rem; display: block; margin-bottom: 8px; }
+
+header h1 {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.8rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+header p { font-size: 1rem; opacity: 0.92; margin-top: 6px; }
+
+main {
+  flex: 1;
+  padding: 20px 16px;
+  max-width: 720px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.progress-wrap {
+  background: white;
+  border-radius: 16px;
+  padding: 14px 18px;
+  box-shadow: 0 3px 12px rgba(232,67,10,0.15);
+  margin-bottom: 18px;
+}
+
+.progress-top {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 800;
+  color: var(--dark);
+  font-size: 1.05rem;
+  margin-bottom: 8px;
+}
+
+.progress-bar {
+  height: 14px;
+  background: #FEDCCB;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--primary), var(--light));
+  border-radius: 10px;
+  transition: width 0.35s ease;
+}
+
+.card {
+  background: white;
+  border-radius: 20px;
+  padding: 22px 20px;
+  box-shadow: 0 4px 20px rgba(232,67,10,0.15);
+}
+
+.question {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--dark);
+  line-height: 1.35;
+  margin-bottom: 18px;
+  text-align: center;
+}
+
+.question strong { color: var(--primary); }
+
+.options-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.option-btn {
+  background: var(--bg);
+  border: 3px solid #FEDCCB;
+  border-radius: 14px;
+  padding: 16px 20px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--dark);
+  cursor: pointer;
+  text-align: left;
+  transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease;
+  min-height: 56px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.option-btn:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--light); background: #FFE7DB; }
+.option-btn:disabled { cursor: default; }
+.option-btn.picked-correct { background: #DCFCE7; border-color: var(--correct); color: #166534; }
+.option-btn.picked-wrong { background: #FEE2E2; border-color: var(--wrong); color: #991B1B; }
+.option-btn.reveal-correct { background: #DCFCE7; border-color: var(--correct); color: #166534; }
+
+.feedback {
+  display: none;
+  margin-top: 18px;
+  border-radius: 14px;
+  padding: 16px 18px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.feedback.show { display: block; }
+.feedback.ok { background: #DCFCE7; color: #166534; border: 3px solid var(--correct); }
+.feedback.no { background: #FEF3C7; color: #92400E; border: 3px solid #F59E0B; }
+.feedback .fb-title { font-family: 'Baloo 2', cursive; font-size: 1.25rem; display: block; margin-bottom: 4px; }
+
+.next-wrap { text-align: center; margin-top: 18px; display: none; }
+.next-wrap.show { display: block; }
+
+.btn-main {
+  background: linear-gradient(135deg, var(--primary), var(--light));
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 16px 32px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+  min-height: 52px;
+  min-width: 44px;
+}
+
+.btn-main:hover { transform: scale(1.04); }
+
+.result {
+  display: none;
+  background: white;
+  border-radius: 20px;
+  padding: 28px 22px;
+  box-shadow: 0 4px 20px rgba(232,67,10,0.18);
+  text-align: center;
+}
+
+.result.show { display: block; }
+.result .res-emoji { font-size: 4rem; display: block; margin-bottom: 10px; }
+
+.result h2 {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.9rem;
+  color: var(--dark);
+  margin-bottom: 10px;
+}
+
+.result .res-score {
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: var(--primary);
+  margin-bottom: 10px;
+}
+
+.result p { font-size: 1.15rem; color: #555; font-weight: 700; line-height: 1.5; margin-bottom: 18px; }
+
+.btn-reset {
+  background: white;
+  border: 3px solid var(--primary);
+  color: var(--primary);
+  border-radius: 14px;
+  padding: 14px 26px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  min-height: 52px;
+  transition: all 0.2s ease;
+}
+
+.btn-reset:hover { background: var(--primary); color: white; }
+
+footer { text-align: center; padding: 20px 16px; }
+
+.btn-back {
+  background: white;
+  border: 3px solid var(--primary);
+  color: var(--primary);
+  border-radius: 14px;
+  padding: 14px 28px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 48px;
+}
+
+.btn-back:hover { background: var(--primary); color: white; }
+
+@media (max-width: 480px) {
+  body { font-size: 1.15rem; }
+  header h1 { font-size: 1.3rem; }
+  main { padding: 14px 10px; }
+  .options-grid { grid-template-columns: 1fr; }
+  .option-btn, .btn-main, .btn-reset { width: 100%; justify-content: center; text-align: center; }
+  .question { font-size: 1.25rem; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="emoji">〰️</span>
+  <h1>Quiz: Sons e Letras</h1>
+  <p>Tilim quer ver se você pegou os sons do j, do g, do til e do s!</p>
+</header>
+
+<main>
+  <div class="progress-wrap" id="progress-wrap">
+    <div class="progress-top">
+      <span id="prog-label">Pergunta 1 de 10</span>
+      <span id="prog-score">Acertos: 0</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill"></div></div>
+  </div>
+
+  <div class="card" id="quiz-card">
+    <div class="question" id="question-text"></div>
+    <div class="options-grid" id="options-grid"></div>
+    <div class="feedback" id="feedback"></div>
+    <div class="next-wrap" id="next-wrap">
+      <button class="btn-main" onclick="proximaPergunta()">Próxima →</button>
+    </div>
+  </div>
+
+  <div class="result" id="result">
+    <span class="res-emoji" id="res-emoji">🎉</span>
+    <h2 id="res-title"></h2>
+    <div class="res-score" id="res-score"></div>
+    <p id="res-text"></p>
+    <button class="btn-reset" onclick="reiniciarQuiz()">Jogar de novo 🔁</button>
+  </div>
+</main>
+
+<footer>
+  <button class="btn-back" onclick="voltarAoPortal()">← Voltar ao Portal</button>
+</footer>
+
+<script>
+(function () {
+
+  var perguntas = [
+    {
+      q: 'A letra <strong>j</strong> aparece em <strong>jarra</strong>, <strong>jegue</strong> e <strong>jipe</strong>. O som dela é...',
+      opts: [
+        { t: 'Sempre o mesmo', ok: true },
+        { t: 'Diferente em cada palavra', ok: false },
+        { t: 'Igual ao som do s', ok: false }
+      ],
+      fb: 'O som representado pela letra j é o mesmo com a, e, i, o ou u!'
+    },
+    {
+      q: 'Na palavra <strong>gelo</strong>, a letra <strong>g</strong> tem som igual ao de qual letra?',
+      opts: [
+        { t: 'A letra j', ok: true },
+        { t: 'A letra s', ok: false },
+        { t: 'A letra z', ok: false }
+      ],
+      fb: 'Quando o g vem antes de e ou i, tem som de j — como em gelo e jenipapo.'
+    },
+    {
+      q: 'Em qual dessas palavras o <strong>g</strong> tem som de <strong>j</strong>?',
+      opts: [
+        { t: 'girassol', ok: true },
+        { t: 'galo', ok: false },
+        { t: 'gorila', ok: false }
+      ],
+      fb: 'Em girassol o g vem antes do i. Por isso ele ganha o som de j!'
+    },
+    {
+      q: 'Em <strong>galo</strong>, <strong>gorila</strong> e <strong>guloso</strong> o g vem antes de a, o e u. O som é...',
+      opts: [
+        { t: 'Diferente do som de j', ok: true },
+        { t: 'Igual ao som de j', ok: false },
+        { t: 'Igual ao som do s', ok: false }
+      ],
+      fb: 'Antes de a, o e u a letra g representa um som diferente: galo, gorila, guloso.'
+    },
+    {
+      q: 'O que o <strong>til (~)</strong> marca nas palavras?',
+      opts: [
+        { t: 'O som nasal', ok: true },
+        { t: 'O som mais fraco', ok: false },
+        { t: 'O fim da frase', ok: false }
+      ],
+      fb: 'O til marca o som nasal que a gente emite ao falar: pão, mão, coração.'
+    },
+    {
+      q: 'Qual dessas palavras tem <strong>til</strong>?',
+      opts: [
+        { t: 'melão', ok: true },
+        { t: 'lápis', ok: false },
+        { t: 'sopa', ok: false }
+      ],
+      fb: 'Melão tem til no ã. Fale devagar e sinta o som nasal!'
+    },
+    {
+      q: 'Na palavra <strong>sopa</strong>, onde aparece a letra <strong>s</strong>?',
+      opts: [
+        { t: 'No início da sílaba', ok: true },
+        { t: 'No final da sílaba', ok: false },
+        { t: 'Nas duas, início e final', ok: false }
+      ],
+      fb: 'so-pa: o s abre a sílaba so. Igual em salada, suco e sino!'
+    },
+    {
+      q: 'Na palavra <strong>lápis</strong>, onde aparece a letra <strong>s</strong>?',
+      opts: [
+        { t: 'No final da sílaba', ok: true },
+        { t: 'No início da sílaba', ok: false },
+        { t: 'Nas duas, início e final', ok: false }
+      ],
+      fb: 'lá-pis: o s fecha a sílaba pis. Igual em dentes e óculos!'
+    },
+    {
+      q: 'Qual palavra tem o <strong>s no final da sílaba</strong>?',
+      opts: [
+        { t: 'pasta', ok: true },
+        { t: 'sereia', ok: false },
+        { t: 'suco', ok: false }
+      ],
+      fb: 'pas-ta: o s fecha a sílaba pas. Em sereia e suco o s começa a sílaba!'
+    },
+    {
+      q: 'Qual palavra tem som de <strong>j</strong>, mas é escrita com a letra <strong>g</strong>?',
+      opts: [
+        { t: 'página', ok: true },
+        { t: 'jabuticaba', ok: false },
+        { t: 'galo', ok: false }
+      ],
+      fb: 'pá-gi-na: o g vem antes do i e ganha som de j!'
+    }
+  ];
+
+  var ordem = [];
+  var indiceAtual = 0;
+  var acertos = 0;
+  var respondeu = false;
+
+  function playSound(type) {
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    var o = ctx.createOscillator();
+    var g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    if (type === 'correct') {
+      o.frequency.setValueAtTime(523, ctx.currentTime);
+      o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+      o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+      o.start(); o.stop(ctx.currentTime + 0.5);
+    } else {
+      o.frequency.setValueAtTime(300, ctx.currentTime);
+      o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      o.start(); o.stop(ctx.currentTime + 0.4);
+    }
+  }
+
+  function embaralhar(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+
+  function atualizarProgresso() {
+    document.getElementById('prog-label').textContent =
+      'Pergunta ' + (indiceAtual + 1) + ' de ' + perguntas.length;
+    document.getElementById('prog-score').textContent = 'Acertos: ' + acertos;
+    document.getElementById('prog-fill').style.width =
+      ((indiceAtual) / perguntas.length * 100) + '%';
+  }
+
+  function mostrarPergunta() {
+    respondeu = false;
+    var p = ordem[indiceAtual];
+    atualizarProgresso();
+
+    document.getElementById('question-text').innerHTML = p.q;
+
+    var grid = document.getElementById('options-grid');
+    grid.innerHTML = '';
+
+    var opcoesEmbaralhadas = embaralhar(p.opts);
+    opcoesEmbaralhadas.forEach(function (op) {
+      var btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.type = 'button';
+      btn.innerHTML = '<span>👉</span><span>' + op.t + '</span>';
+      btn.addEventListener('click', function () { responder(btn, op.ok, p.fb, grid, opcoesEmbaralhadas); });
+      grid.appendChild(btn);
+    });
+
+    var fb = document.getElementById('feedback');
+    fb.className = 'feedback';
+    fb.innerHTML = '';
+    document.getElementById('next-wrap').classList.remove('show');
+  }
+
+  function responder(btn, acertou, textoFb, grid, opcoes) {
+    if (respondeu) return;
+    respondeu = true;
+
+    var botoes = grid.querySelectorAll('.option-btn');
+    for (var i = 0; i < botoes.length; i++) {
+      botoes[i].disabled = true;
+      if (opcoes[i].ok) botoes[i].classList.add('reveal-correct');
+    }
+
+    var fb = document.getElementById('feedback');
+    if (acertou) {
+      acertos++;
+      btn.classList.add('picked-correct');
+      fb.className = 'feedback ok show';
+      fb.innerHTML = '<span class="fb-title">Isso mesmo! 🎯</span>' + textoFb;
+      playSound('correct');
+    } else {
+      btn.classList.add('picked-wrong');
+      fb.className = 'feedback no show';
+      fb.innerHTML = '<span class="fb-title">Quase! Olha só 💛</span>' + textoFb;
+      playSound('wrong');
+    }
+
+    document.getElementById('prog-score').textContent = 'Acertos: ' + acertos;
+    document.getElementById('next-wrap').classList.add('show');
+  }
+
+  function proximaPergunta() {
+    indiceAtual++;
+    if (indiceAtual >= ordem.length) mostrarResultado();
+    else mostrarPergunta();
+  }
+
+  function mostrarResultado() {
+    document.getElementById('quiz-card').style.display = 'none';
+    document.getElementById('progress-wrap').style.display = 'none';
+
+    var total = ordem.length;
+    var pct = Math.round((acertos / total) * 100);
+    window.sabendoScore = pct;
+
+    var emoji, titulo, texto;
+    if (pct === 100) {
+      emoji = '🏆'; titulo = 'Perfeito!';
+      texto = 'Você acertou tudo! Tilim ficou balançando de alegria!';
+    } else if (pct >= 70) {
+      emoji = '🎉'; titulo = 'Muito bem!';
+      texto = 'Você já conhece bem os sons das letras. Continue assim!';
+    } else if (pct >= 40) {
+      emoji = '🌟'; titulo = 'Bom começo!';
+      texto = 'Leia as palavras em voz alta e tente outra vez. Você consegue!';
+    } else {
+      emoji = '💪'; titulo = 'Vamos treinar mais!';
+      texto = 'Volte à HQ do Tilim e depois jogue de novo. Cada tentativa ensina!';
+    }
+
+    document.getElementById('res-emoji').textContent = emoji;
+    document.getElementById('res-title').textContent = titulo;
+    document.getElementById('res-score').textContent = 'Você acertou ' + acertos + ' de ' + total + ' (' + pct + '%)';
+    document.getElementById('res-text').textContent = texto;
+    document.getElementById('result').classList.add('show');
+  }
+
+  function reiniciarQuiz() {
+    ordem = embaralhar(perguntas);
+    indiceAtual = 0;
+    acertos = 0;
+    document.getElementById('result').classList.remove('show');
+    document.getElementById('quiz-card').style.display = 'block';
+    document.getElementById('progress-wrap').style.display = 'block';
+    mostrarPergunta();
+  }
+
+  window.proximaPergunta = proximaPergunta;
+  window.reiniciarQuiz = reiniciarQuiz;
+
+  ordem = embaralhar(perguntas);
+  mostrarPergunta();
+
+})();
+</script>
+
+<!-- ── GAMIFICAÇÃO ─────────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'sons-letras-j-g-til-s';
+  var DISCIPLINE    = 'portugues';
+  var ACTIVITY_TYPE = 'quiz';
+  var TOTAL_ATIV    = 5;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Tilim',
+        characterEmoji:  '〰️',
+        characterImg:    'chars/sons-letras-j-g-til-s-hd.png',
+        themeLabel:      'Sons e Letras: j, g, til e s · Português',
+        totalActivities: TOTAL_ATIV,
+        activityType:    ACTIVITY_TYPE,
+        primaryColor:    '#E8430A',
+        lightColor:      '#FB8C5A',
+        bgColor:         '#FFF4EF',
+        glowRgb:         '232,67,10',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _scoreVal = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _scoreVal = v;
+      var btn = document.getElementById('gamificacao-btn');
+      if (btn) btn.style.display = 'block';
+      var btnOverlay = document.getElementById('gamificacao-btn-overlay');
+      if (btnOverlay) btnOverlay.style.display = 'block';
+    },
+    get: function () { return _scoreVal; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#E8430A,#FB8C5A);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>

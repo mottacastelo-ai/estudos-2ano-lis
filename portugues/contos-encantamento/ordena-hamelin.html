@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ordena a História — Contos de Encantamento | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #E8430A;
+  --light: #FB8C5A;
+  --bg: #FFF4EF;
+  --dark: #7A1F04;
+  --correct: #22C55E;
+  --wrong: #EF4444;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  background: linear-gradient(135deg, #7A1F04, #E8430A 60%, #FB8C5A);
+  color: white;
+  padding: 24px 20px;
+  text-align: center;
+}
+
+header .emoji { font-size: 2.8rem; display: block; margin-bottom: 8px; }
+
+header h1 {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.8rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+header p { font-size: 1rem; opacity: 0.92; margin-top: 6px; }
+
+main {
+  flex: 1;
+  padding: 24px 16px;
+  max-width: 780px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.instrucao {
+  background: white;
+  border-left: 6px solid var(--primary);
+  border-radius: 14px;
+  padding: 18px 20px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--dark);
+  line-height: 1.45;
+  box-shadow: 0 4px 16px rgba(232, 67, 10, 0.12);
+  margin-bottom: 22px;
+}
+
+.section-title {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--dark);
+  margin: 8px 0 12px;
+}
+
+.pool {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  background: #FFE7DB;
+  border: 3px dashed var(--light);
+  border-radius: 18px;
+  padding: 16px;
+  margin-bottom: 26px;
+  min-height: 80px;
+}
+
+.evento {
+  background: white;
+  border: 3px solid var(--light);
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--dark);
+  cursor: grab;
+  min-height: 52px;
+  min-width: 44px;
+  max-width: 320px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 3px 10px rgba(232, 67, 10, 0.12);
+  touch-action: none;
+  user-select: none;
+  transition: transform 0.15s ease;
+}
+
+.evento:hover { transform: translateY(-3px); }
+.evento.dragging { opacity: 0.4; }
+.evento.placed { display: none; }
+
+.linha {
+  display: grid;
+  grid-template-columns: 74px 1fr;
+  gap: 12px;
+  align-items: stretch;
+  margin-bottom: 12px;
+}
+
+.numero {
+  background: linear-gradient(135deg, var(--primary), var(--light));
+  color: white;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.5rem;
+  font-weight: 900;
+  min-height: 60px;
+}
+
+.alvo {
+  background: white;
+  border: 3px dashed #FEDCCB;
+  border-radius: 14px;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--dark);
+  transition: all 0.2s ease;
+}
+
+.alvo.drag-over { border-color: var(--primary); background: #FFE7DB; }
+.alvo.filled { border-style: solid; border-color: var(--light); }
+.alvo.certo { border-color: var(--correct); background: #DCFCE7; }
+.alvo.errado { border-color: var(--wrong); background: #FEE2E2; }
+
+.alvo .vazio { color: #C08A72; font-weight: 700; }
+
+.evento-colocado {
+  cursor: pointer;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  line-height: 1.35;
+}
+
+.botoes {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 22px;
+}
+
+.btn {
+  flex: 1;
+  border: none;
+  border-radius: 14px;
+  padding: 16px 24px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  min-height: 56px;
+  min-width: 44px;
+  transition: transform 0.15s ease;
+}
+
+.btn:hover { transform: scale(1.02); }
+.btn-check { background: linear-gradient(135deg, var(--primary), var(--light)); color: white; }
+.btn-reset { background: white; color: var(--primary); border: 3px solid var(--primary); }
+
+.resultado {
+  display: none;
+  background: white;
+  border-radius: 18px;
+  padding: 24px;
+  margin-top: 22px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(232, 67, 10, 0.15);
+}
+
+.resultado.show { display: block; }
+.resultado .icone { font-size: 3.5rem; display: block; margin-bottom: 8px; }
+
+.resultado h2 {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.6rem;
+  color: var(--dark);
+  margin-bottom: 8px;
+}
+
+.resultado p { font-size: 1.15rem; font-weight: 700; color: var(--dark); line-height: 1.45; }
+
+footer { text-align: center; padding: 20px 16px; }
+
+.btn-back {
+  background: white;
+  border: 3px solid var(--primary);
+  color: var(--primary);
+  border-radius: 14px;
+  padding: 14px 28px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  min-height: 48px;
+}
+
+.btn-back:hover { background: var(--primary); color: white; }
+
+@media (max-width: 480px) {
+  body { font-size: 1.15rem; }
+  header h1 { font-size: 1.3rem; }
+  main { padding: 16px 12px; }
+  .evento { max-width: 100%; width: 100%; }
+  .linha { grid-template-columns: 58px 1fr; gap: 8px; }
+  .numero { font-size: 1.25rem; }
+  .botoes { flex-direction: column; }
+  .btn { width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="emoji">🔢</span>
+  <h1>Ordena a História</h1>
+  <p>O flautista de Hamelin · com Flautim 🪈</p>
+</header>
+
+<main>
+  <div class="instrucao">
+    Arraste cada acontecimento para o lugar certo, do <strong>1º</strong> ao <strong>7º</strong>,
+    na ordem em que as coisas acontecem no conto do flautista de Hamelin. 🪈
+  </div>
+
+  <div class="section-title">📜 Acontecimentos embaralhados</div>
+  <div class="pool" id="pool"></div>
+
+  <div class="section-title">🔢 A ordem da história</div>
+  <div id="linhas"></div>
+
+  <div class="botoes">
+    <button class="btn btn-check" onclick="verificarOrdem()">Verificar ✅</button>
+    <button class="btn btn-reset" onclick="reiniciarOrdem()">Começar de novo 🔄</button>
+  </div>
+
+  <div class="resultado" id="resultado">
+    <span class="icone" id="res-icone">🪈</span>
+    <h2 id="res-titulo"></h2>
+    <p id="res-texto"></p>
+  </div>
+</main>
+
+<footer>
+  <button class="btn-back" onclick="voltarAoPortal()">← Voltar ao Portal</button>
+</footer>
+
+<script>
+var eventosData = [
+  { id: 'ev1', pos: 1, texto: 'A cidade de Hamelin amanheceu infestada de ratos.' },
+  { id: 'ev2', pos: 2, texto: 'Os moradores ofereceram um pote de ouro a quem acabasse com a praga.' },
+  { id: 'ev3', pos: 3, texto: 'Um flautista tocou uma melodia e os ratos o seguiram até o rio.' },
+  { id: 'ev4', pos: 4, texto: 'O conselho da cidade não pagou a recompensa prometida.' },
+  { id: 'ev5', pos: 5, texto: 'O flautista tocou de novo e as crianças o seguiram para longe.' },
+  { id: 'ev6', pos: 6, texto: 'Os habitantes imploraram e prometeram pagar tudo.' },
+  { id: 'ev7', pos: 7, texto: 'O flautista trouxe as crianças de volta e todos viveram felizes.' }
+];
+
+var TOTAL = eventosData.length;
+var conteudoAlvos = {};
+var eventoArrastado = null;
+var cloneToque = null;
+
+function playSound(type) {
+  var ctx = new (window.AudioContext || window.webkitAudioContext)();
+  var o = ctx.createOscillator();
+  var g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  if (type === 'correct') {
+    o.frequency.setValueAtTime(523, ctx.currentTime);
+    o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+    o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    o.start(); o.stop(ctx.currentTime + 0.5);
+  } else {
+    o.frequency.setValueAtTime(300, ctx.currentTime);
+    o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    o.start(); o.stop(ctx.currentTime + 0.4);
+  }
+}
+
+function embaralhar(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+function ordinal(n) { return n + 'º'; }
+
+function montarLinhas() {
+  var wrap = document.getElementById('linhas');
+  wrap.innerHTML = '';
+  for (var i = 1; i <= TOTAL; i++) {
+    conteudoAlvos['p' + i] = null;
+
+    var linha = document.createElement('div');
+    linha.className = 'linha';
+
+    var num = document.createElement('div');
+    num.className = 'numero';
+    num.textContent = ordinal(i);
+
+    var alvo = document.createElement('div');
+    alvo.className = 'alvo';
+    alvo.id = 'alvo-p' + i;
+    alvo.dataset.pos = 'p' + i;
+
+    alvo.addEventListener('dragover', function (e) {
+      e.preventDefault();
+      this.classList.add('drag-over');
+    });
+    alvo.addEventListener('dragleave', function () { this.classList.remove('drag-over'); });
+    alvo.addEventListener('drop', function (e) {
+      e.preventDefault();
+      this.classList.remove('drag-over');
+      colocarEvento(eventoArrastado, this.dataset.pos);
+    });
+
+    linha.appendChild(num);
+    linha.appendChild(alvo);
+    wrap.appendChild(linha);
+    renderAlvo('p' + i);
+  }
+}
+
+function montarPool() {
+  var pool = document.getElementById('pool');
+  pool.innerHTML = '';
+  embaralhar(eventosData).forEach(function (ev) {
+    var el = document.createElement('div');
+    el.className = 'evento';
+    el.id = ev.id;
+    el.dataset.evid = ev.id;
+    el.draggable = true;
+    el.textContent = '📖 ' + ev.texto;
+
+    el.addEventListener('dragstart', function (e) {
+      eventoArrastado = ev.id;
+      e.dataTransfer.effectAllowed = 'move';
+      var alvoEl = this;
+      setTimeout(function () { alvoEl.classList.add('dragging'); }, 0);
+    });
+    el.addEventListener('dragend', function () { this.classList.remove('dragging'); });
+
+    el.addEventListener('touchstart', aoTocarInicio, { passive: false });
+    el.addEventListener('touchmove', aoTocarMover, { passive: false });
+
+    pool.appendChild(el);
+  });
+}
+
+function colocarEvento(evId, posId) {
+  if (!evId) return;
+
+  Object.keys(conteudoAlvos).forEach(function (p) {
+    if (conteudoAlvos[p] === evId) { conteudoAlvos[p] = null; renderAlvo(p); }
+  });
+
+  if (conteudoAlvos[posId]) {
+    var anterior = document.getElementById(conteudoAlvos[posId]);
+    if (anterior) anterior.classList.remove('placed');
+    conteudoAlvos[posId] = null;
+  }
+
+  conteudoAlvos[posId] = evId;
+  var el = document.getElementById(evId);
+  if (el) el.classList.add('placed');
+
+  renderAlvo(posId);
+  limparResultado();
+}
+
+function tirarDoAlvo(posId) {
+  var evId = conteudoAlvos[posId];
+  if (!evId) return;
+  conteudoAlvos[posId] = null;
+  var el = document.getElementById(evId);
+  if (el) el.classList.remove('placed');
+  renderAlvo(posId);
+  limparResultado();
+}
+
+function renderAlvo(posId) {
+  var alvo = document.getElementById('alvo-p' + posId.substring(1));
+  if (!alvo) return;
+  var evId = conteudoAlvos[posId];
+  alvo.className = 'alvo' + (evId ? ' filled' : '');
+  alvo.innerHTML = '';
+
+  if (evId) {
+    var ev = eventosData.filter(function (e) { return e.id === evId; })[0];
+    var box = document.createElement('div');
+    box.className = 'evento-colocado';
+    box.title = 'Clique para tirar daqui';
+    box.textContent = '📖 ' + ev.texto;
+    box.addEventListener('click', function () { tirarDoAlvo(posId); });
+    alvo.appendChild(box);
+  } else {
+    var vazio = document.createElement('span');
+    vazio.className = 'vazio';
+    vazio.textContent = 'Solte aqui o acontecimento...';
+    alvo.appendChild(vazio);
+  }
+}
+
+function limparResultado() {
+  document.getElementById('resultado').classList.remove('show');
+  for (var i = 1; i <= TOTAL; i++) {
+    var alvo = document.getElementById('alvo-p' + i);
+    if (alvo) alvo.classList.remove('certo', 'errado');
+  }
+}
+
+function verificarOrdem() {
+  var certos = 0;
+  var preenchidos = 0;
+
+  for (var i = 1; i <= TOTAL; i++) {
+    var posId = 'p' + i;
+    var alvo = document.getElementById('alvo-p' + i);
+    var evId = conteudoAlvos[posId];
+    alvo.classList.remove('certo', 'errado');
+    if (!evId) continue;
+    preenchidos++;
+    var ev = eventosData.filter(function (e) { return e.id === evId; })[0];
+    if (ev.pos === i) { certos++; alvo.classList.add('certo'); }
+    else { alvo.classList.add('errado'); }
+  }
+
+  var res = document.getElementById('resultado');
+  res.classList.add('show');
+  var icone, titulo, texto;
+
+  if (preenchidos < TOTAL) {
+    icone = '🤔';
+    titulo = 'Ainda falta um pouquinho!';
+    texto = 'Coloque os ' + TOTAL + ' acontecimentos nos lugares antes de verificar.';
+  } else {
+    window.sabendoScore = Math.round((certos / TOTAL) * 100);
+    if (certos === TOTAL) {
+      icone = '🏆';
+      titulo = 'História na ordem certa!';
+      texto = 'Perfeito! Você contou a história do começo ao desfecho. Flautim tocou uma música só para você! 🎵';
+      playSound('correct');
+    } else {
+      icone = '📖';
+      titulo = certos + ' de ' + TOTAL + ' no lugar certo!';
+      texto = 'Os quadros vermelhos precisam trocar de lugar. Pense: o que aconteceu primeiro?';
+      playSound('wrong');
+    }
+  }
+
+  document.getElementById('res-icone').textContent = icone;
+  document.getElementById('res-titulo').textContent = titulo;
+  document.getElementById('res-texto').textContent = texto;
+}
+
+function reiniciarOrdem() {
+  limparResultado();
+  montarLinhas();
+  montarPool();
+}
+
+/* ---------- Arrastar no toque (celular/tablet) ---------- */
+function aoTocarInicio(e) {
+  e.preventDefault();
+  var el = e.currentTarget;
+  eventoArrastado = el.dataset.evid;
+
+  cloneToque = el.cloneNode(true);
+  cloneToque.style.position = 'fixed';
+  cloneToque.style.pointerEvents = 'none';
+  cloneToque.style.zIndex = '999';
+  cloneToque.style.opacity = '0.9';
+  cloneToque.style.width = el.offsetWidth + 'px';
+  cloneToque.style.maxWidth = '300px';
+  document.body.appendChild(cloneToque);
+
+  var t = e.touches[0];
+  moverClone(t.clientX, t.clientY);
+}
+
+function aoTocarMover(e) {
+  e.preventDefault();
+  if (!cloneToque) return;
+  var t = e.touches[0];
+  moverClone(t.clientX, t.clientY);
+  destacarAlvoSob(t.clientX, t.clientY);
+}
+
+function destacarAlvoSob(x, y) {
+  var todos = document.querySelectorAll('.alvo');
+  for (var i = 0; i < todos.length; i++) todos[i].classList.remove('drag-over');
+  var alvo = alvoEmPonto(x, y);
+  if (alvo) alvo.classList.add('drag-over');
+}
+
+function alvoEmPonto(x, y) {
+  var el = document.elementFromPoint(x, y);
+  while (el && !(el.classList && el.classList.contains('alvo'))) el = el.parentElement;
+  return el;
+}
+
+function moverClone(x, y) {
+  if (!cloneToque) return;
+  cloneToque.style.left = (x - cloneToque.offsetWidth / 2) + 'px';
+  cloneToque.style.top = (y - cloneToque.offsetHeight / 2) + 'px';
+}
+
+document.addEventListener('touchend', function (e) {
+  if (!cloneToque) return;
+  var t = e.changedTouches[0];
+  var alvo = alvoEmPonto(t.clientX, t.clientY);
+  if (alvo) colocarEvento(eventoArrastado, alvo.dataset.pos);
+  document.body.removeChild(cloneToque);
+  cloneToque = null;
+  var todos = document.querySelectorAll('.alvo');
+  for (var i = 0; i < todos.length; i++) todos[i].classList.remove('drag-over');
+  eventoArrastado = null;
+}, { passive: true });
+
+window.verificarOrdem  = verificarOrdem;
+window.reiniciarOrdem  = reiniciarOrdem;
+window.tirarDoAlvo     = tirarDoAlvo;
+
+montarLinhas();
+montarPool();
+</script>
+<!-- ── GAMIFICAÇÃO ─────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'contos-encantamento';
+  var DISCIPLINE    = 'portugues';
+  var ACTIVITY_TYPE = 'ordena';
+  var TOTAL_ATIV    = 5;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Flautim',
+        characterEmoji:  '🪈',
+        characterImg:    'chars/contos-encantamento-hd.png',
+        themeLabel:      'Contos de Encantamento · Português',
+        totalActivities: TOTAL_ATIV,
+        activityType:    ACTIVITY_TYPE,
+        primaryColor:    '#E8430A',
+        lightColor:      '#FB8C5A',
+        bgColor:         '#FFF4EF',
+        glowRgb:         '232,67,10',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _scoreVal = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _scoreVal = v;
+      var btn = document.getElementById('gamificacao-btn');
+      if (btn) btn.style.display = 'block';
+      var btnOverlay = document.getElementById('gamificacao-btn-overlay');
+      if (btnOverlay) btnOverlay.style.display = 'block';
+    },
+    get: function () { return _scoreVal; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#E8430A,#FB8C5A);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>

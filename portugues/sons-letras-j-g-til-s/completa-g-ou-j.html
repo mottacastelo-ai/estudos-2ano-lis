@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>G ou J? — Sons e Letras: j, g, til e s | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #E8430A;
+  --light: #FB8C5A;
+  --bg: #FFF4EF;
+  --dark: #7A1F04;
+  --correct: #22C55E;
+  --wrong: #EF4444;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-size: 1.1rem;
+}
+
+header {
+  background: linear-gradient(135deg, #7A1F04, #E8430A 60%, #FB8C5A);
+  color: white;
+  padding: 24px 20px;
+  text-align: center;
+}
+
+header .emoji { font-size: 2.8rem; display: block; margin-bottom: 8px; }
+
+header h1 {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.8rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+header p { font-size: 1rem; opacity: 0.92; margin-top: 6px; }
+
+main {
+  flex: 1;
+  padding: 20px 16px;
+  max-width: 700px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.rule-box {
+  background: #FFE7DB;
+  border: 3px solid var(--light);
+  border-radius: 16px;
+  padding: 14px 18px;
+  margin-bottom: 18px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--dark);
+  line-height: 1.5;
+  text-align: center;
+}
+
+.progress-wrap {
+  background: white;
+  border-radius: 16px;
+  padding: 14px 18px;
+  box-shadow: 0 3px 12px rgba(232,67,10,0.15);
+  margin-bottom: 18px;
+}
+
+.progress-top {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 800;
+  color: var(--dark);
+  font-size: 1.05rem;
+  margin-bottom: 8px;
+}
+
+.progress-bar { height: 14px; background: #FEDCCB; border-radius: 10px; overflow: hidden; }
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--primary), var(--light));
+  border-radius: 10px;
+  transition: width 0.35s ease;
+}
+
+.card {
+  background: white;
+  border-radius: 20px;
+  padding: 24px 20px;
+  box-shadow: 0 4px 20px rgba(232,67,10,0.15);
+  text-align: center;
+}
+
+.word-emoji { font-size: 3.4rem; display: block; margin-bottom: 6px; }
+
+.word-hint {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #8A6152;
+  margin-bottom: 14px;
+}
+
+.word-display {
+  font-family: 'Baloo 2', cursive;
+  font-size: 2.6rem;
+  font-weight: 900;
+  color: var(--dark);
+  letter-spacing: 3px;
+  margin-bottom: 6px;
+  line-height: 1.2;
+}
+
+.word-display .gap {
+  display: inline-block;
+  min-width: 46px;
+  color: var(--primary);
+  border-bottom: 5px solid var(--primary);
+  margin: 0 2px;
+}
+
+.word-display .gap.filled { border-bottom-color: transparent; }
+
+.ask {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--dark);
+  margin-bottom: 18px;
+}
+
+.letters-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  max-width: 380px;
+  margin: 0 auto;
+}
+
+.letter-btn {
+  background: var(--bg);
+  border: 4px solid #FEDCCB;
+  border-radius: 18px;
+  padding: 18px 20px;
+  font-family: 'Baloo 2', cursive;
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: var(--dark);
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease;
+  min-height: 76px;
+  min-width: 44px;
+}
+
+.letter-btn:hover:not(:disabled) { transform: translateY(-3px); background: #FFE7DB; border-color: var(--light); }
+.letter-btn:disabled { cursor: default; }
+.letter-btn.picked-correct { background: #DCFCE7; border-color: var(--correct); color: #166534; }
+.letter-btn.picked-wrong { background: #FEE2E2; border-color: var(--wrong); color: #991B1B; }
+.letter-btn.reveal-correct { background: #DCFCE7; border-color: var(--correct); color: #166534; }
+
+.feedback {
+  display: none;
+  margin-top: 18px;
+  border-radius: 14px;
+  padding: 16px 18px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1.45;
+  text-align: left;
+}
+
+.feedback.show { display: block; }
+.feedback.ok { background: #DCFCE7; color: #166534; border: 3px solid var(--correct); }
+.feedback.no { background: #FEF3C7; color: #92400E; border: 3px solid #F59E0B; }
+.feedback .fb-title { font-family: 'Baloo 2', cursive; font-size: 1.25rem; display: block; margin-bottom: 4px; }
+
+.next-wrap { text-align: center; margin-top: 18px; display: none; }
+.next-wrap.show { display: block; }
+
+.btn-main {
+  background: linear-gradient(135deg, var(--primary), var(--light));
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 16px 32px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+  min-height: 52px;
+  min-width: 44px;
+}
+
+.btn-main:hover { transform: scale(1.04); }
+
+.result {
+  display: none;
+  background: white;
+  border-radius: 20px;
+  padding: 28px 22px;
+  box-shadow: 0 4px 20px rgba(232,67,10,0.18);
+  text-align: center;
+}
+
+.result.show { display: block; }
+.result .res-emoji { font-size: 4rem; display: block; margin-bottom: 10px; }
+
+.result h2 { font-family: 'Baloo 2', cursive; font-size: 1.9rem; color: var(--dark); margin-bottom: 10px; }
+.result .res-score { font-size: 1.4rem; font-weight: 900; color: var(--primary); margin-bottom: 10px; }
+.result p { font-size: 1.15rem; color: #555; font-weight: 700; line-height: 1.5; margin-bottom: 18px; }
+
+.btn-reset {
+  background: white;
+  border: 3px solid var(--primary);
+  color: var(--primary);
+  border-radius: 14px;
+  padding: 14px 26px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  min-height: 52px;
+  transition: all 0.2s ease;
+}
+
+.btn-reset:hover { background: var(--primary); color: white; }
+
+footer { text-align: center; padding: 20px 16px; }
+
+.btn-back {
+  background: white;
+  border: 3px solid var(--primary);
+  color: var(--primary);
+  border-radius: 14px;
+  padding: 14px 28px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 48px;
+}
+
+.btn-back:hover { background: var(--primary); color: white; }
+
+@media (max-width: 480px) {
+  body { font-size: 1.15rem; }
+  header h1 { font-size: 1.3rem; }
+  main { padding: 14px 10px; }
+  .letters-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .letter-btn { font-size: 1.9rem; padding: 14px; min-height: 68px; }
+  .word-display { font-size: 2rem; letter-spacing: 2px; }
+  .btn-main, .btn-reset { width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="emoji">🔤</span>
+  <h1>G ou J?</h1>
+  <p>Tilim embaralhou as letras! Complete cada palavra.</p>
+</header>
+
+<main>
+  <div class="rule-box">
+    💡 Lembre: antes de <strong>e</strong> e <strong>i</strong>, o <strong>g</strong> tem som de <strong>j</strong>.
+    E o <strong>j</strong> tem sempre o mesmo som!
+  </div>
+
+  <div class="progress-wrap" id="progress-wrap">
+    <div class="progress-top">
+      <span id="prog-label">Palavra 1 de 8</span>
+      <span id="prog-score">Acertos: 0</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill"></div></div>
+  </div>
+
+  <div class="card" id="game-card">
+    <span class="word-emoji" id="word-emoji"></span>
+    <div class="word-hint" id="word-hint"></div>
+    <div class="word-display" id="word-display"></div>
+    <div class="ask">Qual letra completa a palavra?</div>
+    <div class="letters-grid">
+      <button class="letter-btn" type="button" id="btn-g" onclick="escolherLetra('G')">G</button>
+      <button class="letter-btn" type="button" id="btn-j" onclick="escolherLetra('J')">J</button>
+    </div>
+    <div class="feedback" id="feedback"></div>
+    <div class="next-wrap" id="next-wrap">
+      <button class="btn-main" onclick="proximaPalavra()">Próxima →</button>
+    </div>
+  </div>
+
+  <div class="result" id="result">
+    <span class="res-emoji" id="res-emoji">🎉</span>
+    <h2 id="res-title"></h2>
+    <div class="res-score" id="res-score"></div>
+    <p id="res-text"></p>
+    <button class="btn-reset" onclick="reiniciarJogo()">Jogar de novo 🔁</button>
+  </div>
+</main>
+
+<footer>
+  <button class="btn-back" onclick="voltarAoPortal()">← Voltar ao Portal</button>
+</footer>
+
+<script>
+(function () {
+
+  /* Cada palavra guarda a palavra completa e o índice da lacuna.
+     A exibição com lacuna é montada pelo código a partir desses dois
+     campos — nunca digitada à mão (evita erro de índice, ERR-002).
+     Conferência caractere a caractere:
+       gelatina  g(0) e(1) l(2) a(3) t(4) i(5) n(6) a(7)  → lacuna 0 = 'g'
+       geleia    g(0) e(1) l(2) e(3) i(4) a(5)            → lacuna 0 = 'g'
+       laranja   l(0) a(1) r(2) a(3) n(4) j(5) a(6)       → lacuna 5 = 'j'
+       jarra     j(0) a(1) r(2) r(3) a(4)                 → lacuna 0 = 'j'
+       caju      c(0) a(1) j(2) u(3)                      → lacuna 2 = 'j'
+       gelo      g(0) e(1) l(2) o(3)                      → lacuna 0 = 'g'
+       jipe      j(0) i(1) p(2) e(3)                      → lacuna 0 = 'j'
+       girassol  g(0) i(1) r(2) a(3) s(4) s(5) o(6) l(7)  → lacuna 0 = 'g'
+  */
+  var palavras = [
+    { palavra: 'gelatina', gap: 0, emoji: '🍮', dica: 'Doce que balança no prato',
+      fb: 'Em <strong>gelatina</strong> o g vem antes do <strong>e</strong> — por isso tem som de j!' },
+    { palavra: 'geleia', gap: 0, emoji: '🍓', dica: 'A gente passa no pão',
+      fb: 'Em <strong>geleia</strong> o g vem antes do <strong>e</strong> — por isso tem som de j!' },
+    { palavra: 'laranja', gap: 5, emoji: '🍊', dica: 'Fruta bem suculenta',
+      fb: 'Escrevemos <strong>laranja</strong> com <strong>j</strong>. O som do j é sempre o mesmo!' },
+    { palavra: 'jarra', gap: 0, emoji: '🏺', dica: 'Guarda a água na mesa',
+      fb: 'Escrevemos <strong>jarra</strong> com <strong>j</strong>. O som do j é sempre o mesmo!' },
+    { palavra: 'caju', gap: 2, emoji: '🌰', dica: 'Fruta que tem castanha',
+      fb: 'Escrevemos <strong>caju</strong> com <strong>j</strong>. O som do j é sempre o mesmo!' },
+    { palavra: 'gelo', gap: 0, emoji: '🧊', dica: 'Água durinha e bem fria',
+      fb: 'Em <strong>gelo</strong> o g vem antes do <strong>e</strong> — por isso tem som de j!' },
+    { palavra: 'jipe', gap: 0, emoji: '🚙', dica: 'Carro forte de passeio',
+      fb: 'Escrevemos <strong>jipe</strong> com <strong>j</strong>. O som do j é sempre o mesmo!' },
+    { palavra: 'girassol', gap: 0, emoji: '🌻', dica: 'Flor que olha para o sol',
+      fb: 'Em <strong>girassol</strong> o g vem antes do <strong>i</strong> — por isso tem som de j!' }
+  ];
+
+  var ordem = [];
+  var indiceAtual = 0;
+  var acertos = 0;
+  var respondeu = false;
+
+  function playSound(type) {
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    var o = ctx.createOscillator();
+    var g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    if (type === 'correct') {
+      o.frequency.setValueAtTime(523, ctx.currentTime);
+      o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+      o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+      o.start(); o.stop(ctx.currentTime + 0.5);
+    } else {
+      o.frequency.setValueAtTime(300, ctx.currentTime);
+      o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      o.start(); o.stop(ctx.currentTime + 0.4);
+    }
+  }
+
+  function embaralhar(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+
+  function letraCerta(item) {
+    return item.palavra.charAt(item.gap).toUpperCase();
+  }
+
+  function montarDisplay(item, letraPreenchida) {
+    var antes = item.palavra.substring(0, item.gap);
+    var depois = item.palavra.substring(item.gap + 1);
+    var meio = letraPreenchida
+      ? '<span class="gap filled">' + letraPreenchida.toLowerCase() + '</span>'
+      : '<span class="gap">&nbsp;</span>';
+    return antes + meio + depois;
+  }
+
+  function mostrarPalavra() {
+    respondeu = false;
+    var item = ordem[indiceAtual];
+
+    document.getElementById('prog-label').textContent =
+      'Palavra ' + (indiceAtual + 1) + ' de ' + ordem.length;
+    document.getElementById('prog-score').textContent = 'Acertos: ' + acertos;
+    document.getElementById('prog-fill').style.width = (indiceAtual / ordem.length * 100) + '%';
+
+    document.getElementById('word-emoji').textContent = item.emoji;
+    document.getElementById('word-hint').textContent = item.dica;
+    document.getElementById('word-display').innerHTML = montarDisplay(item, null);
+
+    ['btn-g', 'btn-j'].forEach(function (id) {
+      var b = document.getElementById(id);
+      b.disabled = false;
+      b.className = 'letter-btn';
+    });
+
+    var fb = document.getElementById('feedback');
+    fb.className = 'feedback';
+    fb.innerHTML = '';
+    document.getElementById('next-wrap').classList.remove('show');
+  }
+
+  function escolherLetra(letra) {
+    if (respondeu) return;
+    respondeu = true;
+
+    var item = ordem[indiceAtual];
+    var certa = letraCerta(item);
+    var acertou = (letra === certa);
+
+    document.getElementById('word-display').innerHTML = montarDisplay(item, certa);
+
+    var btnEscolhido = document.getElementById(letra === 'G' ? 'btn-g' : 'btn-j');
+    var btnCerto = document.getElementById(certa === 'G' ? 'btn-g' : 'btn-j');
+
+    document.getElementById('btn-g').disabled = true;
+    document.getElementById('btn-j').disabled = true;
+    btnCerto.classList.add('reveal-correct');
+    btnEscolhido.classList.add(acertou ? 'picked-correct' : 'picked-wrong');
+
+    var fb = document.getElementById('feedback');
+    if (acertou) {
+      acertos++;
+      fb.className = 'feedback ok show';
+      fb.innerHTML = '<span class="fb-title">Boa! 🎯</span>' + item.fb;
+      playSound('correct');
+    } else {
+      fb.className = 'feedback no show';
+      fb.innerHTML = '<span class="fb-title">Quase! Olha só 💛</span>' + item.fb;
+      playSound('wrong');
+    }
+
+    document.getElementById('prog-score').textContent = 'Acertos: ' + acertos;
+    document.getElementById('next-wrap').classList.add('show');
+  }
+
+  function proximaPalavra() {
+    indiceAtual++;
+    if (indiceAtual >= ordem.length) mostrarResultado();
+    else mostrarPalavra();
+  }
+
+  function mostrarResultado() {
+    document.getElementById('game-card').style.display = 'none';
+    document.getElementById('progress-wrap').style.display = 'none';
+
+    var total = ordem.length;
+    var pct = Math.round((acertos / total) * 100);
+    window.sabendoScore = pct;
+
+    var emoji, titulo, texto;
+    if (pct === 100) {
+      emoji = '🏆'; titulo = 'Perfeito!';
+      texto = 'Você completou todas as palavras! Tilim está muito orgulhoso!';
+    } else if (pct >= 70) {
+      emoji = '🎉'; titulo = 'Muito bem!';
+      texto = 'Você já sabe quando usar o g e quando usar o j. Continue assim!';
+    } else if (pct >= 40) {
+      emoji = '🌟'; titulo = 'Bom começo!';
+      texto = 'Leia as palavras em voz alta e tente de novo. Você consegue!';
+    } else {
+      emoji = '💪'; titulo = 'Vamos treinar mais!';
+      texto = 'Lembre da regra: antes de e e i, o g tem som de j. Tente outra vez!';
+    }
+
+    document.getElementById('res-emoji').textContent = emoji;
+    document.getElementById('res-title').textContent = titulo;
+    document.getElementById('res-score').textContent = 'Você acertou ' + acertos + ' de ' + total + ' (' + pct + '%)';
+    document.getElementById('res-text').textContent = texto;
+    document.getElementById('result').classList.add('show');
+  }
+
+  function reiniciarJogo() {
+    ordem = embaralhar(palavras);
+    indiceAtual = 0;
+    acertos = 0;
+    document.getElementById('result').classList.remove('show');
+    document.getElementById('game-card').style.display = 'block';
+    document.getElementById('progress-wrap').style.display = 'block';
+    mostrarPalavra();
+  }
+
+  window.escolherLetra  = escolherLetra;
+  window.proximaPalavra = proximaPalavra;
+  window.reiniciarJogo  = reiniciarJogo;
+
+  ordem = embaralhar(palavras);
+  mostrarPalavra();
+
+})();
+</script>
+
+<!-- ── GAMIFICAÇÃO ─────────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'sons-letras-j-g-til-s';
+  var DISCIPLINE    = 'portugues';
+  var ACTIVITY_TYPE = 'completar';
+  var TOTAL_ATIV    = 5;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Tilim',
+        characterEmoji:  '〰️',
+        characterImg:    'chars/sons-letras-j-g-til-s-hd.png',
+        themeLabel:      'Sons e Letras: j, g, til e s · Português',
+        totalActivities: TOTAL_ATIV,
+        activityType:    ACTIVITY_TYPE,
+        primaryColor:    '#E8430A',
+        lightColor:      '#FB8C5A',
+        bgColor:         '#FFF4EF',
+        glowRgb:         '232,67,10',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _scoreVal = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _scoreVal = v;
+      var btn = document.getElementById('gamificacao-btn');
+      if (btn) btn.style.display = 'block';
+      var btnOverlay = document.getElementById('gamificacao-btn-overlay');
+      if (btnOverlay) btnOverlay.style.display = 'block';
+    },
+    get: function () { return _scoreVal; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#E8430A,#FB8C5A);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>
