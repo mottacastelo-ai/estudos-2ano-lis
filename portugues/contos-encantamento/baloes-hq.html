@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Os Balões da HQ — Contos de Encantamento | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #E8430A;
+  --light: #FB8C5A;
+  --bg: #FFF4EF;
+  --dark: #7A1F04;
+  --correct: #22C55E;
+  --wrong: #EF4444;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  background: linear-gradient(135deg, #7A1F04, #E8430A 60%, #FB8C5A);
+  color: white;
+  padding: 24px 20px;
+  text-align: center;
+}
+
+header .emoji { font-size: 2.8rem; display: block; margin-bottom: 8px; }
+
+header h1 {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.8rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+header p { font-size: 1rem; opacity: 0.92; margin-top: 6px; }
+
+main {
+  flex: 1;
+  padding: 24px 16px;
+  max-width: 860px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.instrucao {
+  background: white;
+  border-left: 6px solid var(--primary);
+  border-radius: 14px;
+  padding: 18px 20px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--dark);
+  line-height: 1.45;
+  box-shadow: 0 4px 16px rgba(232, 67, 10, 0.12);
+  margin-bottom: 22px;
+}
+
+.section-title {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--dark);
+  margin: 8px 0 12px;
+}
+
+.pool {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  background: #FFE7DB;
+  border: 3px dashed var(--light);
+  border-radius: 18px;
+  padding: 16px;
+  margin-bottom: 26px;
+  min-height: 80px;
+}
+
+.nome-chip {
+  background: white;
+  border: 3px solid var(--light);
+  border-radius: 99px;
+  padding: 14px 24px;
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--dark);
+  cursor: grab;
+  min-height: 52px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 3px 10px rgba(232, 67, 10, 0.12);
+  touch-action: none;
+  user-select: none;
+  transition: transform 0.15s ease;
+}
+
+.nome-chip:hover { transform: translateY(-3px); }
+.nome-chip.dragging { opacity: 0.4; }
+.nome-chip.placed { display: none; }
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: white;
+  border-radius: 18px;
+  padding: 14px;
+  box-shadow: 0 4px 16px rgba(232, 67, 10, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.card svg { width: 100%; height: auto; max-width: 220px; }
+
+.pista {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #9A5C43;
+  text-align: center;
+  line-height: 1.35;
+}
+
+.alvo {
+  width: 100%;
+  border: 3px dashed #FEDCCB;
+  border-radius: 14px;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--dark);
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.alvo.drag-over { border-color: var(--primary); background: #FFE7DB; }
+.alvo.filled { border-style: solid; border-color: var(--light); }
+.alvo.certo { border-color: var(--correct); background: #DCFCE7; }
+.alvo.errado { border-color: var(--wrong); background: #FEE2E2; }
+.alvo .vazio { color: #C08A72; }
+
+.nome-colocado {
+  cursor: pointer;
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.botoes { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
+
+.btn {
+  flex: 1;
+  border: none;
+  border-radius: 14px;
+  padding: 16px 24px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  min-height: 56px;
+  min-width: 44px;
+  transition: transform 0.15s ease;
+}
+
+.btn:hover { transform: scale(1.02); }
+.btn-check { background: linear-gradient(135deg, var(--primary), var(--light)); color: white; }
+.btn-reset { background: white; color: var(--primary); border: 3px solid var(--primary); }
+
+.resultado {
+  display: none;
+  background: white;
+  border-radius: 18px;
+  padding: 24px;
+  margin-top: 22px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(232, 67, 10, 0.15);
+}
+
+.resultado.show { display: block; }
+.resultado .icone { font-size: 3.5rem; display: block; margin-bottom: 8px; }
+
+.resultado h2 {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.6rem;
+  color: var(--dark);
+  margin-bottom: 8px;
+}
+
+.resultado p { font-size: 1.15rem; font-weight: 700; color: var(--dark); line-height: 1.45; }
+
+footer { text-align: center; padding: 20px 16px; }
+
+.btn-back {
+  background: white;
+  border: 3px solid var(--primary);
+  color: var(--primary);
+  border-radius: 14px;
+  padding: 14px 28px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  min-height: 48px;
+}
+
+.btn-back:hover { background: var(--primary); color: white; }
+
+@media (max-width: 480px) {
+  body { font-size: 1.15rem; }
+  header h1 { font-size: 1.3rem; }
+  main { padding: 16px 12px; }
+  .cards { grid-template-columns: 1fr; }
+  .nome-chip { width: 100%; justify-content: center; }
+  .botoes { flex-direction: column; }
+  .btn { width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="emoji">💬</span>
+  <h1>Os Balões da HQ</h1>
+  <p>Cada formato de balão tem um nome · com Flautim 🪈</p>
+</header>
+
+<main>
+  <div class="instrucao">
+    Olhe bem o <strong>formato</strong> de cada balão desenhado e arraste o
+    <strong>nome certo</strong> para o espaço embaixo dele. 💬
+  </div>
+
+  <div class="section-title">🏷️ Nomes dos balões</div>
+  <div class="pool" id="pool"></div>
+
+  <div class="section-title">💬 Os balões desenhados</div>
+  <div class="cards" id="cards"></div>
+
+  <div class="botoes">
+    <button class="btn btn-check" onclick="verificarBaloes()">Verificar ✅</button>
+    <button class="btn btn-reset" onclick="reiniciarBaloes()">Começar de novo 🔄</button>
+  </div>
+
+  <div class="resultado" id="resultado">
+    <span class="icone" id="res-icone">🪈</span>
+    <h2 id="res-titulo"></h2>
+    <p id="res-texto"></p>
+  </div>
+</main>
+
+<footer>
+  <button class="btn-back" onclick="voltarAoPortal()">← Voltar ao Portal</button>
+</footer>
+
+<script>
+var SVG_FALA =
+  '<svg viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg" aria-label="Balão com contorno liso e rabicho">' +
+  '<path d="M44 15 H156 Q180 15 180 39 V61 Q180 85 156 85 H96 L66 116 L72 85 H44 Q20 85 20 61 V39 Q20 15 44 15 Z" ' +
+  'fill="#FFFFFF" stroke="#E8430A" stroke-width="5" stroke-linejoin="round"/></svg>';
+
+var SVG_COCHICHO =
+  '<svg viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg" aria-label="Balão com contorno pontilhado e rabicho">' +
+  '<path d="M44 15 H156 Q180 15 180 39 V61 Q180 85 156 85 H96 L66 116 L72 85 H44 Q20 85 20 61 V39 Q20 15 44 15 Z" ' +
+  'fill="#FFFFFF" stroke="#E8430A" stroke-width="5" stroke-linejoin="round" stroke-dasharray="9 8" stroke-linecap="round"/></svg>';
+
+var SVG_PENSAMENTO =
+  '<svg viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg" aria-label="Balão com contorno de nuvem e bolinhas">' +
+  '<path d="M48 78 A22 22 0 0 1 46 46 A24 24 0 0 1 78 26 A26 26 0 0 1 120 24 A24 24 0 0 1 152 44 ' +
+  'A22 22 0 0 1 156 76 A24 24 0 0 1 124 96 A26 26 0 0 1 82 98 A24 24 0 0 1 48 78 Z" ' +
+  'fill="#FFFFFF" stroke="#E8430A" stroke-width="5"/>' +
+  '<circle cx="62" cy="110" r="9" fill="#FFFFFF" stroke="#E8430A" stroke-width="5"/>' +
+  '<circle cx="42" cy="122" r="5" fill="#FFFFFF" stroke="#E8430A" stroke-width="4"/></svg>';
+
+var SVG_GRITO =
+  '<svg viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg" aria-label="Balão com contorno em explosão">' +
+  '<polygon points="100,9 122,30 161,25 154,51 186,65 154,80 161,105 122,100 100,121 78,100 39,105 46,80 14,65 46,51 39,25 78,30" ' +
+  'fill="#FFFFFF" stroke="#E8430A" stroke-width="5" stroke-linejoin="round"/></svg>';
+
+var SVG_NARRADOR =
+  '<svg viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg" aria-label="Retângulo sem rabicho">' +
+  '<rect x="18" y="26" width="164" height="78" rx="4" fill="#FFFFFF" stroke="#E8430A" stroke-width="5"/></svg>';
+
+var baloesData = [
+  { id: 'bl-fala',       svg: SVG_FALA,       nomeId: 'nm-fala' },
+  { id: 'bl-cochicho',   svg: SVG_COCHICHO,   nomeId: 'nm-cochicho' },
+  { id: 'bl-pensamento', svg: SVG_PENSAMENTO, nomeId: 'nm-pensamento' },
+  { id: 'bl-grito',      svg: SVG_GRITO,      nomeId: 'nm-grito' },
+  { id: 'bl-narrador',   svg: SVG_NARRADOR,   nomeId: 'nm-narrador' }
+];
+
+var nomesData = [
+  { id: 'nm-fala',       texto: 'Balão de fala' },
+  { id: 'nm-cochicho',   texto: 'Balão de cochicho' },
+  { id: 'nm-pensamento', texto: 'Balão de pensamento' },
+  { id: 'nm-grito',      texto: 'Balão de grito' },
+  { id: 'nm-narrador',   texto: 'Balão de narrador' }
+];
+
+var TOTAL = baloesData.length;
+var conteudoAlvos = {};
+var nomeArrastado = null;
+var cloneToque = null;
+
+function playSound(type) {
+  var ctx = new (window.AudioContext || window.webkitAudioContext)();
+  var o = ctx.createOscillator();
+  var g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  if (type === 'correct') {
+    o.frequency.setValueAtTime(523, ctx.currentTime);
+    o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+    o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    o.start(); o.stop(ctx.currentTime + 0.5);
+  } else {
+    o.frequency.setValueAtTime(300, ctx.currentTime);
+    o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    o.start(); o.stop(ctx.currentTime + 0.4);
+  }
+}
+
+function embaralhar(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+function montarCards() {
+  var wrap = document.getElementById('cards');
+  wrap.innerHTML = '';
+  embaralhar(baloesData).forEach(function (balao) {
+    conteudoAlvos[balao.id] = null;
+
+    var card = document.createElement('div');
+    card.className = 'card';
+
+    var desenho = document.createElement('div');
+    desenho.innerHTML = balao.svg;
+    desenho.style.width = '100%';
+    desenho.style.display = 'flex';
+    desenho.style.justifyContent = 'center';
+
+    var alvo = document.createElement('div');
+    alvo.className = 'alvo';
+    alvo.id = 'alvo-' + balao.id;
+    alvo.dataset.balaoid = balao.id;
+
+    alvo.addEventListener('dragover', function (e) {
+      e.preventDefault();
+      this.classList.add('drag-over');
+    });
+    alvo.addEventListener('dragleave', function () { this.classList.remove('drag-over'); });
+    alvo.addEventListener('drop', function (e) {
+      e.preventDefault();
+      this.classList.remove('drag-over');
+      colocarNome(nomeArrastado, this.dataset.balaoid);
+    });
+
+    card.appendChild(desenho);
+    card.appendChild(alvo);
+    wrap.appendChild(card);
+    renderAlvo(balao.id);
+  });
+}
+
+function montarPool() {
+  var pool = document.getElementById('pool');
+  pool.innerHTML = '';
+  embaralhar(nomesData).forEach(function (nome) {
+    var el = document.createElement('div');
+    el.className = 'nome-chip';
+    el.id = nome.id;
+    el.dataset.nomeid = nome.id;
+    el.draggable = true;
+    el.textContent = nome.texto;
+
+    el.addEventListener('dragstart', function (e) {
+      nomeArrastado = nome.id;
+      e.dataTransfer.effectAllowed = 'move';
+      var self = this;
+      setTimeout(function () { self.classList.add('dragging'); }, 0);
+    });
+    el.addEventListener('dragend', function () { this.classList.remove('dragging'); });
+
+    el.addEventListener('touchstart', aoTocarInicio, { passive: false });
+    el.addEventListener('touchmove', aoTocarMover, { passive: false });
+
+    pool.appendChild(el);
+  });
+}
+
+function colocarNome(nomeId, balaoId) {
+  if (!nomeId) return;
+
+  Object.keys(conteudoAlvos).forEach(function (b) {
+    if (conteudoAlvos[b] === nomeId) { conteudoAlvos[b] = null; renderAlvo(b); }
+  });
+
+  if (conteudoAlvos[balaoId]) {
+    var anterior = document.getElementById(conteudoAlvos[balaoId]);
+    if (anterior) anterior.classList.remove('placed');
+    conteudoAlvos[balaoId] = null;
+  }
+
+  conteudoAlvos[balaoId] = nomeId;
+  var el = document.getElementById(nomeId);
+  if (el) el.classList.add('placed');
+
+  renderAlvo(balaoId);
+  limparResultado();
+}
+
+function tirarDoAlvo(balaoId) {
+  var nomeId = conteudoAlvos[balaoId];
+  if (!nomeId) return;
+  conteudoAlvos[balaoId] = null;
+  var el = document.getElementById(nomeId);
+  if (el) el.classList.remove('placed');
+  renderAlvo(balaoId);
+  limparResultado();
+}
+
+function renderAlvo(balaoId) {
+  var alvo = document.getElementById('alvo-' + balaoId);
+  if (!alvo) return;
+  var nomeId = conteudoAlvos[balaoId];
+  alvo.className = 'alvo' + (nomeId ? ' filled' : '');
+  alvo.innerHTML = '';
+
+  if (nomeId) {
+    var nome = nomesData.filter(function (n) { return n.id === nomeId; })[0];
+    var box = document.createElement('div');
+    box.className = 'nome-colocado';
+    box.title = 'Clique para tirar daqui';
+    box.textContent = nome.texto;
+    box.addEventListener('click', function () { tirarDoAlvo(balaoId); });
+    alvo.appendChild(box);
+  } else {
+    var vazio = document.createElement('span');
+    vazio.className = 'vazio';
+    vazio.textContent = 'Solte o nome aqui...';
+    alvo.appendChild(vazio);
+  }
+}
+
+function limparResultado() {
+  document.getElementById('resultado').classList.remove('show');
+  baloesData.forEach(function (b) {
+    var alvo = document.getElementById('alvo-' + b.id);
+    if (alvo) alvo.classList.remove('certo', 'errado');
+  });
+}
+
+function verificarBaloes() {
+  var certos = 0;
+  var preenchidos = 0;
+
+  baloesData.forEach(function (balao) {
+    var alvo = document.getElementById('alvo-' + balao.id);
+    var nomeId = conteudoAlvos[balao.id];
+    alvo.classList.remove('certo', 'errado');
+    if (!nomeId) return;
+    preenchidos++;
+    if (nomeId === balao.nomeId) { certos++; alvo.classList.add('certo'); }
+    else { alvo.classList.add('errado'); }
+  });
+
+  var res = document.getElementById('resultado');
+  res.classList.add('show');
+  var icone, titulo, texto;
+
+  if (preenchidos < TOTAL) {
+    icone = '🤔';
+    titulo = 'Ainda falta um pouquinho!';
+    texto = 'Coloque os ' + TOTAL + ' nomes nos balões antes de verificar.';
+  } else {
+    window.sabendoScore = Math.round((certos / TOTAL) * 100);
+    if (certos === TOTAL) {
+      icone = '🏆';
+      titulo = 'Todos os balões certos!';
+      texto = 'Que orgulho! Agora você reconhece cada balão só pelo formato. 💬';
+      playSound('correct');
+    } else {
+      icone = '💬';
+      titulo = certos + ' de ' + TOTAL + ' certos!';
+      texto = 'Olhe de novo o contorno dos balões vermelhos: liso, pontilhado, nuvem, explosão ou retângulo?';
+      playSound('wrong');
+    }
+  }
+
+  document.getElementById('res-icone').textContent = icone;
+  document.getElementById('res-titulo').textContent = titulo;
+  document.getElementById('res-texto').textContent = texto;
+}
+
+function reiniciarBaloes() {
+  limparResultado();
+  conteudoAlvos = {};
+  montarCards();
+  montarPool();
+}
+
+/* ---------- Arrastar no toque (celular/tablet) ---------- */
+function aoTocarInicio(e) {
+  e.preventDefault();
+  var el = e.currentTarget;
+  nomeArrastado = el.dataset.nomeid;
+
+  cloneToque = el.cloneNode(true);
+  cloneToque.style.position = 'fixed';
+  cloneToque.style.pointerEvents = 'none';
+  cloneToque.style.zIndex = '999';
+  cloneToque.style.opacity = '0.9';
+  cloneToque.style.width = el.offsetWidth + 'px';
+  document.body.appendChild(cloneToque);
+
+  var t = e.touches[0];
+  moverClone(t.clientX, t.clientY);
+}
+
+function aoTocarMover(e) {
+  e.preventDefault();
+  if (!cloneToque) return;
+  var t = e.touches[0];
+  moverClone(t.clientX, t.clientY);
+  var todos = document.querySelectorAll('.alvo');
+  for (var i = 0; i < todos.length; i++) todos[i].classList.remove('drag-over');
+  var alvo = alvoEmPonto(t.clientX, t.clientY);
+  if (alvo) alvo.classList.add('drag-over');
+}
+
+function alvoEmPonto(x, y) {
+  var el = document.elementFromPoint(x, y);
+  while (el && !(el.classList && el.classList.contains('alvo'))) el = el.parentElement;
+  return el;
+}
+
+function moverClone(x, y) {
+  if (!cloneToque) return;
+  cloneToque.style.left = (x - cloneToque.offsetWidth / 2) + 'px';
+  cloneToque.style.top = (y - cloneToque.offsetHeight / 2) + 'px';
+}
+
+document.addEventListener('touchend', function (e) {
+  if (!cloneToque) return;
+  var t = e.changedTouches[0];
+  var alvo = alvoEmPonto(t.clientX, t.clientY);
+  if (alvo) colocarNome(nomeArrastado, alvo.dataset.balaoid);
+  document.body.removeChild(cloneToque);
+  cloneToque = null;
+  var todos = document.querySelectorAll('.alvo');
+  for (var i = 0; i < todos.length; i++) todos[i].classList.remove('drag-over');
+  nomeArrastado = null;
+}, { passive: true });
+
+window.verificarBaloes  = verificarBaloes;
+window.reiniciarBaloes  = reiniciarBaloes;
+window.tirarDoAlvo      = tirarDoAlvo;
+
+montarCards();
+montarPool();
+</script>
+<!-- ── GAMIFICAÇÃO ─────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'contos-encantamento';
+  var DISCIPLINE    = 'portugues';
+  var ACTIVITY_TYPE = 'associa';
+  var TOTAL_ATIV    = 5;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Flautim',
+        characterEmoji:  '🪈',
+        characterImg:    'chars/contos-encantamento-hd.png',
+        themeLabel:      'Contos de Encantamento · Português',
+        totalActivities: TOTAL_ATIV,
+        activityType:    ACTIVITY_TYPE,
+        primaryColor:    '#E8430A',
+        lightColor:      '#FB8C5A',
+        bgColor:         '#FFF4EF',
+        glowRgb:         '232,67,10',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _scoreVal = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _scoreVal = v;
+      var btn = document.getElementById('gamificacao-btn');
+      if (btn) btn.style.display = 'block';
+      var btnOverlay = document.getElementById('gamificacao-btn-overlay');
+      if (btnOverlay) btnOverlay.style.display = 'block';
+    },
+    get: function () { return _scoreVal; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#E8430A,#FB8C5A);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>
