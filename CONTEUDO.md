@@ -1,6 +1,6 @@
 # Inventário do Portal — Lis (2º Ano)
 
-> Gerado automaticamente por `scripts/update-docs.py` em 2026-07-04.
+> Gerado automaticamente por `scripts/update-docs.py` em 2026-08-11.
 > Fonte primária: `index.html`. Existência de arquivos validada no filesystem.
 
 ---
@@ -13,8 +13,8 @@
 | 🔢 Matemática | 5 | 25 | 5/5 |
 | 🔬 Ciências | 4 | 16 | 4/4 |
 | 🌍 Geografia | 2 | 8 | 2/2 |
-| 📜 História | 5 | 20 | 5/5 |
-| **Total** | **18** | **78** | **18/18** |
+| 📜 História | 6 | 25 | 6/6 |
+| **Total** | **19** | **83** | **19/19** |
 
 ---
 
@@ -239,6 +239,18 @@
 - ✅ [Jogo da Memória](historia/mudancas-convivencia/memoria-mudancas-convivencia.html)
 - ✅ [Ordene as Sílabas](historia/mudancas-convivencia/silabas-mudancas-convivencia.html)
 - ✅ [Mapa Mental](historia/mudancas-convivencia/mapa-mental-mudancas-convivencia.html)
+
+### convivencia-transportes-coletivos
+
+**HQ:** `hq-convivencia-transportes-coletivos-pg1.png` — ✅ p1 · ✅ p2 · ✅ p3 · ✅ p4 | ✅ prompt.md
+
+**Atividades (5):**
+
+- ✅ [Quiz Interativo](historia/convivencia-transportes-coletivos/quiz-convivencia-transportes-coletivos.html)
+- ✅ [Arrastar e Soltar](historia/convivencia-transportes-coletivos/arrastar-convivencia-transportes-coletivos.html)
+- ✅ [Complete a Palavra](historia/convivencia-transportes-coletivos/completar-convivencia-transportes-coletivos.html)
+- ✅ [Ilustrador](historia/convivencia-transportes-coletivos/ilustrador-convivencia-transportes-coletivos.html)
+- ✅ [Mapa Mental](historia/convivencia-transportes-coletivos/mapa-mental-convivencia-transportes-coletivos.html)
 
 ---
 

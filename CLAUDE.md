@@ -82,7 +82,7 @@ ApÃ³s `analisador-conteudo` gerar a proposta estrutural, **parar e aguardar ap
 | `atualizador-portal` | Edita o index.html com o novo tema | ApÃ³s atividades geradas |
 | `verificador-entrega` | Valida checklist tÃ©cnico e de estrutura do portal | Em paralelo com revisor-qualidade, apÃ³s atualizador-portal |
 | `revisor-qualidade` | Audita pedagogia, terminologia, escopo e vazamento de resposta | Em paralelo com verificador-entrega, apÃ³s atualizador-portal |
-| `gerador-imagens-hq` | Polling em `.claude/done/` atÃ© Codex confirmar; commit das imagens | Polling apÃ³s publicador-portal das atividades |
+| `gerador-imagens-hq` | Chama Codex via MCP (preferencial) ou faz polling em `.claude/done/` (fallback); commit das imagens | ApÃ³s publicador-portal das atividades |
 | `publicador-portal` | git add + commit + push para o GitHub Pages | Ãšltimo â€” apÃ³s gerador-imagens-hq |
 
 ---
@@ -118,6 +118,7 @@ ApÃ³s `analisador-conteudo` gerar a proposta estrutural, **parar e aguardar ap
 12. **RESET OBRIGATÃ“RIO nos prompts de HQ:** todo arquivo `.md` de prompt de HQ deve comeÃ§ar com um bloco "âš ï¸ RESET OBRIGATÃ“RIO" que: (a) instrui o Codex a ignorar qualquer conversa anterior na sessÃ£o; (b) redefine todos os personagens da HQ com descriÃ§Ã£o visual completa; (c) proÃ­be explicitamente personagens de outros projetos (ex: "Bia", "AndrÃ©"). O Codex heartbeat acumula contexto entre sessÃµes â€” sem esse reset, personagens de HQs anteriores contaminam as novas.
 13. **DocumentaÃ§Ã£o imediata:** toda melhoria de regra, padrÃ£o ou convenÃ§Ã£o aprovada nesta sessÃ£o deve ser registrada nos docs do repositÃ³rio antes de encerrar. Nenhuma melhoria fica apenas na memÃ³ria do Claude.
 13. **ERROS.md obrigatÃ³rio:** consultar `ERROS.md` antes de gerar qualquer atividade. ContÃ©m bugs reais diagnosticados em produÃ§Ã£o com regras de prevenÃ§Ã£o.
+14. **MCP do Codex (preferencial sobre o fluxo de arquivo):** desde 2026-08-11 existe um servidor MCP `codex` registrado em `C:\Users\wizar\.claude.json` para os projetos `estudos` e `estudos-2ano` (mesma config já usada no projeto `Wizard`), rodando `codex mcp-server` via `C:\Users\wizar\AppData\Roaming\npm\codex.cmd`. Isso permite chamar o Codex diretamente como tool MCP, sem precisar do Codex Desktop aberto nem das automações de polling em pasta. **Exige reiniciar a sessão do Claude Code** após qualquer alteração nesse registro para a tool aparecer. O agente `gerador-imagens-hq` tenta esse modo primeiro (detecção via `ToolSearch`) e cai automaticamente para o fluxo legado de `.claude/pending/` (regras 9-10, Codex Desktop) se o MCP não estiver disponível ou falhar — nenhuma das duas vias deve ser removida enquanto a outra não estiver validada de ponta a ponta em produção.
 
 ---
 
