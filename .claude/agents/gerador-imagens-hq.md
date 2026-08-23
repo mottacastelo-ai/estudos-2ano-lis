@@ -115,6 +115,12 @@ Rodar com `run_in_background: true` no Bash tool.
   `estudos-2ano\_landing\chars\[slug]-hd.png`, usando `hq-[slug]-chars.png` como referência visual.
   O `characterImg` da gamificação resolve como `_landing/` + o valor do config — por isso o valor
   correto é sempre `chars/[slug]-hd.png` (ver ERR-009).
+  **⚠️ Exigir no prompt, explicitamente (ver ERR-011):** formato quadrado exato `1024x1024` e
+  **fundo transparente com canal alfa** (nunca "plain/solid background" — isso gera RGB opaco sem
+  transparência). O CSS de reveal (`shared/gamification.js`, `.sgami-rev-char`) espera PNG RGBA
+  quadrado; um portrait retangular com fundo sólido aparece como caixa clara atrás do personagem no
+  card. Validar com `file <caminho>` antes de reportar sucesso — deve mostrar `1024 x 1024` e
+  `RGBA`, nunca `1024 x 1536` nem `RGB` sem alfa.
 
 ### Validação
 

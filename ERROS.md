@@ -308,6 +308,41 @@ O Passo 2 do `gerador-imagens-hq` (checar `os.path.isfile`) **passou nos dois ca
 
 ---
 
+## ERR-011 — Portrait gerado via `codex exec` sem fundo transparente e em formato retrato
+
+**Arquivos afetados:** `_landing/chars/carta-pessoal-hd.png` (2026-08-22), também observado em `contos-encantamento-hd.png` e `sons-letras-j-g-til-s-hd.png` (mesma data, outro pipeline)
+**Data:** 2026-08-22
+**Tipo:** Asset — PNG sem canal alfa e com aspect ratio errado, quebra o card de gamificação
+
+### Causa raiz
+
+O prompt de portrait pedido ao Codex via `codex exec` (modo CLI direto, ver Passo 1A-bis de `gerador-imagens-hq.md`) descrevia "plain solid background" em vez de exigir explicitamente fundo transparente e proporção quadrada. O modelo gerou uma imagem **1024×1536 RGB** (sem canal alfa, fundo cor-de-creme sólido), enquanto todo o resto do acervo de portraits (~20 arquivos) é **1024×1024 RGBA** com fundo transparente de verdade.
+
+O CSS de reveal em `shared/gamification.js` (`.sgami-rev-char { width:163px; height:163px }` com `object-fit:contain`) espera uma imagem quadrada transparente. Com fundo sólido, aparece um retângulo claro atrás do personagem, destacando-se contra o fundo escuro estrelado do card e atrapalhando a leitura do nome/tema abaixo.
+
+### Diagnóstico rápido
+
+```bash
+file _landing/chars/[slug]-hd.png
+# Correto:  PNG image data, 1024 x 1024, 8-bit/color RGBA, non-interlaced
+# Bugado:   PNG image data, 1024 x 1536, 8-bit/color RGB,  non-interlaced (sem "RGBA")
+```
+
+### Correção aplicada
+
+Regenerado o portrait via `codex exec` com prompt explícito exigindo: formato quadrado **1024×1024**, PNG com **canal alfa e fundo 100% transparente** (alpha=0 nos cantos, não apenas "claro"), com instrução de fallback (gerar em chroma-key e remover fundo via PIL) caso a ferramenta não suporte transparência nativa. Validação obrigatória do modo/tamanho do arquivo antes de considerar concluído.
+
+### Regra para a squad
+
+**Todo prompt de portrait gerado via `codex exec` (Passo 1A-bis) DEVE exigir explicitamente:**
+1. Formato quadrado exato — `1024x1024`, nunca deixar a proporção livre.
+2. **Fundo transparente (RGBA, alpha=0)** — nunca "plain/solid background". Se a ferramenta não suportar transparência nativa, gerar em chroma-key e remover programaticamente.
+3. Validação pós-geração com `file <caminho>` (ou PIL) conferindo `1024 x 1024` e `RGBA` antes de reportar sucesso — nunca assumir apenas pelo exit code.
+
+Isso é distinto do prompt de página de HQ (que É retangular 1024×1536 e com fundo de cena, de propósito) — a regra vale apenas para portraits usados em `_landing/chars/`.
+
+---
+
 ## Checklist anti-bug para `gerador-atividades`
 
 Antes de finalizar qualquer HTML de atividade, verificar:
