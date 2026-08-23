@@ -282,6 +282,32 @@ Padrão obrigatório: `chars/[THEME_SLUG]-hd.png` — o mesmo valor usado em `ou
 
 ---
 
+## ERR-010 — Balões vazios ou acentos/tis derrubados nas imagens de HQ geradas pelo Codex
+
+**Arquivos afetados:** `portugues/contos-encantamento/hq-*-pg*.png`, `portugues/sons-letras-j-g-til-s/hq-*-pg*.png` (temas do Cap. 5, 2026-08-22)
+**Data:** 2026-08-22
+**Tipo:** Geração de imagem — texto incorreto/ausente não é pego por checagem de existência de arquivo
+
+### Causa raiz
+
+O prompt de HQ descrevia as falas apenas embutidas na narrativa da cena ("Panel 1: Lis diz 'Que livro é esse brilhando na estante?'..."), sem um bloco literal e isolado listando o texto exato a renderizar. Resultado, na mesma leva de geração via Codex/MCP:
+
+- **Tema `sons-letras-j-g-til-s`:** as 4 páginas voltaram com **todos os balões, caixas de narrador e cartões de palavra vazios** — zero texto, apesar de a arte e a composição estarem corretas. Crítico porque o tema inteiro ensina ortografia (j, g, til, s).
+- **Tema `contos-encantamento`:** arte e pedagogia boas, mas o Codex **derrubou o acento em ~5 palavras por página** — "Ha muito" (faltou Há), "ELEMENTO MAGICO" (faltou MÁGICO), "historia", "sao", "problemao", "ne?", "Que livro e esse" (faltou é).
+
+O Passo 2 do `gerador-imagens-hq` (checar `os.path.isfile`) **passou nos dois casos** — os arquivos existiam fisicamente. Só abrir a imagem e ler o conteúdo expôs o defeito.
+
+### Correção aplicada
+
+1. **`gerador-prompt-hq.md`** (seção 5-bis, nova): cada painel agora exige um bloco literal `TEXT THAT MUST BE RENDERED IN THIS PANEL` (fala por fala, caractere por caractere) e cada página termina com um bloco `CRITICAL TEXT REQUIREMENTS` reforçando diacríticos completos e proibindo balão vazio.
+2. **`gerador-imagens-hq.md`** (Passo 2-bis, novo): **validação visual obrigatória** — abrir as 4 páginas com a tool `Read` e conferir, painel a painel, que nenhum balão está vazio e que todo acento/til bate com o roteiro. Página com defeito é regerada individualmente (até 2 tentativas) via `codex-reply`, nunca as 5 imagens inteiras de novo. Proibido reportar `"status": "ok"` sem ter aberto e lido as imagens nesta execução.
+
+### Regra para a squad
+
+**Existir no disco não é sinônimo de estar correto.** Toda geração de imagem com texto (HQ, portrait com legenda, etc.) precisa de uma etapa de leitura visual pós-geração antes de ser dada como concluída — e o prompt que pede a imagem precisa listar o texto exato a renderizar em bloco separado, não só embutido na descrição de cena. Isso vale para qualquer pipeline futuro que gere imagem com texto, não só HQ.
+
+---
+
 ## Checklist anti-bug para `gerador-atividades`
 
 Antes de finalizar qualquer HTML de atividade, verificar:

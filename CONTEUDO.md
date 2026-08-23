@@ -9,12 +9,12 @@
 
 | Disciplina | Temas | Atividades | HQs completas |
 |---|---|---|---|
-| 📝 Português | 3 | 15 | 3/3 |
+| 📝 Português | 5 | 25 | 5/5 |
 | 🔢 Matemática | 5 | 25 | 5/5 |
 | 🔬 Ciências | 4 | 16 | 4/4 |
 | 🌍 Geografia | 2 | 8 | 2/2 |
 | 📜 História | 6 | 25 | 6/6 |
-| **Total** | **20** | **89** | **20/20** |
+| **Total** | **22** | **99** | **22/22** |
 
 ---
 
@@ -55,6 +55,30 @@
 - ✅ [Parlenda da Letra L](portugues/carta-pessoal/parlenda-letra-l.html)
 - ✅ [Jogo da Memória](portugues/carta-pessoal/memoria-carta.html)
 - ✅ [Mapa Mental](portugues/carta-pessoal/mapa-mental-carta.html)
+
+### contos-encantamento
+
+**HQ:** `hq-contos-encantamento-pg1.png` — ✅ p1 · ✅ p2 · ✅ p3 · ✅ p4 | ✅ prompt.md
+
+**Atividades (5):**
+
+- ✅ [Quiz: Contos de Encantamento](portugues/contos-encantamento/quiz-contos.html)
+- ✅ [Ordena a História](portugues/contos-encantamento/ordena-hamelin.html)
+- ✅ [Os Balões da HQ](portugues/contos-encantamento/baloes-hq.html)
+- ✅ [Jogo da Memória das Palavras](portugues/contos-encantamento/memoria-contos.html)
+- ✅ [Mapa Mental](portugues/contos-encantamento/mapa-mental-contos.html)
+
+### sons-letras-j-g-til-s
+
+**HQ:** `hq-sons-letras-j-g-til-s-pg1.png` — ✅ p1 · ✅ p2 · ✅ p3 · ✅ p4 | ✅ prompt.md
+
+**Atividades (5):**
+
+- ✅ [Quiz: Sons e Letras](portugues/sons-letras-j-g-til-s/quiz-sons-letras.html)
+- ✅ [G ou J?](portugues/sons-letras-j-g-til-s/completa-g-ou-j.html)
+- ✅ [O Til e o Som Nasal](portugues/sons-letras-j-g-til-s/til-som-nasal.html)
+- ✅ [O S no Começo ou no Fim?](portugues/sons-letras-j-g-til-s/classifica-s-silaba.html)
+- ✅ [Mapa Mental](portugues/sons-letras-j-g-til-s/mapa-mental-sons-letras.html)
 
 ---
 

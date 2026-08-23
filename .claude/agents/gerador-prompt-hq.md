@@ -134,6 +134,33 @@ Style: colorful flat illustration, bold outlines, Portuguese speech bubbles, 2x2
 \`\`\`
 ```
 
+### 5-bis. Bloco de texto literal por painel ⚠️ OBRIGATÓRIO (ver ERR-010)
+
+Modelos de geração de imagem frequentemente **derrubam acentos/tis** ou **deixam balões vazios** quando o texto só aparece embutido na descrição de cena. Para cada painel, além da descrição narrativa, incluir um bloco literal separado, copiável 1:1:
+
+```
+TEXT THAT MUST BE RENDERED IN THIS PANEL (render EXACTLY, character for character, with all Portuguese diacritics):
+  - Speech balloon (Lis): "…"
+  - Speech balloon (Personagem): "…"
+  - Narrator box: "…"
+  - Banner/label/word card: "…"
+```
+
+E ao final de **cada página** (não só da HQ inteira), um bloco de reforço:
+
+```
+CRITICAL TEXT REQUIREMENTS:
+- EVERY speech balloon, narrator box, banner and word card MUST contain the exact
+  Portuguese text listed above, including all accents and diacritics. An empty
+  balloon or a missing accent is a failed image.
+- Render Portuguese diacritics EXACTLY: á à â ã é ê í ó ô õ ú ç ~.
+  Do not drop them under any circumstance.
+- Draw the text large and legible, in clean rounded comic lettering.
+- Do not invent or substitute any word — use only the text listed above.
+```
+
+Se o tema envolve ortografia/acentuação como conteúdo pedagógico (ex.: til, acentos), adicionar também exemplos antes/depois das palavras-chave (`"pão" not "pao"`, `"história" not "historia"`) extraídos das palavras reais do roteiro — não genéricos.
+
 ### 6. Ordem de geração
 
 ```
@@ -175,6 +202,7 @@ Style: colorful flat illustration, bold outlines, Portuguese speech bubbles, 2x2
 - [ ] Todos os termos técnicos do input aparecem na narrativa
 - [ ] Arquivo salvo na raiz do projeto (não em subpasta)
 - [ ] **Regra de exemplos completos** — verificada (ver seção abaixo)
+- [ ] **Bloco de texto literal por painel + bloco CRITICAL TEXT REQUIREMENTS em cada página** — presentes (ver seção 5-bis / ERR-010)
 
 ---
 

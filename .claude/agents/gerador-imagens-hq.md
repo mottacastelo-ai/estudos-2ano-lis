@@ -225,6 +225,41 @@ if faltando:
 print(f"[gerador-imagens-hq] Todos os arquivos confirmados: {expected_outputs}")
 ```
 
+**Existir no disco não é sinônimo de estar correto.** Prosseguir sempre para o Passo 2-bis antes de reportar sucesso ao orquestrador.
+
+---
+
+## Passo 2-bis — Validação visual do texto ⚠️ OBRIGATÓRIA (ver ERR-010)
+
+> Origem: em 2026-08-22, duas HQs geradas via MCP passaram no Passo 2 (todos os arquivos existiam)
+> mas uma tinha **todos os balões vazios** e a outra tinha **diacríticos derrubados em ~5 palavras
+> por página** (`historia`, `sao`, `MAGICO`, `ne?`). Nenhuma checagem de arquivo pega isso — só
+> abrir a imagem pega.
+
+Depois que os 5 arquivos existirem fisicamente, **abrir cada uma das 4 páginas com a tool `Read`**
+(a imagem é renderizada e fica visível) e conferir, painel a painel:
+
+1. **Nenhum balão, caixa de narrador ou banner está vazio.** Um balão desenhado sem texto dentro é
+   falha, mesmo que o arquivo exista e a arte esteja boa.
+2. **Todo acento e til do roteiro está presente e correto** — conferir contra a lista literal do
+   bloco "TEXT THAT MUST BE RENDERED" do `.md` de prompt (seção 5-bis do `gerador-prompt-hq`),
+   palavra por palavra. Prestar atenção especial a `ã õ á é í ó ú â ê ô à ç` — são os que o modelo
+   mais derruba.
+3. Se o tema ensina ortografia (til, acentuação, letras) isso é ainda mais crítico: um acento errado
+   na HQ ensina a grafia errada para a criança.
+
+**Se algum painel falhar em (1) ou (2):**
+- Regerar **apenas aquela página** (não as 5 imagens inteiras) via `mcp__codex__codex-reply` no
+  mesmo thread (ou nova chamada `mcp__codex__codex`/`codex exec`), reforçando no prompt o bloco
+  `CRITICAL TEXT REQUIREMENTS` com os textos exatos que faltaram.
+- Até **2 tentativas por página**. Se persistir após 2 tentativas, reportar como falha parcial —
+  nunca reportar sucesso sem ter visto a imagem corrigida.
+- A folha de personagens (`chars.png`) e o portrait (`_landing/chars/[slug]-hd.png`) não têm texto
+  de balão — não precisam desta validação, mas vale abrir e checar consistência visual básica.
+
+**Nunca reportar `"status": "ok"` ao orquestrador sem ter aberto e lido as 4 páginas com a tool
+`Read` nesta execução.** "O arquivo existe" não é evidência suficiente.
+
 ---
 
 ## Portrait do personagem (via MCP, quando disponível)
@@ -245,7 +280,8 @@ O fluxo de portrait (`_landing/chars/[slug]-hd.png`) segue a mesma lógica dual:
 - **Não pedir upload de canônicas** — estão permanentemente em `Personagens\2o ano\`; o Codex as lê diretamente (caminho passado explicitamente no prompt/JSON).
 - **Timeout = falha explícita** — reportar ao orquestrador para intervenção de Léo.
 - **Sem colador-hq** — o projeto da Lis exibe as páginas individualmente no viewer; não montar arquivo único.
-- **Acionar `publicador-portal` após confirmação bem-sucedida**, em ambos os modos.
+- **Validação visual (Passo 2-bis) é obrigatória e não opcional** — existência de arquivo não substitui abrir e ler a imagem gerada (ERR-010).
+- **Acionar `publicador-portal` após confirmação bem-sucedida** (arquivos existem **e** passaram na validação visual), em ambos os modos.
 
 ---
 

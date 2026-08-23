@@ -527,12 +527,14 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
     <button class="disc-nav-btn port-active" id="nav-port" onclick="showDisc('port')">
       <span class="d-icon">✏️</span>
       <span class="d-name">Português</span>
-      <span class="d-count" id="count-port">3 temas</span>
+      <span class="d-count" id="count-port">5 temas</span>
     </button>
     <div class="theme-sub" id="sub-port">
       <button class="theme-link" onclick="showTheme('port','bilhete-cartao-pessoal')">✉️ Bilhete e Cartão Pessoal</button>
       <button class="theme-link" onclick="showTheme('port','letras-silabas-pontuacao')">🔤 Letras, Sílabas e Pontuação</button>
       <button class="theme-link" onclick="showTheme('port','carta-pessoal')">📮 Carta Pessoal</button>
+      <button class="theme-link" onclick="showTheme('port','contos-encantamento')">🪈 Contos de Encantamento</button>
+      <button class="theme-link" onclick="showTheme('port','sons-letras-j-g-til-s')">〰️ Sons e Letras: j, g, til e s</button>
     </div>
   </div>
   <div style="padding:16px 20px;border-top:2px solid #E2E8F0;margin-top:auto;">
@@ -551,8 +553,8 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
       <div class="home-subtitle">Escolha uma disciplina e vamos aprender juntos! 🎉</div>
       <div class="home-stats">
         <div class="hstat"><span class="hstat-num">5</span><span class="hstat-label">disciplinas</span></div>
-        <div class="hstat"><span class="hstat-num">20</span><span class="hstat-label">temas</span></div>
-        <div class="hstat"><span class="hstat-num">89</span><span class="hstat-label">atividades</span></div>
+        <div class="hstat"><span class="hstat-num">22</span><span class="hstat-label">temas</span></div>
+        <div class="hstat"><span class="hstat-num">99</span><span class="hstat-label">atividades</span></div>
       </div>
       <div class="home-stats" id="streak-banner" style="margin-top:16px;">
         <div class="hstat"><span class="hstat-num" id="streak-count">0</span><span class="hstat-label">🔥 dias seguidos</span></div>
@@ -603,8 +605,8 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
           <div class="dhc-name">Português</div>
           <div class="dhc-desc">Bilhetes, letras, sílabas e pontuação ✉️</div>
           <div class="dhc-chips">
-            <span class="chip" style="background:#FFE8DE;color:#7A1F04">3 temas</span>
-            <span class="chip" style="background:#FFF4EF;color:#7A1F04">15 atividades</span>
+            <span class="chip" style="background:#FFE8DE;color:#7A1F04">5 temas</span>
+            <span class="chip" style="background:#FFF4EF;color:#7A1F04">25 atividades</span>
           </div>
         </button>
       </div>
@@ -1075,7 +1077,7 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
   <div class="screen" id="screen-hist">
     <div class="disc-hero hist">
       <div class="disc-hero-title">📜 História</div>
-      <div class="disc-hero-sub">5 temas · 20 atividades</div>
+      <div class="disc-hero-sub">6 temas · 25 atividades</div>
     </div>
     <div class="disc-body">
 
@@ -1987,7 +1989,7 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
   <div class="screen" id="screen-port">
     <div class="disc-hero port">
       <div class="disc-hero-title">✏️ Português</div>
-      <div class="disc-hero-sub">3 temas · 15 atividades</div>
+      <div class="disc-hero-sub">5 temas · 25 atividades</div>
     </div>
     <div class="disc-body">
 
@@ -1995,6 +1997,8 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
         <button class="theme-tab-btn port-tab" id="tab-port-bilhete-cartao-pessoal" onclick="showTheme('port','bilhete-cartao-pessoal')">✉️ Bilhete e Cartão Pessoal</button>
         <button class="theme-tab-btn port-tab" id="tab-port-letras-silabas-pontuacao" onclick="showTheme('port','letras-silabas-pontuacao')">🔤 Letras, Sílabas e Pontuação</button>
         <button class="theme-tab-btn port-tab" id="tab-port-carta-pessoal" onclick="showTheme('port','carta-pessoal')">📮 Carta Pessoal</button>
+        <button class="theme-tab-btn port-tab" id="tab-port-contos-encantamento" onclick="showTheme('port','contos-encantamento')">🪈 Contos de Encantamento</button>
+        <button class="theme-tab-btn port-tab" id="tab-port-sons-letras-j-g-til-s" onclick="showTheme('port','sons-letras-j-g-til-s')">〰️ Sons e Letras: j, g, til e s</button>
       </div>
 
       <!-- ── TEMA 1: BILHETE E CARTÃO PESSOAL ── -->
@@ -2238,6 +2242,166 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
         </div>
       </div>
 
+      <!-- ── TEMA 4: CONTOS DE ENCANTAMENTO ── -->
+      <div class="theme-content" id="theme-port-contos-encantamento" data-pages-start="139" data-pages-end="173">
+        <div class="hq-card">
+          <div class="hq-viewer-wrap" style="background:#4A1200;">
+            <div class="hq-viewer-title" style="color:#FB8C5A;">🪈 O Conto que Fugiu do Livro</div>
+            <div class="hq-viewer-sub" style="color:#FECDB2;">Aventura com Lis e Flautim · 4 páginas</div>
+            <div class="hq-book-outer">
+              <div class="hq-book-shadow"></div>
+              <div class="hq-book-stack">
+                <div class="hq-page-base" id="hq-contos-display">
+                  <img id="hq-contos-img" src="portugues/contos-encantamento/hq-contos-encantamento-pg1.png" alt="HQ Contos de Encantamento — Página 1" draggable="false" style="object-fit:contain; touch-action:auto;">
+                  <div class="hq-shine"></div>
+                </div>
+              </div>
+            </div>
+            <div class="hq-controls">
+              <button class="hq-btn" id="hq-contos-prev" onclick="hqGoTo('contos',hqCurrent['contos']-1)" disabled>◀ Voltar</button>
+              <div class="hq-indicator" id="hq-contos-ind" style="color:#FB8C5A;">1 / 4</div>
+              <button class="hq-btn" id="hq-contos-next" onclick="hqGoTo('contos',hqCurrent['contos']+1)">Próxima ▶</button>
+            </div>
+            <div class="hq-dots" id="hq-contos-dots">
+              <div class="hq-dot active" onclick="hqGoTo('contos',0)"></div>
+              <div class="hq-dot" onclick="hqGoTo('contos',1)"></div>
+              <div class="hq-dot" onclick="hqGoTo('contos',2)"></div>
+              <div class="hq-dot" onclick="hqGoTo('contos',3)"></div>
+            </div>
+          </div>
+          <div class="hq-caption">
+            <span>📖</span>
+            <span>O Conto que Fugiu do Livro — 4 páginas · Personagens: Lis e Flautim 🪈 · Tema: estrutura do conto de encantamento — começo, conflito, desfecho e os balões da HQ</span>
+          </div>
+          <div class="livro-ref">📚 Livro pp. 139–173</div>
+        </div>
+        <hr class="sdiv">
+        <div class="act-grid">
+          <a class="act-card port" href="portugues/contos-encantamento/quiz-contos.html" target="_blank">
+            <div class="act-icon">❓</div>
+            <div class="act-title">Quiz: Contos de Encantamento</div>
+            <div class="act-desc">Perguntas sobre começo, conflito e desfecho dos contos!</div>
+            <div class="act-tags"><span class="tag tag-port">Português</span><span class="tag tag-a">Ativo</span></div>
+            <div class="level lv4">📖 Retrieval practice</div>
+          </a>
+          <a class="act-card port" href="portugues/contos-encantamento/ordena-hamelin.html" target="_blank">
+            <div class="act-icon">🔢</div>
+            <div class="act-title">Ordena a História</div>
+            <div class="act-desc">Coloque os acontecimentos do flautista de Hamelin na ordem certa!</div>
+            <div class="act-tags"><span class="tag tag-port">Português</span><span class="tag tag-a">Síntese</span></div>
+            <div class="level lv3">🏆 Ensinar (90%)</div>
+          </a>
+          <a class="act-card port" href="portugues/contos-encantamento/baloes-hq.html" target="_blank">
+            <div class="act-icon">💬</div>
+            <div class="act-title">Os Balões da HQ</div>
+            <div class="act-desc">Descubra qual balão é de fala, cochicho, pensamento, grito e narrador!</div>
+            <div class="act-tags"><span class="tag tag-port">Português</span><span class="tag tag-a">Prática</span></div>
+            <div class="level lv2">⚡ Praticar (80%)</div>
+          </a>
+          <a class="act-card port" href="portugues/contos-encantamento/memoria-contos.html" target="_blank">
+            <div class="act-icon">🃏</div>
+            <div class="act-title">Jogo da Memória das Palavras</div>
+            <div class="act-desc">Encontre os pares de palavra e significado do conto!</div>
+            <div class="act-tags"><span class="tag tag-port">Português</span><span class="tag tag-a">Prática</span></div>
+            <div class="level lv2">⚡ Praticar (80%)</div>
+          </a>
+          <a class="act-card port" href="portugues/contos-encantamento/mapa-mental-contos.html" target="_blank">
+            <div class="act-icon">🗺️</div>
+            <div class="act-title">Mapa Mental</div>
+            <div class="act-desc">Monte o mapa das partes de um conto de encantamento!</div>
+            <div class="act-tags"><span class="tag tag-port">Português</span><span class="tag tag-a">Síntese</span></div>
+            <div class="level lv3">🏆 Ensinar (90%)</div>
+          </a>
+        </div>
+        <hr class="sdiv">
+        <div class="sched-title">📅 Sugestão de uso</div>
+        <div class="sched">
+          <div class="sched-row"><span class="sched-day port">Dia 1</span><span class="sched-acts">HQ + Quiz: Contos de Encantamento</span></div>
+          <div class="sched-row"><span class="sched-day port">Dia 2</span><span class="sched-acts">Ordena a História + Os Balões da HQ</span></div>
+          <div class="sched-row"><span class="sched-day port">Dia 3</span><span class="sched-acts">Jogo da Memória + Mapa Mental</span></div>
+        </div>
+      </div>
+
+      <!-- ── TEMA 5: SONS E LETRAS: J, G, TIL E S ── -->
+      <div class="theme-content" id="theme-port-sons-letras-j-g-til-s" data-pages-start="146" data-pages-end="175">
+        <div class="hq-card">
+          <div class="hq-viewer-wrap" style="background:#4A1200;">
+            <div class="hq-viewer-title" style="color:#FB8C5A;">〰️ A Onda que Roubou os Sons</div>
+            <div class="hq-viewer-sub" style="color:#FECDB2;">Aventura com Lis e Tilim · 4 páginas</div>
+            <div class="hq-book-outer">
+              <div class="hq-book-shadow"></div>
+              <div class="hq-book-stack">
+                <div class="hq-page-base" id="hq-sons-display">
+                  <img id="hq-sons-img" src="portugues/sons-letras-j-g-til-s/hq-sons-letras-j-g-til-s-pg1.png" alt="HQ Sons e Letras: j, g, til e s — Página 1" draggable="false" style="object-fit:contain; touch-action:auto;">
+                  <div class="hq-shine"></div>
+                </div>
+              </div>
+            </div>
+            <div class="hq-controls">
+              <button class="hq-btn" id="hq-sons-prev" onclick="hqGoTo('sons',hqCurrent['sons']-1)" disabled>◀ Voltar</button>
+              <div class="hq-indicator" id="hq-sons-ind" style="color:#FB8C5A;">1 / 4</div>
+              <button class="hq-btn" id="hq-sons-next" onclick="hqGoTo('sons',hqCurrent['sons']+1)">Próxima ▶</button>
+            </div>
+            <div class="hq-dots" id="hq-sons-dots">
+              <div class="hq-dot active" onclick="hqGoTo('sons',0)"></div>
+              <div class="hq-dot" onclick="hqGoTo('sons',1)"></div>
+              <div class="hq-dot" onclick="hqGoTo('sons',2)"></div>
+              <div class="hq-dot" onclick="hqGoTo('sons',3)"></div>
+            </div>
+          </div>
+          <div class="hq-caption">
+            <span>📖</span>
+            <span>A Onda que Roubou os Sons — 4 páginas · Personagens: Lis e Tilim 〰️ · Tema: letra j, letra g antes de e/i, til (~) e a letra s na sílaba</span>
+          </div>
+          <div class="livro-ref">📚 Livro pp. 146–175</div>
+        </div>
+        <hr class="sdiv">
+        <div class="act-grid">
+          <a class="act-card port" href="portugues/sons-letras-j-g-til-s/quiz-sons-letras.html" target="_blank">
+            <div class="act-icon">❓</div>
+            <div class="act-title">Quiz: Sons e Letras</div>
+            <div class="act-desc">Perguntas sobre as letras j, g, o til e a letra s!</div>
+            <div class="act-tags"><span class="tag tag-port">Português</span><span class="tag tag-a">Ativo</span></div>
+            <div class="level lv4">📖 Retrieval practice</div>
+          </a>
+          <a class="act-card port" href="portugues/sons-letras-j-g-til-s/completa-g-ou-j.html" target="_blank">
+            <div class="act-icon">🔤</div>
+            <div class="act-title">G ou J?</div>
+            <div class="act-desc">Escolha a letra certa para completar cada palavra!</div>
+            <div class="act-tags"><span class="tag tag-port">Português</span><span class="tag tag-a">Prática</span></div>
+            <div class="level lv2">⚡ Praticar (80%)</div>
+          </a>
+          <a class="act-card port" href="portugues/sons-letras-j-g-til-s/til-som-nasal.html" target="_blank">
+            <div class="act-icon">〰️</div>
+            <div class="act-title">O Til e o Som Nasal</div>
+            <div class="act-desc">Coloque o til no lugar certo e faça a palavra cantar no nariz!</div>
+            <div class="act-tags"><span class="tag tag-port">Português</span><span class="tag tag-a">Prática</span></div>
+            <div class="level lv2">⚡ Praticar (80%)</div>
+          </a>
+          <a class="act-card port" href="portugues/sons-letras-j-g-til-s/classifica-s-silaba.html" target="_blank">
+            <div class="act-icon">✂️</div>
+            <div class="act-title">O S no Começo ou no Fim?</div>
+            <div class="act-desc">Arraste cada palavra para o lugar certo da letra s na sílaba!</div>
+            <div class="act-tags"><span class="tag tag-port">Português</span><span class="tag tag-a">Visual</span></div>
+            <div class="level lv3">🏆 Ensinar (90%)</div>
+          </a>
+          <a class="act-card port" href="portugues/sons-letras-j-g-til-s/mapa-mental-sons-letras.html" target="_blank">
+            <div class="act-icon">🗺️</div>
+            <div class="act-title">Mapa Mental</div>
+            <div class="act-desc">Monte o mapa dos sons e das letras que você aprendeu!</div>
+            <div class="act-tags"><span class="tag tag-port">Português</span><span class="tag tag-a">Síntese</span></div>
+            <div class="level lv3">🏆 Ensinar (90%)</div>
+          </a>
+        </div>
+        <hr class="sdiv">
+        <div class="sched-title">📅 Sugestão de uso</div>
+        <div class="sched">
+          <div class="sched-row"><span class="sched-day port">Dia 1</span><span class="sched-acts">HQ + Quiz: Sons e Letras</span></div>
+          <div class="sched-row"><span class="sched-day port">Dia 2</span><span class="sched-acts">G ou J? + O Til e o Som Nasal</span></div>
+          <div class="sched-row"><span class="sched-day port">Dia 3</span><span class="sched-acts">O S no Começo ou no Fim? + Mapa Mental</span></div>
+        </div>
+      </div>
+
     </div><!-- /disc-body -->
   </div><!-- /screen-port -->
 
@@ -2283,7 +2447,9 @@ var hqPages = {
   centena:       ['matematica/centena-e-mil/hq-centena-e-mil-pg1.png','matematica/centena-e-mil/hq-centena-e-mil-pg2.png','matematica/centena-e-mil/hq-centena-e-mil-pg3.png','matematica/centena-e-mil/hq-centena-e-mil-pg4.png'],
   bilhete:       ['portugues/bilhete-cartao-pessoal/hq-bilhete-cartao-pessoal-pg1.png','portugues/bilhete-cartao-pessoal/hq-bilhete-cartao-pessoal-pg2.png','portugues/bilhete-cartao-pessoal/hq-bilhete-cartao-pessoal-pg3.png','portugues/bilhete-cartao-pessoal/hq-bilhete-cartao-pessoal-pg4.png'],
   letras:        ['portugues/letras-silabas-pontuacao/hq-letras-silabas-pontuacao-pg1.png','portugues/letras-silabas-pontuacao/hq-letras-silabas-pontuacao-pg2.png','portugues/letras-silabas-pontuacao/hq-letras-silabas-pontuacao-pg3.png','portugues/letras-silabas-pontuacao/hq-letras-silabas-pontuacao-pg4.png'],
-  carta:         ['portugues/carta-pessoal/hq-carta-pessoal-pg1.png','portugues/carta-pessoal/hq-carta-pessoal-pg2.png','portugues/carta-pessoal/hq-carta-pessoal-pg3.png','portugues/carta-pessoal/hq-carta-pessoal-pg4.png']
+  carta:         ['portugues/carta-pessoal/hq-carta-pessoal-pg1.png','portugues/carta-pessoal/hq-carta-pessoal-pg2.png','portugues/carta-pessoal/hq-carta-pessoal-pg3.png','portugues/carta-pessoal/hq-carta-pessoal-pg4.png'],
+  contos:        ['portugues/contos-encantamento/hq-contos-encantamento-pg1.png','portugues/contos-encantamento/hq-contos-encantamento-pg2.png','portugues/contos-encantamento/hq-contos-encantamento-pg3.png','portugues/contos-encantamento/hq-contos-encantamento-pg4.png'],
+  sons:          ['portugues/sons-letras-j-g-til-s/hq-sons-letras-j-g-til-s-pg1.png','portugues/sons-letras-j-g-til-s/hq-sons-letras-j-g-til-s-pg2.png','portugues/sons-letras-j-g-til-s/hq-sons-letras-j-g-til-s-pg3.png','portugues/sons-letras-j-g-til-s/hq-sons-letras-j-g-til-s-pg4.png']
 };
 
 var firstTheme = { cien: 'animais-ciclo-vida', geo: 'representar-lugares', hist: 'memorias-lugares', mat: 'numeros-ordinais', port: 'bilhete-cartao-pessoal' };
