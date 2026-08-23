@@ -130,7 +130,7 @@ Sistema de cartas **temÃ¡ticas** prÃ³prias para a Lis. Ao concluir todas as 
 **Assets de cartas:** `_landing/cartas/carta-fundo-[card_slug].png`
 **Cartas disponÃ­veis:** abacaxi ðŸ Â· banana ðŸŒ Â· coraÃ§Ã£o â¤ï¸ Â· estrela â­ Â· kiwi ðŸ¥ Â· maÃ§Ã£ ðŸŽ Â· melancia ðŸ‰ Â· morango ðŸ“ Â· pÃªssego ðŸ‘ Â· uva ðŸ‡
 **Assets de personagens:** `_landing/chars/[slug-personagem].png`
-**Supabase:** credenciais em `SUBSTITUIR_URL_SUPABASE` / `SUBSTITUIR_CHAVE_PUBLICA` (Leo deve criar projeto separado do 5Âº ano)
+**Supabase:** projeto `mmtrzxmitklpibfilbio` (mesmo projeto do 5o ano, compartilhado - nunca foi criado um projeto separado, apesar da nota antiga aqui dizer o contrario). A tabela `cards` la e a tabela do 5o ano (schema `rarity`); em 2026-08-23 foram aplicadas 2 migracoes aditivas para o 2o ano funcionar: `ALTER TABLE cards ADD COLUMN card_slug text;` e `ALTER TABLE cards ALTER COLUMN rarity DROP NOT NULL;`. Ver ERR-012 em ERROS.md para o diagnostico completo (nenhuma carta do 2o ano tinha sido persistida ate essa correcao).
 
 ### Snippet obrigatÃ³rio em todo HTML de atividade
 

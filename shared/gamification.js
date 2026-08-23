@@ -532,10 +532,16 @@
   /* Supabase                                                             */
   /* ------------------------------------------------------------------ */
   async function saveCard(supa, uid, themeSlug, discipline, cardSlug) {
-    await supa.from("cards").upsert(
+    var res = await supa.from("cards").upsert(
       { user_id: uid, theme_slug: themeSlug, discipline: discipline, card_slug: cardSlug },
       { onConflict: "user_id,theme_slug" }
     );
+    // ERR-012: upsert pode falhar silenciosamente (schema, RLS, FK) sem lançar exceção —
+    // o reveal client-side acontece de qualquer forma, mascarando a falha de persistência.
+    if (res && res.error) {
+      console.error("[Sabendo] Falha ao salvar carta (não persistida):", res.error, { uid: uid, themeSlug: themeSlug, cardSlug: cardSlug });
+    }
+    return res;
   }
 
   async function fetchProgress(supa, uid, themeSlug, currentActivityType) {
@@ -839,6 +845,10 @@
           theme_slug:    themeSlug,
           activity_type: config.activityType,
           score:         typeof window.sabendoScore === 'number' ? window.sabendoScore : null
+        }).then(function(res) {
+          // ERR-012: insert() do supabase-js não lança exceção em erro de API (schema/RLS/FK) —
+          // sem checar res.error, uma falha de persistência fica completamente invisível.
+          if (res && res.error) console.error("[Sabendo] Falha ao gravar activity_log:", res.error, { themeSlug: themeSlug, activityType: config.activityType });
         });
       } catch(e) {}
     }

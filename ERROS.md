@@ -343,6 +343,49 @@ Isso é distinto do prompt de página de HQ (que É retangular 1024×1536 e com 
 
 ---
 
+## ERR-012 — CRÍTICO: tabela `cards` incompatível com o 2º ano; NENHUMA carta jamais foi persistida no banco
+
+**Arquivos afetados:** `shared/gamification.js` (função `saveCard`), todos os 20 temas do portal (2026-08-23)
+**Data:** 2026-08-23
+**Tipo:** Infraestrutura — schema de banco compartilhado com o projeto do 5º ano, incompatível
+
+### Causa raiz
+
+O projeto Supabase (`mmtrzxmitklpibfilbio`) é **compartilhado com o portal do 5º ano** (mesmas credenciais hardcoded em todo HTML de atividade). A tabela `cards` de produção tinha o schema do 5º ano — `rarity` (comum/rara/épica/lendária), **sem a coluna `card_slug`** que todo o código do 2º ano usa. `referencias/gamificacao-schema.md` documentava um schema (`card_slug`, sem `rarity`) que **nunca foi de fato aplicado** ao banco real — provavelmente porque a nota "Leo deve criar projeto separado do 5º ano" (ver `CLAUDE.md`) nunca foi executada, e alguém preencheu as credenciais do projeto compartilhado direto no código sem migrar o schema.
+
+Consequência: todo `saveCard()` (`supa.from("cards").upsert({..., card_slug: ...})`) falhava com erro `42703 column cards.card_slug does not exist` — mas `supabase-js` **não lança exceção** em erro de API (400), só retorna `{data:null, error:{...}}`. Como `saveCard()` nunca checava `.error`, a falha era 100% silenciosa.
+
+O reveal cinematográfico (confete, nome do personagem, arte da carta) é **inteiramente renderizado no cliente**, sorteado e desenhado *antes* da tentativa de gravação — por isso a criança via a celebração completa e real (inclusive print de tela) mesmo com a gravação falhando sempre. Resultado: **nenhuma carta de nenhum tema do 2º ano jamais existiu na tabela `cards`**, desde que a funcionalidade foi lançada. A tela "Minhas Cartas" (`loadCartas()` em `index.html`) sempre mostrava vazio porque não havia, de fato, nada persistido — não é um bug de leitura, é ausência real de dados.
+
+### Diagnóstico usado (reprodutível sem credencial nova)
+
+```bash
+# Coluna que o código do 2º ano precisa, mas pode não existir na tabela real:
+curl "https://[projeto].supabase.co/rest/v1/cards?select=card_slug&limit=1" \
+  -H "apikey: [chave publica]" -H "Authorization: Bearer [chave publica]"
+# Erro 42703 "column ... does not exist" = confirma o schema mismatch
+```
+
+A chave pública (`sb_publishable_...`) tem permissão de leitura aberta em `cards` (policy "allow all" do schema documentado) — dá para confirmar o problema via curl puro, sem precisar de service role.
+
+### Correção aplicada
+
+1. **Migração de schema** (executada por Léo via SQL Editor do Supabase, únca ação que exige credencial que o agente não possui):
+   ```sql
+   ALTER TABLE cards ADD COLUMN card_slug text;
+   ALTER TABLE cards ALTER COLUMN rarity DROP NOT NULL;
+   ```
+   Ambas aditivas/relaxantes — não afetam nenhuma linha existente do 5º ano (que sempre preenche `rarity` e nunca lê `card_slug`).
+2. **`shared/gamification.js`**: `saveCard()` e o insert de `activity_log` dentro de `run()` agora checam `res.error` e fazem `console.error` com contexto (uid/tema/carta) — uma falha de persistência futura vai aparecer no console do navegador em vez de desaparecer silenciosamente.
+
+### Regra para a squad
+
+**Nunca confiar que `await supa.from(...).insert/upsert(...)` sem checar `.error` significa sucesso.** O cliente `supabase-js` só lança exceção em falha de rede — erros de API (schema, RLS, FK, constraint) retornam `{data, error}` normalmente. Todo novo ponto de gravação no Supabase (ali ou em código futuro) deve checar `res.error` e logar, nunca assumir sucesso pelo simples fato de a `Promise` ter resolvido.
+
+**Se uma feature envolve efeito visual client-side independente de uma gravação (reveal, confete, animação de conquista), o efeito visual NUNCA deve ser a prova de que a gravação funcionou.** Validar a persistência real (leitura pós-escrita, teste automatizado, ou no mínimo log de erro) antes de considerar uma feature de gamificação "funcionando".
+
+---
+
 ## Checklist anti-bug para `gerador-atividades`
 
 Antes de finalizar qualquer HTML de atividade, verificar:
