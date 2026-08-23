@@ -386,6 +386,24 @@ A chave pública (`sb_publishable_...`) tem permissão de leitura aberta em `car
 
 ---
 
+## ERR-013 — Remendo manual em imagem de HQ já gerada em vez de regeneração completa via Codex
+
+**Arquivos afetados:** qualquer PNG de HQ (`hq-[slug]-pg*.png`) ou portrait em qualquer tema
+**Data:** 2026-08-23 (regra herdada de incidente real no projeto irmão do 5º ano — `estudos/ERROS.md` ERR-005g)
+**Tipo:** Processo — qualidade de asset visual
+
+### Causa raiz
+
+Ao identificar um defeito em uma imagem de HQ já gerada (erro de texto, proporção de personagem errada, elemento faltando), existe a tentação de "consertar" a imagem existente com edição pontual — recorte, colagem, patch via Pillow/editor de imagem, inpainting manual — em vez de regenerar a página inteira via Codex. O resultado é sempre visualmente amador: bordas, texturas e iluminação destoando do resto da ilustração, entregando uma HQ com remendo visível.
+
+### Regra para a squad
+
+**Correção de qualquer defeito em uma imagem de HQ (HQ ou portrait) DEVE SEMPRE ser feita gerando a imagem inteira do zero via Codex — nunca editando, recortando, colando ou sobrepondo algo sobre o PNG já existente.** Vale para qualquer ferramenta (Pillow, editor de imagem, script de patch, inpainting) e qualquer parte da imagem, por menor que seja. Um remendo amador é sempre pior que esperar por uma nova geração completa.
+
+Se o defeito for de proporção/escala de personagem (ex: mascote desenhado do tamanho de um adulto), o prompt de regeneração deve reforçar explicitamente a altura relativa correta citando a folha de personagem canônica como referência — não basta pedir "corrigir o tamanho", é preciso descrever a proporção esperada.
+
+---
+
 ## Checklist anti-bug para `gerador-atividades`
 
 Antes de finalizar qualquer HTML de atividade, verificar:
