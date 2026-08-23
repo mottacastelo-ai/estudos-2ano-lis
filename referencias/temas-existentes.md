@@ -1,7 +1,7 @@
 # Temas Existentes — Portal da Lis (2º Ano)
 
 > Atualizar este arquivo após cada novo tema implementado.
-> Última atualização: 2026-08-23
+> Última atualização: 2026-08-23 (Somando/Subtraindo Dezenas Exatas + Adição até 99)
 
 ---
 
@@ -32,18 +32,20 @@
 | Mudanças na Convivência | `mudancas-convivencia` | Tempa (ampulheta) | quiz · jogo-memoria · silabas · mapa-mental |
 | Convivência nos Transportes Coletivos | `convivencia-transportes-coletivos` | Trilim (sino de bonde) | quiz · arrastar · completar · ilustrador · mapa-mental |
 
-## Matemática (`mat`) — 8 temas
+## Matemática (`mat`) — 10 temas
 
-| Tema | Slug | Personagem | Atividades |
-|---|---|---|---|
-| Números Ordinais | `numeros-ordinais` | Primo (troféu) | quiz · jogo-memoria · arrastar-numeros-ordinais · criador-frase · mapa-mental |
-| A Dezena e os Números até 19 | `dezena-numeros-ate-19` | Dezi (bastão de dezena) | quiz · arrastar-dezena · completar-tabuada · jogo-memoria · mapa-mental |
-| Pares, Ímpares e Dezenas Exatas | `pares-impares-dezenas-exatas` | Duo (par de dados) | quiz · classifica-pares-impares · arrastar-dezenas · jogo-memoria · mapa-mental |
-| Números até 99 | `numeros-ate-99` | Centão (ábaco) | quiz · decompor-numeros · arrastar-dezenas-unidades · jogo-memoria · mapa-mental |
-| Centena e Mil | `centena-e-mil` | Cento (placa de centena) | quiz · montar-centena · arrastar-ordens · jogo-memoria · mapa-mental |
-| Medindo Comprimentos | `medindo-comprimentos` | Trena (fita métrica) | quiz · vf · ilustrador · mapa-mental |
-| Medindo Massas | `medindo-massas` | Fiel (balança de dois pratos) | quiz · silabas · ilustrador · mapa-mental |
-| Medindo Capacidades | `medindo-capacidades` | Jarrim (jarra medidora) | quiz · arrastar · ilustrador · mapa-mental |
+| Tema | Slug | Personagem | Atividades | Páginas livro |
+|---|---|---|---|---|
+| Números Ordinais | `numeros-ordinais` | Primo (troféu) | quiz · jogo-memoria · arrastar-numeros-ordinais · criador-frase · mapa-mental | |
+| A Dezena e os Números até 19 | `dezena-numeros-ate-19` | Dezi (bastão de dezena) | quiz · arrastar-dezena · completar-tabuada · jogo-memoria · mapa-mental | |
+| Pares, Ímpares e Dezenas Exatas | `pares-impares-dezenas-exatas` | Duo (par de dados) | quiz · classifica-pares-impares · arrastar-dezenas · jogo-memoria · mapa-mental | |
+| Números até 99 | `numeros-ate-99` | Centão (ábaco) | quiz · decompor-numeros · arrastar-dezenas-unidades · jogo-memoria · mapa-mental | |
+| Centena e Mil | `centena-e-mil` | Cento (placa de centena) | quiz · montar-centena · arrastar-ordens · jogo-memoria · mapa-mental | |
+| Medindo Comprimentos | `medindo-comprimentos` | Trena (fita métrica) | quiz · vf · ilustrador · mapa-mental | |
+| Medindo Massas | `medindo-massas` | Fiel (balança de dois pratos) | quiz · silabas · ilustrador · mapa-mental | |
+| Medindo Capacidades | `medindo-capacidades` | Jarrim (jarra medidora) | quiz · arrastar · ilustrador · mapa-mental | |
+| Somando e Subtraindo até 19 e Dezenas Exatas | `somando-subtraindo-dezenas-exatas` | Dezinho (blocobarra de material dourado) | quiz · reta-numerica · caca-palavras · frase · mapa-mental | pp. 172–179 |
+| Adição de Números até 99 | `adicao-numeros-ate-99` | Colunete (lousa/tablet com colunas D/U) | quiz · complete-a-conta · caca-numeros · criador-de-problema · mapa-mental | pp. 180–185 |
 
 ## Português (`port`) — 3 temas
 
@@ -55,7 +57,7 @@
 
 ---
 
-**Total:** 5 disciplinas · 23 temas · 101 atividades
+**Total:** 5 disciplinas · 25 temas · 111 atividades
 
 ---
 
@@ -86,6 +88,8 @@ JSON de contrato para o Codex: `estudos\.claude\pending\portraits-batch.json`.
 | Duo | `pares-impares-dezenas-exatas-hd.png` | gerado |
 | Centão | `numeros-ate-99-hd.png` | gerado |
 | Cento | `centena-e-mil-hd.png` | gerado |
-| Trena | `medindo-comprimentos-hd.png` | pendente |
-| Fiel | `medindo-massas-hd.png` | pendente |
-| Jarrim | `medindo-capacidades-hd.png` | pendente |
+| Trena | `medindo-comprimentos-hd.png` | gerado |
+| Fiel | `medindo-massas-hd.png` | gerado |
+| Jarrim | `medindo-capacidades-hd.png` | gerado |
+| Dezinho | `somando-subtraindo-dezenas-exatas-hd.png` | gerado |
+| Colunete | `adicao-numeros-ate-99-hd.png` | gerado |
