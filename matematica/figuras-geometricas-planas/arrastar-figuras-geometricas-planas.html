@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Planas ou Não Planas — Figuras Geométricas Planas | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root { --primary: #0AACE8; --light: #5AC8FB; --bg: #EFF9FF; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100vh; }
+
+.header {
+  background: linear-gradient(135deg, #044A7A, #0AACE8 60%, #5AC8FB);
+  color: #fff; padding: 20px 24px; text-align: center;
+}
+.header .emoji { font-size: 2.5rem; }
+.header h1 { font-family: 'Baloo 2', sans-serif; font-size: 1.6rem; font-weight: 900; margin-top: 4px; }
+.header p { font-size: 1rem; opacity: 0.9; }
+
+.container { max-width: 720px; margin: 0 auto; padding: 20px 16px 32px; }
+
+.instrucao {
+  background: #fff; border-radius: 14px; padding: 14px 18px;
+  font-size: 1.15rem; color: #1a3a50; font-weight: 700; text-align: center;
+  box-shadow: 0 2px 10px rgba(10,172,232,0.1); margin-bottom: 20px;
+}
+
+/* Fichas disponíveis */
+.fichas-wrap {
+  display: flex; flex-wrap: wrap; gap: 14px;
+  justify-content: center; margin-bottom: 24px;
+}
+.ficha {
+  background: #fff;
+  border: 3px solid var(--light);
+  color: #1a3a50; border-radius: 16px;
+  padding: 10px 18px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.05rem; font-weight: 800;
+  cursor: grab;
+  box-shadow: 0 3px 12px rgba(10,172,232,0.18);
+  user-select: none;
+  transition: transform 0.15s, opacity 0.2s;
+  touch-action: none;
+  min-height: 60px; min-width: 44px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 4px;
+}
+.ficha .shape-icon { font-size: 1.8rem; line-height: 1; }
+.ficha:active { transform: scale(1.07); cursor: grabbing; }
+.ficha.usada { opacity: 0.3; pointer-events: none; }
+.ficha.selecionada {
+  outline: 3px solid #fff;
+  box-shadow: 0 0 0 5px var(--primary);
+  transform: scale(1.08);
+}
+
+/* Zonas de classificação */
+.zonas-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.zona {
+  background: #fff;
+  border-radius: 18px;
+  padding: 14px;
+  box-shadow: 0 2px 12px rgba(10,172,232,0.12);
+}
+.zona-titulo {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.15rem; font-weight: 800; color: var(--primary);
+  text-align: center; margin-bottom: 10px;
+}
+.zona-drop {
+  min-height: 160px;
+  border: 3px dashed #bce4f8;
+  border-radius: 14px;
+  background: #f5fbff;
+  display: flex; flex-wrap: wrap; align-content: flex-start;
+  gap: 8px; padding: 10px;
+  transition: all 0.2s;
+}
+.zona-drop.over { border-color: var(--primary); background: #dbeeff; }
+.chip {
+  background: linear-gradient(135deg, #0AACE8, #5AC8FB);
+  color: #fff; border-radius: 12px;
+  padding: 8px 12px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 0.95rem; font-weight: 800;
+  display: flex; align-items: center; gap: 6px;
+  min-height: 44px;
+}
+.chip.correto { background: #22c55e; }
+.chip.errado  { background: #ef4444; }
+
+.botoes-wrap { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-bottom: 16px; }
+.btn-verificar {
+  background: linear-gradient(135deg, #0AACE8, #5AC8FB);
+  color: #fff; border: none; border-radius: 50px;
+  padding: 14px 36px; font-family: 'Baloo 2', sans-serif;
+  font-size: 1.2rem; font-weight: 800; cursor: pointer;
+  box-shadow: 0 4px 16px rgba(10,172,232,0.3);
+}
+.btn-limpar {
+  background: #fff; color: #888; border: 2px solid #ddd;
+  border-radius: 50px; padding: 14px 24px;
+  font-family: 'Baloo 2', sans-serif; font-size: 1.1rem; font-weight: 800;
+  cursor: pointer;
+}
+
+.feedback-box {
+  border-radius: 14px; padding: 14px 18px;
+  font-size: 1.1rem; font-weight: 700; margin-bottom: 14px; display: none; text-align: center;
+}
+.feedback-box.ok  { background: #d1fae5; color: #166534; }
+.feedback-box.err { background: #fee2e2; color: #7f1d1d; }
+
+.resultado-box {
+  display: none; text-align: center;
+  background: #fff; border-radius: 20px; padding: 32px 24px;
+  box-shadow: 0 4px 20px rgba(10,172,232,0.14); margin-bottom: 16px;
+}
+.resultado-box .emoji-final { font-size: 3.5rem; }
+.resultado-box h2 { font-family: 'Baloo 2', sans-serif; font-size: 2rem; color: var(--primary); margin: 10px 0 6px; }
+.resultado-box p { font-size: 1.15rem; color: #1a3a50; }
+
+.btn-voltar {
+  background: transparent; border: 2px solid var(--primary); color: var(--primary);
+  border-radius: 50px; padding: 12px 28px;
+  font-family: 'Baloo 2', sans-serif; font-size: 1.1rem; font-weight: 800;
+  cursor: pointer; display: block; margin: 0 auto 24px;
+}
+
+@media (max-width: 480px) {
+  .zonas-grid { grid-template-columns: 1fr; }
+  .header h1 { font-size: 1.3rem; }
+  .ficha { font-size: 0.95rem; padding: 8px 14px; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="emoji">🔷</div>
+  <h1>Planas ou Não Planas?</h1>
+  <p>Ajude o Molduro a classificar as figuras!</p>
+</div>
+
+<div class="container">
+
+  <div class="instrucao">
+    🎯 Arraste (ou toque para selecionar) cada ficha e coloque na caixa certa: Figura Plana ou Figura Não Plana!
+  </div>
+
+  <!-- Fichas disponíveis -->
+  <div class="fichas-wrap" id="fichas-wrap">
+    <div class="ficha" id="ficha-0" draggable="true"
+      ondragstart="onDragStart(event,0)" ontouchstart="onTouchFicha(event,0)">
+      <span class="shape-icon">⬜</span>Quadrado</div>
+    <div class="ficha" id="ficha-1" draggable="true"
+      ondragstart="onDragStart(event,1)" ontouchstart="onTouchFicha(event,1)">
+      <span class="shape-icon">▭</span>Retângulo</div>
+    <div class="ficha" id="ficha-2" draggable="true"
+      ondragstart="onDragStart(event,2)" ontouchstart="onTouchFicha(event,2)">
+      <span class="shape-icon">🔺</span>Triângulo</div>
+    <div class="ficha" id="ficha-3" draggable="true"
+      ondragstart="onDragStart(event,3)" ontouchstart="onTouchFicha(event,3)">
+      <span class="shape-icon">⚪</span>Círculo</div>
+    <div class="ficha" id="ficha-4" draggable="true"
+      ondragstart="onDragStart(event,4)" ontouchstart="onTouchFicha(event,4)">
+      <span class="shape-icon">🧊</span>Cubo</div>
+    <div class="ficha" id="ficha-5" draggable="true"
+      ondragstart="onDragStart(event,5)" ontouchstart="onTouchFicha(event,5)">
+      <span class="shape-icon">📦</span>Paralelepípedo</div>
+    <div class="ficha" id="ficha-6" draggable="true"
+      ondragstart="onDragStart(event,6)" ontouchstart="onTouchFicha(event,6)">
+      <span class="shape-icon">🔻</span>Pirâmide</div>
+  </div>
+
+  <div class="feedback-box" id="feedback"></div>
+
+  <!-- Zonas -->
+  <div class="zonas-grid">
+    <div class="zona">
+      <div class="zona-titulo">Figura Plana</div>
+      <div class="zona-drop" id="zona-plana"
+        ondragover="onDragOver(event)" ondrop="onDrop(event,'plana')" onclick="onZonaClick('plana')"></div>
+    </div>
+    <div class="zona">
+      <div class="zona-titulo">Figura Não Plana</div>
+      <div class="zona-drop" id="zona-nao-plana"
+        ondragover="onDragOver(event)" ondrop="onDrop(event,'nao-plana')" onclick="onZonaClick('nao-plana')"></div>
+    </div>
+  </div>
+
+  <div class="resultado-box" id="resultado-box">
+    <div class="emoji-final" id="emoji-final">🎉</div>
+    <h2 id="res-titulo">Muito bem!</h2>
+    <p id="res-msg">Você classificou as figuras!</p>
+  </div>
+
+  <div class="botoes-wrap">
+    <button class="btn-verificar" onclick="verificar()">Verificar ✔</button>
+    <button class="btn-limpar" onclick="limpar()">Recomeçar 🔄</button>
+  </div>
+
+  <button class="btn-voltar" onclick="voltarAoPortal()">⬅ Voltar ao Portal</button>
+</div>
+
+<script>
+(function () {
+
+// categoria correta de cada ficha: 'plana' ou 'nao-plana'
+var fichas = [
+  { texto: 'Quadrado', icone: '⬜', categoria: 'plana' },
+  { texto: 'Retângulo', icone: '▭', categoria: 'plana' },
+  { texto: 'Triângulo', icone: '🔺', categoria: 'plana' },
+  { texto: 'Círculo', icone: '⚪', categoria: 'plana' },
+  { texto: 'Cubo', icone: '🧊', categoria: 'nao-plana' },
+  { texto: 'Paralelepípedo', icone: '📦', categoria: 'nao-plana' },
+  { texto: 'Pirâmide', icone: '🔻', categoria: 'nao-plana' }
+];
+
+// Estado: fichaIdx → categoria colocada (ou null)
+var estado = {};
+fichas.forEach(function(f, i) { estado[i] = null; });
+
+var draggingFicha = null;
+var fichaSelecionada = null;
+
+function playSound(tipo) {
+  try {
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    var o = ctx.createOscillator(); var g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    if (tipo === 'correct') {
+      o.frequency.setValueAtTime(523, ctx.currentTime);
+      o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+      o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+      o.start(); o.stop(ctx.currentTime + 0.5);
+    } else {
+      o.frequency.setValueAtTime(300, ctx.currentTime);
+      o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      o.start(); o.stop(ctx.currentTime + 0.4);
+    }
+  } catch(e) {}
+}
+
+function onDragStart(e, idx) {
+  draggingFicha = idx;
+}
+
+function onDragOver(e) {
+  e.preventDefault();
+  e.currentTarget.classList.add('over');
+}
+
+function onDrop(e, categoria) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('over');
+  if (draggingFicha === null) return;
+  colocarFicha(draggingFicha, categoria);
+  draggingFicha = null;
+}
+
+// Touch: tap ficha → seleciona; tap zona → coloca
+function onTouchFicha(e, idx) {
+  e.preventDefault();
+  if (fichaSelecionada !== null) {
+    var prev = document.getElementById('ficha-' + fichaSelecionada);
+    if (prev) prev.classList.remove('selecionada');
+  }
+  fichaSelecionada = idx;
+  var el = document.getElementById('ficha-' + idx);
+  if (el) el.classList.add('selecionada');
+}
+
+function onZonaClick(categoria) {
+  if (fichaSelecionada !== null) {
+    colocarFicha(fichaSelecionada, categoria);
+    var el = document.getElementById('ficha-' + fichaSelecionada);
+    if (el) el.classList.remove('selecionada');
+    fichaSelecionada = null;
+  }
+}
+
+function colocarFicha(idx, categoria) {
+  estado[idx] = categoria;
+  var fichaEl = document.getElementById('ficha-' + idx);
+  if (fichaEl) fichaEl.classList.add('usada');
+
+  var chip = document.createElement('div');
+  chip.className = 'chip';
+  chip.id = 'chip-' + idx;
+  chip.innerHTML = '<span>' + fichas[idx].icone + '</span>' + fichas[idx].texto;
+
+  var zonaId = categoria === 'plana' ? 'zona-plana' : 'zona-nao-plana';
+  // remove chip antigo se já existia em outra zona
+  var chipAntigo = document.getElementById('chip-' + idx);
+  if (chipAntigo) chipAntigo.remove();
+  document.getElementById(zonaId).appendChild(chip);
+}
+
+function limpar() {
+  fichas.forEach(function(f, i) { estado[i] = null; });
+  fichaSelecionada = null;
+  document.getElementById('zona-plana').innerHTML = '';
+  document.getElementById('zona-nao-plana').innerHTML = '';
+  fichas.forEach(function(f, i) {
+    var el = document.getElementById('ficha-' + i);
+    if (el) el.classList.remove('usada', 'selecionada');
+  });
+  document.getElementById('feedback').style.display = 'none';
+  document.getElementById('resultado-box').style.display = 'none';
+}
+
+function verificar() {
+  var totalColocadas = 0;
+  var acertos = 0;
+  fichas.forEach(function(f, i) {
+    if (estado[i] !== null) {
+      totalColocadas++;
+      var chip = document.getElementById('chip-' + i);
+      if (estado[i] === f.categoria) {
+        acertos++;
+        if (chip) chip.classList.add('correto');
+      } else {
+        if (chip) chip.classList.add('errado');
+      }
+    }
+  });
+
+  var fb = document.getElementById('feedback');
+  if (totalColocadas < fichas.length) {
+    fb.className = 'feedback-box err';
+    fb.textContent = '⚠️ Classifique todas as ' + fichas.length + ' fichas antes de verificar!';
+    fb.style.display = 'block';
+    return;
+  }
+
+  var pct = Math.round((acertos / fichas.length) * 100);
+  window.sabendoScore = pct;
+
+  var res = document.getElementById('resultado-box');
+  res.style.display = 'block';
+
+  if (acertos === fichas.length) {
+    document.getElementById('emoji-final').textContent = '🏆';
+    document.getElementById('res-titulo').textContent = 'Perfeito!';
+    document.getElementById('res-msg').textContent = 'Você classificou todas as ' + fichas.length + ' figuras certinho!';
+    playSound('correct');
+  } else {
+    document.getElementById('emoji-final').textContent = '💡';
+    document.getElementById('res-titulo').textContent = acertos + ' de ' + fichas.length + ' acertos!';
+    document.getElementById('res-msg').textContent = 'Veja as fichas em vermelho e tente de novo!';
+    playSound('wrong');
+  }
+  fb.style.display = 'none';
+}
+
+window.onDragStart = onDragStart;
+window.onDragOver = onDragOver;
+window.onDrop = onDrop;
+window.onTouchFicha = onTouchFicha;
+window.onZonaClick = onZonaClick;
+window.verificar = verificar;
+window.limpar = limpar;
+
+})();
+</script>
+
+<!-- ── GAMIFICAÇÃO ─────────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'figuras-geometricas-planas';
+  var DISCIPLINE    = 'matematica';
+  var ACTIVITY_TYPE = 'arrastar';
+  var TOTAL_ATIV    = 5;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Molduro',
+        characterEmoji:  '🔷',
+        characterImg:    'chars/figuras-geometricas-planas-hd.png',
+        themeLabel:      'Figuras Geométricas Planas · Matemática',
+        totalActivities: TOTAL_ATIV,
+        activityType:    ACTIVITY_TYPE,
+        primaryColor:    '#0AACE8',
+        lightColor:      '#5AC8FB',
+        bgColor:         '#EFF9FF',
+        glowRgb:         '10,172,232',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _s = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _s = v;
+      var b = document.getElementById('gamificacao-btn');
+      if (b) b.style.display = 'block';
+    },
+    get: function () { return _s; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#0AACE8,#5AC8FB);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>

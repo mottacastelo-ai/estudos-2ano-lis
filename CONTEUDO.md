@@ -1,6 +1,6 @@
 # Inventário do Portal — Lis (2º Ano)
 
-> Gerado automaticamente por `scripts/update-docs.py` em 2026-08-22.
+> Gerado automaticamente por `scripts/update-docs.py` em 2026-08-23.
 > Fonte primária: `index.html`. Existência de arquivos validada no filesystem.
 
 ---
@@ -10,11 +10,11 @@
 | Disciplina | Temas | Atividades | HQs completas |
 |---|---|---|---|
 | 📝 Português | 5 | 25 | 5/5 |
-| 🔢 Matemática | 5 | 25 | 5/5 |
+| 🔢 Matemática | 9 | 42 | 9/9 |
 | 🔬 Ciências | 4 | 16 | 4/4 |
 | 🌍 Geografia | 2 | 8 | 2/2 |
 | 📜 História | 6 | 25 | 6/6 |
-| **Total** | **22** | **99** | **22/22** |
+| **Total** | **26** | **116** | **26/26** |
 
 ---
 
@@ -143,6 +143,51 @@
 - ✅ [(sem título)](matematica/centena-e-mil/verdadeiro-ou-falso-centena-e-mil.html)
 - ✅ [(sem título)](matematica/centena-e-mil/grafico-de-barras.html)
 - ✅ [(sem título)](matematica/centena-e-mil/mapa-mental-centena-e-mil.html)
+
+### figuras-geometricas-planas
+
+**HQ:** `hq-figuras-geometricas-planas-pg1.png` — ✅ p1 · ✅ p2 · ✅ p3 · ✅ p4 | ✅ prompt.md
+
+**Atividades (5):**
+
+- ✅ [(sem título)](matematica/figuras-geometricas-planas/quiz-figuras-geometricas-planas.html)
+- ✅ [(sem título)](matematica/figuras-geometricas-planas/arrastar-figuras-geometricas-planas.html)
+- ✅ [(sem título)](matematica/figuras-geometricas-planas/vf-figuras-geometricas-planas.html)
+- ✅ [(sem título)](matematica/figuras-geometricas-planas/ilustrador-figuras-geometricas-planas.html)
+- ✅ [(sem título)](matematica/figuras-geometricas-planas/mapa-mental-figuras-geometricas-planas.html)
+
+### medindo-comprimentos
+
+**HQ:** `hq-medindo-comprimentos-pg1.png` — ✅ p1 · ✅ p2 · ✅ p3 · ✅ p4 | ✅ prompt.md
+
+**Atividades (4):**
+
+- ✅ [(sem título)](matematica/medindo-comprimentos/quiz-medindo-comprimentos.html)
+- ✅ [(sem título)](matematica/medindo-comprimentos/vf-medindo-comprimentos.html)
+- ✅ [(sem título)](matematica/medindo-comprimentos/ilustrador-medindo-comprimentos.html)
+- ✅ [(sem título)](matematica/medindo-comprimentos/mapa-mental-medindo-comprimentos.html)
+
+### medindo-massas
+
+**HQ:** `hq-medindo-massas-pg1.png` — ✅ p1 · ✅ p2 · ✅ p3 · ✅ p4 | ✅ prompt.md
+
+**Atividades (4):**
+
+- ✅ [(sem título)](matematica/medindo-massas/quiz-medindo-massas.html)
+- ✅ [(sem título)](matematica/medindo-massas/silabas-medindo-massas.html)
+- ✅ [(sem título)](matematica/medindo-massas/ilustrador-medindo-massas.html)
+- ✅ [(sem título)](matematica/medindo-massas/mapa-mental-medindo-massas.html)
+
+### medindo-capacidades
+
+**HQ:** `hq-medindo-capacidades-pg1.png` — ✅ p1 · ✅ p2 · ✅ p3 · ✅ p4 | ✅ prompt.md
+
+**Atividades (4):**
+
+- ✅ [(sem título)](matematica/medindo-capacidades/quiz-medindo-capacidades.html)
+- ✅ [(sem título)](matematica/medindo-capacidades/arrastar-medindo-capacidades.html)
+- ✅ [(sem título)](matematica/medindo-capacidades/ilustrador-medindo-capacidades.html)
+- ✅ [(sem título)](matematica/medindo-capacidades/mapa-mental-medindo-capacidades.html)
 
 ---
 
