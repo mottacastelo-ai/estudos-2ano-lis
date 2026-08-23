@@ -10,11 +10,11 @@
 | Disciplina | Temas | Atividades | HQs completas |
 |---|---|---|---|
 | 📝 Português | 5 | 25 | 5/5 |
-| 🔢 Matemática | 9 | 42 | 9/9 |
+| 🔢 Matemática | 11 | 52 | 10/11 |
 | 🔬 Ciências | 4 | 16 | 4/4 |
 | 🌍 Geografia | 2 | 8 | 2/2 |
 | 📜 História | 6 | 25 | 6/6 |
-| **Total** | **26** | **116** | **26/26** |
+| **Total** | **28** | **126** | **27/28** |
 
 ---
 
@@ -188,6 +188,30 @@
 - ✅ [(sem título)](matematica/medindo-capacidades/arrastar-medindo-capacidades.html)
 - ✅ [(sem título)](matematica/medindo-capacidades/ilustrador-medindo-capacidades.html)
 - ✅ [(sem título)](matematica/medindo-capacidades/mapa-mental-medindo-capacidades.html)
+
+### somando-subtraindo-dezenas-exatas
+
+**HQ:** `hq-somando-subtraindo-dezenas-exatas-pg1.png` — ✅ p1 · ✅ p2 · ✅ p3 · ✅ p4 | ✅ prompt.md
+
+**Atividades (5):**
+
+- ✅ [(sem título)](matematica/somando-subtraindo-dezenas-exatas/quiz-somando-subtraindo-dezenas-exatas.html)
+- ✅ [(sem título)](matematica/somando-subtraindo-dezenas-exatas/reta-numerica-somando-subtraindo-dezenas-exatas.html)
+- ✅ [(sem título)](matematica/somando-subtraindo-dezenas-exatas/caca-palavras-somando-subtraindo-dezenas-exatas.html)
+- ✅ [(sem título)](matematica/somando-subtraindo-dezenas-exatas/frase-somando-subtraindo-dezenas-exatas.html)
+- ✅ [(sem título)](matematica/somando-subtraindo-dezenas-exatas/mapa-mental-somando-subtraindo-dezenas-exatas.html)
+
+### adicao-numeros-ate-99
+
+**HQ:** `hq-adicao-numeros-ate-99-pg1.png` — ✅ p1 · ✅ p2 · ✅ p3 · ❌ p4 | ✅ prompt.md
+
+**Atividades (5):**
+
+- ✅ [(sem título)](matematica/adicao-numeros-ate-99/quiz-adicao-numeros-ate-99.html)
+- ✅ [(sem título)](matematica/adicao-numeros-ate-99/complete-a-conta-adicao-numeros-ate-99.html)
+- ✅ [(sem título)](matematica/adicao-numeros-ate-99/caca-numeros-adicao-numeros-ate-99.html)
+- ✅ [(sem título)](matematica/adicao-numeros-ate-99/criador-de-problema-adicao-numeros-ate-99.html)
+- ✅ [(sem título)](matematica/adicao-numeros-ate-99/mapa-mental-adicao-numeros-ate-99.html)
 
 ---
 

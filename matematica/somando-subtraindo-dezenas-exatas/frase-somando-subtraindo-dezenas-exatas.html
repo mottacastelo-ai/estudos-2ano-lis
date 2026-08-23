@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Criador de Frase — Somando e Subtraindo até 19 e Dezenas Exatas | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #0AACE8;
+  --light: #5AC8FB;
+  --bg: #EFF9FF;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; font-size: 1.1rem; background: var(--bg); min-height: 100vh; }
+
+.header {
+  background: linear-gradient(135deg, #044A7A, #0AACE8 60%, #5AC8FB);
+  color: #fff;
+  padding: 20px 24px;
+  text-align: center;
+}
+.header .emoji { font-size: 2.4rem; display: block; margin-bottom: 6px; }
+.header h1 { font-family: 'Baloo 2', sans-serif; font-size: 1.5rem; font-weight: 900; }
+.header p { font-size: 1rem; opacity: 0.9; margin-top: 4px; }
+
+.container { max-width: 680px; margin: 0 auto; padding: 24px 16px; }
+
+.progress-bar-wrap { background: #c7eaf9; border-radius: 20px; height: 10px; margin-bottom: 20px; }
+.progress-bar { background: var(--primary); height: 10px; border-radius: 20px; transition: width 0.4s; }
+
+.round-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 26px 22px 24px;
+  box-shadow: 0 4px 20px rgba(10,172,232,0.12);
+  margin-bottom: 20px;
+}
+.r-num { font-size: 0.95rem; color: var(--primary); font-weight: 700; margin-bottom: 10px; }
+.r-text { font-size: 1.4rem; font-weight: 800; color: #1a2e3b; line-height: 1.4; margin-bottom: 20px; }
+
+.slots-frase {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 22px;
+}
+.slot-vazio {
+  min-width: 64px;
+  min-height: 54px;
+  border: 2.5px dashed #c7eaf9;
+  border-radius: 12px;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: var(--primary);
+  cursor: pointer;
+}
+.slot-vazio.cheio { border-style: solid; border-color: var(--primary); background: #daf1fc; }
+
+.pool-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.chip-btn {
+  background: var(--bg);
+  border: 2.5px solid var(--primary);
+  color: #0369a1;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 900;
+  border-radius: 12px;
+  padding: 12px 18px;
+  min-width: 60px;
+  min-height: 54px;
+  cursor: pointer;
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+.chip-btn:hover:not(:disabled) { transform: scale(1.06); box-shadow: 0 4px 14px rgba(10,172,232,0.2); }
+.chip-btn.usado { opacity: 0.25; pointer-events: none; }
+
+.btn-verificar {
+  display: block;
+  margin: 0 auto;
+  background: linear-gradient(135deg, var(--primary), var(--light));
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 16px 40px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(10,172,232,0.25);
+  min-height: 54px;
+}
+.btn-verificar:disabled { opacity: 0.4; cursor: default; }
+
+.feedback-msg {
+  border-radius: 14px;
+  padding: 14px 18px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-top: 16px;
+  text-align: center;
+  display: none;
+}
+.feedback-msg.show { display: block; }
+.feedback-msg.ok { background: #d1fae5; color: #166534; }
+.feedback-msg.nok { background: #fee2e2; color: #991b1b; }
+
+.btn-next {
+  display: none;
+  margin: 20px auto 0;
+  background: linear-gradient(135deg, var(--primary), var(--light));
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 16px 36px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(10,172,232,0.25);
+  min-height: 54px;
+}
+.btn-next.show { display: block; }
+
+.result-card {
+  display: none;
+  background: #fff;
+  border-radius: 24px;
+  padding: 36px 28px;
+  text-align: center;
+  box-shadow: 0 4px 24px rgba(10,172,232,0.15);
+}
+.result-card.show { display: block; }
+.result-emoji { font-size: 4rem; margin-bottom: 12px; }
+.result-title { font-family: 'Baloo 2', sans-serif; font-size: 2rem; font-weight: 900; color: var(--primary); }
+.result-score { font-size: 3rem; font-weight: 900; color: #1a2e3b; margin: 10px 0; }
+.result-msg { font-size: 1.2rem; color: #475569; margin-bottom: 20px; }
+
+.btn-retry {
+  background: #f0f9ff;
+  border: 2.5px solid var(--primary);
+  color: var(--primary);
+  border-radius: 50px;
+  padding: 14px 32px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  min-height: 50px;
+  margin-top: 8px;
+}
+
+.footer { text-align: center; padding: 24px 16px 32px; }
+.btn-back {
+  background: transparent;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  border-radius: 50px;
+  padding: 12px 28px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  min-height: 44px;
+}
+
+@media (max-width: 480px) {
+  body { padding: 0; font-size: 1.15rem; }
+  .container { padding: 16px 12px; }
+  .r-text { font-size: 1.2rem; }
+  .header h1 { font-size: 1.25rem; }
+  .chip-btn { font-size: 1.15rem; padding: 10px 14px; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="emoji">🧊</span>
+  <h1>Criador de Frase Matemática</h1>
+  <p>Monte a conta certa com o Dezinho!</p>
+</div>
+
+<div class="container">
+  <div class="progress-bar-wrap">
+    <div class="progress-bar" id="progressBar" style="width:0%"></div>
+  </div>
+
+  <div class="round-card" id="roundCard">
+    <div class="r-num" id="rNum">Frase 1 de 5</div>
+    <div class="r-text" id="rText"></div>
+
+    <div class="slots-frase" id="slotsFrase"></div>
+    <div class="pool-chips" id="poolChips"></div>
+
+    <button class="btn-verificar" id="btnVerificar" onclick="verificarFrase()">Verificar ✔</button>
+    <div class="feedback-msg" id="feedbackMsg"></div>
+    <button class="btn-next" id="btnNext" onclick="proximaRodada()">Próxima →</button>
+  </div>
+
+  <div class="result-card" id="resultCard">
+    <div class="result-emoji" id="resultEmoji"></div>
+    <div class="result-title">Frases concluídas!</div>
+    <div class="result-score" id="resultScore"></div>
+    <div class="result-msg" id="resultMsg"></div>
+    <button class="btn-retry" onclick="reiniciar()">Tentar novamente 🔄</button>
+  </div>
+</div>
+
+<div class="footer">
+  <button class="btn-back" onclick="voltarAoPortal()">← Voltar ao Portal</button>
+</div>
+
+<!-- GAMIFICAÇÃO -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'somando-subtraindo-dezenas-exatas';
+  var DISCIPLINE    = 'matematica';
+  var ACTIVITY_TYPE = 'frase';
+  var TOTAL_ATIV    = 5;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Dezinho',
+        characterEmoji:  '🧊',
+        characterImg:    'chars/somando-subtraindo-dezenas-exatas-hd.png',
+        themeLabel:      'Somando e Subtraindo até 19 e Dezenas Exatas · Matemática',
+        totalActivities: TOTAL_ATIV,
+        activityType:    ACTIVITY_TYPE,
+        primaryColor:    '#0AACE8',
+        lightColor:      '#5AC8FB',
+        bgColor:         '#EFF9FF',
+        glowRgb:         '10,172,232',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _scoreVal = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _scoreVal = v;
+      var btn = document.getElementById('gamificacao-btn');
+      if (btn) btn.style.display = 'block';
+    },
+    get: function () { return _scoreVal; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#0AACE8,#5AC8FB);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+
+<script>
+// Cada rodada: um cenário do livro + a frase numérica correta (número, operador, número, =, resultado).
+// Gabarito só em variável JS. O pool inclui 1 número distrator para exigir julgamento (3c-1: distrator não é dado bruto do enunciado).
+var todasRodadas = [
+  {
+    texto: 'O Dezinho tinha 5 blocos e ganhou mais 7. Monte a frase de adição.',
+    frase: ['5', '+', '7', '=', '12'],
+    distrator: '9'
+  },
+  {
+    texto: 'Eram 1 dezena e 6 unidades (16). Tirando 4 unidades, quantos sobram? Monte a frase.',
+    frase: ['16', '-', '4', '=', '12'],
+    distrator: '10'
+  },
+  {
+    texto: 'Uma cédula de 20 reais e outra de 30 reais. Monte a frase de adição de dezenas.',
+    frase: ['20', '+', '30', '=', '50'],
+    distrator: '40'
+  },
+  {
+    texto: 'Uma cédula de 40 reais menos uma de 10 reais. Monte a frase de subtração de dezenas.',
+    frase: ['40', '-', '10', '=', '30'],
+    distrator: '20'
+  },
+  {
+    texto: 'No pasto havia 11 vacas marrons e 6 brancas. Monte a frase que mostra a diferença.',
+    frase: ['11', '-', '6', '=', '5'],
+    distrator: '7'
+  }
+];
+
+var rodadas = [];
+var indiceAtual = 0;
+var acertos = 0;
+var preenchidos = [];
+
+function embaralhar(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+function playSound(tipo) {
+  try {
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    var o = ctx.createOscillator();
+    var g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    if (tipo === 'correct') {
+      o.frequency.setValueAtTime(523, ctx.currentTime);
+      o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+      o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+      o.start(); o.stop(ctx.currentTime + 0.5);
+    } else {
+      o.frequency.setValueAtTime(300, ctx.currentTime);
+      o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      o.start(); o.stop(ctx.currentTime + 0.4);
+    }
+  } catch(e) {}
+}
+
+function iniciar() {
+  rodadas = todasRodadas.slice();
+  indiceAtual = 0;
+  acertos = 0;
+  document.getElementById('resultCard').classList.remove('show');
+  document.getElementById('roundCard').style.display = 'block';
+  mostrarRodada();
+}
+
+function mostrarRodada() {
+  var r = rodadas[indiceAtual];
+  preenchidos = new Array(r.frase.length).fill(null);
+
+  document.getElementById('rNum').textContent = 'Frase ' + (indiceAtual + 1) + ' de ' + rodadas.length;
+  document.getElementById('rText').textContent = r.texto;
+  document.getElementById('progressBar').style.width = (indiceAtual / rodadas.length * 100) + '%';
+
+  var slotsEl = document.getElementById('slotsFrase');
+  slotsEl.innerHTML = '';
+  for (var i = 0; i < r.frase.length; i++) {
+    var slot = document.createElement('div');
+    slot.className = 'slot-vazio';
+    slot.id = 'slot-' + i;
+    slot.textContent = '?';
+    slot.setAttribute('data-idx', i);
+    slot.onclick = function() { removerDoSlot(parseInt(this.getAttribute('data-idx'), 10)); };
+    slotsEl.appendChild(slot);
+  }
+
+  var pool = embaralhar(r.frase.concat([r.distrator]));
+  var poolEl = document.getElementById('poolChips');
+  poolEl.innerHTML = '';
+  pool.forEach(function(valor, idx) {
+    var btn = document.createElement('button');
+    btn.className = 'chip-btn';
+    btn.textContent = valor;
+    btn.setAttribute('data-poolidx', idx);
+    btn.onclick = function() { colocarNoSlot(valor, this); };
+    poolEl.appendChild(btn);
+  });
+
+  document.getElementById('btnVerificar').disabled = false;
+  document.getElementById('btnVerificar').style.display = 'block';
+  var fb = document.getElementById('feedbackMsg');
+  fb.className = 'feedback-msg';
+  fb.textContent = '';
+  document.getElementById('btnNext').className = 'btn-next';
+}
+
+function colocarNoSlot(valor, chipEl) {
+  if (chipEl.classList.contains('usado')) return;
+  var proximoVazio = preenchidos.indexOf(null);
+  if (proximoVazio === -1) return;
+
+  preenchidos[proximoVazio] = valor;
+  chipEl.classList.add('usado');
+
+  var slot = document.getElementById('slot-' + proximoVazio);
+  slot.textContent = valor;
+  slot.classList.add('cheio');
+  slot.setAttribute('data-chipref', chipEl.getAttribute('data-poolidx'));
+}
+
+function removerDoSlot(idx) {
+  if (preenchidos[idx] === null) return;
+  var slot = document.getElementById('slot-' + idx);
+  var chipRef = slot.getAttribute('data-chipref');
+  var chip = document.querySelector('.chip-btn[data-poolidx="' + chipRef + '"]');
+  if (chip) chip.classList.remove('usado');
+
+  preenchidos[idx] = null;
+  slot.textContent = '?';
+  slot.classList.remove('cheio');
+  slot.removeAttribute('data-chipref');
+}
+
+function verificarFrase() {
+  var r = rodadas[indiceAtual];
+  if (preenchidos.indexOf(null) !== -1) {
+    var fbAviso = document.getElementById('feedbackMsg');
+    fbAviso.textContent = '✏️ Preencha todos os espaços da frase antes de verificar!';
+    fbAviso.className = 'feedback-msg show nok';
+    return;
+  }
+
+  var acertou = true;
+  for (var i = 0; i < r.frase.length; i++) {
+    if (preenchidos[i] !== r.frase[i]) { acertou = false; break; }
+  }
+
+  if (acertou) { acertos++; playSound('correct'); }
+  else { playSound('wrong'); }
+
+  document.querySelectorAll('.slot-vazio').forEach(function(s) {
+    s.style.borderColor = acertou ? '#22c55e' : '#ef4444';
+    s.style.background = acertou ? '#d1fae5' : '#fee2e2';
+  });
+
+  var fb = document.getElementById('feedbackMsg');
+  fb.textContent = acertou
+    ? '✅ Muito bem! A frase está correta!'
+    : '❌ Ainda não! A frase certa é: ' + r.frase.join(' ');
+  fb.className = 'feedback-msg show ' + (acertou ? 'ok' : 'nok');
+
+  document.getElementById('btnVerificar').disabled = true;
+  document.getElementById('btnNext').className = 'btn-next show';
+}
+
+function proximaRodada() {
+  indiceAtual++;
+  if (indiceAtual < rodadas.length) {
+    mostrarRodada();
+  } else {
+    mostrarResultado();
+  }
+}
+
+function mostrarResultado() {
+  var pct = Math.round((acertos / rodadas.length) * 100);
+  window.sabendoScore = pct;
+
+  document.getElementById('roundCard').style.display = 'none';
+  var rc = document.getElementById('resultCard');
+  rc.classList.add('show');
+
+  var emojis = ['😢','😐','🙂','😄','🎉'];
+  var idx = Math.min(Math.floor(pct / 25), 4);
+  document.getElementById('resultEmoji').textContent = emojis[idx];
+  document.getElementById('resultScore').textContent = acertos + ' de ' + rodadas.length + ' frases certas!';
+
+  var msgs = [
+    'Vamos montar mais frases com o Dezinho! 💪',
+    'Quase lá! Continue treinando as frases! 🧊',
+    'Bom trabalho montando as contas! 😊',
+    'Muito bem! Você monta frases matemáticas muito bem! 🌟',
+    'Incrível! Você é craque em criar frases numéricas! 🏆'
+  ];
+  document.getElementById('resultMsg').textContent = msgs[idx];
+  document.getElementById('progressBar').style.width = '100%';
+}
+
+function reiniciar() { iniciar(); }
+
+window.verificarFrase = verificarFrase;
+window.proximaRodada = proximaRodada;
+window.reiniciar = reiniciar;
+
+iniciar();
+</script>
+
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>

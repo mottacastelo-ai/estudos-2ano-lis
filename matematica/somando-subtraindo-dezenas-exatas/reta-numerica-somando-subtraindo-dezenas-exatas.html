@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reta Numérica Interativa — Somando e Subtraindo até 19 e Dezenas Exatas | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #0AACE8;
+  --light: #5AC8FB;
+  --bg: #EFF9FF;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; font-size: 1.1rem; background: var(--bg); min-height: 100vh; }
+
+.header {
+  background: linear-gradient(135deg, #044A7A, #0AACE8 60%, #5AC8FB);
+  color: #fff;
+  padding: 20px 24px;
+  text-align: center;
+}
+.header .emoji { font-size: 2.4rem; display: block; margin-bottom: 6px; }
+.header h1 { font-family: 'Baloo 2', sans-serif; font-size: 1.5rem; font-weight: 900; }
+.header p { font-size: 1rem; opacity: 0.9; margin-top: 4px; }
+
+.container { max-width: 720px; margin: 0 auto; padding: 24px 16px; }
+
+.progress-bar-wrap { background: #c7eaf9; border-radius: 20px; height: 10px; margin-bottom: 20px; }
+.progress-bar { background: var(--primary); height: 10px; border-radius: 20px; transition: width 0.4s; }
+
+.round-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 26px 22px 24px;
+  box-shadow: 0 4px 20px rgba(10,172,232,0.12);
+  margin-bottom: 20px;
+}
+.r-num { font-size: 0.95rem; color: var(--primary); font-weight: 700; margin-bottom: 8px; }
+.r-text { font-size: 1.5rem; font-weight: 800; color: #1a2e3b; line-height: 1.35; margin-bottom: 8px; }
+.r-sub { font-size: 1.1rem; font-weight: 700; color: #64748b; margin-bottom: 20px; }
+
+.linha-wrap { overflow-x: auto; padding: 8px 4px 16px; }
+.linha-track {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  min-width: max-content;
+  padding: 30px 6px 4px;
+}
+.linha-track::before {
+  content: '';
+  position: absolute;
+  left: 6px; right: 6px; bottom: 34px;
+  height: 4px;
+  background: #c7eaf9;
+  border-radius: 4px;
+}
+.num-stop {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.num-tag {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--primary);
+  min-height: 16px;
+  white-space: nowrap;
+}
+.num-btn {
+  background: #f0f9ff;
+  border: 2.5px solid var(--primary);
+  color: #0369a1;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 900;
+  border-radius: 50%;
+  width: 54px;
+  height: 54px;
+  min-width: 44px;
+  min-height: 44px;
+  cursor: pointer;
+  z-index: 2;
+  transition: transform 0.12s, background 0.12s;
+}
+.num-btn:hover:not(:disabled) { transform: scale(1.08); background: #daf1fc; }
+.num-btn.escolhido { background: var(--primary); color: #fff; }
+.num-btn.certo { background: #22c55e; border-color: #22c55e; color: #fff; }
+.num-btn.errado { background: #ef4444; border-color: #ef4444; color: #fff; }
+.num-btn:disabled { cursor: default; }
+
+.feedback-msg {
+  border-radius: 14px;
+  padding: 14px 18px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-top: 12px;
+  display: none;
+}
+.feedback-msg.show { display: block; }
+.feedback-msg.ok { background: #d1fae5; color: #166534; }
+.feedback-msg.nok { background: #fee2e2; color: #991b1b; }
+
+.btn-next {
+  display: none;
+  margin: 20px auto 0;
+  background: linear-gradient(135deg, var(--primary), var(--light));
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 16px 36px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(10,172,232,0.25);
+  min-height: 54px;
+}
+.btn-next.show { display: block; }
+
+.result-card {
+  display: none;
+  background: #fff;
+  border-radius: 24px;
+  padding: 36px 28px;
+  text-align: center;
+  box-shadow: 0 4px 24px rgba(10,172,232,0.15);
+}
+.result-card.show { display: block; }
+.result-emoji { font-size: 4rem; margin-bottom: 12px; }
+.result-title { font-family: 'Baloo 2', sans-serif; font-size: 2rem; font-weight: 900; color: var(--primary); }
+.result-score { font-size: 3rem; font-weight: 900; color: #1a2e3b; margin: 10px 0; }
+.result-msg { font-size: 1.2rem; color: #475569; margin-bottom: 20px; }
+
+.btn-retry {
+  background: #f0f9ff;
+  border: 2.5px solid var(--primary);
+  color: var(--primary);
+  border-radius: 50px;
+  padding: 14px 32px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  min-height: 50px;
+  margin-top: 8px;
+}
+
+.footer { text-align: center; padding: 24px 16px 32px; }
+.btn-back {
+  background: transparent;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  border-radius: 50px;
+  padding: 12px 28px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  min-height: 44px;
+}
+
+@media (max-width: 480px) {
+  body { padding: 0; font-size: 1.15rem; }
+  .container { padding: 16px 12px; }
+  .r-text { font-size: 1.3rem; }
+  .header h1 { font-size: 1.25rem; }
+  .num-btn { width: 48px; height: 48px; font-size: 1.05rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="emoji">🧊</span>
+  <h1>Reta Numérica com o Dezinho</h1>
+  <p>Matemática · Portal da Lis</p>
+</div>
+
+<div class="container">
+  <div class="progress-bar-wrap">
+    <div class="progress-bar" id="progressBar" style="width:0%"></div>
+  </div>
+
+  <div class="round-card" id="roundCard">
+    <div class="r-num" id="rNum">Rodada 1 de 8</div>
+    <div class="r-text" id="rText"></div>
+    <div class="r-sub" id="rSub"></div>
+    <div class="linha-wrap">
+      <div class="linha-track" id="linhaTrack"></div>
+    </div>
+    <div class="feedback-msg" id="feedbackMsg"></div>
+    <button class="btn-next" id="btnNext" onclick="proximaRodada()">Próxima →</button>
+  </div>
+
+  <div class="result-card" id="resultCard">
+    <div class="result-emoji" id="resultEmoji"></div>
+    <div class="result-title">Reta concluída!</div>
+    <div class="result-score" id="resultScore"></div>
+    <div class="result-msg" id="resultMsg"></div>
+    <button class="btn-retry" onclick="reiniciar()">Tentar novamente 🔄</button>
+  </div>
+</div>
+
+<div class="footer">
+  <button class="btn-back" onclick="voltarAoPortal()">← Voltar ao Portal</button>
+</div>
+
+<!-- GAMIFICAÇÃO -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'somando-subtraindo-dezenas-exatas';
+  var DISCIPLINE    = 'matematica';
+  var ACTIVITY_TYPE = 'reta-numerica';
+  var TOTAL_ATIV    = 5;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Dezinho',
+        characterEmoji:  '🧊',
+        characterImg:    'chars/somando-subtraindo-dezenas-exatas-hd.png',
+        themeLabel:      'Somando e Subtraindo até 19 e Dezenas Exatas · Matemática',
+        totalActivities: TOTAL_ATIV,
+        activityType:    ACTIVITY_TYPE,
+        primaryColor:    '#0AACE8',
+        lightColor:      '#5AC8FB',
+        bgColor:         '#EFF9FF',
+        glowRgb:         '10,172,232',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _scoreVal = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _scoreVal = v;
+      var btn = document.getElementById('gamificacao-btn');
+      if (btn) btn.style.display = 'block';
+    },
+    get: function () { return _scoreVal; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#0AACE8,#5AC8FB);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+
+<script>
+// Cada rodada: pular a partir de "inicio" com a operação, tocar no número certo da reta.
+// Gabarito guardado só em variável JS (nunca em atributo DOM) — ver 3c-5.
+var todasRodadas = [
+  { inicio: 5, op: '+', valor: 7, min: 3, max: 13 },
+  { inicio: 12, op: '+', valor: 1, min: 9, max: 15 },
+  { inicio: 13, op: '+', valor: 4, min: 11, max: 19 },
+  { inicio: 16, op: '-', valor: 5, min: 9, max: 17 },
+  { inicio: 16, op: '-', valor: 4, min: 9, max: 17 },
+  { inicio: 20, op: '+', valor: 30, min: 10, max: 70, passo: 10 },
+  { inicio: 40, op: '-', valor: 10, min: 10, max: 70, passo: 10 },
+  { inicio: 10, op: '+', valor: 20, min: 10, max: 70, passo: 10 }
+];
+
+var rodadas = [];
+var indiceAtual = 0;
+var acertos = 0;
+
+function playSound(tipo) {
+  try {
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    var o = ctx.createOscillator();
+    var g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    if (tipo === 'correct') {
+      o.frequency.setValueAtTime(523, ctx.currentTime);
+      o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+      o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+      o.start(); o.stop(ctx.currentTime + 0.5);
+    } else {
+      o.frequency.setValueAtTime(300, ctx.currentTime);
+      o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      o.start(); o.stop(ctx.currentTime + 0.4);
+    }
+  } catch(e) {}
+}
+
+function iniciar() {
+  rodadas = todasRodadas.slice();
+  indiceAtual = 0;
+  acertos = 0;
+  document.getElementById('resultCard').classList.remove('show');
+  document.getElementById('roundCard').style.display = 'block';
+  mostrarRodada();
+}
+
+function mostrarRodada() {
+  var r = rodadas[indiceAtual];
+  var passo = r.passo || 1;
+  var correta = r.op === '+' ? (r.inicio + r.valor) : (r.inicio - r.valor);
+
+  document.getElementById('rNum').textContent = 'Rodada ' + (indiceAtual + 1) + ' de ' + rodadas.length;
+  document.getElementById('rText').textContent = r.inicio + ' ' + r.op + ' ' + r.valor + ' = ?';
+  document.getElementById('rSub').textContent = 'Toque no número da reta numérica onde o Dezinho chega!';
+  document.getElementById('progressBar').style.width = (indiceAtual / rodadas.length * 100) + '%';
+
+  var track = document.getElementById('linhaTrack');
+  track.innerHTML = '';
+  for (var n = r.min; n <= r.max; n += passo) {
+    (function(numero) {
+      var stop = document.createElement('div');
+      stop.className = 'num-stop';
+
+      var tag = document.createElement('div');
+      tag.className = 'num-tag';
+      if (numero === r.inicio) tag.textContent = 'início';
+      stop.appendChild(tag);
+
+      var btn = document.createElement('button');
+      btn.className = 'num-btn';
+      btn.textContent = numero;
+      if (numero === r.inicio) btn.classList.add('escolhido');
+      btn.onclick = function() { responder(numero, correta); };
+      stop.appendChild(btn);
+
+      track.appendChild(stop);
+    })(n);
+  }
+
+  var fb = document.getElementById('feedbackMsg');
+  fb.className = 'feedback-msg';
+  fb.textContent = '';
+  document.getElementById('btnNext').className = 'btn-next';
+}
+
+function responder(escolhido, correta) {
+  var btns = document.querySelectorAll('.num-btn');
+  btns.forEach(function(b) { b.disabled = true; });
+
+  var acertou = escolhido === correta;
+  if (acertou) { acertos++; playSound('correct'); }
+  else { playSound('wrong'); }
+
+  btns.forEach(function(b) {
+    var val = parseInt(b.textContent, 10);
+    if (val === correta) b.classList.add('certo');
+    else if (val === escolhido && !acertou) b.classList.add('errado');
+  });
+
+  var fb = document.getElementById('feedbackMsg');
+  fb.textContent = acertou ? '✅ Isso mesmo! Chegamos no número certo!' : '❌ Ops! O número certo está em verde na reta.';
+  fb.className = 'feedback-msg show ' + (acertou ? 'ok' : 'nok');
+
+  document.getElementById('btnNext').className = 'btn-next show';
+}
+
+function proximaRodada() {
+  indiceAtual++;
+  if (indiceAtual < rodadas.length) {
+    mostrarRodada();
+  } else {
+    mostrarResultado();
+  }
+}
+
+function mostrarResultado() {
+  var pct = Math.round((acertos / rodadas.length) * 100);
+  window.sabendoScore = pct;
+
+  document.getElementById('roundCard').style.display = 'none';
+  var rc = document.getElementById('resultCard');
+  rc.classList.add('show');
+
+  var emojis = ['😢','😐','🙂','😄','🎉'];
+  var idx = Math.min(Math.floor(pct / 25), 4);
+  document.getElementById('resultEmoji').textContent = emojis[idx];
+  document.getElementById('resultScore').textContent = acertos + ' de ' + rodadas.length + ' acertos!';
+
+  var msgs = [
+    'Vamos treinar mais os pulos na reta! 💪',
+    'Quase lá! Continue pulando com o Dezinho! 🧊',
+    'Bom trabalho nos saltos da reta numérica! 😊',
+    'Muito bem! Você domina a reta numérica! 🌟',
+    'Incrível! Nenhum pulo escapou de você! 🏆'
+  ];
+  document.getElementById('resultMsg').textContent = msgs[idx];
+  document.getElementById('progressBar').style.width = '100%';
+}
+
+function reiniciar() { iniciar(); }
+
+window.proximaRodada = proximaRodada;
+window.reiniciar = reiniciar;
+
+iniciar();
+</script>
+
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>

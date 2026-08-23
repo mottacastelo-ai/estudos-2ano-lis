@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Criador de Problema — Adição de Números até 99 | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root { --primary: #0AACE8; --light: #5AC8FB; --bg: #EFF9FF; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; font-size: 1.1rem; background: var(--bg); min-height: 100vh; }
+
+.header {
+  background: linear-gradient(135deg, #044A7A, #0AACE8 60%, #5AC8FB);
+  color: #fff; padding: 20px 24px; text-align: center;
+}
+.header .emoji { font-size: 2.5rem; }
+.header h1 { font-family: 'Baloo 2', sans-serif; font-size: 1.6rem; font-weight: 900; margin-top: 4px; }
+.header p { font-size: 1rem; opacity: 0.9; }
+
+.container { max-width: 680px; margin: 0 auto; padding: 20px 16px 32px; }
+
+.info-box {
+  background: #fff; border-radius: 14px; padding: 14px 18px;
+  font-size: 1.1rem; color: #1a3a50; font-weight: 600;
+  box-shadow: 0 2px 10px rgba(10,172,232,0.1); margin-bottom: 18px;
+}
+.info-box strong { color: var(--primary); }
+
+.placar { text-align: right; font-size: 1rem; font-weight: 700; color: var(--primary); margin-bottom: 10px; }
+.progress-bar-wrap { background: #dbeeff; border-radius: 99px; height: 10px; margin-bottom: 20px; }
+.progress-bar { background: var(--primary); height: 10px; border-radius: 99px; transition: width 0.4s; }
+
+.card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 26px 22px;
+  box-shadow: 0 4px 20px rgba(10,172,232,0.12);
+  margin-bottom: 20px;
+}
+.etapa-titulo {
+  font-family: 'Baloo 2', sans-serif; font-size: 1.2rem; font-weight: 800;
+  color: var(--primary); margin-bottom: 14px;
+}
+
+.problema-frase {
+  background: #f5fbff; border: 2.5px dashed #bce4f8; border-radius: 14px;
+  padding: 18px 20px; font-size: 1.4rem; font-weight: 700; color: #1a3a50;
+  line-height: 1.6; margin-bottom: 20px; text-align: center;
+}
+.problema-frase .lacuna {
+  display: inline-block; min-width: 64px;
+  border-bottom: 3px solid var(--primary);
+  color: var(--primary); font-family: 'Baloo 2', sans-serif; font-weight: 900;
+}
+
+.chips-wrap { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-bottom: 10px; }
+.chip-btn {
+  background: #EFF9FF;
+  border: 2.5px solid #bce4f8;
+  border-radius: 50px;
+  padding: 14px 24px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #1a3a50;
+  cursor: pointer;
+  transition: all 0.18s;
+  min-height: 44px;
+  min-width: 44px;
+}
+.chip-btn:hover:not(:disabled) { background: #d0f0ff; border-color: var(--primary); transform: scale(1.04); }
+.chip-btn.escolhido { background: var(--primary); color: #fff; border-color: var(--primary); }
+.chip-btn:disabled { opacity: 0.5; cursor: default; }
+
+.pergunta-final {
+  background: linear-gradient(135deg, #0AACE8, #5AC8FB); color: #fff;
+  border-radius: 16px; padding: 18px 20px; text-align: center;
+  font-size: 1.3rem; font-weight: 700; margin: 18px 0; display: none;
+}
+
+.opcoes { display: flex; flex-direction: column; gap: 12px; display: none; }
+.opcao-btn {
+  background: #EFF9FF;
+  border: 2.5px solid #bce4f8;
+  border-radius: 14px;
+  padding: 16px 20px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #1a3a50;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.18s;
+  min-height: 54px;
+  min-width: 44px;
+}
+.opcao-btn:hover:not(:disabled) { background: #d0f0ff; border-color: var(--primary); }
+.opcao-btn.correta { background: #d1fae5; border-color: #22c55e; color: #166534; }
+.opcao-btn.errada  { background: #fee2e2; border-color: #ef4444; color: #7f1d1d; }
+.opcao-btn:disabled { cursor: default; }
+
+.feedback-box {
+  border-radius: 14px; padding: 14px 18px; font-size: 1.1rem; font-weight: 700;
+  margin: 14px 0; display: none;
+}
+.feedback-box.ok  { background: #d1fae5; color: #166534; }
+.feedback-box.err { background: #fee2e2; color: #7f1d1d; }
+
+.btn-proxima {
+  background: linear-gradient(135deg, #0AACE8, #5AC8FB);
+  color: #fff; border: none; border-radius: 50px;
+  padding: 14px 36px; font-family: 'Baloo 2', sans-serif;
+  font-size: 1.2rem; font-weight: 800; cursor: pointer;
+  box-shadow: 0 4px 16px rgba(10,172,232,0.35);
+  display: none; margin-top: 8px; min-height: 44px;
+}
+.btn-proxima:hover { filter: brightness(1.08); }
+
+.resultado {
+  display: none; text-align: center; background: #fff;
+  border-radius: 20px; padding: 36px 24px;
+  box-shadow: 0 4px 20px rgba(10,172,232,0.14);
+}
+.resultado .emoji-final { font-size: 4rem; }
+.resultado h2 { font-family: 'Baloo 2', sans-serif; font-size: 2rem; font-weight: 900; color: var(--primary); margin: 12px 0 6px; }
+.resultado .msg { font-size: 1.2rem; color: #1a3a50; margin-bottom: 20px; }
+.resultado .score-grande { font-size: 3rem; font-weight: 900; color: var(--primary); }
+
+.btn-voltar {
+  background: transparent; border: 2px solid var(--primary); color: var(--primary);
+  border-radius: 50px; padding: 12px 28px;
+  font-family: 'Baloo 2', sans-serif; font-size: 1.1rem; font-weight: 800;
+  cursor: pointer; margin-top: 12px; min-height: 44px;
+}
+
+@media (max-width: 480px) {
+  body { padding: 0; font-size: 1.15rem; }
+  .header h1 { font-size: 1.3rem; }
+  .problema-frase { font-size: 1.2rem; }
+  .opcao-btn, .chip-btn { width: 100%; justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="emoji">🧮</div>
+  <h1>Criador de Problema</h1>
+  <p>Monte seu próprio problema de docinhos!</p>
+</div>
+
+<div class="container">
+  <div class="info-box">💡 Lembrete: <strong>1 dúzia = 12</strong> docinhos.</div>
+
+  <div class="placar">Etapa: <span id="etapa-num">1</span> / 3</div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="progresso" style="width:0%"></div></div>
+
+  <div class="card" id="card-etapa">
+    <div class="etapa-titulo" id="etapa-titulo">Passo 1 — Escolha os brigadeiros</div>
+
+    <div class="problema-frase" id="problema-frase">
+      <span id="personagem-nome"></span> fez
+      <span class="lacuna" id="lacuna-brig">___</span> brigadeiros e
+      <span class="lacuna" id="lacuna-duzia">___</span> dúzias de beijinhos.
+    </div>
+
+    <div class="chips-wrap" id="chips-wrap"></div>
+
+    <div class="pergunta-final" id="pergunta-final"></div>
+    <div class="opcoes" id="opcoes"></div>
+    <div class="feedback-box" id="feedback"></div>
+
+    <button class="btn-proxima" id="btn-proxima" onclick="proximaEtapa()">Próximo problema →</button>
+  </div>
+
+  <div class="resultado" id="resultado">
+    <div class="emoji-final" id="emoji-final"></div>
+    <h2>Resultado!</h2>
+    <div class="score-grande"><span id="res-acertos">0</span>/3</div>
+    <div class="msg" id="res-msg"></div>
+    <button class="btn-voltar" onclick="voltarAoPortal()">⬅ Voltar ao Portal</button>
+  </div>
+</div>
+
+<script>
+(function () {
+
+var nomesPersonagens = ['Ana', 'Léo', 'Mila'];
+var opcoesBrigadeiros = [41, 32, 25];
+var opcoesDuzias = [1, 2, 3]; // 12, 24, 36
+
+var etapa = 0; // 0,1,2
+var acertos = 0;
+var etapaAtual = { fase: 'brig', brig: null, duzia: null };
+
+function embaralhar(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+function playSound(tipo) {
+  try {
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    var o = ctx.createOscillator();
+    var g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    if (tipo === 'correct') {
+      o.frequency.setValueAtTime(523, ctx.currentTime);
+      o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+      o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+      o.start(); o.stop(ctx.currentTime + 0.5);
+    } else {
+      o.frequency.setValueAtTime(300, ctx.currentTime);
+      o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      o.start(); o.stop(ctx.currentTime + 0.4);
+    }
+  } catch(e) {}
+}
+
+function iniciarEtapa() {
+  document.getElementById('etapa-num').textContent = etapa + 1;
+  document.getElementById('progresso').style.width = (etapa / 3 * 100) + '%';
+  document.getElementById('personagem-nome').textContent = nomesPersonagens[etapa];
+  document.getElementById('lacuna-brig').textContent = '___';
+  document.getElementById('lacuna-duzia').textContent = '___';
+  document.getElementById('pergunta-final').style.display = 'none';
+  document.getElementById('opcoes').style.display = 'none';
+  document.getElementById('feedback').style.display = 'none';
+  document.getElementById('btn-proxima').style.display = 'none';
+
+  etapaAtual = { fase: 'brig', brig: null, duzia: null };
+  document.getElementById('etapa-titulo').textContent = 'Passo 1 — Escolha os brigadeiros';
+  renderChipsBrigadeiros();
+}
+
+function renderChipsBrigadeiros() {
+  var wrap = document.getElementById('chips-wrap');
+  wrap.innerHTML = '';
+  embaralhar(opcoesBrigadeiros).forEach(function(v) {
+    var btn = document.createElement('button');
+    btn.className = 'chip-btn';
+    btn.textContent = v + ' brigadeiros';
+    btn.onclick = function() {
+      etapaAtual.brig = v;
+      document.getElementById('lacuna-brig').textContent = v;
+      playSound('correct');
+      etapaAtual.fase = 'duzia';
+      document.getElementById('etapa-titulo').textContent = 'Passo 2 — Escolha as dúzias de beijinhos';
+      renderChipsDuzias();
+    };
+    wrap.appendChild(btn);
+  });
+}
+
+function renderChipsDuzias() {
+  var wrap = document.getElementById('chips-wrap');
+  wrap.innerHTML = '';
+  embaralhar(opcoesDuzias).forEach(function(v) {
+    var btn = document.createElement('button');
+    btn.className = 'chip-btn';
+    btn.textContent = v + (v === 1 ? ' dúzia (' + (v*12) + ')' : ' dúzias (' + (v*12) + ')');
+    btn.onclick = function() {
+      etapaAtual.duzia = v;
+      document.getElementById('lacuna-duzia').textContent = v + (v === 1 ? ' dúzia' : ' dúzias');
+      playSound('correct');
+      wrap.innerHTML = '';
+      montarPergunta();
+    };
+    wrap.appendChild(btn);
+  });
+}
+
+function montarPergunta() {
+  var totalBeijinhos = etapaAtual.duzia * 12;
+  var totalGeral = etapaAtual.brig + totalBeijinhos;
+
+  document.getElementById('etapa-titulo').textContent = 'Passo 3 — Resolva o problema que você criou';
+  var pf = document.getElementById('pergunta-final');
+  pf.style.display = 'block';
+  pf.textContent = 'Quantos docinhos ' + nomesPersonagens[etapa] + ' fez ao todo?';
+
+  var opcoes = [totalGeral, totalGeral - 10, totalGeral + 9];
+  var vistos = {};
+  opcoes = opcoes.filter(function(v) { if (v < 0 || vistos[v]) return false; vistos[v] = true; return true; });
+  while (opcoes.length < 3) {
+    var alt = totalGeral + (Math.floor(Math.random() * 9) - 4);
+    if (alt >= 0 && !vistos[alt]) { vistos[alt] = true; opcoes.push(alt); }
+  }
+  var ordem = embaralhar(opcoes);
+  var correta = ordem.indexOf(totalGeral);
+
+  var opcoesEl = document.getElementById('opcoes');
+  opcoesEl.innerHTML = '';
+  opcoesEl.style.display = 'flex';
+  ordem.forEach(function(val, i) {
+    var btn = document.createElement('button');
+    btn.className = 'opcao-btn';
+    btn.textContent = val;
+    btn.onclick = function() { responderFinal(i, correta, totalGeral); };
+    opcoesEl.appendChild(btn);
+  });
+}
+
+function responderFinal(idx, correta, total) {
+  var botoes = document.querySelectorAll('.opcao-btn');
+  botoes.forEach(function(b) { b.disabled = true; });
+
+  var fb = document.getElementById('feedback');
+  if (idx === correta) {
+    acertos++;
+    botoes[idx].classList.add('correta');
+    playSound('correct');
+    fb.className = 'feedback-box ok';
+    fb.textContent = '✅ Isso mesmo! ' + total + ' docinhos ao todo!';
+  } else {
+    botoes[idx].classList.add('errada');
+    botoes[correta].classList.add('correta');
+    playSound('wrong');
+    fb.className = 'feedback-box err';
+    fb.textContent = '❌ Ops! O total certo é ' + total + ' docinhos.';
+  }
+  fb.style.display = 'block';
+  document.getElementById('btn-proxima').style.display = 'block';
+}
+
+function proximaEtapa() {
+  etapa++;
+  if (etapa < 3) {
+    iniciarEtapa();
+  } else {
+    mostrarResultado();
+  }
+}
+
+function mostrarResultado() {
+  document.getElementById('card-etapa').style.display = 'none';
+  var res = document.getElementById('resultado');
+  res.style.display = 'block';
+  document.getElementById('progresso').style.width = '100%';
+
+  var pct = Math.round((acertos / 3) * 100);
+  window.sabendoScore = pct;
+
+  document.getElementById('res-acertos').textContent = acertos;
+  var emoji, msg;
+  if (acertos === 3) { emoji = '🏆'; msg = 'Você criou e resolveu todos os problemas!'; }
+  else if (acertos >= 1) { emoji = '⭐'; msg = 'Muito bem criando seus problemas!'; }
+  else { emoji = '💪'; msg = 'Continue praticando a criação de problemas!'; }
+  document.getElementById('emoji-final').textContent = emoji;
+  document.getElementById('res-msg').textContent = msg;
+}
+
+window.proximaEtapa = proximaEtapa;
+
+iniciarEtapa();
+
+})();
+</script>
+
+<!-- ── GAMIFICAÇÃO ─────────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'adicao-numeros-ate-99';
+  var DISCIPLINE    = 'matematica';
+  var ACTIVITY_TYPE = 'frase';
+  var TOTAL_ATIV    = 5;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Colunete',
+        characterEmoji:  '🧮',
+        characterImg:    'chars/adicao-numeros-ate-99-hd.png',
+        themeLabel:      'Adição de Números até 99 · Matemática',
+        totalActivities: TOTAL_ATIV,
+        activityType:    ACTIVITY_TYPE,
+        primaryColor:    '#0AACE8',
+        lightColor:      '#5AC8FB',
+        bgColor:         '#EFF9FF',
+        glowRgb:         '10,172,232',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _s = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _s = v;
+      var b = document.getElementById('gamificacao-btn');
+      if (b) b.style.display = 'block';
+    },
+    get: function () { return _s; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#0AACE8,#5AC8FB);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>

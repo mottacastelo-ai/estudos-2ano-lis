@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caça-palavras — Somando e Subtraindo até 19 e Dezenas Exatas | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #0AACE8;
+  --light: #5AC8FB;
+  --bg: #EFF9FF;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; font-size: 1.1rem; background: var(--bg); min-height: 100vh; }
+
+.header {
+  background: linear-gradient(135deg, #044A7A, #0AACE8 60%, #5AC8FB);
+  color: #fff;
+  padding: 20px 24px;
+  text-align: center;
+}
+.header .emoji { font-size: 2.4rem; display: block; margin-bottom: 6px; }
+.header h1 { font-family: 'Baloo 2', sans-serif; font-size: 1.5rem; font-weight: 900; }
+.header p { font-size: 1rem; opacity: 0.9; margin-top: 4px; }
+
+.container { max-width: 720px; margin: 0 auto; padding: 24px 16px; }
+
+.instrucao {
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px 20px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1a2e3b;
+  margin-bottom: 20px;
+  border-left: 5px solid var(--primary);
+  box-shadow: 0 2px 10px rgba(10,172,232,0.1);
+}
+
+.lista-palavras {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+.palavra-tag {
+  background: #fff;
+  border: 2.5px solid var(--primary);
+  color: var(--primary);
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  border-radius: 12px;
+  padding: 8px 14px;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  transition: background 0.2s, color 0.2s;
+}
+.palavra-tag.achada { background: #22c55e; border-color: #22c55e; color: #fff; text-decoration: line-through; }
+
+.grid-wrap { overflow-x: auto; margin-bottom: 18px; }
+.grid-caca {
+  display: grid;
+  gap: 3px;
+  width: max-content;
+  margin: 0 auto;
+  background: #fff;
+  padding: 10px;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(10,172,232,0.1);
+}
+.cel {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  min-height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  color: #1a2e3b;
+  background: #f0f9ff;
+  border-radius: 6px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.12s, transform 0.1s;
+}
+.cel:hover { background: #daf1fc; }
+.cel.selecionada { background: var(--primary); color: #fff; }
+.cel.achada { background: #d1fae5; color: #166534; }
+
+.feedback-mapa {
+  text-align: center;
+  font-size: 1.15rem;
+  font-weight: 700;
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  display: none;
+}
+.feedback-mapa.show { display: block; }
+.feedback-mapa.ok { background: #d1fae5; color: #166534; }
+.feedback-mapa.nok { background: #fee2e2; color: #991b1b; }
+
+.result-card {
+  display: none;
+  background: #fff;
+  border-radius: 24px;
+  padding: 36px 28px;
+  text-align: center;
+  box-shadow: 0 4px 24px rgba(10,172,232,0.15);
+}
+.result-card.show { display: block; }
+.result-emoji { font-size: 4rem; margin-bottom: 12px; }
+.result-title { font-family: 'Baloo 2', sans-serif; font-size: 2rem; font-weight: 900; color: var(--primary); }
+.result-msg { font-size: 1.2rem; color: #475569; margin-bottom: 20px; }
+
+.btn-retry {
+  background: #f0f9ff;
+  border: 2.5px solid var(--primary);
+  color: var(--primary);
+  border-radius: 50px;
+  padding: 14px 32px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  min-height: 50px;
+}
+
+.footer { text-align: center; padding: 24px 16px 32px; }
+.btn-back {
+  background: transparent;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  border-radius: 50px;
+  padding: 12px 28px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  min-height: 44px;
+}
+
+@media (max-width: 480px) {
+  body { padding: 0; font-size: 1.15rem; }
+  .container { padding: 16px 12px; }
+  .header h1 { font-size: 1.25rem; }
+  .cel { width: 30px; height: 30px; min-width: 30px; min-height: 30px; font-size: 0.9rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="emoji">🧊</span>
+  <h1>Caça-palavras do Dezinho</h1>
+  <p>Matemática · Portal da Lis</p>
+</div>
+
+<div class="container">
+  <div class="instrucao" id="instrucao">
+    🔎 Toque na primeira e na última letra de cada palavra escondida para encontrá-la!
+  </div>
+
+  <div class="lista-palavras" id="listaPalavras"></div>
+
+  <div class="grid-wrap">
+    <div class="grid-caca" id="gridCaca"></div>
+  </div>
+
+  <div class="feedback-mapa" id="feedbackMapa"></div>
+
+  <div class="result-card" id="resultCard">
+    <div class="result-emoji">🎉</div>
+    <div class="result-title">Caça-palavras completo!</div>
+    <div class="result-msg">Você encontrou todas as palavras do Dezinho!</div>
+    <button class="btn-retry" onclick="reiniciar()">Jogar de novo 🔄</button>
+  </div>
+</div>
+
+<div class="footer">
+  <button class="btn-back" onclick="voltarAoPortal()">← Voltar ao Portal</button>
+</div>
+
+<!-- GAMIFICAÇÃO -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'somando-subtraindo-dezenas-exatas';
+  var DISCIPLINE    = 'matematica';
+  var ACTIVITY_TYPE = 'caca-palavras';
+  var TOTAL_ATIV    = 5;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Dezinho',
+        characterEmoji:  '🧊',
+        characterImg:    'chars/somando-subtraindo-dezenas-exatas-hd.png',
+        themeLabel:      'Somando e Subtraindo até 19 e Dezenas Exatas · Matemática',
+        totalActivities: TOTAL_ATIV,
+        activityType:    ACTIVITY_TYPE,
+        primaryColor:    '#0AACE8',
+        lightColor:      '#5AC8FB',
+        bgColor:         '#EFF9FF',
+        glowRgb:         '10,172,232',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _scoreVal = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _scoreVal = v;
+      var btn = document.getElementById('gamificacao-btn');
+      if (btn) btn.style.display = 'block';
+    },
+    get: function () { return _scoreVal; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#0AACE8,#5AC8FB);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+
+<script>
+// Palavras — termos técnicos exatos do livro (sem acento, convenção padrão de caça-palavras)
+// Lista exibida na ordem pedagógica, mas posicionada da mais longa para a mais curta (melhor encaixe na grade)
+var PALAVRAS = ['DEZENA', 'UNIDADE', 'ADICAO', 'SUBTRACAO', 'REAGRUPAMENTO', 'CEDULA'];
+var PALAVRAS_POSICIONAMENTO = PALAVRAS.slice().sort(function(a, b) { return b.length - a.length; });
+var TAM = 15;
+var DIRECOES = [
+  { dr: 0, dc: 1 },   // leste
+  { dr: 1, dc: 0 },   // sul
+  { dr: 1, dc: 1 },   // sudeste
+  { dr: -1, dc: 1 }   // nordeste
+];
+
+var grade = [];
+var posicoesPalavra = {}; // palavra -> [{r,c}, ...]
+var achadas = {};
+var celulaInicial = null;
+
+function playSound(tipo) {
+  try {
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    var o = ctx.createOscillator();
+    var g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    if (tipo === 'correct') {
+      o.frequency.setValueAtTime(523, ctx.currentTime);
+      o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+      o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+      o.start(); o.stop(ctx.currentTime + 0.5);
+    } else {
+      o.frequency.setValueAtTime(300, ctx.currentTime);
+      o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      o.start(); o.stop(ctx.currentTime + 0.4);
+    }
+  } catch(e) {}
+}
+
+function gerarGrade() {
+  for (var tentativa = 0; tentativa < 300; tentativa++) {
+    grade = [];
+    for (var r = 0; r < TAM; r++) {
+      var linha = [];
+      for (var c = 0; c < TAM; c++) linha.push(null);
+      grade.push(linha);
+    }
+    posicoesPalavra = {};
+    var ok = true;
+
+    for (var pi = 0; pi < PALAVRAS_POSICIONAMENTO.length; pi++) {
+      var palavra = PALAVRAS_POSICIONAMENTO[pi];
+      var colocada = false;
+      for (var tentaPalavra = 0; tentaPalavra < 200 && !colocada; tentaPalavra++) {
+        var dir = DIRECOES[Math.floor(Math.random() * DIRECOES.length)];
+        var r0 = Math.floor(Math.random() * TAM);
+        var c0 = Math.floor(Math.random() * TAM);
+        var rFim = r0 + dir.dr * (palavra.length - 1);
+        var cFim = c0 + dir.dc * (palavra.length - 1);
+        if (rFim < 0 || rFim >= TAM || cFim < 0 || cFim >= TAM) continue;
+
+        var cabe = true;
+        for (var k = 0; k < palavra.length; k++) {
+          var rr = r0 + dir.dr * k;
+          var cc = c0 + dir.dc * k;
+          var atual = grade[rr][cc];
+          if (atual !== null && atual !== palavra[k]) { cabe = false; break; }
+        }
+        if (!cabe) continue;
+
+        var posList = [];
+        for (var k2 = 0; k2 < palavra.length; k2++) {
+          var rr2 = r0 + dir.dr * k2;
+          var cc2 = c0 + dir.dc * k2;
+          grade[rr2][cc2] = palavra[k2];
+          posList.push({ r: rr2, c: cc2 });
+        }
+        posicoesPalavra[palavra] = posList;
+        colocada = true;
+      }
+      if (!colocada) { ok = false; break; }
+    }
+
+    if (ok) return true;
+  }
+  return false;
+}
+
+function preencherVazias() {
+  var letras = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  for (var r = 0; r < TAM; r++) {
+    for (var c = 0; c < TAM; c++) {
+      if (grade[r][c] === null) {
+        grade[r][c] = letras[Math.floor(Math.random() * letras.length)];
+      }
+    }
+  }
+}
+
+function renderizar() {
+  achadas = {};
+  celulaInicial = null;
+  // Garantia extra: tenta gerar a grade várias vezes até todas as palavras caberem
+  var sucesso = false;
+  for (var tentativaGeral = 0; tentativaGeral < 10 && !sucesso; tentativaGeral++) {
+    sucesso = gerarGrade();
+  }
+  preencherVazias();
+
+  var listaEl = document.getElementById('listaPalavras');
+  listaEl.innerHTML = '';
+  PALAVRAS.forEach(function(p) {
+    var tag = document.createElement('div');
+    tag.className = 'palavra-tag';
+    tag.id = 'tag-' + p;
+    tag.textContent = p;
+    listaEl.appendChild(tag);
+  });
+
+  var gridEl = document.getElementById('gridCaca');
+  gridEl.style.gridTemplateColumns = 'repeat(' + TAM + ', 34px)';
+  gridEl.innerHTML = '';
+  for (var r = 0; r < TAM; r++) {
+    for (var c = 0; c < TAM; c++) {
+      var cel = document.createElement('div');
+      cel.className = 'cel';
+      cel.textContent = grade[r][c];
+      cel.setAttribute('data-r', r);
+      cel.setAttribute('data-c', c);
+      cel.onclick = function() { clicarCelula(this); };
+      gridEl.appendChild(cel);
+    }
+  }
+
+  document.getElementById('feedbackMapa').className = 'feedback-mapa';
+  document.getElementById('resultCard').classList.remove('show');
+  document.getElementById('gridCaca').parentElement.style.display = 'block';
+  document.getElementById('listaPalavras').style.display = 'flex';
+  document.getElementById('instrucao').style.display = 'block';
+}
+
+function clicarCelula(el) {
+  var r = parseInt(el.getAttribute('data-r'), 10);
+  var c = parseInt(el.getAttribute('data-c'), 10);
+
+  if (celulaInicial === null) {
+    celulaInicial = { r: r, c: c, el: el };
+    el.classList.add('selecionada');
+    return;
+  }
+
+  if (celulaInicial.el === el) {
+    // clicou de novo na mesma célula: cancela seleção
+    el.classList.remove('selecionada');
+    celulaInicial = null;
+    return;
+  }
+
+  var inicio = celulaInicial;
+  var fim = { r: r, c: c };
+  var palavraEncontrada = conferirSelecao(inicio, fim);
+
+  inicio.el.classList.remove('selecionada');
+  celulaInicial = null;
+
+  if (palavraEncontrada) {
+    marcarAchada(palavraEncontrada);
+    playSound('correct');
+  } else {
+    playSound('wrong');
+    var fb = document.getElementById('feedbackMapa');
+    fb.textContent = '❌ Essa combinação não forma nenhuma palavra da lista. Tente de novo!';
+    fb.className = 'feedback-mapa show nok';
+  }
+}
+
+function conferirSelecao(inicio, fim) {
+  for (var palavra in posicoesPalavra) {
+    if (achadas[palavra]) continue;
+    var pos = posicoesPalavra[palavra];
+    var pInicio = pos[0];
+    var pFim = pos[pos.length - 1];
+    var bateDireto = (pInicio.r === inicio.r && pInicio.c === inicio.c && pFim.r === fim.r && pFim.c === fim.c);
+    var bateInverso = (pFim.r === inicio.r && pFim.c === inicio.c && pInicio.r === fim.r && pInicio.c === fim.c);
+    if (bateDireto || bateInverso) return palavra;
+  }
+  return null;
+}
+
+function marcarAchada(palavra) {
+  achadas[palavra] = true;
+  var pos = posicoesPalavra[palavra];
+  pos.forEach(function(p) {
+    var cel = document.querySelector('.cel[data-r="' + p.r + '"][data-c="' + p.c + '"]');
+    if (cel) cel.classList.add('achada');
+  });
+  var tag = document.getElementById('tag-' + palavra);
+  if (tag) tag.classList.add('achada');
+
+  var fb = document.getElementById('feedbackMapa');
+  fb.textContent = '✅ Encontrou "' + palavra + '"! Muito bem!';
+  fb.className = 'feedback-mapa show ok';
+
+  var totalAchadas = Object.keys(achadas).length;
+  if (totalAchadas === PALAVRAS.length) {
+    window.sabendoScore = 100;
+    document.getElementById('resultCard').classList.add('show');
+  }
+}
+
+function reiniciar() { renderizar(); }
+window.reiniciar = reiniciar;
+
+renderizar();
+</script>
+
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>

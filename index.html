@@ -500,7 +500,7 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
     <button class="disc-nav-btn mat-active" id="nav-mat" onclick="showDisc('mat')">
       <span class="d-icon">📐</span>
       <span class="d-name">Matemática</span>
-      <span class="d-count" id="count-mat">9 temas</span>
+      <span class="d-count" id="count-mat">11 temas</span>
     </button>
     <div class="theme-sub" id="sub-mat">
       <button class="theme-link" onclick="showTheme('mat','numeros-ordinais')">🏆 Números Ordinais</button>
@@ -512,6 +512,8 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
       <button class="theme-link" onclick="showTheme('mat','medindo-comprimentos')">📏 Medindo Comprimentos</button>
       <button class="theme-link" onclick="showTheme('mat','medindo-massas')">⚖️ Medindo Massas</button>
       <button class="theme-link" onclick="showTheme('mat','medindo-capacidades')">🫙 Medindo Capacidades</button>
+      <button class="theme-link" onclick="showTheme('mat','somando-subtraindo-dezenas-exatas')">🧊 Somando e Subtraindo até 19 e Dezenas Exatas</button>
+      <button class="theme-link" onclick="showTheme('mat','adicao-numeros-ate-99')">🧮 Adição de Números até 99</button>
     </div>
 
     <button class="disc-nav-btn hist-active" id="nav-hist" onclick="showDisc('hist')">
@@ -557,8 +559,8 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
       <div class="home-subtitle">Escolha uma disciplina e vamos aprender juntos! 🎉</div>
       <div class="home-stats">
         <div class="hstat"><span class="hstat-num">5</span><span class="hstat-label">disciplinas</span></div>
-        <div class="hstat"><span class="hstat-num">26</span><span class="hstat-label">temas</span></div>
-        <div class="hstat"><span class="hstat-num">116</span><span class="hstat-label">atividades</span></div>
+        <div class="hstat"><span class="hstat-num">28</span><span class="hstat-label">temas</span></div>
+        <div class="hstat"><span class="hstat-num">126</span><span class="hstat-label">atividades</span></div>
       </div>
       <div class="home-stats" id="streak-banner" style="margin-top:16px;">
         <div class="hstat"><span class="hstat-num" id="streak-count">0</span><span class="hstat-label">🔥 dias seguidos</span></div>
@@ -591,8 +593,8 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
           <div class="dhc-name">Matemática</div>
           <div class="dhc-desc">Números, formas e desafios divertidos! 🔢</div>
           <div class="dhc-chips">
-            <span class="chip" style="background:#E0F5FE;color:#0369A1">9 temas</span>
-            <span class="chip" style="background:#EFF9FF;color:#044A7A">42 atividades</span>
+            <span class="chip" style="background:#E0F5FE;color:#0369A1">11 temas</span>
+            <span class="chip" style="background:#EFF9FF;color:#044A7A">52 atividades</span>
           </div>
         </button>
         <button class="disc-home-card hist" onclick="showDisc('hist')">
@@ -1632,6 +1634,8 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
         <button class="theme-tab-btn mat-tab" id="tab-mat-medindo-comprimentos" onclick="showTheme('mat','medindo-comprimentos')">📏 Medindo Comprimentos</button>
         <button class="theme-tab-btn mat-tab" id="tab-mat-medindo-massas" onclick="showTheme('mat','medindo-massas')">⚖️ Medindo Massas</button>
         <button class="theme-tab-btn mat-tab" id="tab-mat-medindo-capacidades" onclick="showTheme('mat','medindo-capacidades')">🫙 Medindo Capacidades</button>
+        <button class="theme-tab-btn mat-tab" id="tab-mat-somando-subtraindo-dezenas-exatas" onclick="showTheme('mat','somando-subtraindo-dezenas-exatas')">🧊 Somando e Subtraindo até 19 e Dezenas Exatas</button>
+        <button class="theme-tab-btn mat-tab" id="tab-mat-adicao-numeros-ate-99" onclick="showTheme('mat','adicao-numeros-ate-99')">🧮 Adição de Números até 99</button>
       </div>
 
       <!-- ── TEMA 1: NÚMEROS ORDINAIS ── -->
@@ -2255,6 +2259,146 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
         </div>
       </div>
 
+      <!-- ── TEMA 10: SOMANDO E SUBTRAINDO ATÉ 19 E DEZENAS EXATAS ── -->
+      <div class="theme-content" id="theme-mat-somando-subtraindo-dezenas-exatas">
+        <div class="hq-card">
+          <div class="hq-viewer-wrap" style="background:#023B61;">
+            <div class="hq-viewer-title" style="color:#5AC8FB;">🧊 Um Bloco Muito Especial</div>
+            <div class="hq-viewer-sub" style="color:#BAE6FD;">Aventura com Lis e Dezinho · 4 páginas</div>
+            <div class="hq-book-outer">
+              <div class="hq-book-shadow"></div>
+              <div class="hq-book-stack">
+                <div class="hq-page-base" id="hq-somasub-display">
+                  <img id="hq-somasub-img" src="matematica/somando-subtraindo-dezenas-exatas/hq-somando-subtraindo-dezenas-exatas-pg1.png" alt="HQ Um Bloco Muito Especial — Página 1" draggable="false" style="object-fit:contain; touch-action:auto;">
+                  <div class="hq-shine"></div>
+                </div>
+              </div>
+            </div>
+            <div class="hq-controls">
+              <button class="hq-btn" id="hq-somasub-prev" onclick="hqGoTo('somasub',hqCurrent['somasub']-1)" disabled>◀ Voltar</button>
+              <div class="hq-indicator" id="hq-somasub-ind" style="color:#5AC8FB;">1 / 4</div>
+              <button class="hq-btn" id="hq-somasub-next" onclick="hqGoTo('somasub',hqCurrent['somasub']+1)">Próxima ▶</button>
+            </div>
+            <div class="hq-dots" id="hq-somasub-dots">
+              <div class="hq-dot active" onclick="hqGoTo('somasub',0)"></div>
+              <div class="hq-dot" onclick="hqGoTo('somasub',1)"></div>
+              <div class="hq-dot" onclick="hqGoTo('somasub',2)"></div>
+              <div class="hq-dot" onclick="hqGoTo('somasub',3)"></div>
+            </div>
+          </div>
+          <div class="hq-caption">
+            <span>📖</span>
+            <span>Um Bloco Muito Especial — 4 páginas · Personagens: Lis e Dezinho · Tema: somar e subtrair até 19 e dezenas exatas</span>
+          </div>
+          <div class="livro-ref">📚 Livro p. 172–179</div>
+        </div>
+        <hr class="sdiv">
+        <div class="act-grid">
+          <a class="act-card mat" href="matematica/somando-subtraindo-dezenas-exatas/quiz-somando-subtraindo-dezenas-exatas.html" target="_blank">
+            <div class="act-icon">❓</div>
+            <div class="act-name">Quiz Interativo</div>
+            <div class="act-info"><div class="level lv4">📖 Retrieval practice</div></div>
+          </a>
+          <a class="act-card mat" href="matematica/somando-subtraindo-dezenas-exatas/reta-numerica-somando-subtraindo-dezenas-exatas.html" target="_blank">
+            <div class="act-icon">🔢</div>
+            <div class="act-name">Reta Numérica Interativa</div>
+            <div class="act-info"><div class="level lv2">⚡ Praticar (80%)</div></div>
+          </a>
+          <a class="act-card mat" href="matematica/somando-subtraindo-dezenas-exatas/caca-palavras-somando-subtraindo-dezenas-exatas.html" target="_blank">
+            <div class="act-icon">🔤</div>
+            <div class="act-name">Caça-palavras</div>
+            <div class="act-info"><div class="level lv1">💬 Discutir (70%)</div></div>
+          </a>
+          <a class="act-card mat" href="matematica/somando-subtraindo-dezenas-exatas/frase-somando-subtraindo-dezenas-exatas.html" target="_blank">
+            <div class="act-icon">✍️</div>
+            <div class="act-name">Criador de Frase</div>
+            <div class="act-info"><div class="level lv3">🏆 Criar (90%)</div></div>
+          </a>
+          <a class="act-card mat" href="matematica/somando-subtraindo-dezenas-exatas/mapa-mental-somando-subtraindo-dezenas-exatas.html" target="_blank">
+            <div class="act-icon">🗺️</div>
+            <div class="act-name">Mapa Mental</div>
+            <div class="act-info"><div class="level lv3">🏆 Ensinar (90%)</div></div>
+          </a>
+        </div>
+        <hr class="sdiv">
+        <div class="sched-title">📅 Sugestão de uso</div>
+        <div class="sched">
+          <div class="sched-row"><span class="sched-day" style="color:var(--mat-color)">Dia 1</span><span class="sched-acts">HQ + Quiz Interativo</span></div>
+          <div class="sched-row"><span class="sched-day" style="color:var(--mat-color)">Dia 2</span><span class="sched-acts">Reta Numérica Interativa + Caça-palavras</span></div>
+          <div class="sched-row"><span class="sched-day" style="color:var(--mat-color)">Dia 3</span><span class="sched-acts">Criador de Frase + Mapa Mental</span></div>
+        </div>
+      </div>
+
+      <!-- ── TEMA 11: ADIÇÃO DE NÚMEROS ATÉ 99 ── -->
+      <div class="theme-content" id="theme-mat-adicao-numeros-ate-99">
+        <div class="hq-card">
+          <div class="hq-viewer-wrap" style="background:#023B61;">
+            <div class="hq-viewer-title" style="color:#5AC8FB;">🧮 Adição de Números até 99</div>
+            <div class="hq-viewer-sub" style="color:#BAE6FD;">Aventura com Lis e Colunete · 4 páginas</div>
+            <div class="hq-book-outer">
+              <div class="hq-book-shadow"></div>
+              <div class="hq-book-stack">
+                <div class="hq-page-base" id="hq-adicao99-display">
+                  <img id="hq-adicao99-img" src="matematica/adicao-numeros-ate-99/hq-adicao-numeros-ate-99-pg1.png" alt="HQ Adição de Números até 99 — Página 1" draggable="false" style="object-fit:contain; touch-action:auto;">
+                  <div class="hq-shine"></div>
+                </div>
+              </div>
+            </div>
+            <div class="hq-controls">
+              <button class="hq-btn" id="hq-adicao99-prev" onclick="hqGoTo('adicao99',hqCurrent['adicao99']-1)" disabled>◀ Voltar</button>
+              <div class="hq-indicator" id="hq-adicao99-ind" style="color:#5AC8FB;">1 / 4</div>
+              <button class="hq-btn" id="hq-adicao99-next" onclick="hqGoTo('adicao99',hqCurrent['adicao99']+1)">Próxima ▶</button>
+            </div>
+            <div class="hq-dots" id="hq-adicao99-dots">
+              <div class="hq-dot active" onclick="hqGoTo('adicao99',0)"></div>
+              <div class="hq-dot" onclick="hqGoTo('adicao99',1)"></div>
+              <div class="hq-dot" onclick="hqGoTo('adicao99',2)"></div>
+              <div class="hq-dot" onclick="hqGoTo('adicao99',3)"></div>
+            </div>
+          </div>
+          <div class="hq-caption">
+            <span>📖</span>
+            <span>Adição de Números até 99 — 4 páginas · Personagens: Lis e Colunete · Tema: adição de números até 99</span>
+          </div>
+          <div class="livro-ref">📚 Livro p. 180–185</div>
+        </div>
+        <hr class="sdiv">
+        <div class="act-grid">
+          <a class="act-card mat" href="matematica/adicao-numeros-ate-99/quiz-adicao-numeros-ate-99.html" target="_blank">
+            <div class="act-icon">❓</div>
+            <div class="act-name">Quiz Interativo</div>
+            <div class="act-info"><div class="level lv4">📖 Retrieval practice</div></div>
+          </a>
+          <a class="act-card mat" href="matematica/adicao-numeros-ate-99/complete-a-conta-adicao-numeros-ate-99.html" target="_blank">
+            <div class="act-icon">➕</div>
+            <div class="act-name">Arme e Efetue</div>
+            <div class="act-info"><div class="level lv2">⚡ Praticar (80%)</div></div>
+          </a>
+          <a class="act-card mat" href="matematica/adicao-numeros-ate-99/caca-numeros-adicao-numeros-ate-99.html" target="_blank">
+            <div class="act-icon">🔢</div>
+            <div class="act-name">Caça-Números</div>
+            <div class="act-info"><div class="level lv1">💬 Discutir (70%)</div></div>
+          </a>
+          <a class="act-card mat" href="matematica/adicao-numeros-ate-99/criador-de-problema-adicao-numeros-ate-99.html" target="_blank">
+            <div class="act-icon">📝</div>
+            <div class="act-name">Criador de Problema</div>
+            <div class="act-info"><div class="level lv3">🏆 Criar (90%)</div></div>
+          </a>
+          <a class="act-card mat" href="matematica/adicao-numeros-ate-99/mapa-mental-adicao-numeros-ate-99.html" target="_blank">
+            <div class="act-icon">🗺️</div>
+            <div class="act-name">Mapa Mental</div>
+            <div class="act-info"><div class="level lv3">🏆 Ensinar (90%)</div></div>
+          </a>
+        </div>
+        <hr class="sdiv">
+        <div class="sched-title">📅 Sugestão de uso</div>
+        <div class="sched">
+          <div class="sched-row"><span class="sched-day" style="color:var(--mat-color)">Dia 1</span><span class="sched-acts">HQ + Quiz Interativo</span></div>
+          <div class="sched-row"><span class="sched-day" style="color:var(--mat-color)">Dia 2</span><span class="sched-acts">Arme e Efetue + Caça-Números</span></div>
+          <div class="sched-row"><span class="sched-day" style="color:var(--mat-color)">Dia 3</span><span class="sched-acts">Criador de Problema + Mapa Mental</span></div>
+        </div>
+      </div>
+
     </div><!-- /disc-body -->
   </div><!-- /screen-mat -->
 
@@ -2722,6 +2866,8 @@ var hqPages = {
   comprimentos:  ['matematica/medindo-comprimentos/hq-medindo-comprimentos-pg1.png','matematica/medindo-comprimentos/hq-medindo-comprimentos-pg2.png','matematica/medindo-comprimentos/hq-medindo-comprimentos-pg3.png','matematica/medindo-comprimentos/hq-medindo-comprimentos-pg4.png'],
   massas:        ['matematica/medindo-massas/hq-medindo-massas-pg1.png','matematica/medindo-massas/hq-medindo-massas-pg2.png','matematica/medindo-massas/hq-medindo-massas-pg3.png','matematica/medindo-massas/hq-medindo-massas-pg4.png'],
   capacidades:   ['matematica/medindo-capacidades/hq-medindo-capacidades-pg1.png','matematica/medindo-capacidades/hq-medindo-capacidades-pg2.png','matematica/medindo-capacidades/hq-medindo-capacidades-pg3.png','matematica/medindo-capacidades/hq-medindo-capacidades-pg4.png'],
+  somasub:       ['matematica/somando-subtraindo-dezenas-exatas/hq-somando-subtraindo-dezenas-exatas-pg1.png','matematica/somando-subtraindo-dezenas-exatas/hq-somando-subtraindo-dezenas-exatas-pg2.png','matematica/somando-subtraindo-dezenas-exatas/hq-somando-subtraindo-dezenas-exatas-pg3.png','matematica/somando-subtraindo-dezenas-exatas/hq-somando-subtraindo-dezenas-exatas-pg4.png'],
+  adicao99:      ['matematica/adicao-numeros-ate-99/hq-adicao-numeros-ate-99-pg1.png','matematica/adicao-numeros-ate-99/hq-adicao-numeros-ate-99-pg2.png','matematica/adicao-numeros-ate-99/hq-adicao-numeros-ate-99-pg3.png','matematica/adicao-numeros-ate-99/hq-adicao-numeros-ate-99-pg4.png'],
   bilhete:       ['portugues/bilhete-cartao-pessoal/hq-bilhete-cartao-pessoal-pg1.png','portugues/bilhete-cartao-pessoal/hq-bilhete-cartao-pessoal-pg2.png','portugues/bilhete-cartao-pessoal/hq-bilhete-cartao-pessoal-pg3.png','portugues/bilhete-cartao-pessoal/hq-bilhete-cartao-pessoal-pg4.png'],
   letras:        ['portugues/letras-silabas-pontuacao/hq-letras-silabas-pontuacao-pg1.png','portugues/letras-silabas-pontuacao/hq-letras-silabas-pontuacao-pg2.png','portugues/letras-silabas-pontuacao/hq-letras-silabas-pontuacao-pg3.png','portugues/letras-silabas-pontuacao/hq-letras-silabas-pontuacao-pg4.png'],
   carta:         ['portugues/carta-pessoal/hq-carta-pessoal-pg1.png','portugues/carta-pessoal/hq-carta-pessoal-pg2.png','portugues/carta-pessoal/hq-carta-pessoal-pg3.png','portugues/carta-pessoal/hq-carta-pessoal-pg4.png'],

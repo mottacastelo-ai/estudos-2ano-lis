@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Complete a Conta — Adição de Números até 99 | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root { --primary: #0AACE8; --light: #5AC8FB; --bg: #EFF9FF; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; font-size: 1.1rem; background: var(--bg); min-height: 100vh; }
+
+.header {
+  background: linear-gradient(135deg, #044A7A, #0AACE8 60%, #5AC8FB);
+  color: #fff; padding: 20px 24px; text-align: center;
+}
+.header .emoji { font-size: 2.5rem; }
+.header h1 { font-family: 'Baloo 2', sans-serif; font-size: 1.6rem; font-weight: 900; margin-top: 4px; }
+.header p { font-size: 1rem; opacity: 0.9; }
+
+.container { max-width: 640px; margin: 0 auto; padding: 24px 16px; }
+
+.progress-bar-wrap { background: #dbeeff; border-radius: 99px; height: 10px; margin-bottom: 20px; }
+.progress-bar { background: var(--primary); height: 10px; border-radius: 99px; transition: width 0.4s; }
+.placar { text-align: right; font-size: 1rem; font-weight: 700; color: var(--primary); margin-bottom: 10px; }
+
+.card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 28px 24px;
+  box-shadow: 0 4px 20px rgba(10,172,232,0.12);
+  margin-bottom: 20px;
+  text-align: center;
+}
+.numero-questao { font-size: 0.9rem; font-weight: 700; color: var(--light); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+
+/* Algoritmo em colunas */
+.coluna-titulos {
+  display: grid; grid-template-columns: 60px 60px;
+  justify-content: center; gap: 6px; margin: 0 auto 4px;
+  max-width: 132px;
+}
+.coluna-titulos span {
+  font-family: 'Baloo 2', sans-serif; font-weight: 800; color: var(--light);
+  font-size: 1rem;
+}
+.algoritmo {
+  display: inline-block;
+  background: #f5fbff;
+  border: 3px solid #bce4f8;
+  border-radius: 16px;
+  padding: 14px 20px;
+  margin-bottom: 20px;
+}
+.linha-alg {
+  display: grid; grid-template-columns: 60px 60px;
+  gap: 6px; justify-content: center;
+}
+.digito {
+  font-family: 'Baloo 2', sans-serif; font-size: 1.8rem; font-weight: 900;
+  color: #1a3a50; text-align: center; padding: 4px 0;
+}
+.linha-mais { border-top: 3px solid #1a3a50; margin: 6px 0 2px; padding-top: 6px; }
+.digito.sinal { text-align: left; color: var(--primary); }
+.resultado-slot {
+  font-family: 'Baloo 2', sans-serif; font-size: 1.8rem; font-weight: 900;
+  color: var(--primary); text-align: center; padding: 4px 0;
+  border: 2px dashed var(--primary); border-radius: 8px; background: #fff;
+}
+
+.opcoes { display: flex; flex-direction: column; gap: 12px; }
+.opcao-btn {
+  background: #EFF9FF;
+  border: 2.5px solid #bce4f8;
+  border-radius: 14px;
+  padding: 16px 20px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #1a3a50;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.18s;
+  min-height: 54px;
+  min-width: 44px;
+}
+.opcao-btn:hover:not(:disabled) { background: #d0f0ff; border-color: var(--primary); }
+.opcao-btn.correta { background: #d1fae5; border-color: #22c55e; color: #166534; }
+.opcao-btn.errada  { background: #fee2e2; border-color: #ef4444; color: #7f1d1d; }
+.opcao-btn:disabled { cursor: default; }
+
+.feedback-box {
+  border-radius: 14px;
+  padding: 14px 18px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 14px 0;
+  display: none;
+}
+.feedback-box.ok  { background: #d1fae5; color: #166534; }
+.feedback-box.err { background: #fee2e2; color: #7f1d1d; }
+
+.btn-proxima {
+  background: linear-gradient(135deg, #0AACE8, #5AC8FB);
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 14px 36px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(10,172,232,0.35);
+  display: none;
+  margin-top: 8px;
+  min-height: 44px;
+}
+.btn-proxima:hover { filter: brightness(1.08); }
+
+.resultado {
+  display: none;
+  text-align: center;
+  background: #fff;
+  border-radius: 20px;
+  padding: 36px 24px;
+  box-shadow: 0 4px 20px rgba(10,172,232,0.14);
+}
+.resultado .emoji-final { font-size: 4rem; }
+.resultado h2 { font-family: 'Baloo 2', sans-serif; font-size: 2rem; font-weight: 900; color: var(--primary); margin: 12px 0 6px; }
+.resultado .msg { font-size: 1.2rem; color: #1a3a50; margin-bottom: 20px; }
+.resultado .score-grande { font-size: 3rem; font-weight: 900; color: var(--primary); }
+
+.btn-voltar {
+  background: transparent;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  border-radius: 50px;
+  padding: 12px 28px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  margin-top: 12px;
+  min-height: 44px;
+}
+
+@media (max-width: 480px) {
+  body { padding: 0; font-size: 1.15rem; }
+  .header h1 { font-size: 1.3rem; }
+  .opcao-btn { font-size: 1.2rem; min-height: 54px; width: 100%; justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="emoji">🧮</div>
+  <h1>Complete a Conta</h1>
+  <p>Colunete precisa da sua ajuda para armar e efetuar!</p>
+</div>
+
+<div class="container">
+  <div class="placar">Acertos: <span id="acertos">0</span> / 6</div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="progresso" style="width:0%"></div></div>
+
+  <div class="card" id="card-questao">
+    <div class="numero-questao" id="num-questao">Conta 1 de 6</div>
+
+    <div class="coluna-titulos"><span>D</span><span>U</span></div>
+    <div class="algoritmo">
+      <div class="linha-alg">
+        <div class="digito" id="alg-d1"></div>
+        <div class="digito" id="alg-u1"></div>
+      </div>
+      <div class="linha-alg linha-mais">
+        <div class="digito sinal" id="alg-sinal">+</div>
+        <div class="digito" id="alg-u2"></div>
+      </div>
+      <div class="linha-alg linha-mais" style="margin-top:8px;">
+        <div class="resultado-slot" id="alg-resd">?</div>
+        <div class="resultado-slot" id="alg-resu">?</div>
+      </div>
+    </div>
+
+    <div class="opcoes" id="opcoes"></div>
+    <div class="feedback-box" id="feedback"></div>
+    <button class="btn-proxima" id="btn-proxima" onclick="proximaConta()">Próxima →</button>
+  </div>
+
+  <div class="resultado" id="resultado">
+    <div class="emoji-final" id="emoji-final"></div>
+    <h2>Resultado!</h2>
+    <div class="score-grande"><span id="res-acertos">0</span>/6</div>
+    <div class="msg" id="res-msg"></div>
+    <button class="btn-voltar" onclick="voltarAoPortal()">⬅ Voltar ao Portal</button>
+  </div>
+</div>
+
+<script>
+(function () {
+
+// Contas "arme e efetue" — direto do livro (Unidade 8, seção 3)
+var todasContas = [
+  { d1: 5, u1: 2, d2: 3, u2: 5, total: 87 },
+  { d1: 4, u1: 3, d2: 3, u2: 6, total: 79 },
+  { d1: 7, u1: 1, d2: 1, u2: 5, total: 86 },
+  { d1: 7, u1: 0, d2: 1, u2: 8, total: 88 },
+  { d1: 3, u1: 4, d2: 5, u2: 0, total: 84 },
+  { d1: 6, u1: 1, d2: 0, u2: 7, total: 68 }
+];
+
+function embaralhar(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+function gerarOpcoes(total) {
+  var opcoes = [total, total - 10, total + 10];
+  // garante 3 valores distintos e válidos (>=0)
+  var vistos = {};
+  opcoes = opcoes.filter(function(v) {
+    if (v < 0 || vistos[v]) return false;
+    vistos[v] = true;
+    return true;
+  });
+  while (opcoes.length < 3) {
+    var alt = total + (Math.floor(Math.random() * 9) - 4);
+    if (alt >= 0 && !vistos[alt]) { vistos[alt] = true; opcoes.push(alt); }
+  }
+  var ordem = embaralhar(opcoes);
+  return { opcoes: ordem, correta: ordem.indexOf(total) };
+}
+
+var contas = embaralhar(todasContas);
+var indice = 0;
+var acertos = 0;
+var respondida = false;
+
+function playSound(tipo) {
+  try {
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    var o = ctx.createOscillator();
+    var g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    if (tipo === 'correct') {
+      o.frequency.setValueAtTime(523, ctx.currentTime);
+      o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+      o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+      o.start(); o.stop(ctx.currentTime + 0.5);
+    } else {
+      o.frequency.setValueAtTime(300, ctx.currentTime);
+      o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      o.start(); o.stop(ctx.currentTime + 0.4);
+    }
+  } catch(e) {}
+}
+
+function renderConta() {
+  var c = contas[indice];
+  document.getElementById('num-questao').textContent = 'Conta ' + (indice + 1) + ' de 6';
+  document.getElementById('progresso').style.width = (indice / 6 * 100) + '%';
+  document.getElementById('feedback').style.display = 'none';
+  document.getElementById('btn-proxima').style.display = 'none';
+  respondida = false;
+
+  document.getElementById('alg-d1').textContent = c.d1;
+  document.getElementById('alg-u1').textContent = c.u1;
+  document.getElementById('alg-u2').textContent = c.u2;
+  document.getElementById('alg-resd').textContent = '?';
+  document.getElementById('alg-resu').textContent = '?';
+
+  var g = gerarOpcoes(c.total);
+  var opcoesEl = document.getElementById('opcoes');
+  opcoesEl.innerHTML = '';
+  g.opcoes.forEach(function(val, i) {
+    var btn = document.createElement('button');
+    btn.className = 'opcao-btn';
+    btn.textContent = val;
+    btn.onclick = function() { responder(i, g.opcoes, g.correta, c.total); };
+    opcoesEl.appendChild(btn);
+  });
+}
+
+function responder(idx, opcoes, correta, total) {
+  if (respondida) return;
+  respondida = true;
+  var botoes = document.querySelectorAll('.opcao-btn');
+  botoes.forEach(function(b) { b.disabled = true; });
+
+  var fb = document.getElementById('feedback');
+  var totalStr = String(total);
+  document.getElementById('alg-resd').textContent = totalStr.length === 2 ? totalStr[0] : '0';
+  document.getElementById('alg-resu').textContent = totalStr[totalStr.length - 1];
+
+  if (idx === correta) {
+    acertos++;
+    document.getElementById('acertos').textContent = acertos;
+    botoes[idx].classList.add('correta');
+    playSound('correct');
+    fb.className = 'feedback-box ok';
+    fb.textContent = '✅ Isso! A conta fechou certinho!';
+  } else {
+    botoes[idx].classList.add('errada');
+    botoes[correta].classList.add('correta');
+    playSound('wrong');
+    fb.className = 'feedback-box err';
+    fb.textContent = '❌ Ops! O resultado certo é ' + total + '.';
+  }
+  fb.style.display = 'block';
+  document.getElementById('btn-proxima').style.display = 'block';
+}
+
+function proximaConta() {
+  indice++;
+  if (indice < 6) {
+    renderConta();
+  } else {
+    mostrarResultado();
+  }
+}
+
+function mostrarResultado() {
+  document.getElementById('card-questao').style.display = 'none';
+  var res = document.getElementById('resultado');
+  res.style.display = 'block';
+  document.getElementById('progresso').style.width = '100%';
+
+  var pct = Math.round((acertos / 6) * 100);
+  window.sabendoScore = pct;
+
+  document.getElementById('res-acertos').textContent = acertos;
+  var emoji, msg;
+  if (acertos >= 5) { emoji = '🏆'; msg = 'Suas colunas D e U estão impecáveis!'; }
+  else if (acertos >= 3) { emoji = '⭐'; msg = 'Muito bem! Continue armando e efetuando!'; }
+  else { emoji = '💪'; msg = 'Continue praticando as colunas!'; }
+  document.getElementById('emoji-final').textContent = emoji;
+  document.getElementById('res-msg').textContent = msg;
+}
+
+window.proximaConta = proximaConta;
+
+renderConta();
+
+})();
+</script>
+
+<!-- ── GAMIFICAÇÃO ─────────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'adicao-numeros-ate-99';
+  var DISCIPLINE    = 'matematica';
+  var ACTIVITY_TYPE = 'completar';
+  var TOTAL_ATIV    = 5;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Colunete',
+        characterEmoji:  '🧮',
+        characterImg:    'chars/adicao-numeros-ate-99-hd.png',
+        themeLabel:      'Adição de Números até 99 · Matemática',
+        totalActivities: TOTAL_ATIV,
+        activityType:    ACTIVITY_TYPE,
+        primaryColor:    '#0AACE8',
+        lightColor:      '#5AC8FB',
+        bgColor:         '#EFF9FF',
+        glowRgb:         '10,172,232',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _s = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _s = v;
+      var b = document.getElementById('gamificacao-btn');
+      if (b) b.style.display = 'block';
+    },
+    get: function () { return _s; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#0AACE8,#5AC8FB);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>
