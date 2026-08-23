@@ -500,7 +500,7 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
     <button class="disc-nav-btn mat-active" id="nav-mat" onclick="showDisc('mat')">
       <span class="d-icon">📐</span>
       <span class="d-name">Matemática</span>
-      <span class="d-count" id="count-mat">5 temas</span>
+      <span class="d-count" id="count-mat">9 temas</span>
     </button>
     <div class="theme-sub" id="sub-mat">
       <button class="theme-link" onclick="showTheme('mat','numeros-ordinais')">🏆 Números Ordinais</button>
@@ -508,6 +508,10 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
       <button class="theme-link" onclick="showTheme('mat','pares-impares-dezenas-exatas')">🎲 Pares, Ímpares e Dezenas Exatas</button>
       <button class="theme-link" onclick="showTheme('mat','numeros-ate-99')">🧮 Números até 99 e Comparar Quantidades</button>
       <button class="theme-link" onclick="showTheme('mat','centena-e-mil')">🟦 A Centena e o Número 1.000</button>
+      <button class="theme-link" onclick="showTheme('mat','figuras-geometricas-planas')">🔷 Figuras Geométricas Planas</button>
+      <button class="theme-link" onclick="showTheme('mat','medindo-comprimentos')">📏 Medindo Comprimentos</button>
+      <button class="theme-link" onclick="showTheme('mat','medindo-massas')">⚖️ Medindo Massas</button>
+      <button class="theme-link" onclick="showTheme('mat','medindo-capacidades')">🫙 Medindo Capacidades</button>
     </div>
 
     <button class="disc-nav-btn hist-active" id="nav-hist" onclick="showDisc('hist')">
@@ -553,8 +557,8 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
       <div class="home-subtitle">Escolha uma disciplina e vamos aprender juntos! 🎉</div>
       <div class="home-stats">
         <div class="hstat"><span class="hstat-num">5</span><span class="hstat-label">disciplinas</span></div>
-        <div class="hstat"><span class="hstat-num">22</span><span class="hstat-label">temas</span></div>
-        <div class="hstat"><span class="hstat-num">99</span><span class="hstat-label">atividades</span></div>
+        <div class="hstat"><span class="hstat-num">26</span><span class="hstat-label">temas</span></div>
+        <div class="hstat"><span class="hstat-num">116</span><span class="hstat-label">atividades</span></div>
       </div>
       <div class="home-stats" id="streak-banner" style="margin-top:16px;">
         <div class="hstat"><span class="hstat-num" id="streak-count">0</span><span class="hstat-label">🔥 dias seguidos</span></div>
@@ -587,8 +591,8 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
           <div class="dhc-name">Matemática</div>
           <div class="dhc-desc">Números, formas e desafios divertidos! 🔢</div>
           <div class="dhc-chips">
-            <span class="chip" style="background:#E0F5FE;color:#0369A1">5 temas</span>
-            <span class="chip" style="background:#EFF9FF;color:#044A7A">25 atividades</span>
+            <span class="chip" style="background:#E0F5FE;color:#0369A1">9 temas</span>
+            <span class="chip" style="background:#EFF9FF;color:#044A7A">42 atividades</span>
           </div>
         </button>
         <button class="disc-home-card hist" onclick="showDisc('hist')">
@@ -1614,7 +1618,7 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
   <div class="screen" id="screen-mat">
     <div class="disc-hero mat">
       <div class="disc-hero-title">📐 Matemática</div>
-      <div class="disc-hero-sub">5 temas · 25 atividades</div>
+      <div class="disc-hero-sub">6 temas · 30 atividades</div>
     </div>
     <div class="disc-body">
 
@@ -1624,6 +1628,10 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
         <button class="theme-tab-btn mat-tab" id="tab-mat-pares-impares-dezenas-exatas" onclick="showTheme('mat','pares-impares-dezenas-exatas')">🎲 Pares, Ímpares e Dezenas Exatas</button>
         <button class="theme-tab-btn mat-tab" id="tab-mat-numeros-ate-99" onclick="showTheme('mat','numeros-ate-99')">🧮 Números até 99 e Comparar Quantidades</button>
         <button class="theme-tab-btn mat-tab" id="tab-mat-centena-e-mil" onclick="showTheme('mat','centena-e-mil')">🟦 A Centena e o Número 1.000</button>
+        <button class="theme-tab-btn mat-tab" id="tab-mat-figuras-geometricas-planas" onclick="showTheme('mat','figuras-geometricas-planas')">🔷 Figuras Geométricas Planas</button>
+        <button class="theme-tab-btn mat-tab" id="tab-mat-medindo-comprimentos" onclick="showTheme('mat','medindo-comprimentos')">📏 Medindo Comprimentos</button>
+        <button class="theme-tab-btn mat-tab" id="tab-mat-medindo-massas" onclick="showTheme('mat','medindo-massas')">⚖️ Medindo Massas</button>
+        <button class="theme-tab-btn mat-tab" id="tab-mat-medindo-capacidades" onclick="showTheme('mat','medindo-capacidades')">🫙 Medindo Capacidades</button>
       </div>
 
       <!-- ── TEMA 1: NÚMEROS ORDINAIS ── -->
@@ -1979,6 +1987,271 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
           <div class="sched-row"><span class="sched-day" style="color:var(--mat-color)">Dia 1</span><span class="sched-acts">HQ + Quiz Interativo</span></div>
           <div class="sched-row"><span class="sched-day" style="color:var(--mat-color)">Dia 2</span><span class="sched-acts">Arrastar e Soltar + Verdadeiro ou Falso</span></div>
           <div class="sched-row"><span class="sched-day" style="color:var(--mat-color)">Dia 3</span><span class="sched-acts">Gráfico de Barras + Mapa Mental</span></div>
+        </div>
+      </div>
+
+      <!-- ── TEMA 6: FIGURAS GEOMÉTRICAS PLANAS ── -->
+      <div class="theme-content" id="theme-mat-figuras-geometricas-planas">
+        <div class="hq-card">
+          <div class="hq-viewer-wrap" style="background:#023B61;">
+            <div class="hq-viewer-title" style="color:#5AC8FB;">🔷 Figuras Geométricas Planas</div>
+            <div class="hq-viewer-sub" style="color:#BAE6FD;">Aventura com Lis e Molduro · 4 páginas</div>
+            <div class="hq-book-outer">
+              <div class="hq-book-shadow"></div>
+              <div class="hq-book-stack">
+                <div class="hq-page-base" id="hq-figuras-display">
+                  <img id="hq-figuras-img" src="matematica/figuras-geometricas-planas/hq-figuras-geometricas-planas-pg1.png" alt="HQ Figuras Geométricas Planas — Página 1" draggable="false" style="object-fit:contain; touch-action:auto;">
+                  <div class="hq-shine"></div>
+                </div>
+              </div>
+            </div>
+            <div class="hq-controls">
+              <button class="hq-btn" id="hq-figuras-prev" onclick="hqGoTo('figuras',hqCurrent['figuras']-1)" disabled>◀ Voltar</button>
+              <div class="hq-indicator" id="hq-figuras-ind" style="color:#5AC8FB;">1 / 4</div>
+              <button class="hq-btn" id="hq-figuras-next" onclick="hqGoTo('figuras',hqCurrent['figuras']+1)">Próxima ▶</button>
+            </div>
+            <div class="hq-dots" id="hq-figuras-dots">
+              <div class="hq-dot active" onclick="hqGoTo('figuras',0)"></div>
+              <div class="hq-dot" onclick="hqGoTo('figuras',1)"></div>
+              <div class="hq-dot" onclick="hqGoTo('figuras',2)"></div>
+              <div class="hq-dot" onclick="hqGoTo('figuras',3)"></div>
+            </div>
+          </div>
+          <div class="hq-caption">
+            <span>📖</span>
+            <span>Figuras Geométricas Planas — 4 páginas · Personagens: Lis e Molduro · Tema: figuras planas — quadrado, triângulo, círculo e retângulo</span>
+          </div>
+          <div class="livro-ref">📚 Livro p. 130–143</div>
+        </div>
+        <hr class="sdiv">
+        <div class="act-grid">
+          <a class="act-card mat" href="matematica/figuras-geometricas-planas/quiz-figuras-geometricas-planas.html" target="_blank">
+            <div class="act-icon">❓</div>
+            <div class="act-name">Quiz Interativo</div>
+            <div class="act-info"><div class="level lv4">📖 Retrieval practice</div></div>
+          </a>
+          <a class="act-card mat" href="matematica/figuras-geometricas-planas/arrastar-figuras-geometricas-planas.html" target="_blank">
+            <div class="act-icon">🔀</div>
+            <div class="act-name">Arrastar e Classificar</div>
+            <div class="act-info"><div class="level lv2">⚡ Praticar (80%)</div></div>
+          </a>
+          <a class="act-card mat" href="matematica/figuras-geometricas-planas/vf-figuras-geometricas-planas.html" target="_blank">
+            <div class="act-icon">✅</div>
+            <div class="act-name">Verdadeiro ou Falso</div>
+            <div class="act-info"><div class="level lv1">💬 Discutir (70%)</div></div>
+          </a>
+          <a class="act-card mat" href="matematica/figuras-geometricas-planas/ilustrador-figuras-geometricas-planas.html" target="_blank">
+            <div class="act-icon">🎨</div>
+            <div class="act-name">Criador de Mosaico</div>
+            <div class="act-info"><div class="level lv3">🏆 Criar (90%)</div></div>
+          </a>
+          <a class="act-card mat" href="matematica/figuras-geometricas-planas/mapa-mental-figuras-geometricas-planas.html" target="_blank">
+            <div class="act-icon">🗺️</div>
+            <div class="act-name">Mapa Mental</div>
+            <div class="act-info"><div class="level lv3">🏆 Ensinar (90%)</div></div>
+          </a>
+        </div>
+        <hr class="sdiv">
+        <div class="sched-title">📅 Sugestão de uso</div>
+        <div class="sched">
+          <div class="sched-row"><span class="sched-day" style="color:var(--mat-color)">Dia 1</span><span class="sched-acts">HQ + Quiz Interativo</span></div>
+          <div class="sched-row"><span class="sched-day" style="color:var(--mat-color)">Dia 2</span><span class="sched-acts">Arrastar e Classificar + Verdadeiro ou Falso</span></div>
+          <div class="sched-row"><span class="sched-day" style="color:var(--mat-color)">Dia 3</span><span class="sched-acts">Criador de Mosaico + Mapa Mental</span></div>
+        </div>
+      </div>
+
+      <!-- ── TEMA 7: MEDINDO COMPRIMENTOS ── -->
+      <div class="theme-content" id="theme-mat-medindo-comprimentos">
+        <div class="hq-card">
+          <div class="hq-viewer-wrap" style="background:#023B61;">
+            <div class="hq-viewer-title" style="color:#5AC8FB;">📏 Medindo Comprimentos</div>
+            <div class="hq-viewer-sub" style="color:#BAE6FD;">Aventura com Lis e Trena · 4 páginas</div>
+            <div class="hq-book-outer">
+              <div class="hq-book-shadow"></div>
+              <div class="hq-book-stack">
+                <div class="hq-page-base" id="hq-comprimentos-display">
+                  <img id="hq-comprimentos-img" src="matematica/medindo-comprimentos/hq-medindo-comprimentos-pg1.png" alt="HQ Medindo Comprimentos — Página 1" draggable="false" style="object-fit:contain; touch-action:auto;">
+                  <div class="hq-shine"></div>
+                </div>
+              </div>
+            </div>
+            <div class="hq-controls">
+              <button class="hq-btn" id="hq-comprimentos-prev" onclick="hqGoTo('comprimentos',hqCurrent['comprimentos']-1)" disabled>◀ Voltar</button>
+              <div class="hq-indicator" id="hq-comprimentos-ind" style="color:#5AC8FB;">1 / 4</div>
+              <button class="hq-btn" id="hq-comprimentos-next" onclick="hqGoTo('comprimentos',hqCurrent['comprimentos']+1)">Próxima ▶</button>
+            </div>
+            <div class="hq-dots" id="hq-comprimentos-dots">
+              <div class="hq-dot active" onclick="hqGoTo('comprimentos',0)"></div>
+              <div class="hq-dot" onclick="hqGoTo('comprimentos',1)"></div>
+              <div class="hq-dot" onclick="hqGoTo('comprimentos',2)"></div>
+              <div class="hq-dot" onclick="hqGoTo('comprimentos',3)"></div>
+            </div>
+          </div>
+          <div class="hq-caption">
+            <span>📖</span>
+            <span>Medindo Comprimentos — 4 páginas · Personagens: Lis e Trena · Tema: unidades de medida de comprimento</span>
+          </div>
+          <div class="livro-ref">📚 Livro p. 146–155, 159</div>
+        </div>
+        <hr class="sdiv">
+        <div class="act-grid">
+          <a class="act-card mat" href="matematica/medindo-comprimentos/quiz-medindo-comprimentos.html" target="_blank">
+            <div class="act-icon">❓</div>
+            <div class="act-name">Quiz Interativo</div>
+            <div class="act-info"><div class="level lv4">📖 Retrieval practice</div></div>
+          </a>
+          <a class="act-card mat" href="matematica/medindo-comprimentos/vf-medindo-comprimentos.html" target="_blank">
+            <div class="act-icon">✅</div>
+            <div class="act-name">Verdadeiro ou Falso</div>
+            <div class="act-info"><div class="level lv1">💬 Discutir (70%)</div></div>
+          </a>
+          <a class="act-card mat" href="matematica/medindo-comprimentos/ilustrador-medindo-comprimentos.html" target="_blank">
+            <div class="act-icon">🎨</div>
+            <div class="act-name">Ilustrador</div>
+            <div class="act-info"><div class="level lv3">🏆 Criar (90%)</div></div>
+          </a>
+          <a class="act-card mat" href="matematica/medindo-comprimentos/mapa-mental-medindo-comprimentos.html" target="_blank">
+            <div class="act-icon">🗺️</div>
+            <div class="act-name">Mapa Mental</div>
+            <div class="act-info"><div class="level lv3">🏆 Ensinar (90%)</div></div>
+          </a>
+        </div>
+        <hr class="sdiv">
+        <div class="sched-title">📅 Sugestão de uso</div>
+        <div class="sched">
+          <div class="sched-row"><span class="sched-day" style="color:var(--mat-color)">Dia 1</span><span class="sched-acts">HQ + Quiz Interativo</span></div>
+          <div class="sched-row"><span class="sched-day" style="color:var(--mat-color)">Dia 2</span><span class="sched-acts">Verdadeiro ou Falso + Ilustrador</span></div>
+          <div class="sched-row"><span class="sched-day" style="color:var(--mat-color)">Dia 3</span><span class="sched-acts">Mapa Mental</span></div>
+        </div>
+      </div>
+
+      <!-- ── TEMA 8: MEDINDO MASSAS ── -->
+      <div class="theme-content" id="theme-mat-medindo-massas">
+        <div class="hq-card">
+          <div class="hq-viewer-wrap" style="background:#023B61;">
+            <div class="hq-viewer-title" style="color:#5AC8FB;">⚖️ Medindo Massas</div>
+            <div class="hq-viewer-sub" style="color:#BAE6FD;">Aventura com Lis e Fiel · 4 páginas</div>
+            <div class="hq-book-outer">
+              <div class="hq-book-shadow"></div>
+              <div class="hq-book-stack">
+                <div class="hq-page-base" id="hq-massas-display">
+                  <img id="hq-massas-img" src="matematica/medindo-massas/hq-medindo-massas-pg1.png" alt="HQ Medindo Massas — Página 1" draggable="false" style="object-fit:contain; touch-action:auto;">
+                  <div class="hq-shine"></div>
+                </div>
+              </div>
+            </div>
+            <div class="hq-controls">
+              <button class="hq-btn" id="hq-massas-prev" onclick="hqGoTo('massas',hqCurrent['massas']-1)" disabled>◀ Voltar</button>
+              <div class="hq-indicator" id="hq-massas-ind" style="color:#5AC8FB;">1 / 4</div>
+              <button class="hq-btn" id="hq-massas-next" onclick="hqGoTo('massas',hqCurrent['massas']+1)">Próxima ▶</button>
+            </div>
+            <div class="hq-dots" id="hq-massas-dots">
+              <div class="hq-dot active" onclick="hqGoTo('massas',0)"></div>
+              <div class="hq-dot" onclick="hqGoTo('massas',1)"></div>
+              <div class="hq-dot" onclick="hqGoTo('massas',2)"></div>
+              <div class="hq-dot" onclick="hqGoTo('massas',3)"></div>
+            </div>
+          </div>
+          <div class="hq-caption">
+            <span>📖</span>
+            <span>Medindo Massas — 4 páginas · Personagens: Lis e Fiel · Tema: unidades de medida de massa</span>
+          </div>
+          <div class="livro-ref">📚 Livro p. 156–160</div>
+        </div>
+        <hr class="sdiv">
+        <div class="act-grid">
+          <a class="act-card mat" href="matematica/medindo-massas/quiz-medindo-massas.html" target="_blank">
+            <div class="act-icon">❓</div>
+            <div class="act-name">Quiz Interativo</div>
+            <div class="act-info"><div class="level lv4">📖 Retrieval practice</div></div>
+          </a>
+          <a class="act-card mat" href="matematica/medindo-massas/silabas-medindo-massas.html" target="_blank">
+            <div class="act-icon">🔤</div>
+            <div class="act-name">Ordene as Sílabas</div>
+            <div class="act-info"><div class="level lv2">⚡ Praticar (80%)</div></div>
+          </a>
+          <a class="act-card mat" href="matematica/medindo-massas/ilustrador-medindo-massas.html" target="_blank">
+            <div class="act-icon">🎨</div>
+            <div class="act-name">Ilustrador da Balança</div>
+            <div class="act-info"><div class="level lv3">🏆 Criar (90%)</div></div>
+          </a>
+          <a class="act-card mat" href="matematica/medindo-massas/mapa-mental-medindo-massas.html" target="_blank">
+            <div class="act-icon">🗺️</div>
+            <div class="act-name">Mapa Mental</div>
+            <div class="act-info"><div class="level lv3">🏆 Ensinar (90%)</div></div>
+          </a>
+        </div>
+        <hr class="sdiv">
+        <div class="sched-title">📅 Sugestão de uso</div>
+        <div class="sched">
+          <div class="sched-row"><span class="sched-day" style="color:var(--mat-color)">Dia 1</span><span class="sched-acts">HQ + Quiz Interativo</span></div>
+          <div class="sched-row"><span class="sched-day" style="color:var(--mat-color)">Dia 2</span><span class="sched-acts">Ordene as Sílabas + Ilustrador da Balança</span></div>
+          <div class="sched-row"><span class="sched-day" style="color:var(--mat-color)">Dia 3</span><span class="sched-acts">Mapa Mental</span></div>
+        </div>
+      </div>
+
+      <!-- ── TEMA 9: MEDINDO CAPACIDADES ── -->
+      <div class="theme-content" id="theme-mat-medindo-capacidades">
+        <div class="hq-card">
+          <div class="hq-viewer-wrap" style="background:#023B61;">
+            <div class="hq-viewer-title" style="color:#5AC8FB;">🫙 Medindo Capacidades</div>
+            <div class="hq-viewer-sub" style="color:#BAE6FD;">Aventura com Lis e Jarrim · 4 páginas</div>
+            <div class="hq-book-outer">
+              <div class="hq-book-shadow"></div>
+              <div class="hq-book-stack">
+                <div class="hq-page-base" id="hq-capacidades-display">
+                  <img id="hq-capacidades-img" src="matematica/medindo-capacidades/hq-medindo-capacidades-pg1.png" alt="HQ Medindo Capacidades — Página 1" draggable="false" style="object-fit:contain; touch-action:auto;">
+                  <div class="hq-shine"></div>
+                </div>
+              </div>
+            </div>
+            <div class="hq-controls">
+              <button class="hq-btn" id="hq-capacidades-prev" onclick="hqGoTo('capacidades',hqCurrent['capacidades']-1)" disabled>◀ Voltar</button>
+              <div class="hq-indicator" id="hq-capacidades-ind" style="color:#5AC8FB;">1 / 4</div>
+              <button class="hq-btn" id="hq-capacidades-next" onclick="hqGoTo('capacidades',hqCurrent['capacidades']+1)">Próxima ▶</button>
+            </div>
+            <div class="hq-dots" id="hq-capacidades-dots">
+              <div class="hq-dot active" onclick="hqGoTo('capacidades',0)"></div>
+              <div class="hq-dot" onclick="hqGoTo('capacidades',1)"></div>
+              <div class="hq-dot" onclick="hqGoTo('capacidades',2)"></div>
+              <div class="hq-dot" onclick="hqGoTo('capacidades',3)"></div>
+            </div>
+          </div>
+          <div class="hq-caption">
+            <span>📖</span>
+            <span>Medindo Capacidades — 4 páginas · Personagens: Lis e Jarrim · Tema: unidades de medida de capacidade</span>
+          </div>
+          <div class="livro-ref">📚 Livro p. 161–166, 169</div>
+        </div>
+        <hr class="sdiv">
+        <div class="act-grid">
+          <a class="act-card mat" href="matematica/medindo-capacidades/quiz-medindo-capacidades.html" target="_blank">
+            <div class="act-icon">❓</div>
+            <div class="act-name">Quiz Interativo</div>
+            <div class="act-info"><div class="level lv4">📖 Retrieval practice</div></div>
+          </a>
+          <a class="act-card mat" href="matematica/medindo-capacidades/arrastar-medindo-capacidades.html" target="_blank">
+            <div class="act-icon">🔀</div>
+            <div class="act-name">Litro ou Mililitro?</div>
+            <div class="act-info"><div class="level lv2">⚡ Praticar (80%)</div></div>
+          </a>
+          <a class="act-card mat" href="matematica/medindo-capacidades/ilustrador-medindo-capacidades.html" target="_blank">
+            <div class="act-icon">🎨</div>
+            <div class="act-name">Encha a Jarra!</div>
+            <div class="act-info"><div class="level lv3">🏆 Criar (90%)</div></div>
+          </a>
+          <a class="act-card mat" href="matematica/medindo-capacidades/mapa-mental-medindo-capacidades.html" target="_blank">
+            <div class="act-icon">🗺️</div>
+            <div class="act-name">Mapa Mental</div>
+            <div class="act-info"><div class="level lv3">🏆 Ensinar (90%)</div></div>
+          </a>
+        </div>
+        <hr class="sdiv">
+        <div class="sched-title">📅 Sugestão de uso</div>
+        <div class="sched">
+          <div class="sched-row"><span class="sched-day" style="color:var(--mat-color)">Dia 1</span><span class="sched-acts">HQ + Quiz Interativo</span></div>
+          <div class="sched-row"><span class="sched-day" style="color:var(--mat-color)">Dia 2</span><span class="sched-acts">Litro ou Mililitro? + Encha a Jarra!</span></div>
+          <div class="sched-row"><span class="sched-day" style="color:var(--mat-color)">Dia 3</span><span class="sched-acts">Mapa Mental</span></div>
         </div>
       </div>
 
@@ -2445,6 +2718,10 @@ var hqPages = {
   pares:         ['matematica/pares-impares-dezenas-exatas/hq-pares-impares-dezenas-exatas-pg1.png','matematica/pares-impares-dezenas-exatas/hq-pares-impares-dezenas-exatas-pg2.png','matematica/pares-impares-dezenas-exatas/hq-pares-impares-dezenas-exatas-pg3.png','matematica/pares-impares-dezenas-exatas/hq-pares-impares-dezenas-exatas-pg4.png'],
   numeros99:     ['matematica/numeros-ate-99/hq-numeros-ate-99-pg1.png','matematica/numeros-ate-99/hq-numeros-ate-99-pg2.png','matematica/numeros-ate-99/hq-numeros-ate-99-pg3.png','matematica/numeros-ate-99/hq-numeros-ate-99-pg4.png'],
   centena:       ['matematica/centena-e-mil/hq-centena-e-mil-pg1.png','matematica/centena-e-mil/hq-centena-e-mil-pg2.png','matematica/centena-e-mil/hq-centena-e-mil-pg3.png','matematica/centena-e-mil/hq-centena-e-mil-pg4.png'],
+  figuras:       ['matematica/figuras-geometricas-planas/hq-figuras-geometricas-planas-pg1.png','matematica/figuras-geometricas-planas/hq-figuras-geometricas-planas-pg2.png','matematica/figuras-geometricas-planas/hq-figuras-geometricas-planas-pg3.png','matematica/figuras-geometricas-planas/hq-figuras-geometricas-planas-pg4.png'],
+  comprimentos:  ['matematica/medindo-comprimentos/hq-medindo-comprimentos-pg1.png','matematica/medindo-comprimentos/hq-medindo-comprimentos-pg2.png','matematica/medindo-comprimentos/hq-medindo-comprimentos-pg3.png','matematica/medindo-comprimentos/hq-medindo-comprimentos-pg4.png'],
+  massas:        ['matematica/medindo-massas/hq-medindo-massas-pg1.png','matematica/medindo-massas/hq-medindo-massas-pg2.png','matematica/medindo-massas/hq-medindo-massas-pg3.png','matematica/medindo-massas/hq-medindo-massas-pg4.png'],
+  capacidades:   ['matematica/medindo-capacidades/hq-medindo-capacidades-pg1.png','matematica/medindo-capacidades/hq-medindo-capacidades-pg2.png','matematica/medindo-capacidades/hq-medindo-capacidades-pg3.png','matematica/medindo-capacidades/hq-medindo-capacidades-pg4.png'],
   bilhete:       ['portugues/bilhete-cartao-pessoal/hq-bilhete-cartao-pessoal-pg1.png','portugues/bilhete-cartao-pessoal/hq-bilhete-cartao-pessoal-pg2.png','portugues/bilhete-cartao-pessoal/hq-bilhete-cartao-pessoal-pg3.png','portugues/bilhete-cartao-pessoal/hq-bilhete-cartao-pessoal-pg4.png'],
   letras:        ['portugues/letras-silabas-pontuacao/hq-letras-silabas-pontuacao-pg1.png','portugues/letras-silabas-pontuacao/hq-letras-silabas-pontuacao-pg2.png','portugues/letras-silabas-pontuacao/hq-letras-silabas-pontuacao-pg3.png','portugues/letras-silabas-pontuacao/hq-letras-silabas-pontuacao-pg4.png'],
   carta:         ['portugues/carta-pessoal/hq-carta-pessoal-pg1.png','portugues/carta-pessoal/hq-carta-pessoal-pg2.png','portugues/carta-pessoal/hq-carta-pessoal-pg3.png','portugues/carta-pessoal/hq-carta-pessoal-pg4.png'],
@@ -2624,7 +2901,11 @@ var THEME_CATALOG = [
   {slug:'centena-e-mil',               disc:'mat',  label:'A Centena e o Número 1.000',      emoji:'🟦', charName:'Cento',   charImg:'chars/centena-e-mil-hd.png'},
   {slug:'bilhete-cartao-pessoal',      disc:'port', label:'Bilhete e Cartão Pessoal',        emoji:'📝', charName:'Bilheto', charImg:'chars/bilhete-cartao-pessoal-hd.png'},
   {slug:'letras-silabas-pontuacao',    disc:'port', label:'Letras, Sílabas e Pontuação',     emoji:'❗', charName:'Pontinho',charImg:'chars/letras-silabas-pontuacao-hd.png'},
-  {slug:'carta-pessoal',               disc:'port', label:'Carta Pessoal',                   emoji:'📮', charName:'Postinho',charImg:'chars/carta-pessoal-hd.png'}
+  {slug:'carta-pessoal',               disc:'port', label:'Carta Pessoal',                   emoji:'📮', charName:'Postinho',charImg:'chars/carta-pessoal-hd.png'},
+  {slug:'figuras-geometricas-planas',  disc:'mat',  label:'Figuras Geométricas Planas',      emoji:'🔷', charName:'Molduro', charImg:'chars/figuras-geometricas-planas-hd.png'},
+  {slug:'medindo-comprimentos',        disc:'mat',  label:'Medindo Comprimentos',            emoji:'📏', charName:'Trena',   charImg:'chars/medindo-comprimentos-hd.png'},
+  {slug:'medindo-massas',              disc:'mat',  label:'Medindo Massas',                  emoji:'⚖️', charName:'Fiel',    charImg:'chars/medindo-massas-hd.png'},
+  {slug:'medindo-capacidades',         disc:'mat',  label:'Medindo Capacidades',              emoji:'🫙', charName:'Jarrim',  charImg:'chars/medindo-capacidades-hd.png'}
 ];
 
 var HREF_MAP = {
@@ -2716,7 +2997,24 @@ var HREF_MAP = {
   'matematica/centena-e-mil/verdadeiro-ou-falso-centena-e-mil.html':'centena-e-mil|vf',
   'matematica/centena-e-mil/arrastar-centena-e-mil.html':           'centena-e-mil|arrastar',
   'matematica/centena-e-mil/mapa-mental-centena-e-mil.html':        'centena-e-mil|mapa-mental',
-  'matematica/centena-e-mil/grafico-de-barras.html':                'centena-e-mil|grafico'
+  'matematica/centena-e-mil/grafico-de-barras.html':                'centena-e-mil|grafico',
+  'matematica/figuras-geometricas-planas/quiz-figuras-geometricas-planas.html':       'figuras-geometricas-planas|quiz',
+  'matematica/figuras-geometricas-planas/arrastar-figuras-geometricas-planas.html':   'figuras-geometricas-planas|arrastar',
+  'matematica/figuras-geometricas-planas/vf-figuras-geometricas-planas.html':         'figuras-geometricas-planas|vf',
+  'matematica/figuras-geometricas-planas/ilustrador-figuras-geometricas-planas.html': 'figuras-geometricas-planas|ilustrador',
+  'matematica/figuras-geometricas-planas/mapa-mental-figuras-geometricas-planas.html':'figuras-geometricas-planas|mapa-mental',
+  'matematica/medindo-comprimentos/quiz-medindo-comprimentos.html':             'medindo-comprimentos|quiz',
+  'matematica/medindo-comprimentos/vf-medindo-comprimentos.html':               'medindo-comprimentos|vf',
+  'matematica/medindo-comprimentos/ilustrador-medindo-comprimentos.html':       'medindo-comprimentos|ilustrador',
+  'matematica/medindo-comprimentos/mapa-mental-medindo-comprimentos.html':      'medindo-comprimentos|mapa-mental',
+  'matematica/medindo-massas/quiz-medindo-massas.html':                         'medindo-massas|quiz',
+  'matematica/medindo-massas/silabas-medindo-massas.html':                      'medindo-massas|silabas',
+  'matematica/medindo-massas/ilustrador-medindo-massas.html':                   'medindo-massas|ilustrador',
+  'matematica/medindo-massas/mapa-mental-medindo-massas.html':                  'medindo-massas|mapa-mental',
+  'matematica/medindo-capacidades/quiz-medindo-capacidades.html':               'medindo-capacidades|quiz',
+  'matematica/medindo-capacidades/arrastar-medindo-capacidades.html':           'medindo-capacidades|arrastar',
+  'matematica/medindo-capacidades/ilustrador-medindo-capacidades.html':         'medindo-capacidades|ilustrador',
+  'matematica/medindo-capacidades/mapa-mental-medindo-capacidades.html':        'medindo-capacidades|mapa-mental'
 };
 
 var DISC_LABEL_MAP = { cien:'Ciências', geo:'Geografia', hist:'História', mat:'Matemática', port:'Português' };

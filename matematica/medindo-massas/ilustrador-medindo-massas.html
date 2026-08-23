@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ilustrador da Balança — Medindo Massas | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root { --primary: #0AACE8; --light: #5AC8FB; --bg: #EFF9FF; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100vh; }
+
+.header {
+  background: linear-gradient(135deg, #044A7A, #0AACE8 60%, #5AC8FB);
+  color: #fff; padding: 20px 24px; text-align: center;
+}
+.header .emoji { font-size: 2.5rem; }
+.header h1 { font-family: 'Baloo 2', sans-serif; font-size: 1.6rem; font-weight: 900; margin-top: 4px; }
+.header p { font-size: 1rem; opacity: 0.9; }
+
+.container { max-width: 720px; margin: 0 auto; padding: 20px 16px 32px; }
+
+.secao {
+  background: #fff; border-radius: 18px; padding: 18px 16px;
+  box-shadow: 0 2px 12px rgba(10,172,232,0.1); margin-bottom: 20px;
+}
+.secao-titulo {
+  font-family: 'Baloo 2', sans-serif; font-size: 1.3rem; font-weight: 900;
+  color: var(--primary); margin-bottom: 6px;
+}
+.instrucao {
+  font-size: 1.15rem; color: #1a3a50; font-weight: 600; margin-bottom: 16px; line-height: 1.4;
+}
+
+/* Paleta de cores */
+.paleta { display: flex; gap: 10px; justify-content: center; margin-bottom: 14px; flex-wrap: wrap; }
+.cor-btn {
+  width: 48px; height: 48px; min-width: 48px; min-height: 48px;
+  border-radius: 50%; border: 3px solid #fff;
+  box-shadow: 0 0 0 2px #dbeeff; cursor: pointer;
+  transition: transform 0.15s;
+}
+.cor-btn.ativa { transform: scale(1.18); box-shadow: 0 0 0 3px var(--primary); }
+
+/* Pincéis */
+.pincel-wrap { display: flex; gap: 10px; justify-content: center; margin-bottom: 18px; flex-wrap: wrap; }
+.pincel-btn {
+  background: #EFF9FF; border: 3px solid #bce4f8; border-radius: 14px;
+  padding: 10px 18px; font-family: 'Baloo 2', sans-serif;
+  font-size: 1.05rem; font-weight: 800; color: #1a3a50; cursor: pointer;
+  min-height: 48px; min-width: 44px;
+  transition: all 0.15s;
+}
+.pincel-btn.ativa { background: var(--primary); border-color: var(--primary); color: #fff; transform: scale(1.05); }
+
+/* Canvas */
+.canvas-wrap {
+  background: #fff;
+  border: 4px solid #bce4f8;
+  border-radius: 18px;
+  overflow: hidden;
+  margin-bottom: 16px;
+  touch-action: none;
+  aspect-ratio: 4 / 3;
+  max-height: 420px;
+  position: relative;
+}
+#desenhoCanvas { width: 100%; height: 100%; display: block; cursor: crosshair; }
+
+.dica-fundo {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 12px 24px;
+  font-size: 2.2rem;
+  pointer-events: none;
+  opacity: 0.18;
+}
+
+.botoes-wrap { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-bottom: 8px; }
+.btn-concluir {
+  background: linear-gradient(135deg, #0AACE8, #5AC8FB);
+  color: #fff; border: none; border-radius: 50px;
+  padding: 14px 36px; font-family: 'Baloo 2', sans-serif;
+  font-size: 1.2rem; font-weight: 800; cursor: pointer;
+  box-shadow: 0 4px 16px rgba(10,172,232,0.3);
+  min-height: 54px;
+}
+.btn-limpar {
+  background: #fff; color: #888; border: 2px solid #ddd;
+  border-radius: 50px; padding: 14px 24px;
+  font-family: 'Baloo 2', sans-serif; font-size: 1.1rem; font-weight: 800;
+  cursor: pointer;
+  min-height: 54px;
+}
+
+.resultado-box {
+  display: none; text-align: center;
+  background: #fff; border-radius: 20px; padding: 32px 24px;
+  box-shadow: 0 4px 20px rgba(10,172,232,0.14); margin-bottom: 16px;
+}
+.resultado-box .emoji-final { font-size: 3.5rem; }
+.resultado-box h2 { font-family: 'Baloo 2', sans-serif; font-size: 2rem; color: var(--primary); margin: 10px 0 6px; }
+.resultado-box p { font-size: 1.15rem; color: #1a3a50; }
+
+.btn-voltar {
+  background: transparent; border: 2px solid var(--primary); color: var(--primary);
+  border-radius: 50px; padding: 12px 28px;
+  font-family: 'Baloo 2', sans-serif; font-size: 1.1rem; font-weight: 800;
+  cursor: pointer; display: block; margin: 0 auto 24px;
+}
+
+@media (max-width: 480px) {
+  .header h1 { font-size: 1.3rem; }
+  .pincel-btn { width: 100%; justify-content: center; text-align: center; }
+  .botoes-wrap { flex-direction: column; }
+  .btn-concluir, .btn-limpar { width: 100%; justify-content: center; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="emoji">⚖️</div>
+  <h1>Ilustrador da Balança</h1>
+  <p>Desenhe a sua própria balança de dois pratos com o Fiel!</p>
+</div>
+
+<div class="container">
+
+  <div class="secao">
+    <div class="secao-titulo">🎨 Sua Balança</div>
+    <div class="instrucao">
+      Desenhe uma balança de dois pratos. Em um prato coloque um objeto <strong>PESADO</strong> e no outro um objeto <strong>LEVE</strong>! Escolha a cor e o pincel abaixo.
+    </div>
+
+    <div class="paleta" id="paleta"></div>
+
+    <div class="pincel-wrap">
+      <button class="pincel-btn ativa" id="pincel-fino" onclick="escolherPincel(4)">✏️ Fino</button>
+      <button class="pincel-btn" id="pincel-medio" onclick="escolherPincel(10)">🖊️ Médio</button>
+      <button class="pincel-btn" id="pincel-grosso" onclick="escolherPincel(20)">🖌️ Grosso</button>
+    </div>
+
+    <div class="canvas-wrap">
+      <canvas id="desenhoCanvas"></canvas>
+      <div class="dica-fundo"><span>⚖️</span></div>
+    </div>
+
+    <div class="botoes-wrap">
+      <button class="btn-limpar" onclick="limparCanvas()">Limpar 🔄</button>
+      <button class="btn-concluir" onclick="concluirDesenho()">Concluir desenho ✔</button>
+    </div>
+  </div>
+
+  <div class="resultado-box" id="resultado-box">
+    <div class="emoji-final">🎉</div>
+    <h2>Que balança linda!</h2>
+    <p>Você desenhou um objeto pesado e um leve. Muito bem, artista!</p>
+  </div>
+
+  <button class="btn-voltar" onclick="voltarAoPortal()">⬅ Voltar ao Portal</button>
+</div>
+
+<script>
+(function () {
+
+var CORES = ['#044A7A', '#0AACE8', '#EF4444', '#22C55E', '#F59E0B', '#A855F7', '#1a2e3b'];
+var corAtiva = CORES[0];
+var espessuraAtiva = 4;
+
+var canvas = document.getElementById('desenhoCanvas');
+var ctx = canvas.getContext('2d');
+var desenhando = false;
+var ultimoPonto = null;
+var jaDesenhou = false;
+
+function playSound(tipo) {
+  try {
+    var actx = new (window.AudioContext || window.webkitAudioContext)();
+    var o = actx.createOscillator(); var g = actx.createGain();
+    o.connect(g); g.connect(actx.destination);
+    if (tipo === 'correct') {
+      o.frequency.setValueAtTime(523, actx.currentTime);
+      o.frequency.setValueAtTime(659, actx.currentTime + 0.1);
+      o.frequency.setValueAtTime(784, actx.currentTime + 0.2);
+      g.gain.setValueAtTime(0.3, actx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + 0.5);
+      o.start(); o.stop(actx.currentTime + 0.5);
+    } else {
+      o.frequency.setValueAtTime(300, actx.currentTime);
+      o.frequency.setValueAtTime(200, actx.currentTime + 0.15);
+      g.gain.setValueAtTime(0.3, actx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + 0.4);
+      o.start(); o.stop(actx.currentTime + 0.4);
+    }
+  } catch(e) {}
+}
+
+function redimensionarCanvas() {
+  var rect = canvas.getBoundingClientRect();
+  var imgAnterior = null;
+  if (canvas.width > 0 && canvas.height > 0) {
+    imgAnterior = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  }
+  var dpr = window.devicePixelRatio || 1;
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  if (imgAnterior) {
+    // Mantém proporção simples ao redimensionar (aceitável para uso educacional)
+    ctx.putImageData(imgAnterior, 0, 0);
+  }
+}
+
+function montarPaleta() {
+  var paleta = document.getElementById('paleta');
+  paleta.innerHTML = '';
+  CORES.forEach(function(cor, i) {
+    var btn = document.createElement('button');
+    btn.className = 'cor-btn' + (i === 0 ? ' ativa' : '');
+    btn.style.background = cor;
+    btn.setAttribute('data-cor', cor);
+    btn.onclick = function() { escolherCor(cor, btn); };
+    paleta.appendChild(btn);
+  });
+}
+
+function escolherCor(cor, btnEl) {
+  corAtiva = cor;
+  document.querySelectorAll('.cor-btn').forEach(function(b) { b.classList.remove('ativa'); });
+  btnEl.classList.add('ativa');
+}
+
+function escolherPincel(espessura) {
+  espessuraAtiva = espessura;
+  document.getElementById('pincel-fino').classList.toggle('ativa', espessura === 4);
+  document.getElementById('pincel-medio').classList.toggle('ativa', espessura === 10);
+  document.getElementById('pincel-grosso').classList.toggle('ativa', espessura === 20);
+}
+
+function pegarPonto(e) {
+  var rect = canvas.getBoundingClientRect();
+  if (e.touches && e.touches.length > 0) {
+    return { x: e.touches[0].clientX - rect.left, y: e.touches[0].clientY - rect.top };
+  }
+  return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+}
+
+function iniciarTraço(e) {
+  e.preventDefault();
+  desenhando = true;
+  ultimoPonto = pegarPonto(e);
+  jaDesenhou = true;
+}
+
+function desenharTraço(e) {
+  if (!desenhando) return;
+  e.preventDefault();
+  var ponto = pegarPonto(e);
+  ctx.strokeStyle = corAtiva;
+  ctx.lineWidth = espessuraAtiva;
+  ctx.beginPath();
+  ctx.moveTo(ultimoPonto.x, ultimoPonto.y);
+  ctx.lineTo(ponto.x, ponto.y);
+  ctx.stroke();
+  ultimoPonto = ponto;
+}
+
+function pararTraço(e) {
+  if (e) e.preventDefault();
+  desenhando = false;
+  ultimoPonto = null;
+}
+
+function limparCanvas() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  jaDesenhou = false;
+  document.getElementById('resultado-box').style.display = 'none';
+}
+
+function concluirDesenho() {
+  var res = document.getElementById('resultado-box');
+  res.style.display = 'block';
+  playSound('correct');
+  window.sabendoScore = 100;
+  res.scrollIntoView({ behavior: 'smooth' });
+}
+
+// Mouse
+canvas.addEventListener('mousedown', iniciarTraço);
+canvas.addEventListener('mousemove', desenharTraço);
+window.addEventListener('mouseup', pararTraço);
+
+// Touch — ERR-004: passive:false + preventDefault
+canvas.addEventListener('touchstart', iniciarTraço, { passive: false });
+canvas.addEventListener('touchmove', desenharTraço, { passive: false });
+canvas.addEventListener('touchend', pararTraço, { passive: false });
+
+window.addEventListener('resize', redimensionarCanvas);
+
+window.escolherPincel = escolherPincel;
+window.limparCanvas = limparCanvas;
+window.concluirDesenho = concluirDesenho;
+
+montarPaleta();
+redimensionarCanvas();
+
+})();
+</script>
+
+<!-- GAMIFICAÇÃO -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'medindo-massas';
+  var DISCIPLINE    = 'matematica';
+  var ACTIVITY_TYPE = 'ilustrador';
+  var TOTAL_ATIV    = 4;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Fiel',
+        characterEmoji:  '⚖️',
+        characterImg:    'chars/medindo-massas-hd.png',
+        themeLabel:      'Medindo Massas · Matemática',
+        totalActivities: TOTAL_ATIV,
+        activityType:    ACTIVITY_TYPE,
+        primaryColor:    '#0AACE8',
+        lightColor:      '#5AC8FB',
+        bgColor:         '#EFF9FF',
+        glowRgb:         '10,172,232',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _s = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _s = v;
+      var b = document.getElementById('gamificacao-btn');
+      if (b) b.style.display = 'block';
+    },
+    get: function () { return _s; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#0AACE8,#5AC8FB);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>

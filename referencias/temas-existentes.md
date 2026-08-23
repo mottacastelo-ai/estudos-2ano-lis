@@ -1,7 +1,7 @@
 # Temas Existentes — Portal da Lis (2º Ano)
 
 > Atualizar este arquivo após cada novo tema implementado.
-> Última atualização: 2026-08-22
+> Última atualização: 2026-08-23
 
 ---
 
@@ -32,7 +32,7 @@
 | Mudanças na Convivência | `mudancas-convivencia` | Tempa (ampulheta) | quiz · jogo-memoria · silabas · mapa-mental |
 | Convivência nos Transportes Coletivos | `convivencia-transportes-coletivos` | Trilim (sino de bonde) | quiz · arrastar · completar · ilustrador · mapa-mental |
 
-## Matemática (`mat`) — 5 temas
+## Matemática (`mat`) — 8 temas
 
 | Tema | Slug | Personagem | Atividades |
 |---|---|---|---|
@@ -41,6 +41,9 @@
 | Pares, Ímpares e Dezenas Exatas | `pares-impares-dezenas-exatas` | Duo (par de dados) | quiz · classifica-pares-impares · arrastar-dezenas · jogo-memoria · mapa-mental |
 | Números até 99 | `numeros-ate-99` | Centão (ábaco) | quiz · decompor-numeros · arrastar-dezenas-unidades · jogo-memoria · mapa-mental |
 | Centena e Mil | `centena-e-mil` | Cento (placa de centena) | quiz · montar-centena · arrastar-ordens · jogo-memoria · mapa-mental |
+| Medindo Comprimentos | `medindo-comprimentos` | Trena (fita métrica) | quiz · vf · ilustrador · mapa-mental |
+| Medindo Massas | `medindo-massas` | Fiel (balança de dois pratos) | quiz · silabas · ilustrador · mapa-mental |
+| Medindo Capacidades | `medindo-capacidades` | Jarrim (jarra medidora) | quiz · arrastar · ilustrador · mapa-mental |
 
 ## Português (`port`) — 3 temas
 
@@ -52,7 +55,7 @@
 
 ---
 
-**Total:** 5 disciplinas · 20 temas · 89 atividades
+**Total:** 5 disciplinas · 23 temas · 101 atividades
 
 ---
 
@@ -83,3 +86,6 @@ JSON de contrato para o Codex: `estudos\.claude\pending\portraits-batch.json`.
 | Duo | `pares-impares-dezenas-exatas-hd.png` | gerado |
 | Centão | `numeros-ate-99-hd.png` | gerado |
 | Cento | `centena-e-mil-hd.png` | gerado |
+| Trena | `medindo-comprimentos-hd.png` | pendente |
+| Fiel | `medindo-massas-hd.png` | pendente |
+| Jarrim | `medindo-capacidades-hd.png` | pendente |

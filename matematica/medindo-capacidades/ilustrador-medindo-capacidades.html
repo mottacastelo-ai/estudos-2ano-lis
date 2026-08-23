@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ilustrador — Encha a Jarra! | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root { --primary: #0AACE8; --light: #5AC8FB; --bg: #EFF9FF; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100vh; }
+
+.header { background: linear-gradient(135deg, #044A7A, #0AACE8 60%, #5AC8FB); color: #fff; padding: 20px 24px; text-align: center; }
+.header .emoji { font-size: 2.5rem; }
+.header h1 { font-family: 'Baloo 2', sans-serif; font-size: 1.6rem; font-weight: 900; margin-top: 4px; }
+.header p { font-size: 1rem; opacity: 0.9; }
+
+.container { max-width: 640px; margin: 0 auto; padding: 20px 16px 32px; }
+
+.secao {
+  background: #fff; border-radius: 18px; padding: 18px 16px;
+  box-shadow: 0 2px 12px rgba(10,172,232,0.1); margin-bottom: 20px;
+}
+.secao-titulo {
+  font-family: 'Baloo 2', sans-serif; font-size: 1.3rem; font-weight: 900;
+  color: var(--primary); margin-bottom: 6px; text-align: center;
+}
+.instrucao {
+  font-size: 1.1rem; color: #1a3a50; font-weight: 600; margin-bottom: 16px; line-height: 1.4; text-align: center;
+}
+.rodada-info { text-align: center; font-size: 1rem; font-weight: 700; color: var(--primary); margin-bottom: 10px; }
+.meta { text-align: center; font-family: 'Baloo 2', sans-serif; font-size: 1.8rem; font-weight: 900; color: #1a3a50; margin-bottom: 16px; }
+
+/* Jarra graduada */
+.jarra-wrap { display: flex; justify-content: center; margin-bottom: 18px; }
+.jarra {
+  width: 140px; border: 4px solid var(--primary); border-radius: 0 0 20px 20px;
+  overflow: hidden; background: #f0faff; display: flex; flex-direction: column-reverse;
+}
+.segmento {
+  height: 60px; border-top: 2px dashed #bce4f8;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Baloo 2', sans-serif; font-weight: 900; color: #044A7A; font-size: .95rem;
+  cursor: pointer; transition: background .15s; min-height: 60px;
+}
+.segmento:first-child { border-top: none; }
+.segmento.cheio { background: linear-gradient(180deg, #5AC8FB, #0AACE8); color: #fff; }
+.segmento.correta { outline: 4px solid #22c55e; outline-offset: -4px; }
+.segmento.errada { outline: 4px solid #ef4444; outline-offset: -4px; }
+
+.botoes-wrap { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-bottom: 8px; }
+.btn-verificar {
+  background: linear-gradient(135deg, #0AACE8, #5AC8FB);
+  color: #fff; border: none; border-radius: 50px;
+  padding: 14px 36px; min-height: 52px; font-family: 'Baloo 2', sans-serif;
+  font-size: 1.2rem; font-weight: 800; cursor: pointer;
+  box-shadow: 0 4px 16px rgba(10,172,232,0.3);
+}
+.btn-limpar {
+  background: #fff; color: #888; border: 2px solid #ddd;
+  border-radius: 50px; padding: 14px 24px; min-height: 52px;
+  font-family: 'Baloo 2', sans-serif; font-size: 1.1rem; font-weight: 800;
+  cursor: pointer;
+}
+.btn-proximo {
+  background: linear-gradient(135deg, #22c55e, #6ee7a0);
+  color: #fff; border: none; border-radius: 50px;
+  padding: 14px 36px; min-height: 52px; font-family: 'Baloo 2', sans-serif;
+  font-size: 1.2rem; font-weight: 800; cursor: pointer; display: none;
+}
+
+.feedback-box {
+  border-radius: 14px; padding: 14px 18px;
+  font-size: 1.1rem; font-weight: 700; margin: 14px 0; display: none; text-align: center;
+}
+.feedback-box.ok  { background: #d1fae5; color: #166534; }
+.feedback-box.err { background: #fee2e2; color: #7f1d1d; }
+
+.livre-wrap { display: none; }
+.paleta { display: flex; gap: 12px; justify-content: center; margin-bottom: 18px; flex-wrap: wrap; }
+.ferramenta-btn {
+  background: #EFF9FF; border: 3px solid #bce4f8; border-radius: 14px;
+  padding: 10px 20px; font-family: 'Baloo 2', sans-serif;
+  font-size: 1.1rem; font-weight: 800; color: #1a3a50; cursor: pointer;
+  display: flex; align-items: center; gap: 8px;
+  min-height: 54px; min-width: 44px;
+  transition: all 0.15s;
+}
+.ferramenta-btn .icone { font-size: 1.6rem; }
+.ferramenta-btn.ativa { background: var(--primary); border-color: var(--primary); color: #fff; transform: scale(1.05); }
+
+.mosaico-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  max-width: 420px;
+  margin: 0 auto 18px;
+}
+.celula {
+  aspect-ratio: 1;
+  min-height: 44px; min-width: 44px;
+  border-radius: 10px;
+  border: 3px solid #dbeeff;
+  background: #f5fbff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  user-select: none;
+}
+.celula.preenchida { background: #d0f0ff; border-color: var(--primary); }
+
+.resultado-box {
+  display: none; text-align: center;
+  background: #fff; border-radius: 20px; padding: 32px 24px;
+  box-shadow: 0 4px 20px rgba(10,172,232,0.14); margin-bottom: 16px;
+}
+.resultado-box .emoji-final { font-size: 3.5rem; }
+.resultado-box h2 { font-family: 'Baloo 2', sans-serif; font-size: 2rem; color: var(--primary); margin: 10px 0 6px; }
+.resultado-box p { font-size: 1.15rem; color: #1a3a50; }
+
+.btn-voltar {
+  background: transparent; border: 2px solid var(--primary); color: var(--primary);
+  border-radius: 50px; padding: 12px 28px; min-height: 44px;
+  font-family: 'Baloo 2', sans-serif; font-size: 1.1rem; font-weight: 800;
+  cursor: pointer; display: block; margin: 0 auto 24px;
+}
+
+@media (max-width: 480px) {
+  body { padding: 12px; font-size: 1.15rem; }
+  .header h1 { font-size: 1.3rem; }
+  .mosaico-grid { grid-template-columns: repeat(4, 1fr); }
+  .ferramenta-btn, .btn-verificar, .btn-limpar, .btn-proximo { width: 100%; justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="emoji">🫙</div>
+  <h1>Encha a Jarra!</h1>
+  <p>Ajude o Jarrim a encher a jarra até a medida certa</p>
+</div>
+
+<div class="container">
+
+  <div class="secao" id="secao-completar">
+    <div class="secao-titulo">1. Encha até a medida pedida</div>
+    <div class="instrucao">
+      🎯 Cada parte da jarra vale <strong>250 mL</strong>. Toque nas partes de baixo para cima até chegar na medida pedida!
+    </div>
+    <div class="rodada-info" id="rodadaInfo"></div>
+    <div class="meta" id="meta"></div>
+
+    <div class="jarra-wrap">
+      <div class="jarra" id="jarra"></div>
+    </div>
+
+    <div class="feedback-box" id="feedback"></div>
+
+    <div class="botoes-wrap">
+      <button class="btn-verificar" id="verificarBtn" onclick="verificarJarra()">Verificar ✔</button>
+      <button class="btn-proximo" id="proximoBtn" onclick="proximaRodada()">Próxima jarra →</button>
+      <button class="btn-limpar" onclick="limparJarra()">Recomeçar 🔄</button>
+    </div>
+  </div>
+
+  <div class="secao livre-wrap" id="secao-livre">
+    <div class="secao-titulo">2. Decore a sua jarra!</div>
+    <div class="instrucao">
+      🎨 Agora é só se divertir! Escolha um desenho e pinte a grade do seu jeito.
+    </div>
+
+    <div class="paleta">
+      <button class="ferramenta-btn ativa" id="ferramenta-gota" onclick="escolherFerramentaLivre('💧')">
+        <span class="icone">💧</span>Gota</button>
+      <button class="ferramenta-btn" id="ferramenta-onda" onclick="escolherFerramentaLivre('🌊')">
+        <span class="icone">🌊</span>Onda</button>
+      <button class="ferramenta-btn" id="ferramenta-bolha" onclick="escolherFerramentaLivre('🫧')">
+        <span class="icone">🫧</span>Bolha</button>
+    </div>
+
+    <div class="mosaico-grid" id="mosaico-livre-grid"></div>
+
+    <div class="botoes-wrap">
+      <button class="btn-limpar" onclick="limparLivre()">Limpar desenho 🔄</button>
+    </div>
+  </div>
+
+  <div class="resultado-box" id="resultado-box">
+    <div class="emoji-final" id="emoji-final">🎉</div>
+    <h2 id="res-titulo">Muito bem!</h2>
+    <p id="res-msg">Você encheu as jarras certinho!</p>
+  </div>
+
+  <button class="btn-voltar" onclick="voltarAoPortal()">⬅ Voltar ao Portal</button>
+</div>
+
+<script>
+(function () {
+
+var SEGMENTOS = 4;      // 4 partes de 250 mL = 1000 mL (1 L)
+var ML_POR_SEGMENTO = 250;
+
+// Metas em mL, todas alcançáveis com segmentos de 250 mL
+var rodadas = [
+  { metaML: 500,  metaTxt: '500 mL' },
+  { metaML: 750,  metaTxt: '750 mL' },
+  { metaML: 1000, metaTxt: '1000 mL (1 L)' }
+];
+
+var atual = 0;
+var acertosTotal = 0;
+var segmentosCheios = 0;
+var verificado = false;
+
+function playSound(tipo) {
+  try {
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    var o = ctx.createOscillator(); var g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    if (tipo === 'correct') {
+      o.frequency.setValueAtTime(523, ctx.currentTime);
+      o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+      o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+      o.start(); o.stop(ctx.currentTime + 0.5);
+    } else {
+      o.frequency.setValueAtTime(300, ctx.currentTime);
+      o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      o.start(); o.stop(ctx.currentTime + 0.4);
+    }
+  } catch(e) {}
+}
+
+function renderJarra() {
+  var jarra = document.getElementById('jarra');
+  jarra.innerHTML = '';
+  for (var i = 0; i < SEGMENTOS; i++) {
+    var seg = document.createElement('div');
+    seg.className = 'segmento' + (i < segmentosCheios ? ' cheio' : '');
+    seg.id = 'seg-' + i;
+    seg.textContent = ((i + 1) * ML_POR_SEGMENTO) + ' mL';
+    seg.onclick = function(idx) {
+      return function() { tocarSegmento(idx); };
+    }(i);
+    jarra.appendChild(seg);
+  }
+}
+
+function tocarSegmento(idx) {
+  if (verificado) return;
+  // Se tocar num segmento já cheio, esvazia até ali; senão enche até ali
+  if (idx < segmentosCheios) {
+    segmentosCheios = idx;
+  } else {
+    segmentosCheios = idx + 1;
+  }
+  renderJarra();
+}
+
+function mostrarRodada() {
+  verificado = false;
+  segmentosCheios = 0;
+  var r = rodadas[atual];
+  document.getElementById('rodadaInfo').textContent = 'Jarra ' + (atual + 1) + ' de ' + rodadas.length;
+  document.getElementById('meta').textContent = 'Encha até ' + r.metaTxt;
+  document.getElementById('feedback').className = 'feedback-box';
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('verificarBtn').style.display = 'inline-block';
+  document.getElementById('proximoBtn').style.display = 'none';
+  renderJarra();
+}
+
+function verificarJarra() {
+  verificado = true;
+  var r = rodadas[atual];
+  var mlAtual = segmentosCheios * ML_POR_SEGMENTO;
+  var ok = mlAtual === r.metaML;
+  var fb = document.getElementById('feedback');
+
+  for (var i = 0; i < SEGMENTOS; i++) {
+    var seg = document.getElementById('seg-' + i);
+    seg.classList.remove('correta', 'errada');
+  }
+
+  if (ok) {
+    acertosTotal++;
+    fb.className = 'feedback-box ok';
+    fb.textContent = '✅ Isso mesmo! ' + segmentosCheios + ' parte(s) de 250 mL = ' + mlAtual + ' mL!';
+    playSound('correct');
+  } else {
+    fb.className = 'feedback-box err';
+    fb.textContent = '❌ Quase! Você encheu ' + mlAtual + ' mL. A meta era ' + r.metaML + ' mL.';
+    playSound('wrong');
+    var metaSegmentos = r.metaML / ML_POR_SEGMENTO;
+    segmentosCheios = metaSegmentos;
+    renderJarra();
+  }
+
+  document.getElementById('verificarBtn').style.display = 'none';
+  document.getElementById('proximoBtn').style.display = 'inline-block';
+  document.getElementById('proximoBtn').textContent = atual < rodadas.length - 1 ? 'Próxima jarra →' : 'Ver resultado 🏁';
+}
+
+function proximaRodada() {
+  atual++;
+  if (atual >= rodadas.length) {
+    mostrarResultadoFinal();
+  } else {
+    mostrarRodada();
+  }
+}
+
+function limparJarra() {
+  segmentosCheios = 0;
+  renderJarra();
+  document.getElementById('feedback').className = 'feedback-box';
+  document.getElementById('feedback').textContent = '';
+}
+
+function mostrarResultadoFinal() {
+  document.getElementById('secao-completar').style.display = 'none';
+  var pct = Math.round((acertosTotal / rodadas.length) * 100);
+  window.sabendoScore = pct;
+
+  var res = document.getElementById('resultado-box');
+  res.style.display = 'block';
+  if (acertosTotal === rodadas.length) {
+    document.getElementById('emoji-final').textContent = '🏆';
+    document.getElementById('res-titulo').textContent = 'Todas as jarras certinhas!';
+    document.getElementById('res-msg').textContent = 'Você entendeu como medir litros e mililitros! Agora decore sua jarra abaixo.';
+  } else {
+    document.getElementById('emoji-final').textContent = '💡';
+    document.getElementById('res-titulo').textContent = acertosTotal + ' de ' + rodadas.length + ' certas!';
+    document.getElementById('res-msg').textContent = 'Muito bem! Agora decore sua jarra abaixo.';
+  }
+
+  document.getElementById('secao-livre').style.display = 'block';
+  gerarGradeLivre();
+}
+
+// ── Desenho livre (criativo, sem gabarito) ──────────────────
+var TOTAL_LIVRE = 18;
+var estadoLivre = new Array(TOTAL_LIVRE).fill(null);
+var ferramentaLivreAtiva = '💧';
+
+function escolherFerramentaLivre(icone) {
+  ferramentaLivreAtiva = icone;
+  var mapa = { gota: '💧', onda: '🌊', bolha: '🫧' };
+  ['gota', 'onda', 'bolha'].forEach(function(nome) {
+    document.getElementById('ferramenta-' + nome).classList.toggle('ativa', mapa[nome] === icone);
+  });
+}
+
+function gerarGradeLivre() {
+  var grid = document.getElementById('mosaico-livre-grid');
+  if (grid.childElementCount > 0) return;
+  for (var i = 0; i < TOTAL_LIVRE; i++) {
+    var cel = document.createElement('div');
+    cel.className = 'celula';
+    cel.id = 'livre-' + i;
+    cel.onclick = function(idx) {
+      return function() { pintarLivre(idx); };
+    }(i);
+    grid.appendChild(cel);
+  }
+}
+
+function pintarLivre(idx) {
+  estadoLivre[idx] = ferramentaLivreAtiva;
+  var cel = document.getElementById('livre-' + idx);
+  cel.textContent = ferramentaLivreAtiva;
+  cel.classList.add('preenchida');
+  playSound('correct');
+}
+
+function limparLivre() {
+  estadoLivre = new Array(TOTAL_LIVRE).fill(null);
+  for (var i = 0; i < TOTAL_LIVRE; i++) {
+    var cel = document.getElementById('livre-' + i);
+    if (cel) { cel.textContent = ''; cel.className = 'celula'; }
+  }
+}
+
+window.verificarJarra = verificarJarra;
+window.proximaRodada = proximaRodada;
+window.limparJarra = limparJarra;
+window.escolherFerramentaLivre = escolherFerramentaLivre;
+window.limparLivre = limparLivre;
+
+mostrarRodada();
+
+})();
+</script>
+
+<!-- GAMIFICAÇÃO -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'medindo-capacidades';
+  var DISCIPLINE    = 'matematica';
+  var ACTIVITY_TYPE = 'ilustrador';
+  var TOTAL_ATIV    = 4;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Jarrim',
+        characterEmoji:  '🫙',
+        characterImg:    'chars/medindo-capacidades-hd.png',
+        themeLabel:      'Medindo Capacidades · Matemática',
+        totalActivities: TOTAL_ATIV,
+        activityType:    ACTIVITY_TYPE,
+        primaryColor:    '#0AACE8',
+        lightColor:      '#5AC8FB',
+        bgColor:         '#EFF9FF',
+        glowRgb:         '10,172,232',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _s = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _s = v;
+      var b = document.getElementById('gamificacao-btn');
+      if (b) b.style.display = 'block';
+    },
+    get: function () { return _s; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#0AACE8,#5AC8FB);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>
