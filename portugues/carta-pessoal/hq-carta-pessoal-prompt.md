@@ -337,9 +337,9 @@ bubbles, 2x2 grid, consistent character design.
 
 ---
 
-### PÁGINA 3 — "De imprensa ou cursiva?"
+### PÁGINA 3 — "Letras de todo jeito!"
 
-**Objetivo pedagógico:** distinguir LETRA DE IMPRENSA (ou de forma) e LETRA CURSIVA, mostrando que notícias em sites usam letra de imprensa e cartas costumam usar letra cursiva; e apresentar a LETRA ℓ, que pode aparecer ANTES ou DEPOIS da vogal na sílaba, sendo que no FINAL da sílaba ela soa como a letra U.
+**Objetivo pedagógico:** distinguir LETRA DE IMPRENSA (ou de forma) e LETRA CURSIVA, mostrando que notícias em sites usam letra de imprensa e cartas costumam usar letra cursiva; e apresentar a LETRA ℓ, que pode aparecer ANTES ou DEPOIS da vogal na sílaba, sendo que no FINAL da sílaba ela soa como a letra U. A ponte entre os dois assuntos é o próprio nome "Lis" assinado em cursiva no fim do painel 2 — Postinho repara no L da assinatura e usa esse L como gancho para a exploração fonética dos painéis 3 e 4, evitando a virada de assunto abrupta.
 
 **PROMPT:**
 ```
@@ -372,16 +372,22 @@ Panel 2 (top right):
   handwritten letter on ruled paper.
 - The letter text is drawn in flowing connected CURSIVE handwriting with
   visible loops and slants. A cream label banner points at it reading
-  "LETRA CURSIVA".
-- Lis: holding the letter up with both hands, tracing one looping letter
-  in the air with her finger, admiring smile.
-- Postinho: hopping beside the desk, mail-flag arm raised, proud grin.
+  "LETRA CURSIVA". The letter is signed at the bottom with the cursive
+  name "Lis", its capital L drawn extra large and clearly highlighted with
+  a soft yellow glow, slightly bigger than the rest of the signature so it
+  reads as the visual focus of the panel.
+- Lis: holding the letter up with both hands, admiring smile.
+- Postinho: hopping beside the desk, one arm stretched out pointing
+  directly at the glowing L in the signature, eyes wide with sudden
+  interest, mouth slot open mid-gasp.
 - Speech bubble Lis: "E as cartas usam LETRA CURSIVA!"
-- Speech bubble Postinho: "As duas servem para escrever!"
+- Speech bubble Postinho: "Olha esse L na sua assinatura!"
 
 Panel 3 (bottom left):
-- Setting: a bright cream stage with two big rounded wooden blocks side by
-  side, like a game show. Each block shows one giant letter cluster.
+- Setting: a bright cream stage that grows directly out of the glowing L
+  from the previous panel — the same soft yellow glow now surrounds two
+  big rounded wooden blocks side by side, like a game show, as if the L
+  had jumped off the page onto this stage.
 - Left block shows the syllable "LA" with the letter L clearly BEFORE the
   vowel; a small cream banner beneath reads "L ANTES DA VOGAL".
 - Right block shows the syllable "AL" with the letter L clearly AFTER the
@@ -390,15 +396,18 @@ Panel 3 (bottom left):
   excited discovering expression.
 - Postinho: hopping in front, both arms pointing left and right at the
   blocks.
+- Speech bubble Lis: "Esse L pode vir antes ou depois da vogal!"
 - Speech bubble Postinho: "O L vem ANTES ou DEPOIS da vogal!"
 
 Panel 4 (bottom right):
 - Setting: a warm kitchen with a pot of mingau (porridge) on the stove,
   steam curling up, a salt shaker on the counter — a playful nod to a
-  Brazilian nursery rhyme (parlenda).
+  Brazilian nursery rhyme (parlenda) that keeps exploring the same letter
+  L from the previous panel.
 - Four cream cards float in the air in a row, each with one word in big
-  friendly letters: "SAL", "MEL", "PASTEL", "PAPEL". A small coral speaker
-  icon beside them and wavy sound lines.
+  friendly letters: "SAL", "MEL", "PASTEL", "PAPEL", every L in the words
+  drawn in the same highlighted coral color used for the glowing L earlier
+  on the page, tying the joke back to Lis's own signature.
 - Lis: stirring the pot with a wooden spoon, singing with eyes closed and
   a huge smile, musical notes around her head.
 - Postinho: hopping beside the counter, mouth slot wide open in song, one
