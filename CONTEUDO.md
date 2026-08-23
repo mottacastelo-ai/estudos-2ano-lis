@@ -10,11 +10,11 @@
 | Disciplina | Temas | Atividades | HQs completas |
 |---|---|---|---|
 | 📝 Português | 5 | 25 | 5/5 |
-| 🔢 Matemática | 11 | 52 | 10/11 |
+| 🔢 Matemática | 11 | 52 | 11/11 |
 | 🔬 Ciências | 4 | 16 | 4/4 |
 | 🌍 Geografia | 2 | 8 | 2/2 |
 | 📜 História | 6 | 25 | 6/6 |
-| **Total** | **28** | **126** | **27/28** |
+| **Total** | **28** | **126** | **28/28** |
 
 ---
 
@@ -203,7 +203,7 @@
 
 ### adicao-numeros-ate-99
 
-**HQ:** `hq-adicao-numeros-ate-99-pg1.png` — ✅ p1 · ✅ p2 · ✅ p3 · ❌ p4 | ✅ prompt.md
+**HQ:** `hq-adicao-numeros-ate-99-pg1.png` — ✅ p1 · ✅ p2 · ✅ p3 · ✅ p4 | ✅ prompt.md
 
 **Atividades (5):**
 
