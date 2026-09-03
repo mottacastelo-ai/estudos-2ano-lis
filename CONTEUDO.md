@@ -13,8 +13,8 @@
 | 🔢 Matemática | 11 | 52 | 11/11 |
 | 🔬 Ciências | 4 | 16 | 4/4 |
 | 🌍 Geografia | 2 | 8 | 2/2 |
-| 📜 História | 7 | 30 | 7/7 |
-| **Total** | **29** | **131** | **29/29** |
+| 📜 História | 8 | 35 | 8/8 |
+| **Total** | **30** | **136** | **30/30** |
 
 ---
 
@@ -369,6 +369,18 @@
 - ✅ [Complete a Palavra](historia/diarios-cartas/completar-diarios-cartas.html)
 - ✅ [Caça-Palavras](historia/diarios-cartas/caca-palavras-diarios-cartas.html)
 - ✅ [Mapa Mental](historia/diarios-cartas/mapa-mental-diarios-cartas.html)
+
+### albuns-fotografia
+
+**HQ:** `hq-albuns-fotografia-pg1.png` — ✅ p1 · ✅ p2 · ✅ p3 · ✅ p4 | ✅ prompt.md
+
+**Atividades (5):**
+
+- ✅ [Verdadeiro ou Falso](historia/albuns-fotografia/vf-albuns-fotografia.html)
+- ✅ [Arrastar e Soltar](historia/albuns-fotografia/arrastar-albuns-fotografia.html)
+- ✅ [Ilustrador](historia/albuns-fotografia/ilustrador-albuns-fotografia.html)
+- ✅ [Quiz Interativo](historia/albuns-fotografia/quiz-albuns-fotografia.html)
+- ✅ [Mapa Mental](historia/albuns-fotografia/mapa-mental-albuns-fotografia.html)
 
 ---
 
