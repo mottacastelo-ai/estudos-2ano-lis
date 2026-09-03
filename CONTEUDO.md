@@ -1,6 +1,6 @@
 # Inventário do Portal — Lis (2º Ano)
 
-> Gerado automaticamente por `scripts/update-docs.py` em 2026-08-23.
+> Gerado automaticamente por `scripts/update-docs.py` em 2026-09-03.
 > Fonte primária: `index.html`. Existência de arquivos validada no filesystem.
 
 ---
@@ -13,8 +13,8 @@
 | 🔢 Matemática | 11 | 52 | 11/11 |
 | 🔬 Ciências | 4 | 16 | 4/4 |
 | 🌍 Geografia | 2 | 8 | 2/2 |
-| 📜 História | 6 | 25 | 6/6 |
-| **Total** | **28** | **126** | **28/28** |
+| 📜 História | 7 | 30 | 7/7 |
+| **Total** | **29** | **131** | **29/29** |
 
 ---
 
@@ -357,6 +357,18 @@
 - ✅ [Complete a Palavra](historia/convivencia-transportes-coletivos/completar-convivencia-transportes-coletivos.html)
 - ✅ [Ilustrador](historia/convivencia-transportes-coletivos/ilustrador-convivencia-transportes-coletivos.html)
 - ✅ [Mapa Mental](historia/convivencia-transportes-coletivos/mapa-mental-convivencia-transportes-coletivos.html)
+
+### diarios-cartas
+
+**HQ:** `hq-diarios-cartas-pg1.png` — ✅ p1 · ✅ p2 · ✅ p3 · ✅ p4 | ✅ prompt.md
+
+**Atividades (5):**
+
+- ✅ [Quiz Interativo](historia/diarios-cartas/quiz-diarios-cartas.html)
+- ✅ [Criador de Frase](historia/diarios-cartas/criador-frase-diarios-cartas.html)
+- ✅ [Complete a Palavra](historia/diarios-cartas/completar-diarios-cartas.html)
+- ✅ [Caça-Palavras](historia/diarios-cartas/caca-palavras-diarios-cartas.html)
+- ✅ [Mapa Mental](historia/diarios-cartas/mapa-mental-diarios-cartas.html)
 
 ---
 

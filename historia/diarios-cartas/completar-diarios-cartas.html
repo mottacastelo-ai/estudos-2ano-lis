@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Complete a Palavra — Diários e Cartas | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root { --primary: #A855F7; --light: #D08EF8; --bg: #FAF5FF; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100vh; padding-bottom: 60px; }
+.header { background: linear-gradient(135deg, #4A1272, #A855F7 60%, #D08EF8); padding: 28px 32px; color: #fff; text-align: center; }
+.header-emoji { font-size: 2.8rem; display: block; margin-bottom: 8px; }
+.header-title { font-family: 'Baloo 2', sans-serif; font-size: 1.8rem; font-weight: 900; }
+.header-sub { font-size: 1rem; opacity: 0.9; font-weight: 600; margin-top: 4px; }
+.container { max-width: 720px; margin: 0 auto; padding: 32px 20px; }
+.instruction-card { background: #fff; border-radius: 16px; padding: 20px 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); margin-bottom: 28px; border-left: 5px solid var(--primary); }
+.instruction-card p { font-size: 1.15rem; font-weight: 700; color: #334155; line-height: 1.5; }
+.progress-wrap { margin-bottom: 24px; }
+.progress-label { font-size: 0.9rem; font-weight: 700; color: #475569; margin-bottom: 6px; }
+.progress-bar { height: 10px; background: #E9D5FF; border-radius: 20px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--primary); border-radius: 20px; transition: width 0.4s; }
+.word-card { background: #fff; border-radius: 20px; box-shadow: 0 2px 16px rgba(0,0,0,0.08); padding: 32px; margin-bottom: 24px; }
+.word-hint { font-size: 1rem; font-weight: 700; color: #64748B; margin-bottom: 6px; }
+.word-emoji { font-size: 3.5rem; display: block; text-align: center; margin-bottom: 8px; }
+.word-clue { font-size: 1.1rem; font-weight: 800; color: #334155; text-align: center; margin-bottom: 24px; line-height: 1.4; }
+.letter-slots { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 24px; }
+.letter-slot { width: 48px; height: 56px; border-radius: 12px; border: 3px solid #CBD5E1; background: #F8FAFC; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 900; color: #1E293B; text-transform: uppercase; transition: all 0.18s; position: relative; cursor: pointer; }
+.letter-slot.filled { border-color: var(--primary); background: #F5F0FF; color: #4A1272; }
+.letter-slot.correct-slot { border-color: #22C55E; background: #DCFCE7; color: #15803D; }
+.letter-slot.wrong-slot { border-color: #EF4444; background: #FEE2E2; color: #B91C1C; animation: shake 0.3s; }
+.letter-slot.fixed { border-color: #E2E8F0; background: #F1F5F9; color: #334155; cursor: default; }
+@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
+.letter-bank { margin-bottom: 20px; }
+.bank-label { font-family: 'Baloo 2', sans-serif; font-size: 1rem; font-weight: 800; color: #475569; margin-bottom: 12px; text-align: center; }
+.bank-letters { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.bank-letter { width: 48px; height: 48px; border-radius: 12px; border: 3px solid var(--light); background: var(--bg); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 900; color: #4A1272; cursor: pointer; text-transform: uppercase; transition: all 0.18s; user-select: none; }
+.bank-letter:hover:not(.used) { border-color: var(--primary); background: #EDE9FE; transform: scale(1.1); }
+.bank-letter.used { opacity: 0.25; pointer-events: none; }
+.feedback-box { padding: 14px 18px; border-radius: 14px; font-size: 1.05rem; font-weight: 700; display: none; margin-bottom: 16px; line-height: 1.5; text-align: center; }
+.feedback-box.show { display: block; }
+.feedback-box.correct-fb { background: #DCFCE7; color: #15803D; }
+.feedback-box.wrong-fb { background: #FEE2E2; color: #B91C1C; }
+.next-btn { display: none; width: 100%; padding: 16px; border-radius: 14px; border: none; background: var(--primary); color: #fff; font-family: 'Baloo 2', sans-serif; font-size: 1.2rem; font-weight: 800; cursor: pointer; transition: all 0.18s; min-height: 54px; }
+.next-btn:hover { background: #9333EA; transform: translateY(-2px); }
+.next-btn.show { display: block; }
+.result-card { background: #fff; border-radius: 24px; box-shadow: 0 4px 24px rgba(0,0,0,0.10); padding: 40px 32px; text-align: center; display: none; }
+.result-card.show { display: block; }
+.result-emoji { font-size: 4rem; margin-bottom: 16px; }
+.result-title { font-family: 'Baloo 2', sans-serif; font-size: 2rem; font-weight: 900; color: #1E293B; margin-bottom: 8px; }
+.result-score { font-size: 1.3rem; font-weight: 700; color: #475569; margin-bottom: 24px; }
+.result-score span { font-family: 'Baloo 2', sans-serif; font-size: 2rem; color: var(--primary); }
+.result-msg { font-size: 1.15rem; font-weight: 700; color: #334155; margin-bottom: 32px; line-height: 1.5; }
+.result-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.btn-retry { padding: 14px 28px; border-radius: 14px; border: 2px solid var(--primary); background: #fff; color: var(--primary); font-family: 'Baloo 2', sans-serif; font-size: 1.1rem; font-weight: 800; cursor: pointer; min-height: 54px; }
+.btn-back { padding: 14px 28px; border-radius: 14px; border: none; background: var(--primary); color: #fff; font-family: 'Baloo 2', sans-serif; font-size: 1.1rem; font-weight: 800; cursor: pointer; min-height: 54px; }
+
+@media (max-width: 480px) {
+  body { font-size: 1.15rem; }
+  .header-title { font-size: 1.4rem; }
+  .word-card { padding: 20px 16px; }
+  .letter-slot { width: 40px; height: 48px; font-size: 1.3rem; }
+  .bank-letter { width: 42px; height: 42px; font-size: 1.2rem; }
+  .result-btns { flex-direction: column; }
+  .btn-retry, .btn-back { width: 100%; }
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <span class="header-emoji">🖋️</span>
+  <div class="header-title">Complete a Palavra!</div>
+  <div class="header-sub">Descubra as palavras de diários e cartas clicando nas letras!</div>
+</div>
+<div class="container">
+  <div class="instruction-card">
+    <p>📝 Olhe a dica e clique nas letras certas para completar a palavra!<br>Clique numa letra já colocada para removê-la.</p>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label" id="prog-label">Palavra 1 de 6</div>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:16.6%"></div></div>
+  </div>
+  <div id="game-area">
+    <div class="word-card">
+      <div class="word-hint" id="word-hint"></div>
+      <span class="word-emoji" id="word-emoji"></span>
+      <div class="word-clue" id="word-clue"></div>
+      <div class="letter-slots" id="letter-slots"></div>
+      <div class="letter-bank">
+        <div class="bank-label">🔤 Letras disponíveis:</div>
+        <div class="bank-letters" id="bank-letters"></div>
+      </div>
+      <div class="feedback-box" id="feedback"></div>
+      <button class="next-btn" id="next-btn" onclick="nextWord()">Próxima palavra ➜</button>
+    </div>
+  </div>
+  <div class="result-card" id="result">
+    <div class="result-emoji" id="res-emoji"></div>
+    <div class="result-title" id="res-title"></div>
+    <div class="result-score">Você acertou <span id="res-score"></span> de 6!</div>
+    <div class="result-msg" id="res-msg"></div>
+    <div class="result-btns">
+      <button class="btn-retry" onclick="startGame()">Tentar de novo 🔄</button>
+      <button class="btn-back" onclick="voltarAoPortal()">Voltar ao Portal 🏠</button>
+    </div>
+  </div>
+</div>
+<script>
+// Each word: answer (uppercase), fixed positions (index 0 e última letra), clue, emoji, hint
+const words = [
+  {
+    answer: 'DIARIO',
+    fixed: { 0:'D', 5:'O' },
+    clue: 'Caderno onde registramos as vivências da pessoa e da família.',
+    emoji: '📔',
+    hint: 'Registro do dia a dia — 6 letras'
+  },
+  {
+    answer: 'CARTA',
+    fixed: { 0:'C', 4:'A' },
+    clue: 'Mensagem escrita que enviamos para alguém.',
+    emoji: '✉️',
+    hint: 'Mensagem enviada — 5 letras'
+  },
+  {
+    answer: 'REMETENTE',
+    fixed: { 0:'R', 8:'E' },
+    clue: 'Quem escreve e envia a carta é chamado de __________.',
+    emoji: '✍️',
+    hint: 'Quem escreve a carta — 9 letras'
+  },
+  {
+    answer: 'DESTINATARIO',
+    fixed: { 0:'D', 11:'O' },
+    clue: 'Quem recebe a carta é chamado de __________.',
+    emoji: '📬',
+    hint: 'Quem recebe a carta — 12 letras'
+  },
+  {
+    answer: 'DATA',
+    fixed: { 0:'D', 3:'A' },
+    clue: 'A __________ da carta mostra o dia em que ela foi escrita.',
+    emoji: '📅',
+    hint: 'Dia em que a carta foi escrita — 4 letras'
+  },
+  {
+    answer: 'LOCAL',
+    fixed: { 0:'L', 4:'L' },
+    clue: 'O __________ da carta mostra onde ela foi escrita.',
+    emoji: '📍',
+    hint: 'Onde a carta foi escrita — 5 letras'
+  }
+];
+
+let current = 0, score = 0;
+let slotState = [];
+let answered = false;
+
+function playSound(type) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator(), g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  if (type === 'correct') {
+    o.frequency.setValueAtTime(523, ctx.currentTime); o.frequency.setValueAtTime(659, ctx.currentTime+0.1); o.frequency.setValueAtTime(784, ctx.currentTime+0.2);
+    g.gain.setValueAtTime(0.3, ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.5);
+    o.start(); o.stop(ctx.currentTime+0.5);
+  } else {
+    o.frequency.setValueAtTime(300, ctx.currentTime); o.frequency.setValueAtTime(200, ctx.currentTime+0.15);
+    g.gain.setValueAtTime(0.3, ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.4);
+    o.start(); o.stop(ctx.currentTime+0.4);
+  }
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function buildBankLetters(word) {
+  const missing = [];
+  for (let i = 0; i < word.answer.length; i++) {
+    if (word.fixed[i] === undefined) missing.push(word.answer[i]);
+  }
+  const decoys = 'BFGHJKLMPQUVWXYZ'.split('').filter(l => !missing.includes(l));
+  const chosen = shuffle(decoys).slice(0, 3);
+  return shuffle([...missing, ...chosen]);
+}
+
+function renderWord() {
+  const w = words[current];
+  document.getElementById('prog-label').textContent = `Palavra ${current+1} de ${words.length}`;
+  document.getElementById('prog-fill').style.width = ((current+1)/words.length*100) + '%';
+  document.getElementById('word-hint').textContent = w.hint;
+  document.getElementById('word-emoji').textContent = w.emoji;
+  document.getElementById('word-clue').textContent = w.clue;
+
+  const len = w.answer.length;
+  slotState = Array(len).fill(null);
+  answered = false;
+
+  const slotsEl = document.getElementById('letter-slots');
+  slotsEl.innerHTML = '';
+  for (let i = 0; i < len; i++) {
+    if (w.fixed[i] !== undefined) {
+      const slot = document.createElement('div');
+      slot.className = 'letter-slot fixed';
+      slot.textContent = w.fixed[i];
+      slot.dataset.index = i;
+      slotsEl.appendChild(slot);
+    } else {
+      const slot = document.createElement('div');
+      slot.className = 'letter-slot';
+      slot.dataset.index = i;
+      slot.onclick = () => removeFromSlot(i);
+      slotsEl.appendChild(slot);
+    }
+  }
+
+  const bank = buildBankLetters(w);
+  const bankEl = document.getElementById('bank-letters');
+  bankEl.innerHTML = '';
+  bank.forEach((letter, bi) => {
+    const btn = document.createElement('div');
+    btn.className = 'bank-letter';
+    btn.textContent = letter;
+    btn.dataset.bankIdx = bi;
+    btn.onclick = () => addLetter(letter, bi);
+    bankEl.appendChild(btn);
+  });
+
+  document.getElementById('feedback').className = 'feedback-box';
+  document.getElementById('next-btn').className = 'next-btn';
+}
+
+function addLetter(letter, bankIdx) {
+  if (answered) return;
+  const w = words[current];
+  let targetSlot = -1;
+  for (let i = 0; i < w.answer.length; i++) {
+    if (w.fixed[i] === undefined && slotState[i] === null) { targetSlot = i; break; }
+  }
+  if (targetSlot === -1) return;
+
+  slotState[targetSlot] = { letter, bankIdx };
+  document.getElementById('bank-letters').children[bankIdx].classList.add('used');
+  const slotEl = document.querySelector(`.letter-slot[data-index="${targetSlot}"]`);
+  slotEl.textContent = letter;
+  slotEl.classList.add('filled');
+
+  const allFilled = slotState.every((s, i) => w.fixed[i] !== undefined || s !== null);
+  if (allFilled) checkWord();
+}
+
+function removeFromSlot(idx) {
+  if (answered) return;
+  const w = words[current];
+  if (w.fixed[idx] !== undefined) return;
+  if (slotState[idx] === null) return;
+  const { bankIdx } = slotState[idx];
+  slotState[idx] = null;
+  document.getElementById('bank-letters').children[bankIdx].classList.remove('used');
+  const slotEl = document.querySelector(`.letter-slot[data-index="${idx}"]`);
+  slotEl.textContent = '';
+  slotEl.classList.remove('filled', 'correct-slot', 'wrong-slot');
+  document.getElementById('feedback').className = 'feedback-box';
+}
+
+function checkWord() {
+  if (answered) return;
+  answered = true;
+  const w = words[current];
+  let correct = true;
+  for (let i = 0; i < w.answer.length; i++) {
+    if (w.fixed[i] !== undefined) continue;
+    const slotEl = document.querySelector(`.letter-slot[data-index="${i}"]`);
+    if (slotState[i] && slotState[i].letter === w.answer[i]) {
+      slotEl.classList.add('correct-slot');
+    } else {
+      slotEl.classList.add('wrong-slot');
+      correct = false;
+    }
+  }
+  const fb = document.getElementById('feedback');
+  const nomeExibicao = w.answer.charAt(0) + w.answer.slice(1).toLowerCase();
+  if (correct) {
+    score++;
+    playSound('correct');
+    fb.textContent = `✅ Correto! A palavra é "${nomeExibicao}"! Muito bem! 🎉`;
+    fb.className = 'feedback-box correct-fb show';
+  } else {
+    playSound('wrong');
+    fb.textContent = `❌ Quase! A palavra certa é "${nomeExibicao}". Continue tentando! 🖋️`;
+    fb.className = 'feedback-box wrong-fb show';
+    setTimeout(() => {
+      for (let i = 0; i < w.answer.length; i++) {
+        if (w.fixed[i] !== undefined) continue;
+        const slotEl = document.querySelector(`.letter-slot[data-index="${i}"]`);
+        slotEl.textContent = w.answer[i];
+        slotEl.classList.remove('wrong-slot');
+        slotEl.classList.add('correct-slot');
+      }
+    }, 600);
+  }
+  document.getElementById('next-btn').className = 'next-btn show';
+}
+
+function nextWord() {
+  current++;
+  if (current < words.length) renderWord();
+  else showResult();
+}
+
+function showResult() {
+  document.getElementById('game-area').style.display = 'none';
+  document.getElementById('result').classList.add('show');
+  document.getElementById('res-score').textContent = score;
+  window.sabendoScore = Math.round((score / words.length) * 100);
+  let emoji, title, msg;
+  if (score === 6) { emoji='🏆'; title='Escritor(a) expert!'; msg='Você completou todas as palavras! Incrível! Você conhece muito sobre diários e cartas! 🖋️✉️'; }
+  else if (score >= 4) { emoji='🌟'; title='Muito bem!'; msg='Você foi ótimo(a)! Estude mais um pouquinho e tente de novo! 📝'; }
+  else if (score >= 2) { emoji='💪'; title='Continue assim!'; msg='Você está aprendendo! Releia sobre diários e cartas e tente de novo! 📔'; }
+  else { emoji='📚'; title='Vamos praticar mais!'; msg='Não desanime! Revise as palavras e tente de novo! 🎯'; }
+  document.getElementById('res-emoji').textContent = emoji;
+  document.getElementById('res-title').textContent = title;
+  document.getElementById('res-msg').textContent = msg;
+}
+
+function startGame() {
+  current = 0; score = 0;
+  document.getElementById('game-area').style.display = 'block';
+  document.getElementById('result').classList.remove('show');
+  renderWord();
+}
+
+startGame();
+</script>
+
+<!-- ── GAMIFICAÇÃO ─────────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'diarios-cartas';
+  var DISCIPLINE    = 'historia';
+  var ACTIVITY_TYPE = 'completar';
+  var TOTAL_ATIV    = 5;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Tinto',
+        characterEmoji:  '🖋️',
+        characterImg:    'chars/diarios-cartas-hd.png',
+        themeLabel:      'Diários e Cartas · História',
+        totalActivities: TOTAL_ATIV,
+        activityType:    ACTIVITY_TYPE,
+        primaryColor:    '#A855F7',
+        lightColor:      '#D08EF8',
+        bgColor:         '#FAF5FF',
+        glowRgb:         '168,85,247',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _scoreVal = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _scoreVal = v;
+      var btn = document.getElementById('gamificacao-btn');
+      if (btn) btn.style.display = 'block';
+    },
+    get: function () { return _scoreVal; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#A855F7,#D08EF8);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>
