@@ -31,13 +31,13 @@ Você edita `index.html` para integrar o novo tema ao portal. **Apenas isso — 
     {
       "arquivo": "quiz-[slug].html",
       "tipo": "Quiz Interativo",
-      "nivel_glasser": "📖 Retrieval practice",
+      "acao_aprendizagem": "📖 Retrieval practice",
       "nivel_classe": "lv4"
     },
     {
       "arquivo": "mapa-mental-[slug].html",
       "tipo": "Mapa Mental",
-      "nivel_glasser": "🏆 Ensinar (90%)",
+      "acao_aprendizagem": "🏆 Explicar",
       "nivel_classe": "lv3"
     }
   ],
@@ -111,7 +111,7 @@ Você edita `index.html` para integrar o novo tema ao portal. **Apenas isso — 
       <div class="act-icon">[emoji]</div>
       <div class="act-info">
         <div class="act-name">[Nome da atividade]</div>
-        <div class="act-level">[nivel_glasser]</div>
+        <div class="act-level">[acao_aprendizagem]</div>
       </div>
     </a>
     -->

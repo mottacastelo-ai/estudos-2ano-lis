@@ -132,7 +132,7 @@ Para o index.html:
 ### Conteúdo pedagógico (verificação lógica)
 
 - [ ] Nenhuma atividade variável repete tipo de tema anterior da mesma disciplina
-- [ ] Há pelo menos uma atividade de criação/produção (90%)
+- [ ] Há pelo menos uma atividade de criação/produção
 - [ ] Há pelo menos uma atividade predominantemente visual
 - [ ] **Exemplos completos na HQ:** para cada procedimento/cálculo presente no roteiro, existe pelo menos um exemplo não-trivial trabalhado passo a passo? (não apenas o caso fácil sem aplicação do método completo)
 

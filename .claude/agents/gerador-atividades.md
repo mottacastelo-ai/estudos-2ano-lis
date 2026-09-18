@@ -49,7 +49,7 @@ Você planeja quais atividades criar e gera os arquivos HTML. Cada HTML deve ser
     {
       "arquivo": "quiz-[slug].html",
       "tipo": "Quiz Interativo",
-      "nivel_glasser": "📖 Retrieval practice",
+      "acao_aprendizagem": "📖 Retrieval practice",
       "nivel_classe": "lv4",
       "justificativa": "fixação dos 8 termos centrais do tema",
       "status": "criado"
@@ -76,7 +76,7 @@ Você planeja quais atividades criar e gera os arquivos HTML. Cada HTML deve ser
 - **Nodes** = conceitos, termos ou categorias para a criança classificar
 - Correspondência slot → node deve ser uma afirmação pedagógica válida (ex.: "Lojas e mercados → Bairro Comercial")
 - Sempre a última atividade listada no act-grid do index.html
-- Nível: `lv3` — 🏆 Ensinar (90%)
+- Nível: `lv3` — 🏆 Explicar
 
 ---
 
@@ -84,19 +84,19 @@ Você planeja quais atividades criar e gera os arquivos HTML. Cada HTML deve ser
 
 | Tipo | Arquivo | Nível | Classe |
 |---|---|---|---|
-| Jogo da Memória | `memoria-[slug].html` | ⚡ Praticar (80%) | `lv2` |
-| Arrastar e Soltar | `arrastar-[slug].html` | ⚡ Praticar (80%) | `lv2` |
-| Complete a Palavra | `completar-[slug].html` | ⚡ Praticar (80%) | `lv2` |
-| Caça-palavras | `caca-palavras-[slug].html` | 💬 Discutir (70%) | `lv1` |
-| Ordene as Sílabas | `silabas-[slug].html` | ⚡ Praticar (80%) | `lv2` |
-| Verdadeiro ou Falso | `vf-[slug].html` | 💬 Discutir (70%) | `lv1` |
-| Ilustrador | `ilustrador-[slug].html` | 🏆 Criar (90%) | `lv3` |
-| Criador de Frase | `frase-[slug].html` | 🏆 Criar (90%) | `lv3` |
+| Jogo da Memória | `memoria-[slug].html` | ⚡ Praticar | `lv2` |
+| Arrastar e Soltar | `arrastar-[slug].html` | ⚡ Praticar | `lv2` |
+| Complete a Palavra | `completar-[slug].html` | ⚡ Praticar | `lv2` |
+| Caça-palavras | `caca-palavras-[slug].html` | 💬 Explorar | `lv1` |
+| Ordene as Sílabas | `silabas-[slug].html` | ⚡ Praticar | `lv2` |
+| Verdadeiro ou Falso | `vf-[slug].html` | 💬 Explorar | `lv1` |
+| Ilustrador | `ilustrador-[slug].html` | 🏆 Criar | `lv3` |
+| Criador de Frase | `frase-[slug].html` | 🏆 Criar | `lv3` |
 
 **Regras de seleção — todas obrigatórias:**
 1. Nenhuma repete tipo de interação de outro tema da mesma disciplina (`atividades_existentes_disciplina`)
-2. Pelo menos um nível intermediário (70% ou 80% da pirâmide)
-3. Pelo menos uma atividade de criação/produção (90%)
+2. Pelo menos uma atividade de exploração ou prática
+3. Pelo menos uma atividade de criação/produção
 4. Pelo menos uma atividade predominantemente visual (regra do 2º ano)
 
 ---

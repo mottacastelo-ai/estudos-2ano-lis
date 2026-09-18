@@ -336,13 +336,13 @@ Lis: [resumo visual compacto]. [Personagem]: [resumo visual compacto].
 - **Arquivo:** `quiz-[slug].html`
 - **Estrutura:** 8 questões de múltipla escolha com 3 alternativas
 - **Feedback:** imediato com som + placar final com mensagem motivacional e emoji festivo
-- **Nível Glasser:** 📖 Retrieval practice
+- **Ação de aprendizagem:** 📖 Retrieval practice
 
 #### B) Mapa Mental
 - **Arquivo:** `mapa-mental-[slug].html`
 - **Estrutura:** Nós arrastáveis com conexões, gabarito ao final
 - **Conteúdo:** 5–7 nós
-- **Nível Glasser:** 🏆 Ensinar (90%)
+- **Ação de aprendizagem:** 🏆 Explicar
 - **Sempre é a última atividade listada no act-grid**
 - **Regra de conteúdo obrigatória — slots e nodes:**
   - **Slots** (receptáculos fixos no mapa) = características, definições ou exemplos extraídos do conteúdo
@@ -354,28 +354,30 @@ Lis: [resumo visual compacto]. [Personagem]: [resumo visual compacto].
 
 Selecione **2–3 atividades** respeitando:
 1. Nenhuma deve repetir o tipo de interação de outro tema da mesma disciplina
-2. Deve cobrir pelo menos um nível intermediário (70% ou 80% da pirâmide)
-3. Deve haver pelo menos uma atividade de criação/produção (90%)
+2. Deve cobrir pelo menos uma atividade de exploração ou prática
+3. Deve haver pelo menos uma atividade de criação/produção
 4. **Regra adicional do 2º ano:** pelo menos uma atividade deve ser predominantemente visual
 
 | Tipo | Descrição | Nível |
 |---|---|---|
-| Jogo da Memória | Parear palavra-imagem ou palavra-conceito | ⚡ Praticar (80%) |
-| Arrastar e Soltar | Classificar elementos em categorias visuais | ⚡ Praticar (80%) |
-| Complete a Palavra | Preencher letras faltando com banco de letras clicável | ⚡ Praticar (80%) |
-| Caça-palavras | Encontrar palavras do tema em grade de letras | 💬 Discutir (70%) |
-| Ordene as Sílabas | Arrastar sílabas para montar a palavra | ⚡ Praticar (80%) |
-| Verdadeiro ou Falso | Afirmações simples, resposta binária com feedback visual | 💬 Discutir (70%) |
-| Ilustrador | A criança escolhe e combina elementos visuais para criar algo | 🏆 Criar (90%) |
-| Criador de Frase | Montar frase a partir de banco de palavras clicáveis | 🏆 Criar (90%) |
+| Jogo da Memória | Parear palavra-imagem ou palavra-conceito | ⚡ Praticar |
+| Arrastar e Soltar | Classificar elementos em categorias visuais | ⚡ Praticar |
+| Complete a Palavra | Preencher letras faltando com banco de letras clicável | ⚡ Praticar |
+| Caça-palavras | Encontrar palavras do tema em grade de letras | 💬 Explorar |
+| Ordene as Sílabas | Arrastar sílabas para montar a palavra | ⚡ Praticar |
+| Verdadeiro ou Falso | Afirmações simples, resposta binária com feedback visual | 💬 Explorar |
+| Ilustrador | A criança escolhe e combina elementos visuais para criar algo | 🏆 Criar |
+| Criador de Frase | Montar frase a partir de banco de palavras clicáveis | 🏆 Criar |
 
-### 4.3 Níveis e classes CSS
+### 4.3 Ações de aprendizagem e classes CSS
 
-| Nível Glasser | Label               | Classe CSS |
+Os rótulos descrevem ações, não uma hierarquia nem percentuais de retenção. Use Explorar para observar e comparar, Praticar para aplicar e exercitar, Criar para produzir e Explicar para comunicar relações e raciocínios. Preserve percentuais de acerto e progresso, que medem o desempenho real da atividade.
+
+| Ação de aprendizagem | Label               | Classe CSS |
 |---------------|---------------------|------------|
-| 50-60%        | 💬 Discutir (70%)   | `lv1`      |
-| 70-80%        | ⚡ Praticar (80%)   | `lv2`      |
-| 90%           | 🏆 Ensinar (90%)    | `lv3`      |
+| Explorar | 💬 Explorar | `lv1` |
+| Praticar | ⚡ Praticar | `lv2` |
+| Criar / Explicar | 🏆 Criar ou 🏆 Explicar, conforme a tarefa | `lv3` |
 | Retrieval     | 📖 Retrieval practice | `lv4`    |
 
 ---

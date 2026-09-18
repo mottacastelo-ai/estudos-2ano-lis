@@ -8,7 +8,7 @@
 
 ## VisÃ£o Geral
 
-Portal web educacional construÃ­do como SPA para o aprendizado da Lis (2Âº ano, 7â€“8 anos). Usa a mesma metodologia do portal do AndrÃ©: aprendizagem ativa, PirÃ¢mide de Glasser, gamificaÃ§Ã£o com cartas. Atividades adaptadas Ã  faixa etÃ¡ria â€” linguagem simples, balÃµes com mÃ¡x. 8 palavras, cores vibrantes.
+Portal web educacional construÃ­do como SPA para o aprendizado da Lis (2Âº ano, 7â€“8 anos). Usa a mesma metodologia do portal do AndrÃ©: aprendizagem ativa, atividades de explorar, praticar, criar e explicar, gamificaÃ§Ã£o com cartas. Atividades adaptadas Ã  faixa etÃ¡ria â€” linguagem simples, balÃµes com mÃ¡x. 8 palavras, cores vibrantes.
 
 - **RepositÃ³rio:** [github.com/mottacastelo-ai/estudos-2ano-lis](https://github.com/mottacastelo-ai/estudos-2ano-lis)
 - **URL pÃºblica:** https://lis.sabendo.app
