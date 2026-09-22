@@ -535,7 +535,7 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
     <button class="disc-nav-btn port-active" id="nav-port" onclick="showDisc('port')">
       <span class="d-icon">✏️</span>
       <span class="d-name">Português</span>
-      <span class="d-count" id="count-port">5 temas</span>
+      <span class="d-count" id="count-port">8 temas</span>
     </button>
     <div class="theme-sub" id="sub-port">
       <button class="theme-link" onclick="showTheme('port','bilhete-cartao-pessoal')">✉️ Bilhete e Cartão Pessoal</button>
@@ -543,6 +543,9 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
       <button class="theme-link" onclick="showTheme('port','carta-pessoal')">📮 Carta Pessoal</button>
       <button class="theme-link" onclick="showTheme('port','contos-encantamento')">🪈 Contos de Encantamento</button>
       <button class="theme-link" onclick="showTheme('port','sons-letras-j-g-til-s')">〰️ Sons e Letras: j, g, til e s</button>
+      <button class="theme-link" onclick="showTheme('port','noticia-lide-jornal')">🎤 Notícia e Jornal Falado</button>
+      <button class="theme-link" onclick="showTheme('port','lenda-relato-arco-iris')">💧 Histórias que Explicam o Arco-Íris</button>
+      <button class="theme-link" onclick="showTheme('port','sons-c-z-e-o-plural')">🐍 Sons e Plural</button>
     </div>
   </div>
   <div style="padding:16px 20px;border-top:2px solid #E2E8F0;margin-top:auto;">
@@ -561,8 +564,8 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
       <div class="home-subtitle">Escolha uma disciplina e vamos aprender juntos! 🎉</div>
       <div class="home-stats">
         <div class="hstat"><span class="hstat-num">5</span><span class="hstat-label">disciplinas</span></div>
-        <div class="hstat"><span class="hstat-num">30</span><span class="hstat-label">temas</span></div>
-        <div class="hstat"><span class="hstat-num">136</span><span class="hstat-label">atividades</span></div>
+        <div class="hstat"><span class="hstat-num">33</span><span class="hstat-label">temas</span></div>
+        <div class="hstat"><span class="hstat-num">154</span><span class="hstat-label">atividades</span></div>
       </div>
       <div class="home-stats" id="streak-banner" style="margin-top:16px;">
         <div class="hstat"><span class="hstat-num" id="streak-count">0</span><span class="hstat-label">🔥 dias seguidos</span></div>
@@ -613,8 +616,8 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
           <div class="dhc-name">Português</div>
           <div class="dhc-desc">Bilhetes, letras, sílabas e pontuação ✉️</div>
           <div class="dhc-chips">
-            <span class="chip" style="background:#FFE8DE;color:#7A1F04">5 temas</span>
-            <span class="chip" style="background:#FFF4EF;color:#7A1F04">25 atividades</span>
+            <span class="chip" style="background:#FFE8DE;color:#7A1F04">8 temas</span>
+            <span class="chip" style="background:#FFF4EF;color:#7A1F04">43 atividades</span>
           </div>
         </button>
       </div>
@@ -2597,7 +2600,7 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
   <div class="screen" id="screen-port">
     <div class="disc-hero port">
       <div class="disc-hero-title">✏️ Português</div>
-      <div class="disc-hero-sub">5 temas · 25 atividades</div>
+      <div class="disc-hero-sub">8 temas · 43 atividades</div>
     </div>
     <div class="disc-body">
 
@@ -2607,6 +2610,9 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
         <button class="theme-tab-btn port-tab" id="tab-port-carta-pessoal" onclick="showTheme('port','carta-pessoal')">📮 Carta Pessoal</button>
         <button class="theme-tab-btn port-tab" id="tab-port-contos-encantamento" onclick="showTheme('port','contos-encantamento')">🪈 Contos de Encantamento</button>
         <button class="theme-tab-btn port-tab" id="tab-port-sons-letras-j-g-til-s" onclick="showTheme('port','sons-letras-j-g-til-s')">〰️ Sons e Letras: j, g, til e s</button>
+        <button class="theme-tab-btn port-tab" id="tab-port-noticia-lide-jornal" onclick="showTheme('port','noticia-lide-jornal')">🎤 Notícia e Jornal Falado</button>
+        <button class="theme-tab-btn port-tab" id="tab-port-lenda-relato-arco-iris" onclick="showTheme('port','lenda-relato-arco-iris')">💧 Histórias que Explicam o Arco-Íris</button>
+        <button class="theme-tab-btn port-tab" id="tab-port-sons-c-z-e-o-plural" onclick="showTheme('port','sons-c-z-e-o-plural')">🐍 Sons e Plural</button>
       </div>
 
       <!-- ── TEMA 1: BILHETE E CARTÃO PESSOAL ── -->
@@ -3010,6 +3016,269 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
         </div>
       </div>
 
+      <!-- ── TEMA 6: NOTÍCIA E JORNAL FALADO ── -->
+      <div class="theme-content" id="theme-port-noticia-lide-jornal" data-pages-start="176" data-pages-end="194">
+        <div class="hq-card">
+          <div class="hq-viewer-wrap" style="background:#4A1200;">
+            <div class="hq-viewer-title" style="color:#FB8C5A;">🎤 Fonzinho no Ar!</div>
+            <div class="hq-viewer-sub" style="color:#FECDB2;">Aventura com Lis e Fonzinho · 4 páginas</div>
+            <div class="hq-book-outer">
+              <div class="hq-book-shadow"></div>
+              <div class="hq-book-stack">
+                <div class="hq-page-base" id="hq-noticia-display">
+                  <img id="hq-noticia-img" src="portugues/noticia-lide-jornal/hq-noticia-lide-jornal-pg1.png" alt="HQ Notícia e Jornal Falado — Página 1" draggable="false" style="object-fit:contain; touch-action:auto;">
+                  <div class="hq-shine"></div>
+                </div>
+              </div>
+            </div>
+            <div class="hq-controls">
+              <button class="hq-btn" id="hq-noticia-prev" onclick="hqGoTo('noticia',hqCurrent['noticia']-1)" disabled>◀ Voltar</button>
+              <div class="hq-indicator" id="hq-noticia-ind" style="color:#FB8C5A;">1 / 4</div>
+              <button class="hq-btn" id="hq-noticia-next" onclick="hqGoTo('noticia',hqCurrent['noticia']+1)">Próxima ▶</button>
+            </div>
+            <div class="hq-dots" id="hq-noticia-dots">
+              <div class="hq-dot active" onclick="hqGoTo('noticia',0)"></div>
+              <div class="hq-dot" onclick="hqGoTo('noticia',1)"></div>
+              <div class="hq-dot" onclick="hqGoTo('noticia',2)"></div>
+              <div class="hq-dot" onclick="hqGoTo('noticia',3)"></div>
+            </div>
+          </div>
+          <div class="hq-caption">
+            <span>📖</span>
+            <span>Fonzinho no Ar! — 4 páginas · Personagens: Lis e Fonzinho 🎤 · Tema: notícia, lide e jornal falado</span>
+          </div>
+          <div class="livro-ref">📚 Livro pp. 176–194</div>
+        </div>
+        <hr class="sdiv">
+        <div class="act-grid">
+          <a class="act-card port" href="portugues/noticia-lide-jornal/arrastar-noticia-lide-jornal.html" target="_blank">
+            <div class="act-icon">🖐️</div>
+            <div class="act-title">Arrastar e Soltar</div>
+            <div class="act-desc">Arraste cada parte da notícia para o lugar certo: título, lide ou corpo!</div>
+            <div class="act-tags"><span class="tag tag-port">Português</span><span class="tag tag-a">Prática</span></div>
+            <div class="level lv2">⚡ Praticar</div>
+          </a>
+          <a class="act-card port" href="portugues/noticia-lide-jornal/completar-noticia-lide-jornal.html" target="_blank">
+            <div class="act-icon">🔤</div>
+            <div class="act-title">Complete a Notícia</div>
+            <div class="act-desc">Complete as palavras que faltam na notícia e no jornal falado!</div>
+            <div class="act-tags"><span class="tag tag-port">Português</span><span class="tag tag-a">Prática</span></div>
+            <div class="level lv2">⚡ Praticar</div>
+          </a>
+          <a class="act-card port" href="portugues/noticia-lide-jornal/frase-noticia-lide-jornal.html" target="_blank">
+            <div class="act-icon">✍️</div>
+            <div class="act-title">Construa a Frase</div>
+            <div class="act-desc">Monte frases com as informações do lide: quem, o quê, quando e onde!</div>
+            <div class="act-tags"><span class="tag tag-port">Português</span><span class="tag tag-a">Criação</span></div>
+            <div class="level lv3">🏆 Criar</div>
+          </a>
+          <a class="act-card port" href="portugues/noticia-lide-jornal/quiz-noticia-lide-jornal.html" target="_blank">
+            <div class="act-icon">❓</div>
+            <div class="act-title">Quiz: Notícia e Jornal Falado</div>
+            <div class="act-desc">Perguntas sobre notícia, lide e jornal falado!</div>
+            <div class="act-tags"><span class="tag tag-port">Português</span><span class="tag tag-a">Ativo</span></div>
+            <div class="level lv4">📖 Retrieval practice</div>
+          </a>
+          <a class="act-card port" href="portugues/noticia-lide-jornal/mapa-mental-noticia-lide-jornal.html" target="_blank">
+            <div class="act-icon">🗺️</div>
+            <div class="act-title">Mapa Mental</div>
+            <div class="act-desc">Monte o mapa da notícia e do jornal falado!</div>
+            <div class="act-tags"><span class="tag tag-port">Português</span><span class="tag tag-a">Síntese</span></div>
+            <div class="level lv3">🏆 Explicar</div>
+          </a>
+        </div>
+        <hr class="sdiv">
+        <div class="sched-title">📅 Sugestão de uso</div>
+        <div class="sched">
+          <div class="sched-row"><span class="sched-day port">Dia 1</span><span class="sched-acts">HQ + Arrastar e Soltar</span></div>
+          <div class="sched-row"><span class="sched-day port">Dia 2</span><span class="sched-acts">Complete a Notícia + Construa a Frase</span></div>
+          <div class="sched-row"><span class="sched-day port">Dia 3</span><span class="sched-acts">Quiz + Mapa Mental</span></div>
+        </div>
+      </div>
+
+      <!-- ── TEMA 7: HISTÓRIAS QUE EXPLICAM O ARCO-ÍRIS ── -->
+      <div class="theme-content" id="theme-port-lenda-relato-arco-iris" data-pages-start="195" data-pages-end="215">
+        <div class="hq-card">
+          <div class="hq-viewer-wrap" style="background:#4A1200;">
+            <div class="hq-viewer-title" style="color:#FB8C5A;">💧 O Segredo do Arco-Íris</div>
+            <div class="hq-viewer-sub" style="color:#FECDB2;">Aventura com Lis e Pingo Prisma · 4 páginas</div>
+            <div class="hq-book-outer">
+              <div class="hq-book-shadow"></div>
+              <div class="hq-book-stack">
+                <div class="hq-page-base" id="hq-arcoiris-display">
+                  <img id="hq-arcoiris-img" src="portugues/lenda-relato-arco-iris/hq-lenda-relato-arco-iris-pg1.png" alt="HQ Histórias que Explicam o Arco-Íris — Página 1" draggable="false" style="object-fit:contain; touch-action:auto;">
+                  <div class="hq-shine"></div>
+                </div>
+              </div>
+            </div>
+            <div class="hq-controls">
+              <button class="hq-btn" id="hq-arcoiris-prev" onclick="hqGoTo('arcoiris',hqCurrent['arcoiris']-1)" disabled>◀ Voltar</button>
+              <div class="hq-indicator" id="hq-arcoiris-ind" style="color:#FB8C5A;">1 / 4</div>
+              <button class="hq-btn" id="hq-arcoiris-next" onclick="hqGoTo('arcoiris',hqCurrent['arcoiris']+1)">Próxima ▶</button>
+            </div>
+            <div class="hq-dots" id="hq-arcoiris-dots">
+              <div class="hq-dot active" onclick="hqGoTo('arcoiris',0)"></div>
+              <div class="hq-dot" onclick="hqGoTo('arcoiris',1)"></div>
+              <div class="hq-dot" onclick="hqGoTo('arcoiris',2)"></div>
+              <div class="hq-dot" onclick="hqGoTo('arcoiris',3)"></div>
+            </div>
+          </div>
+          <div class="hq-caption">
+            <span>📖</span>
+            <span>O Segredo do Arco-Íris — 4 páginas · Personagens: Lis e Pingo Prisma 💧 · Tema: lenda e relato de experimento sobre o arco-íris</span>
+          </div>
+          <div class="livro-ref">📚 Livro pp. 195–215</div>
+        </div>
+        <hr class="sdiv">
+        <div class="act-grid">
+          <a class="act-card port" href="portugues/lenda-relato-arco-iris/vf-lenda-relato-arco-iris.html" target="_blank">
+            <div class="act-icon">✅</div>
+            <div class="act-title">Verdadeiro ou Falso?</div>
+            <div class="act-desc">Leia as afirmações sobre a lenda e o experimento do arco-íris!</div>
+            <div class="act-tags"><span class="tag tag-port">Português</span><span class="tag tag-a">Reflexão</span></div>
+            <div class="level lv1">💬 Explorar</div>
+          </a>
+          <a class="act-card port" href="portugues/lenda-relato-arco-iris/ordena-lenda-oxumare.html" target="_blank">
+            <div class="act-icon">🔄</div>
+            <div class="act-title">Ordene a Lenda de Oxumarê</div>
+            <div class="act-desc">Coloque os acontecimentos da lenda de Oxumarê na ordem certa!</div>
+            <div class="act-tags"><span class="tag tag-port">Português</span><span class="tag tag-a">Síntese</span></div>
+            <div class="level lv2">⚡ Praticar</div>
+          </a>
+          <a class="act-card port" href="portugues/lenda-relato-arco-iris/ordena-experimento-arco-iris.html" target="_blank">
+            <div class="act-icon">🧪</div>
+            <div class="act-title">Ordene o Experimento</div>
+            <div class="act-desc">Coloque os passos do experimento do arco-íris na ordem certa!</div>
+            <div class="act-tags"><span class="tag tag-port">Português</span><span class="tag tag-a">Síntese</span></div>
+            <div class="level lv2">⚡ Praticar</div>
+          </a>
+          <a class="act-card port" href="portugues/lenda-relato-arco-iris/arrastar-experimento-arco-iris.html" target="_blank">
+            <div class="act-icon">🖐️</div>
+            <div class="act-title">Arrastar e Soltar</div>
+            <div class="act-desc">Arraste os materiais certos para montar o experimento do arco-íris!</div>
+            <div class="act-tags"><span class="tag tag-port">Português</span><span class="tag tag-a">Prática</span></div>
+            <div class="level lv2">⚡ Praticar</div>
+          </a>
+          <a class="act-card port" href="portugues/lenda-relato-arco-iris/frase-explicacao-arco-iris.html" target="_blank">
+            <div class="act-icon">✍️</div>
+            <div class="act-title">Construa a Explicação</div>
+            <div class="act-desc">Monte frases explicando como se forma o arco-íris!</div>
+            <div class="act-tags"><span class="tag tag-port">Português</span><span class="tag tag-a">Criação</span></div>
+            <div class="level lv3">🏆 Criar</div>
+          </a>
+          <a class="act-card port" href="portugues/lenda-relato-arco-iris/quiz-lenda-relato-arco-iris.html" target="_blank">
+            <div class="act-icon">❓</div>
+            <div class="act-title">Quiz: Lenda e Relato do Arco-Íris</div>
+            <div class="act-desc">Perguntas sobre a lenda e o relato de experimento do arco-íris!</div>
+            <div class="act-tags"><span class="tag tag-port">Português</span><span class="tag tag-a">Ativo</span></div>
+            <div class="level lv4">📖 Retrieval practice</div>
+          </a>
+          <a class="act-card port" href="portugues/lenda-relato-arco-iris/mapa-mental-lenda-relato-arco-iris.html" target="_blank">
+            <div class="act-icon">🗺️</div>
+            <div class="act-title">Mapa Mental</div>
+            <div class="act-desc">Monte o mapa da lenda e do relato de experimento do arco-íris!</div>
+            <div class="act-tags"><span class="tag tag-port">Português</span><span class="tag tag-a">Síntese</span></div>
+            <div class="level lv3">🏆 Explicar</div>
+          </a>
+        </div>
+        <hr class="sdiv">
+        <div class="sched-title">📅 Sugestão de uso</div>
+        <div class="sched">
+          <div class="sched-row"><span class="sched-day port">Dia 1</span><span class="sched-acts">HQ + Verdadeiro ou Falso</span></div>
+          <div class="sched-row"><span class="sched-day port">Dia 2</span><span class="sched-acts">Ordene a Lenda de Oxumarê + Ordene o Experimento</span></div>
+          <div class="sched-row"><span class="sched-day port">Dia 3</span><span class="sched-acts">Arrastar e Soltar + Construa a Explicação</span></div>
+          <div class="sched-row"><span class="sched-day port">Dia 4</span><span class="sched-acts">Quiz + Mapa Mental</span></div>
+        </div>
+      </div>
+
+      <!-- ── TEMA 8: SONS E PLURAL ── -->
+      <div class="theme-content" id="theme-port-sons-c-z-e-o-plural" data-pages-start="216" data-pages-end="230">
+        <div class="hq-card">
+          <div class="hq-viewer-wrap" style="background:#4A1200;">
+            <div class="hq-viewer-title" style="color:#FB8C5A;">🐍 O Zumbido de Zizo</div>
+            <div class="hq-viewer-sub" style="color:#FECDB2;">Aventura com Lis e Zizo · 4 páginas</div>
+            <div class="hq-book-outer">
+              <div class="hq-book-shadow"></div>
+              <div class="hq-book-stack">
+                <div class="hq-page-base" id="hq-sonscz-display">
+                  <img id="hq-sonscz-img" src="portugues/sons-c-z-e-o-plural/hq-sons-c-z-e-o-plural-pg1.png" alt="HQ Sons e Plural — Página 1" draggable="false" style="object-fit:contain; touch-action:auto;">
+                  <div class="hq-shine"></div>
+                </div>
+              </div>
+            </div>
+            <div class="hq-controls">
+              <button class="hq-btn" id="hq-sonscz-prev" onclick="hqGoTo('sonscz',hqCurrent['sonscz']-1)" disabled>◀ Voltar</button>
+              <div class="hq-indicator" id="hq-sonscz-ind" style="color:#FB8C5A;">1 / 4</div>
+              <button class="hq-btn" id="hq-sonscz-next" onclick="hqGoTo('sonscz',hqCurrent['sonscz']+1)">Próxima ▶</button>
+            </div>
+            <div class="hq-dots" id="hq-sonscz-dots">
+              <div class="hq-dot active" onclick="hqGoTo('sonscz',0)"></div>
+              <div class="hq-dot" onclick="hqGoTo('sonscz',1)"></div>
+              <div class="hq-dot" onclick="hqGoTo('sonscz',2)"></div>
+              <div class="hq-dot" onclick="hqGoTo('sonscz',3)"></div>
+            </div>
+          </div>
+          <div class="hq-caption">
+            <span>📖</span>
+            <span>O Zumbido de Zizo — 4 páginas · Personagens: Lis e Zizo 🐍 · Tema: sons de c e z, e formação do plural</span>
+          </div>
+          <div class="livro-ref">📚 Livro pp. 216–230</div>
+        </div>
+        <hr class="sdiv">
+        <div class="act-grid">
+          <a class="act-card port" href="portugues/sons-c-z-e-o-plural/completar-sons-c-z-e-o-plural.html" target="_blank">
+            <div class="act-icon">🔤</div>
+            <div class="act-title">Complete a Palavra</div>
+            <div class="act-desc">Complete as palavras com a letra c ou z no lugar certo!</div>
+            <div class="act-tags"><span class="tag tag-port">Português</span><span class="tag tag-a">Prática</span></div>
+            <div class="level lv2">⚡ Praticar</div>
+          </a>
+          <a class="act-card port" href="portugues/sons-c-z-e-o-plural/arrastar-sons-c-z-e-o-plural.html" target="_blank">
+            <div class="act-icon">🖐️</div>
+            <div class="act-title">Arrastar e Soltar</div>
+            <div class="act-desc">Arraste cada palavra para o plural certo!</div>
+            <div class="act-tags"><span class="tag tag-port">Português</span><span class="tag tag-a">Prática</span></div>
+            <div class="level lv2">⚡ Praticar</div>
+          </a>
+          <a class="act-card port" href="portugues/sons-c-z-e-o-plural/vf-sons-c-z-e-o-plural.html" target="_blank">
+            <div class="act-icon">✅</div>
+            <div class="act-title">Verdadeiro ou Falso?</div>
+            <div class="act-desc">Leia as afirmações sobre os sons de c, z e o plural: é verdade ou é mentira?</div>
+            <div class="act-tags"><span class="tag tag-port">Português</span><span class="tag tag-a">Reflexão</span></div>
+            <div class="level lv1">💬 Explorar</div>
+          </a>
+          <a class="act-card port" href="portugues/sons-c-z-e-o-plural/ilustrador-sons-c-z-e-o-plural.html" target="_blank">
+            <div class="act-icon">🎨</div>
+            <div class="act-title">Ilustrador</div>
+            <div class="act-desc">Desenhe uma cena mostrando uma palavra no singular e no plural!</div>
+            <div class="act-tags"><span class="tag tag-port">Português</span><span class="tag tag-a">Criação</span></div>
+            <div class="level lv3">🏆 Criar</div>
+          </a>
+          <a class="act-card port" href="portugues/sons-c-z-e-o-plural/quiz-sons-c-z-e-o-plural.html" target="_blank">
+            <div class="act-icon">❓</div>
+            <div class="act-title">Quiz: Sons e Plural</div>
+            <div class="act-desc">Perguntas sobre os sons de c, z e a formação do plural!</div>
+            <div class="act-tags"><span class="tag tag-port">Português</span><span class="tag tag-a">Ativo</span></div>
+            <div class="level lv4">📖 Retrieval practice</div>
+          </a>
+          <a class="act-card port" href="portugues/sons-c-z-e-o-plural/mapa-mental-sons-c-z-e-o-plural.html" target="_blank">
+            <div class="act-icon">🗺️</div>
+            <div class="act-title">Mapa Mental</div>
+            <div class="act-desc">Monte o mapa dos sons de c, z e o plural que você aprendeu!</div>
+            <div class="act-tags"><span class="tag tag-port">Português</span><span class="tag tag-a">Síntese</span></div>
+            <div class="level lv3">🏆 Explicar</div>
+          </a>
+        </div>
+        <hr class="sdiv">
+        <div class="sched-title">📅 Sugestão de uso</div>
+        <div class="sched">
+          <div class="sched-row"><span class="sched-day port">Dia 1</span><span class="sched-acts">HQ + Complete a Palavra</span></div>
+          <div class="sched-row"><span class="sched-day port">Dia 2</span><span class="sched-acts">Arrastar e Soltar + Verdadeiro ou Falso</span></div>
+          <div class="sched-row"><span class="sched-day port">Dia 3</span><span class="sched-acts">Ilustrador + Quiz</span></div>
+          <div class="sched-row"><span class="sched-day port">Dia 4</span><span class="sched-acts">Mapa Mental</span></div>
+        </div>
+      </div>
+
     </div><!-- /disc-body -->
   </div><!-- /screen-port -->
 
@@ -3065,7 +3334,10 @@ var hqPages = {
   letras:        ['portugues/letras-silabas-pontuacao/hq-letras-silabas-pontuacao-pg1.png','portugues/letras-silabas-pontuacao/hq-letras-silabas-pontuacao-pg2.png','portugues/letras-silabas-pontuacao/hq-letras-silabas-pontuacao-pg3.png','portugues/letras-silabas-pontuacao/hq-letras-silabas-pontuacao-pg4.png'],
   carta:         ['portugues/carta-pessoal/hq-carta-pessoal-pg1.png','portugues/carta-pessoal/hq-carta-pessoal-pg2.png','portugues/carta-pessoal/hq-carta-pessoal-pg3.png','portugues/carta-pessoal/hq-carta-pessoal-pg4.png'],
   contos:        ['portugues/contos-encantamento/hq-contos-encantamento-pg1.png','portugues/contos-encantamento/hq-contos-encantamento-pg2.png','portugues/contos-encantamento/hq-contos-encantamento-pg3.png','portugues/contos-encantamento/hq-contos-encantamento-pg4.png'],
-  sons:          ['portugues/sons-letras-j-g-til-s/hq-sons-letras-j-g-til-s-pg1.png','portugues/sons-letras-j-g-til-s/hq-sons-letras-j-g-til-s-pg2.png','portugues/sons-letras-j-g-til-s/hq-sons-letras-j-g-til-s-pg3.png','portugues/sons-letras-j-g-til-s/hq-sons-letras-j-g-til-s-pg4.png']
+  sons:          ['portugues/sons-letras-j-g-til-s/hq-sons-letras-j-g-til-s-pg1.png','portugues/sons-letras-j-g-til-s/hq-sons-letras-j-g-til-s-pg2.png','portugues/sons-letras-j-g-til-s/hq-sons-letras-j-g-til-s-pg3.png','portugues/sons-letras-j-g-til-s/hq-sons-letras-j-g-til-s-pg4.png'],
+  noticia:       ['portugues/noticia-lide-jornal/hq-noticia-lide-jornal-pg1.png','portugues/noticia-lide-jornal/hq-noticia-lide-jornal-pg2.png','portugues/noticia-lide-jornal/hq-noticia-lide-jornal-pg3.png','portugues/noticia-lide-jornal/hq-noticia-lide-jornal-pg4.png'],
+  arcoiris:      ['portugues/lenda-relato-arco-iris/hq-lenda-relato-arco-iris-pg1.png','portugues/lenda-relato-arco-iris/hq-lenda-relato-arco-iris-pg2.png','portugues/lenda-relato-arco-iris/hq-lenda-relato-arco-iris-pg3.png','portugues/lenda-relato-arco-iris/hq-lenda-relato-arco-iris-pg4.png'],
+  sonscz:        ['portugues/sons-c-z-e-o-plural/hq-sons-c-z-e-o-plural-pg1.png','portugues/sons-c-z-e-o-plural/hq-sons-c-z-e-o-plural-pg2.png','portugues/sons-c-z-e-o-plural/hq-sons-c-z-e-o-plural-pg3.png','portugues/sons-c-z-e-o-plural/hq-sons-c-z-e-o-plural-pg4.png']
 };
 
 var firstTheme = { cien: 'animais-ciclo-vida', geo: 'representar-lugares', hist: 'memorias-lugares', mat: 'numeros-ordinais', port: 'bilhete-cartao-pessoal' };
