@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Criador de Plural — Sons e Plural | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root { --primary: #E8430A; --light: #FB8C5A; --bg: #FFF4EF; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100vh; }
+
+.header {
+  background: linear-gradient(135deg, #7A1F04, #E8430A 60%, #FB8C5A);
+  color: #fff; padding: 20px 24px; text-align: center;
+}
+.header .emoji { font-size: 2.5rem; }
+.header h1 { font-family: 'Baloo 2', sans-serif; font-size: 1.6rem; font-weight: 900; margin-top: 4px; }
+.header p { font-size: 1rem; opacity: 0.9; }
+
+.container { max-width: 720px; margin: 0 auto; padding: 20px 16px 32px; }
+
+.progress-wrap {
+  background: white;
+  border-radius: 16px;
+  padding: 14px 18px;
+  box-shadow: 0 3px 12px rgba(232,67,10,0.15);
+  margin-bottom: 20px;
+}
+.progress-top {
+  display: flex; justify-content: space-between;
+  font-weight: 800; color: #7A1F04; font-size: 1.05rem; margin-bottom: 8px;
+}
+.progress-bar { height: 14px; background: #FEDCCB; border-radius: 10px; overflow: hidden; }
+.progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--primary), var(--light)); border-radius: 10px; transition: width 0.35s ease; }
+
+.secao {
+  background: #fff; border-radius: 18px; padding: 22px 18px;
+  box-shadow: 0 2px 12px rgba(232,67,10,0.1); margin-bottom: 20px;
+  text-align: center;
+}
+
+.instrucao {
+  font-size: 1.15rem; color: #7A1F04; font-weight: 700; margin-bottom: 16px; line-height: 1.4;
+}
+
+.singular-word {
+  font-family: 'Baloo 2', sans-serif; font-size: 1.4rem; font-weight: 900;
+  color: var(--primary); margin-bottom: 14px;
+}
+
+.copias-area {
+  display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+  min-height: 90px; align-items: center; margin-bottom: 18px;
+  background: var(--bg); border: 3px dashed #FEDCCB; border-radius: 16px; padding: 14px;
+}
+.copia-emoji { font-size: 3rem; animation: pop 0.25s ease; }
+@keyframes pop { from { transform: scale(0.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+.contador-plural {
+  font-size: 1.1rem; font-weight: 800; color: #7A1F04; margin-bottom: 14px;
+}
+.contador-plural .num { color: var(--primary); font-family: 'Baloo 2', sans-serif; font-size: 1.4rem; }
+
+.qtd-btns { display: flex; gap: 14px; justify-content: center; margin-bottom: 18px; }
+.qtd-btn {
+  background: linear-gradient(135deg, var(--primary), var(--light));
+  color: #fff; border: none; border-radius: 50%;
+  width: 64px; height: 64px; min-width: 44px; min-height: 44px;
+  font-family: 'Baloo 2', sans-serif; font-size: 2rem; font-weight: 900;
+  cursor: pointer; box-shadow: 0 4px 14px rgba(232,67,10,0.3);
+  transition: transform 0.15s ease;
+}
+.qtd-btn:hover:not(:disabled) { transform: scale(1.08); }
+.qtd-btn:disabled { opacity: 0.4; cursor: default; }
+.qtd-btn.menos { background: #fff; color: var(--primary); border: 3px solid var(--primary); }
+
+.btn-confirmar {
+  background: linear-gradient(135deg, var(--primary), var(--light));
+  color: #fff; border: none; border-radius: 50px;
+  padding: 14px 32px; font-family: 'Baloo 2', sans-serif;
+  font-size: 1.15rem; font-weight: 800; cursor: pointer;
+  box-shadow: 0 4px 16px rgba(232,67,10,0.3); min-height: 52px;
+  display: none;
+}
+.btn-confirmar.show { display: inline-block; }
+
+.opcoes-area { display: none; margin-top: 20px; }
+.opcoes-area.show { display: block; }
+.opcoes-titulo { font-size: 1.2rem; font-weight: 800; color: #7A1F04; margin-bottom: 14px; }
+.opcoes-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+.opcao-btn {
+  background: var(--bg); border: 3px solid #FEDCCB; border-radius: 14px;
+  padding: 16px 20px; font-family: 'Baloo 2', sans-serif; font-size: 1.3rem; font-weight: 900;
+  color: #7A1F04; cursor: pointer; min-height: 56px;
+  transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease;
+}
+.opcao-btn:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--light); background: #FFE7DB; }
+.opcao-btn:disabled { cursor: default; }
+.opcao-btn.picked-correct { background: #DCFCE7; border-color: #22C55E; color: #166534; }
+.opcao-btn.picked-wrong { background: #FEE2E2; border-color: #EF4444; color: #991B1B; }
+.opcao-btn.reveal-correct { background: #DCFCE7; border-color: #22C55E; color: #166534; }
+
+.feedback {
+  display: none; margin-top: 18px; border-radius: 14px; padding: 14px 18px;
+  font-size: 1.05rem; font-weight: 700; line-height: 1.4;
+}
+.feedback.show { display: block; }
+.feedback.ok { background: #DCFCE7; color: #166534; border: 3px solid #22C55E; }
+.feedback.no { background: #FEF3C7; color: #92400E; border: 3px solid #F59E0B; }
+
+.next-wrap { margin-top: 18px; display: none; }
+.next-wrap.show { display: block; }
+.btn-main {
+  background: linear-gradient(135deg, var(--primary), var(--light));
+  color: #fff; border: none; border-radius: 14px; padding: 16px 32px;
+  font-family: 'Nunito', sans-serif; font-size: 1.15rem; font-weight: 800;
+  cursor: pointer; min-height: 52px; transition: transform 0.15s ease;
+}
+.btn-main:hover { transform: scale(1.04); }
+
+.resultado-box { display: none; text-align: center; background: #fff; border-radius: 20px; padding: 32px 24px; box-shadow: 0 4px 20px rgba(232,67,10,0.18); }
+.resultado-box.show { display: block; }
+.resultado-box .emoji-final { font-size: 3.8rem; margin-bottom: 8px; }
+.resultado-box h2 { font-family: 'Baloo 2', sans-serif; font-size: 1.9rem; color: #7A1F04; margin-bottom: 8px; }
+.resultado-box p { font-size: 1.1rem; color: #555; font-weight: 700; margin-bottom: 18px; }
+
+.btn-reset {
+  background: #fff; border: 3px solid var(--primary); color: var(--primary);
+  border-radius: 14px; padding: 14px 26px; font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem; font-weight: 800; cursor: pointer; min-height: 52px;
+}
+.btn-reset:hover { background: var(--primary); color: #fff; }
+
+.btn-voltar {
+  background: transparent; border: 2px solid var(--primary); color: var(--primary);
+  border-radius: 50px; padding: 14px 28px; min-height: 48px;
+  font-family: 'Baloo 2', sans-serif; font-size: 1.1rem; font-weight: 800;
+  cursor: pointer; display: block; margin: 24px auto 0;
+}
+
+@media (max-width: 480px) {
+  .header h1 { font-size: 1.3rem; }
+  .opcoes-grid { grid-template-columns: 1fr; }
+  .opcao-btn, .btn-main, .btn-reset, .btn-confirmar { width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="emoji">🐍</div>
+  <h1>Criador de Plural</h1>
+  <p>Zizo quer ver você transformar o singular em plural!</p>
+</div>
+
+<div class="container">
+
+  <div class="progress-wrap">
+    <div class="progress-top">
+      <span id="prog-label">Palavra 1 de 6</span>
+      <span id="prog-score">Acertos: 0</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill"></div></div>
+  </div>
+
+  <div class="secao" id="jogo-secao">
+    <div class="instrucao" id="instrucao-texto">Toque no + para multiplicar o desenho e formar o plural!</div>
+
+    <div class="singular-word" id="singular-word"></div>
+
+    <div class="copias-area" id="copias-area"></div>
+
+    <div class="contador-plural">Quantidade: <span class="num" id="contador-num">1</span></div>
+
+    <div class="qtd-btns">
+      <button class="qtd-btn menos" id="btn-menos" onclick="mudarQtd(-1)">−</button>
+      <button class="qtd-btn" id="btn-mais" onclick="mudarQtd(1)">+</button>
+    </div>
+
+    <button class="btn-confirmar" id="btn-confirmar" onclick="mostrarOpcoes()">Já é plural! Escolher a palavra ➡️</button>
+
+    <div class="opcoes-area" id="opcoes-area">
+      <div class="opcoes-titulo">Qual é a palavra no plural?</div>
+      <div class="opcoes-grid" id="opcoes-grid"></div>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+
+    <div class="next-wrap" id="next-wrap">
+      <button class="btn-main" onclick="proximaPalavra()">Próxima →</button>
+    </div>
+  </div>
+
+  <div class="resultado-box" id="resultado-box">
+    <div class="emoji-final" id="emoji-final">🎉</div>
+    <h2 id="res-titulo"></h2>
+    <p id="res-msg"></p>
+    <button class="btn-reset" onclick="reiniciarJogo()">Jogar de novo 🔁</button>
+  </div>
+
+  <button class="btn-voltar" onclick="voltarAoPortal()">⬅ Voltar ao Portal</button>
+</div>
+
+<script>
+(function () {
+
+  /* Todas as palavras vêm do banco autorizado (termos_tecnicos: gato/gatos,
+     casa/casas, tartaruga, borboleta, árvore, estrela — plural com acréscimo de s). */
+  var palavras = [
+    { singular: 'gato',       plural: 'gatos',       emoji: '🐱', erroLetra: 'gatoz' },
+    { singular: 'casa',       plural: 'casas',       emoji: '🏠', erroLetra: 'casaz' },
+    { singular: 'tartaruga',  plural: 'tartarugas',  emoji: '🐢', erroLetra: 'tartarugaz' },
+    { singular: 'borboleta',  plural: 'borboletas',  emoji: '🦋', erroLetra: 'borboletaz' },
+    { singular: 'estrela',    plural: 'estrelas',    emoji: '⭐', erroLetra: 'estrelaz' },
+    { singular: 'copo',       plural: 'copos',       emoji: '🥤', erroLetra: 'copoz' }
+  ];
+
+  var ordem = [];
+  var indiceAtual = 0;
+  var acertos = 0;
+  var qtdAtual = 1;
+  var etapaOpcoes = false;
+
+  function playSound(type) {
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    var o = ctx.createOscillator();
+    var g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    if (type === 'correct') {
+      o.frequency.setValueAtTime(523, ctx.currentTime);
+      o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+      o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+      o.start(); o.stop(ctx.currentTime + 0.5);
+    } else {
+      o.frequency.setValueAtTime(300, ctx.currentTime);
+      o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      o.start(); o.stop(ctx.currentTime + 0.4);
+    }
+  }
+
+  function embaralhar(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+
+  function renderCopias() {
+    var item = ordem[indiceAtual];
+    var area = document.getElementById('copias-area');
+    area.innerHTML = '';
+    for (var i = 0; i < qtdAtual; i++) {
+      var span = document.createElement('span');
+      span.className = 'copia-emoji';
+      span.textContent = item.emoji;
+      area.appendChild(span);
+    }
+    document.getElementById('contador-num').textContent = qtdAtual;
+    document.getElementById('btn-menos').disabled = (qtdAtual <= 1);
+    document.getElementById('btn-mais').disabled = (qtdAtual >= 3);
+
+    var btnConf = document.getElementById('btn-confirmar');
+    if (qtdAtual >= 2 && !etapaOpcoes) {
+      btnConf.classList.add('show');
+    } else {
+      btnConf.classList.remove('show');
+    }
+  }
+
+  function mudarQtd(delta) {
+    if (etapaOpcoes) return;
+    qtdAtual = Math.max(1, Math.min(3, qtdAtual + delta));
+    renderCopias();
+  }
+
+  function mostrarPalavra() {
+    var item = ordem[indiceAtual];
+    qtdAtual = 1;
+    etapaOpcoes = false;
+
+    document.getElementById('prog-label').textContent = 'Palavra ' + (indiceAtual + 1) + ' de ' + ordem.length;
+    document.getElementById('prog-score').textContent = 'Acertos: ' + acertos;
+    document.getElementById('prog-fill').style.width = (indiceAtual / ordem.length * 100) + '%';
+
+    document.getElementById('instrucao-texto').textContent = 'Toque no + para multiplicar o desenho e formar o plural!';
+    document.getElementById('singular-word').textContent = 'Singular: ' + item.singular;
+
+    document.getElementById('opcoes-area').classList.remove('show');
+    document.getElementById('opcoes-grid').innerHTML = '';
+    document.getElementById('feedback').className = 'feedback';
+    document.getElementById('feedback').innerHTML = '';
+    document.getElementById('next-wrap').classList.remove('show');
+    document.getElementById('btn-mais').disabled = false;
+    document.getElementById('btn-menos').disabled = true;
+
+    renderCopias();
+  }
+
+  function mostrarOpcoes() {
+    etapaOpcoes = true;
+    document.getElementById('btn-confirmar').classList.remove('show');
+
+    var item = ordem[indiceAtual];
+    var opcoes = embaralhar([
+      { t: item.plural, ok: true },
+      { t: item.singular, ok: false },
+      { t: item.erroLetra, ok: false }
+    ]);
+
+    var grid = document.getElementById('opcoes-grid');
+    grid.innerHTML = '';
+    opcoes.forEach(function (op) {
+      var btn = document.createElement('button');
+      btn.className = 'opcao-btn';
+      btn.type = 'button';
+      btn.textContent = op.t;
+      btn.addEventListener('click', function () { escolherOpcao(btn, op.ok, opcoes, grid, item); });
+      grid.appendChild(btn);
+    });
+
+    document.getElementById('opcoes-area').classList.add('show');
+  }
+
+  function escolherOpcao(btn, acertou, opcoes, grid, item) {
+    var botoes = grid.querySelectorAll('.opcao-btn');
+    for (var i = 0; i < botoes.length; i++) {
+      botoes[i].disabled = true;
+      if (opcoes[i].ok) botoes[i].classList.add('reveal-correct');
+    }
+
+    var fb = document.getElementById('feedback');
+    if (acertou) {
+      acertos++;
+      btn.classList.add('picked-correct');
+      fb.className = 'feedback ok show';
+      fb.innerHTML = 'Isso mesmo! <strong>' + item.singular + ' + s = ' + item.plural + '</strong> 🎯';
+      playSound('correct');
+    } else {
+      btn.classList.add('picked-wrong');
+      fb.className = 'feedback no show';
+      fb.innerHTML = 'Quase! O plural certo é <strong>' + item.plural + '</strong>. É só acrescentar o s! 💛';
+      playSound('wrong');
+    }
+
+    document.getElementById('prog-score').textContent = 'Acertos: ' + acertos;
+    document.getElementById('next-wrap').classList.add('show');
+  }
+
+  function proximaPalavra() {
+    indiceAtual++;
+    if (indiceAtual >= ordem.length) mostrarResultado();
+    else mostrarPalavra();
+  }
+
+  function mostrarResultado() {
+    document.getElementById('jogo-secao').style.display = 'none';
+
+    var total = ordem.length;
+    var pct = Math.round((acertos / total) * 100);
+    window.sabendoScore = pct;
+
+    var emoji, titulo, texto;
+    if (pct === 100) {
+      emoji = '🏆'; titulo = 'Plural perfeito!';
+      texto = 'Você formou todos os plurais certinho! Zizo está se enroscando de alegria!';
+    } else if (pct >= 60) {
+      emoji = '🎉'; titulo = 'Muito bem!';
+      texto = 'Você já entendeu: é só acrescentar o s no final! Continue praticando.';
+    } else {
+      emoji = '💪'; titulo = 'Vamos treinar mais!';
+      texto = 'Lembre-se: para formar o plural, acrescente a letra s no final da palavra.';
+    }
+
+    document.getElementById('emoji-final').textContent = emoji;
+    document.getElementById('res-titulo').textContent = titulo;
+    document.getElementById('res-msg').textContent = texto;
+    document.getElementById('resultado-box').classList.add('show');
+  }
+
+  function reiniciarJogo() {
+    ordem = embaralhar(palavras);
+    indiceAtual = 0;
+    acertos = 0;
+    document.getElementById('resultado-box').classList.remove('show');
+    document.getElementById('jogo-secao').style.display = 'block';
+    mostrarPalavra();
+  }
+
+  window.mudarQtd        = mudarQtd;
+  window.mostrarOpcoes   = mostrarOpcoes;
+  window.proximaPalavra  = proximaPalavra;
+  window.reiniciarJogo   = reiniciarJogo;
+
+  ordem = embaralhar(palavras);
+  mostrarPalavra();
+
+})();
+</script>
+
+<!-- ── GAMIFICAÇÃO ─────────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'sons-c-z-e-o-plural';
+  var DISCIPLINE    = 'portugues';
+  var ACTIVITY_TYPE = 'ilustrador';
+  var TOTAL_ATIV    = 6;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Zizo',
+        characterEmoji:  '🐍',
+        characterImg:    'chars/sons-c-z-e-o-plural-hd.png',
+        themeLabel:      'Sons e Plural · Português',
+        totalActivities: TOTAL_ATIV,
+        activityType:    ACTIVITY_TYPE,
+        primaryColor:    '#E8430A',
+        lightColor:      '#FB8C5A',
+        bgColor:         '#FFF4EF',
+        glowRgb:         '232,67,10',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _s = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _s = v;
+      var b = document.getElementById('gamificacao-btn');
+      if (b) b.style.display = 'block';
+    },
+    get: function () { return _s; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#E8430A,#FB8C5A);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>

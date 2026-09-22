@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Criador de Manchete — Notícia e Jornal Falado | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #E8430A;
+  --light: #FB8C5A;
+  --bg: #FFF4EF;
+  --dark: #7A1F04;
+  --correct: #22C55E;
+  --wrong: #EF4444;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  background: linear-gradient(135deg, #7A1F04, #E8430A 60%, #FB8C5A);
+  color: white;
+  padding: 24px 20px;
+  text-align: center;
+}
+
+header .emoji { font-size: 2.8rem; display: block; margin-bottom: 8px; }
+
+header h1 {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.7rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+header p { font-size: 1rem; opacity: 0.9; margin-top: 4px; }
+
+main {
+  flex: 1;
+  padding: 20px 16px;
+  max-width: 760px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.instruction {
+  background: white;
+  border-radius: 16px;
+  padding: 16px 20px;
+  box-shadow: 0 3px 12px rgba(232,67,10,0.15);
+  margin-bottom: 20px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--dark);
+  text-align: center;
+  line-height: 1.5;
+}
+
+.round-topic {
+  background: linear-gradient(135deg, var(--primary), var(--light));
+  color: white;
+  border-radius: 16px;
+  padding: 14px 20px;
+  text-align: center;
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.2rem;
+  font-weight: 800;
+  margin-bottom: 18px;
+}
+
+.headline-strip {
+  background: white;
+  border: 3px dashed #FEDCCB;
+  border-radius: 16px;
+  padding: 20px;
+  min-height: 90px;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+  transition: all 0.2s ease;
+}
+
+.headline-strip.filled { border-style: solid; border-color: var(--light); }
+.headline-strip.correct { background: #DCFCE7; border-color: var(--correct); }
+.headline-strip.wrong { background: #FEE2E2; border-color: var(--wrong); }
+
+.headline-placeholder {
+  color: #F0A98C;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.headline-tile {
+  background: linear-gradient(135deg, var(--dark), #B33207);
+  color: white;
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(122,31,4,0.25);
+}
+
+.bank-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--dark);
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.word-bank {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.word-tile {
+  background: white;
+  border: 3px solid var(--light);
+  color: var(--dark);
+  border-radius: 14px;
+  padding: 12px 18px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(232,67,10,0.15);
+  transition: transform 0.15s ease, opacity 0.2s ease;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  user-select: none;
+}
+
+.word-tile:hover { transform: translateY(-3px) scale(1.03); }
+.word-tile.used { opacity: 0.2; pointer-events: none; }
+
+.check-result {
+  display: none;
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(232,67,10,0.15);
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.check-result.show { display: block; }
+.check-result .res-emoji { font-size: 3rem; margin-bottom: 8px; }
+
+.check-result h3 {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.5rem;
+  color: var(--dark);
+  margin-bottom: 8px;
+}
+
+.check-result p { font-size: 1.1rem; color: #555; font-weight: 700; }
+
+.controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.btn-check, .btn-next-round {
+  background: linear-gradient(135deg, var(--primary), var(--light));
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 14px 28px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+  min-height: 52px;
+}
+
+.btn-check:hover, .btn-next-round:hover { transform: scale(1.04); }
+
+.btn-reset {
+  background: white;
+  border: 3px solid var(--primary);
+  color: var(--primary);
+  border-radius: 14px;
+  padding: 14px 24px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 52px;
+}
+
+.btn-reset:hover { background: var(--primary); color: white; }
+
+.result-screen {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 20px;
+  padding: 20px 0;
+}
+
+.result-screen.show { display: flex; }
+
+.result-trophy { font-size: 5rem; animation: bounce 0.8s infinite alternate; }
+
+@keyframes bounce {
+  from { transform: translateY(0); }
+  to { transform: translateY(-12px); }
+}
+
+.result-title {
+  font-family: 'Baloo 2', cursive;
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--dark);
+}
+
+.result-msg {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--dark);
+  max-width: 420px;
+  line-height: 1.5;
+}
+
+footer { text-align: center; padding: 20px 16px; }
+
+.btn-back {
+  background: white;
+  border: 3px solid var(--primary);
+  color: var(--primary);
+  border-radius: 14px;
+  padding: 14px 28px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 48px;
+}
+
+.btn-back:hover { background: var(--primary); color: white; }
+
+@media (max-width: 480px) {
+  body { padding: 12px; font-size: 1.15rem; }
+  header h1 { font-size: 1.3rem; }
+  main { padding: 14px 10px; }
+  .headline-tile, .word-tile { font-size: 0.95rem; padding: 10px 14px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="emoji">🖊️</span>
+  <h1>Criador de Manchete</h1>
+  <p>Toque nas palavras para montar o título da notícia!</p>
+</header>
+
+<main>
+  <div id="game-area">
+    <div class="instruction">
+      Toque nas palavras do banco, na ordem certa, para montar a manchete da notícia. Toque numa palavra já colocada para removê-la.
+    </div>
+
+    <div class="round-topic" id="round-topic"></div>
+
+    <div class="headline-strip" id="headline-strip">
+      <span class="headline-placeholder">Toque nas palavras abaixo...</span>
+    </div>
+
+    <div class="bank-title">Palavras disponíveis:</div>
+    <div class="word-bank" id="word-bank"></div>
+
+    <div class="check-result" id="check-result">
+      <div class="res-emoji" id="res-emoji"></div>
+      <h3 id="res-title"></h3>
+      <p id="res-text"></p>
+    </div>
+
+    <div class="controls">
+      <button class="btn-check" id="btn-check" onclick="checkHeadline()">Verificar manchete ✅</button>
+      <button class="btn-next-round" id="btn-next-round" onclick="nextRound()" style="display:none">Próxima manchete →</button>
+      <button class="btn-reset" onclick="resetRound()">Recomeçar 🔀</button>
+    </div>
+  </div>
+
+  <div class="result-screen" id="result-screen">
+    <div class="result-trophy" id="result-trophy">🖊️</div>
+    <div class="result-title">Manchetes concluídas!</div>
+    <div class="result-msg" id="result-msg"></div>
+    <button class="btn-reset" onclick="restartAll()">Jogar de novo 🔄</button>
+  </div>
+</main>
+
+<footer>
+  <button class="btn-back" onclick="voltarAoPortal()">← Voltar ao Portal</button>
+</footer>
+
+<script>
+const rounds = [
+  {
+    topic: '🌘 Notícia sobre o eclipse solar no Piauí',
+    words: ['Eclipse', 'solar', 'encanta', 'moradores', 'do', 'Piauí']
+  },
+  {
+    topic: '🎉 Notícia sobre um evento cultural da escola',
+    words: ['Festa', 'junina', 'anima', 'toda', 'a', 'escola']
+  }
+];
+
+let roundIndex = 0;
+let builtOrder = [];
+let usedIndexes = {};
+let roundScores = [];
+
+function playSound(type) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  if (type === 'correct') {
+    o.frequency.setValueAtTime(523, ctx.currentTime);
+    o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+    o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    o.start(); o.stop(ctx.currentTime + 0.5);
+  } else {
+    o.frequency.setValueAtTime(300, ctx.currentTime);
+    o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    o.start(); o.stop(ctx.currentTime + 0.4);
+  }
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+let bankOrder = [];
+
+function renderRound() {
+  const round = rounds[roundIndex];
+  document.getElementById('round-topic').textContent = round.topic;
+  builtOrder = [];
+  usedIndexes = {};
+  bankOrder = shuffle(round.words.map((w, i) => ({ word: w, origIndex: i })));
+
+  renderHeadline();
+  renderBank();
+  clearCheckResult();
+
+  document.getElementById('btn-check').style.display = 'inline-block';
+  document.getElementById('btn-next-round').style.display = 'none';
+}
+
+function renderHeadline() {
+  const strip = document.getElementById('headline-strip');
+  strip.className = 'headline-strip' + (builtOrder.length ? ' filled' : '');
+  if (builtOrder.length === 0) {
+    strip.innerHTML = '<span class="headline-placeholder">Toque nas palavras abaixo...</span>';
+    return;
+  }
+  strip.innerHTML = '';
+  builtOrder.forEach((origIndex, pos) => {
+    const tile = document.createElement('div');
+    tile.className = 'headline-tile';
+    tile.textContent = rounds[roundIndex].words[origIndex];
+    tile.onclick = () => removeFromHeadline(pos);
+    strip.appendChild(tile);
+  });
+}
+
+function renderBank() {
+  const bank = document.getElementById('word-bank');
+  bank.innerHTML = '';
+  bankOrder.forEach(item => {
+    const tile = document.createElement('div');
+    tile.className = 'word-tile' + (usedIndexes[item.origIndex] ? ' used' : '');
+    tile.id = `bank-tile-${item.origIndex}`;
+    tile.textContent = item.word;
+    tile.onclick = () => addToHeadline(item.origIndex);
+    bank.appendChild(tile);
+  });
+}
+
+function addToHeadline(origIndex) {
+  if (usedIndexes[origIndex]) return;
+  usedIndexes[origIndex] = true;
+  builtOrder.push(origIndex);
+  renderHeadline();
+  renderBank();
+  clearCheckResult();
+}
+
+function removeFromHeadline(pos) {
+  const origIndex = builtOrder[pos];
+  builtOrder.splice(pos, 1);
+  usedIndexes[origIndex] = false;
+  renderHeadline();
+  renderBank();
+  clearCheckResult();
+}
+
+function clearCheckResult() {
+  document.getElementById('check-result').classList.remove('show');
+  document.getElementById('headline-strip').classList.remove('correct', 'wrong');
+}
+
+function checkHeadline() {
+  const round = rounds[roundIndex];
+  const result = document.getElementById('check-result');
+  result.classList.add('show');
+  const strip = document.getElementById('headline-strip');
+
+  if (builtOrder.length !== round.words.length) {
+    document.getElementById('res-emoji').textContent = '🤔';
+    document.getElementById('res-title').textContent = 'Manchete incompleta!';
+    document.getElementById('res-text').textContent = 'Use todas as palavras do banco para montar a manchete.';
+    return;
+  }
+
+  const isCorrect = round.words.every((w, i) => builtOrder[i] === i);
+  strip.classList.remove('correct', 'wrong');
+
+  if (isCorrect) {
+    strip.classList.add('correct');
+    roundScores.push(100);
+    document.getElementById('res-emoji').textContent = '🥇';
+    document.getElementById('res-title').textContent = 'Manchete perfeita!';
+    document.getElementById('res-text').textContent = 'Ótima notícia! A frase ficou clara e correta.';
+    playSound('correct');
+    document.getElementById('btn-check').style.display = 'none';
+    document.getElementById('btn-next-round').style.display = 'inline-block';
+    document.getElementById('btn-next-round').textContent = roundIndex === rounds.length - 1 ? 'Ver resultado 🖊️' : 'Próxima manchete →';
+  } else {
+    strip.classList.add('wrong');
+    document.getElementById('res-emoji').textContent = '📝';
+    document.getElementById('res-title').textContent = 'Quase lá!';
+    document.getElementById('res-text').textContent = 'A ordem das palavras ainda não faz sentido. Recomece e tente de novo!';
+    playSound('wrong');
+  }
+}
+
+function nextRound() {
+  roundIndex++;
+  if (roundIndex >= rounds.length) {
+    showResult();
+  } else {
+    renderRound();
+  }
+}
+
+function showResult() {
+  const avg = Math.round(roundScores.reduce((a, b) => a + b, 0) / rounds.length);
+  window.sabendoScore = avg;
+
+  document.getElementById('game-area').style.display = 'none';
+  document.getElementById('result-screen').classList.add('show');
+  document.getElementById('result-msg').textContent =
+    `Você montou ${rounds.length} manchetes certinhas! Fonzinho já está pronto para ir ao ar com suas notícias!`;
+}
+
+function resetRound() {
+  builtOrder = [];
+  usedIndexes = {};
+  renderHeadline();
+  renderBank();
+  clearCheckResult();
+  document.getElementById('btn-check').style.display = 'inline-block';
+  document.getElementById('btn-next-round').style.display = 'none';
+}
+
+function restartAll() {
+  roundIndex = 0;
+  roundScores = [];
+  document.getElementById('game-area').style.display = 'block';
+  document.getElementById('result-screen').classList.remove('show');
+  renderRound();
+}
+
+window.checkHeadline     = checkHeadline;
+window.nextRound         = nextRound;
+window.resetRound        = resetRound;
+window.restartAll        = restartAll;
+window.removeFromHeadline = removeFromHeadline;
+window.addToHeadline      = addToHeadline;
+
+renderRound();
+</script>
+<!-- ── GAMIFICAÇÃO ─────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'noticia-lide-jornal';
+  var DISCIPLINE    = 'portugues';
+  var ACTIVITY_TYPE = 'frase';
+  var TOTAL_ATIV    = 5;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Fonzinho',
+        characterEmoji:  '🎤',
+        characterImg:    'chars/noticia-lide-jornal-hd.png',
+        themeLabel:      'Notícia e Jornal Falado · Português',
+        totalActivities: TOTAL_ATIV,
+        activityType:    ACTIVITY_TYPE,
+        primaryColor:    '#E8430A',
+        lightColor:      '#FB8C5A',
+        bgColor:         '#FFF4EF',
+        glowRgb:         '232,67,10',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _scoreVal = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _scoreVal = v;
+      var btn = document.getElementById('gamificacao-btn');
+      if (btn) btn.style.display = 'block';
+      var btnOverlay = document.getElementById('gamificacao-btn-overlay');
+      if (btnOverlay) btnOverlay.style.display = 'block';
+    },
+    get: function () { return _scoreVal; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#E8430A,#FB8C5A);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>

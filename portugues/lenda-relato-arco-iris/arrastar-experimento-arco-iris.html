@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arraste ao Nome Certo — Relato de Experimento do Arco-íris | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root { --primary: #E8430A; --light: #FB8C5A; --bg: #FFF4EF; --dark: #7A1F04; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; font-size: 1.1rem; background: var(--bg); min-height: 100vh; }
+header {
+  background: linear-gradient(135deg, #7A1F04, #E8430A 60%, #FB8C5A);
+  padding: 22px 24px 18px; color: #fff; text-align: center;
+}
+header h1 { font-family: 'Baloo 2', cursive; font-size: 1.7rem; font-weight: 900; }
+header p { font-size: 1rem; opacity: 0.9; font-weight: 600; margin-top: 4px; }
+.container { max-width: 860px; margin: 0 auto; padding: 28px 20px 60px; }
+.instructions {
+  background: #fff; border-radius: 16px; padding: 18px 22px;
+  border: 2px solid #FEDCCB; margin-bottom: 24px;
+  font-size: 1.1rem; font-weight: 700; color: var(--dark); text-align: center;
+}
+.cards-pool {
+  display: flex; flex-wrap: wrap; gap: 12px;
+  justify-content: center; margin-bottom: 32px;
+  background: #fff; border-radius: 20px; padding: 22px;
+  border: 2px dashed var(--light); min-height: 80px;
+}
+.drag-card {
+  background: linear-gradient(135deg, #FFE7DB, #FFF4EF);
+  border: 2px solid var(--primary); border-radius: 14px;
+  padding: 14px 18px; cursor: grab; min-height: 44px;
+  font-size: 1rem; font-weight: 800; color: var(--dark);
+  transition: all 0.18s; user-select: none;
+  display: flex; align-items: center; gap: 8px;
+  max-width: 340px;
+}
+.drag-card:hover { transform: scale(1.04); box-shadow: 0 4px 16px rgba(232,67,10,0.25); }
+.drag-card.dragging { opacity: 0.4; }
+.categories {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 18px; margin-bottom: 28px;
+}
+@media (max-width: 640px) { .categories { grid-template-columns: 1fr; } }
+.cat-box {
+  background: #fff; border-radius: 20px; padding: 18px;
+  border: 3px solid #FEDCCB; min-height: 140px;
+  transition: all 0.2s;
+}
+.cat-box.drag-over { border-color: var(--primary); background: #FFF4EF; }
+.cat-title {
+  font-family: 'Baloo 2', cursive; font-size: 1.15rem; font-weight: 900;
+  text-align: center; margin-bottom: 14px; padding-bottom: 10px;
+  border-bottom: 2px solid #FEDCCB; color: var(--dark);
+}
+.cat-items { display: flex; flex-direction: column; gap: 8px; min-height: 60px; }
+.placed-card {
+  border-radius: 12px; padding: 12px 16px; min-height: 44px;
+  font-size: 0.95rem; font-weight: 700;
+  display: flex; align-items: center; gap: 8px;
+  cursor: grab;
+  background: #FFE7DB; color: var(--dark); border: 2px solid var(--light);
+}
+.placed-card.correct { background: #DCFCE7 !important; color: #15803D !important; border-color: #86EFAC !important; }
+.placed-card.wrong { background: #FEE2E2 !important; color: #B91C1C !important; border-color: #FCA5A5 !important; }
+.check-btn {
+  display: block; width: 100%; max-width: 360px; margin: 0 auto 16px;
+  background: var(--primary); color: #fff; border: none; min-height: 44px;
+  border-radius: 14px; padding: 16px;
+  font-family: 'Baloo 2', cursive; font-size: 1.2rem; font-weight: 800;
+  cursor: pointer; transition: all 0.18s;
+}
+.check-btn:hover { background: #B33207; }
+.check-btn:disabled { opacity: 0.5; cursor: default; }
+.result-msg {
+  background: #fff; border-radius: 16px; padding: 20px;
+  text-align: center; font-size: 1.15rem; font-weight: 800;
+  border: 2px solid #FEDCCB; margin-bottom: 16px; display: none;
+}
+.action-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.retry-btn {
+  background: var(--primary); border: none; color: #fff; border-radius: 14px; min-height: 44px;
+  padding: 14px 28px; font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800;
+  cursor: pointer; transition: all 0.18s;
+}
+.retry-btn:hover { background: #B33207; }
+.back-btn {
+  background: #fff; border: 2px solid var(--primary); color: var(--primary); min-height: 44px;
+  border-radius: 14px; padding: 14px 28px;
+  font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800;
+  cursor: pointer; transition: all 0.18s;
+}
+.back-btn:hover { background: var(--bg); }
+@media (max-width: 480px) {
+  body { padding: 12px; font-size: 1.15rem; }
+  header h1 { font-size: 1.3rem; }
+  .drag-card { width: 100%; justify-content: center; max-width: none; }
+  .check-btn, .back-btn, .retry-btn { width: 100%; justify-content: center; }
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>🔦📄 Arraste ao Nome Certo</h1>
+  <p>💧 Pingo Prisma quer que você monte o relato de experimento!</p>
+</header>
+<div class="container">
+  <div class="instructions">
+    👇 Arraste cada característica para a parte do relato de experimento a que ela pertence:
+    <strong>Material</strong>, <strong>Como fazer</strong>, <strong>O que acontece?</strong> ou <strong>Por que acontece?</strong>
+  </div>
+
+  <div class="cards-pool" id="pool">
+    <!-- cards gerados pelo JS -->
+  </div>
+
+  <div class="categories">
+    <div class="cat-box" id="cat-material"
+      ondragover="event.preventDefault(); this.classList.add('drag-over')"
+      ondragleave="this.classList.remove('drag-over')"
+      ondrop="dropCard(event,'material')">
+      <div class="cat-title">🧾 Material</div>
+      <div class="cat-items" id="items-material"></div>
+    </div>
+    <div class="cat-box" id="cat-comofazer"
+      ondragover="event.preventDefault(); this.classList.add('drag-over')"
+      ondragleave="this.classList.remove('drag-over')"
+      ondrop="dropCard(event,'comofazer')">
+      <div class="cat-title">🔢 Como fazer</div>
+      <div class="cat-items" id="items-comofazer"></div>
+    </div>
+    <div class="cat-box" id="cat-oqueacontece"
+      ondragover="event.preventDefault(); this.classList.add('drag-over')"
+      ondragleave="this.classList.remove('drag-over')"
+      ondrop="dropCard(event,'oqueacontece')">
+      <div class="cat-title">✨ O que acontece?</div>
+      <div class="cat-items" id="items-oqueacontece"></div>
+    </div>
+    <div class="cat-box" id="cat-poracontece"
+      ondragover="event.preventDefault(); this.classList.add('drag-over')"
+      ondragleave="this.classList.remove('drag-over')"
+      ondrop="dropCard(event,'poracontece')">
+      <div class="cat-title">🤔 Por que acontece?</div>
+      <div class="cat-items" id="items-poracontece"></div>
+    </div>
+  </div>
+
+  <button class="check-btn" id="check-btn" onclick="checkAnswers()">✅ Verificar Respostas</button>
+  <div class="result-msg" id="result-msg"></div>
+  <div class="action-btns">
+    <button class="back-btn" onclick="voltarAoPortal()">⬅️ Voltar ao Portal</button>
+    <button class="retry-btn" onclick="resetGame()">🔄 Tentar de Novo</button>
+  </div>
+</div>
+<script>
+const items = [
+  { id: 'i1', emoji: '📄', text: 'Lista os objetos usados: folha em branco, copo com água e lanterna', cat: 'material' },
+  { id: 'i2', emoji: '🔢', text: 'Explica o passo a passo, numerado, para fazer o experimento', cat: 'comofazer' },
+  { id: 'i3', emoji: '🌈', text: 'Conta o resultado observado: apareceu um arco-íris na folha', cat: 'oqueacontece' },
+  { id: 'i4', emoji: '💡', text: 'Explica a causa: a luz branca se separa em cores', cat: 'poracontece' }
+];
+
+const catNames = ['material', 'comofazer', 'oqueacontece', 'poracontece'];
+
+let placed = {};
+let draggedId = null;
+
+function buildPool() {
+  const pool = document.getElementById('pool');
+  pool.innerHTML = '';
+  const shuffled = [...items].sort(() => Math.random() - 0.5);
+  shuffled.forEach(item => {
+    if (!placed[item.id]) {
+      const card = createCard(item, 'pool');
+      pool.appendChild(card);
+    }
+  });
+  catNames.forEach(cat => { document.getElementById('items-' + cat).innerHTML = ''; });
+  Object.entries(placed).forEach(([id, cat]) => {
+    const item = items.find(i => i.id === id);
+    const card = createCard(item, cat);
+    document.getElementById('items-' + cat).appendChild(card);
+  });
+}
+
+function createCard(item, loc) {
+  const card = document.createElement('div');
+  card.className = loc === 'pool' ? 'drag-card' : 'placed-card';
+  card.id = 'card-' + item.id;
+  card.draggable = true;
+  card.innerHTML = `${item.emoji} ${item.text}`;
+  card.dataset.id = item.id;
+  card.ondragstart = (e) => {
+    draggedId = item.id;
+    card.classList.add('dragging');
+  };
+  card.ondragend = () => card.classList.remove('dragging');
+  return card;
+}
+
+function dropCard(e, cat) {
+  e.preventDefault();
+  document.getElementById('cat-' + cat).classList.remove('drag-over');
+  if (!draggedId) return;
+  placed[draggedId] = cat;
+  buildPool();
+  draggedId = null;
+}
+
+document.getElementById('pool').ondragover = (e) => e.preventDefault();
+document.getElementById('pool').ondrop = (e) => {
+  e.preventDefault();
+  if (!draggedId) return;
+  delete placed[draggedId];
+  buildPool();
+  draggedId = null;
+};
+
+// Touch support (ERR-004 / ERR-007)
+let touchItem = null;
+document.addEventListener('touchstart', (e) => {
+  const card = e.target.closest('.drag-card, .placed-card');
+  if (!card) return;
+  touchItem = card.dataset.id;
+  card.style.opacity = '0.6';
+}, { passive: false });
+document.addEventListener('touchmove', (e) => {
+  if (!touchItem) return;
+  if (e.cancelable) e.preventDefault();
+  const touch = e.touches[0];
+  const el = document.elementFromPoint(touch.clientX, touch.clientY);
+  document.querySelectorAll('.cat-box').forEach(c => c.classList.remove('drag-over'));
+  const catBox = el ? el.closest('.cat-box') : null;
+  if (catBox) catBox.classList.add('drag-over');
+}, { passive: false });
+document.addEventListener('touchend', (e) => {
+  if (!touchItem) return;
+  const touch = e.changedTouches[0];
+  const el = document.elementFromPoint(touch.clientX, touch.clientY);
+  const catBox = el ? el.closest('.cat-box') : null;
+  const pool = el ? el.closest('#pool') : null;
+  document.querySelectorAll('.cat-box').forEach(c => c.classList.remove('drag-over'));
+  if (catBox) {
+    const cat = catNames.find(c => catBox.id === 'cat-' + c);
+    if (cat) placed[touchItem] = cat;
+  } else if (pool) {
+    delete placed[touchItem];
+  }
+  document.querySelectorAll('.drag-card, .placed-card').forEach(c => c.style.opacity = '');
+  touchItem = null;
+  buildPool();
+}, { passive: false });
+
+function checkAnswers() {
+  if (Object.keys(placed).length < items.length) {
+    document.getElementById('result-msg').textContent = '⚠️ Arraste todos os cartões antes de verificar!';
+    document.getElementById('result-msg').style.display = 'block';
+    document.getElementById('result-msg').style.color = '#92400E';
+    return;
+  }
+  let correct = 0;
+  items.forEach(item => {
+    const card = document.getElementById('card-' + item.id);
+    if (!card) return;
+    card.classList.remove('correct', 'wrong');
+    if (placed[item.id] === item.cat) { card.classList.add('correct'); correct++; }
+    else card.classList.add('wrong');
+  });
+  const msg = document.getElementById('result-msg');
+  msg.style.display = 'block';
+  const pct = Math.round((correct / items.length) * 100);
+  if (correct === items.length) {
+    msg.textContent = `🏆 Perfeito! Você montou o relato de experimento completo! Pingo Prisma está muito feliz!`;
+    msg.style.color = '#15803D';
+    playSound('correct');
+  } else {
+    msg.textContent = `✨ Você acertou ${correct} de ${items.length}! Os erros estão em vermelho. Tente de novo!`;
+    msg.style.color = '#92400E';
+    playSound('wrong');
+  }
+  document.getElementById('check-btn').disabled = true;
+  window.sabendoScore = pct;
+}
+
+function resetGame() {
+  placed = {};
+  document.getElementById('result-msg').style.display = 'none';
+  document.getElementById('check-btn').disabled = false;
+  buildPool();
+}
+
+function playSound(type) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  if (type === 'correct') {
+    o.frequency.setValueAtTime(523, ctx.currentTime);
+    o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+    o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    o.start(); o.stop(ctx.currentTime + 0.5);
+  } else {
+    o.frequency.setValueAtTime(300, ctx.currentTime);
+    o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    o.start(); o.stop(ctx.currentTime + 0.4);
+  }
+}
+
+buildPool();
+</script>
+
+<!-- ── GAMIFICAÇÃO ─────────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'lenda-relato-arco-iris';
+  var DISCIPLINE    = 'portugues';
+  var ACTIVITY_TYPE = 'arrastar';
+  var TOTAL_ATIV    = 7;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Pingo Prisma',
+        characterEmoji:  '💧',
+        characterImg:    'chars/lenda-relato-arco-iris-hd.png',
+        themeLabel:      'Histórias que Explicam o Arco-íris · Português',
+        totalActivities: TOTAL_ATIV,
+        activityType:    ACTIVITY_TYPE,
+        primaryColor:    '#E8430A',
+        lightColor:      '#FB8C5A',
+        bgColor:         '#FFF4EF',
+        glowRgb:         '232,67,10',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _scoreVal = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _scoreVal = v;
+      var btn = document.getElementById('gamificacao-btn');
+      if (btn) btn.style.display = 'block';
+    },
+    get: function () { return _scoreVal; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#E8430A,#FB8C5A);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;min-height:44px;">
+  Coletar minha carta! 🃏
+</button>
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>

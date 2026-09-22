@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ordene o Jornal Falado — Notícia e Jornal Falado | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #E8430A;
+  --light: #FB8C5A;
+  --bg: #FFF4EF;
+  --dark: #7A1F04;
+  --correct: #22C55E;
+  --wrong: #EF4444;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  background: linear-gradient(135deg, #7A1F04, #E8430A 60%, #FB8C5A);
+  color: white;
+  padding: 24px 20px;
+  text-align: center;
+}
+
+header .emoji { font-size: 2.8rem; display: block; margin-bottom: 8px; }
+
+header h1 {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.7rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+header p { font-size: 1rem; opacity: 0.9; margin-top: 4px; }
+
+main {
+  flex: 1;
+  padding: 20px 16px;
+  max-width: 760px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.instruction {
+  background: white;
+  border-radius: 16px;
+  padding: 16px 20px;
+  box-shadow: 0 3px 12px rgba(232,67,10,0.15);
+  margin-bottom: 20px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--dark);
+  text-align: center;
+  line-height: 1.5;
+}
+
+.slots-strip {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.order-slot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: white;
+  border: 3px dashed #FEDCCB;
+  border-radius: 16px;
+  padding: 14px 16px;
+  min-height: 64px;
+  transition: all 0.2s ease;
+}
+
+.order-slot.filled { border-style: solid; border-color: var(--light); }
+.order-slot.correct { background: #DCFCE7; border-color: var(--correct); }
+.order-slot.wrong { background: #FEE2E2; border-color: var(--wrong); }
+
+.order-number {
+  background: var(--primary);
+  color: white;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 1.1rem;
+}
+
+.order-slot.correct .order-number { background: var(--correct); }
+.order-slot.wrong .order-number { background: var(--wrong); }
+
+.order-content {
+  flex: 1;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--dark);
+}
+
+.order-placeholder {
+  color: #F0A98C;
+  font-style: italic;
+  font-weight: 700;
+}
+
+.placed-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.placed-card .card-emoji { font-size: 1.6rem; }
+
+.cards-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--dark);
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.step-card {
+  background: linear-gradient(135deg, var(--dark), #B33207);
+  color: white;
+  border-radius: 16px;
+  padding: 18px 14px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(122,31,4,0.3);
+  border: 3px solid rgba(255,255,255,0.2);
+  transition: transform 0.15s ease, opacity 0.2s ease;
+  min-height: 96px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  user-select: none;
+}
+
+.step-card .card-emoji { font-size: 2rem; }
+.step-card .card-text { font-size: 1rem; font-weight: 800; }
+
+.step-card:hover { transform: translateY(-3px) scale(1.03); }
+.step-card.used { opacity: 0.2; pointer-events: none; }
+
+.check-result {
+  display: none;
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(232,67,10,0.15);
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.check-result.show { display: block; }
+.check-result .res-emoji { font-size: 3rem; margin-bottom: 8px; }
+
+.check-result h3 {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.5rem;
+  color: var(--dark);
+  margin-bottom: 8px;
+}
+
+.check-result p { font-size: 1.1rem; color: #555; font-weight: 700; }
+
+.controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.btn-check {
+  background: linear-gradient(135deg, var(--primary), var(--light));
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 14px 28px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+  min-height: 52px;
+}
+
+.btn-check:hover { transform: scale(1.04); }
+
+.btn-reset {
+  background: white;
+  border: 3px solid var(--primary);
+  color: var(--primary);
+  border-radius: 14px;
+  padding: 14px 24px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 52px;
+}
+
+.btn-reset:hover { background: var(--primary); color: white; }
+
+footer { text-align: center; padding: 20px 16px; }
+
+.btn-back {
+  background: white;
+  border: 3px solid var(--primary);
+  color: var(--primary);
+  border-radius: 14px;
+  padding: 14px 28px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 48px;
+}
+
+.btn-back:hover { background: var(--primary); color: white; }
+
+@media (max-width: 480px) {
+  body { padding: 12px; font-size: 1.15rem; }
+  header h1 { font-size: 1.3rem; }
+  main { padding: 14px 10px; }
+  .cards-grid { grid-template-columns: 1fr; }
+  .order-content { font-size: 0.95rem; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="emoji">🎙️</span>
+  <h1>Ordene o Jornal Falado</h1>
+  <p>Toque nas etapas na ordem certa do roteiro!</p>
+</header>
+
+<main>
+  <div class="instruction">
+    O jornal falado sempre segue essa ordem no roteiro. Toque nas etapas, na sequência, para preencher os espaços de 1 a 4.
+  </div>
+
+  <div class="slots-strip" id="slots-strip"></div>
+
+  <div class="cards-title">Etapas para ordenar:</div>
+  <div class="cards-grid" id="cards-grid"></div>
+
+  <div class="check-result" id="check-result">
+    <div class="res-emoji" id="res-emoji"></div>
+    <h3 id="res-title"></h3>
+    <p id="res-text"></p>
+  </div>
+
+  <div class="controls">
+    <button class="btn-check" onclick="checkOrder()">Verificar ✅</button>
+    <button class="btn-reset" onclick="resetOrder()">Recomeçar 🔀</button>
+  </div>
+</main>
+
+<footer>
+  <button class="btn-back" onclick="voltarAoPortal()">← Voltar ao Portal</button>
+</footer>
+
+<script>
+const stepsData = [
+  { id: 'st1', emoji: '👋', text: 'Cumprimentos e resumo das notícias' },
+  { id: 'st2', emoji: '📰', text: 'A notícia' },
+  { id: 'st3', emoji: '🎤', text: 'Entrada do repórter' },
+  { id: 'st4', emoji: '👋', text: 'Despedida' }
+];
+
+let slotOrder = [null, null, null, null];
+
+function playSound(type) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  if (type === 'correct') {
+    o.frequency.setValueAtTime(523, ctx.currentTime);
+    o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+    o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    o.start(); o.stop(ctx.currentTime + 0.5);
+  } else {
+    o.frequency.setValueAtTime(300, ctx.currentTime);
+    o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    o.start(); o.stop(ctx.currentTime + 0.4);
+  }
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function buildSlots() {
+  const strip = document.getElementById('slots-strip');
+  strip.innerHTML = '';
+  for (let i = 0; i < 4; i++) {
+    const row = document.createElement('div');
+    row.className = 'order-slot';
+    row.id = `slot-${i}`;
+    row.innerHTML = `<div class="order-number">${i + 1}</div><div class="order-content" id="slot-content-${i}"><span class="order-placeholder">Toque numa etapa...</span></div>`;
+    strip.appendChild(row);
+  }
+}
+
+function buildCards(order) {
+  const grid = document.getElementById('cards-grid');
+  grid.innerHTML = '';
+  order.forEach(step => {
+    const card = document.createElement('div');
+    card.className = 'step-card';
+    card.id = `card-${step.id}`;
+    card.dataset.stepid = step.id;
+    card.innerHTML = `<span class="card-emoji">${step.emoji}</span><span class="card-text">${step.text}</span>`;
+    card.onclick = () => placeStep(step.id);
+    grid.appendChild(card);
+  });
+}
+
+function placeStep(stepId) {
+  const nextEmpty = slotOrder.findIndex(s => s === null);
+  if (nextEmpty === -1) return;
+  slotOrder[nextEmpty] = stepId;
+  renderSlot(nextEmpty);
+  const card = document.getElementById(`card-${stepId}`);
+  if (card) card.classList.add('used');
+  clearCheckResult();
+}
+
+function removeStep(slotIndex) {
+  const stepId = slotOrder[slotIndex];
+  if (!stepId) return;
+  slotOrder[slotIndex] = null;
+  const card = document.getElementById(`card-${stepId}`);
+  if (card) card.classList.remove('used');
+  renderSlot(slotIndex);
+  clearCheckResult();
+}
+
+function renderSlot(index) {
+  const slot = document.getElementById(`slot-${index}`);
+  const content = document.getElementById(`slot-content-${index}`);
+  const stepId = slotOrder[index];
+  slot.className = 'order-slot' + (stepId ? ' filled' : '');
+  if (stepId) {
+    const step = stepsData.find(s => s.id === stepId);
+    content.innerHTML = `<div class="placed-card" title="Toque para remover" onclick="removeStep(${index})"><span class="card-emoji">${step.emoji}</span><span>${step.text}</span></div>`;
+  } else {
+    content.innerHTML = `<span class="order-placeholder">Toque numa etapa...</span>`;
+  }
+}
+
+function clearCheckResult() {
+  document.getElementById('check-result').classList.remove('show');
+  for (let i = 0; i < 4; i++) {
+    document.getElementById(`slot-${i}`).classList.remove('correct', 'wrong');
+  }
+}
+
+function checkOrder() {
+  const allFilled = slotOrder.every(s => s !== null);
+  const result = document.getElementById('check-result');
+  result.classList.add('show');
+
+  if (!allFilled) {
+    document.getElementById('res-emoji').textContent = '🤔';
+    document.getElementById('res-title').textContent = 'Faltam etapas!';
+    document.getElementById('res-text').textContent = 'Toque nas 4 etapas antes de verificar.';
+    return;
+  }
+
+  let correct = 0;
+  slotOrder.forEach((stepId, i) => {
+    const slot = document.getElementById(`slot-${i}`);
+    if (stepId === stepsData[i].id) { correct++; slot.classList.add('correct'); }
+    else { slot.classList.add('wrong'); }
+  });
+
+  window.sabendoScore = Math.round((correct / stepsData.length) * 100);
+
+  let emoji, title, text;
+  if (correct === stepsData.length) {
+    emoji = '🥇'; title = 'Ordem perfeita!'; text = 'Você montou o roteiro certinho, do início ao fim! Fonzinho está no ar!';
+    playSound('correct');
+  } else {
+    emoji = '📝'; title = `${correct} de ${stepsData.length} no lugar certo!`;
+    text = 'As etapas vermelhas estão fora do lugar. Recomece e tente de novo!';
+    playSound('wrong');
+  }
+
+  document.getElementById('res-emoji').textContent = emoji;
+  document.getElementById('res-title').textContent = title;
+  document.getElementById('res-text').textContent = text;
+}
+
+function resetOrder() {
+  slotOrder = [null, null, null, null];
+  clearCheckResult();
+  buildSlots();
+  buildCards(shuffle([...stepsData]));
+}
+
+window.checkOrder  = checkOrder;
+window.resetOrder  = resetOrder;
+window.removeStep  = removeStep;
+
+buildSlots();
+buildCards(shuffle([...stepsData]));
+</script>
+<!-- ── GAMIFICAÇÃO ─────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'noticia-lide-jornal';
+  var DISCIPLINE    = 'portugues';
+  var ACTIVITY_TYPE = 'arrastar';
+  var TOTAL_ATIV    = 5;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Fonzinho',
+        characterEmoji:  '🎤',
+        characterImg:    'chars/noticia-lide-jornal-hd.png',
+        themeLabel:      'Notícia e Jornal Falado · Português',
+        totalActivities: TOTAL_ATIV,
+        activityType:    ACTIVITY_TYPE,
+        primaryColor:    '#E8430A',
+        lightColor:      '#FB8C5A',
+        bgColor:         '#FFF4EF',
+        glowRgb:         '232,67,10',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _scoreVal = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _scoreVal = v;
+      var btn = document.getElementById('gamificacao-btn');
+      if (btn) btn.style.display = 'block';
+      var btnOverlay = document.getElementById('gamificacao-btn-overlay');
+      if (btnOverlay) btnOverlay.style.display = 'block';
+    },
+    get: function () { return _scoreVal; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#E8430A,#FB8C5A);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>

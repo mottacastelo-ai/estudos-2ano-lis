@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Complete a Notícia — Notícia e Jornal Falado | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #E8430A;
+  --light: #FB8C5A;
+  --bg: #FFF4EF;
+  --dark: #7A1F04;
+  --correct: #22C55E;
+  --wrong: #EF4444;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  background: linear-gradient(135deg, #7A1F04, #E8430A 60%, #FB8C5A);
+  color: white;
+  padding: 24px 20px;
+  text-align: center;
+}
+
+header .emoji { font-size: 2.8rem; display: block; margin-bottom: 8px; }
+
+header h1 {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.7rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+header p { font-size: 1rem; opacity: 0.9; margin-top: 4px; }
+
+main {
+  flex: 1;
+  padding: 20px 16px;
+  max-width: 760px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.instruction {
+  background: white;
+  border-radius: 16px;
+  padding: 16px 20px;
+  box-shadow: 0 3px 12px rgba(232,67,10,0.15);
+  margin-bottom: 20px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--dark);
+  text-align: center;
+  line-height: 1.5;
+}
+
+.news-card {
+  background: white;
+  border-radius: 20px;
+  padding: 26px 22px;
+  box-shadow: 0 4px 20px rgba(232,67,10,0.15);
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+  line-height: 2.1;
+  color: var(--dark);
+  font-weight: 600;
+}
+
+.blank {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  min-width: 120px;
+  padding: 4px 14px;
+  margin: 0 4px;
+  border: 3px dashed #FEDCCB;
+  border-radius: 12px;
+  background: var(--bg);
+  font-weight: 800;
+  color: var(--primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  vertical-align: middle;
+}
+
+.blank.active { border-color: var(--primary); background: #FFE7DB; box-shadow: 0 0 10px rgba(232,67,10,0.3); }
+.blank.filled { border-style: solid; border-color: var(--light); color: var(--dark); }
+.blank.correct { background: #DCFCE7; border-color: var(--correct); color: #166534; }
+.blank.wrong { background: #FEE2E2; border-color: var(--wrong); color: #991B1B; }
+
+.bank-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--dark);
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.word-bank {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.word-tile {
+  background: linear-gradient(135deg, var(--dark), #B33207);
+  color: white;
+  border-radius: 14px;
+  padding: 12px 18px;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(122,31,4,0.3);
+  border: 3px solid rgba(255,255,255,0.2);
+  transition: transform 0.15s ease, opacity 0.2s ease;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  user-select: none;
+}
+
+.word-tile:hover { transform: translateY(-3px) scale(1.03); }
+.word-tile.used { opacity: 0.2; pointer-events: none; }
+
+.check-result {
+  display: none;
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(232,67,10,0.15);
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.check-result.show { display: block; }
+.check-result .res-emoji { font-size: 3rem; margin-bottom: 8px; }
+
+.check-result h3 {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.5rem;
+  color: var(--dark);
+  margin-bottom: 8px;
+}
+
+.check-result p { font-size: 1.1rem; color: #555; font-weight: 700; }
+
+.controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.btn-check {
+  background: linear-gradient(135deg, var(--primary), var(--light));
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 14px 28px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+  min-height: 52px;
+}
+
+.btn-check:hover { transform: scale(1.04); }
+
+.btn-reset {
+  background: white;
+  border: 3px solid var(--primary);
+  color: var(--primary);
+  border-radius: 14px;
+  padding: 14px 24px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 52px;
+}
+
+.btn-reset:hover { background: var(--primary); color: white; }
+
+footer { text-align: center; padding: 20px 16px; }
+
+.btn-back {
+  background: white;
+  border: 3px solid var(--primary);
+  color: var(--primary);
+  border-radius: 14px;
+  padding: 14px 28px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 48px;
+}
+
+.btn-back:hover { background: var(--primary); color: white; }
+
+@media (max-width: 480px) {
+  body { padding: 12px; font-size: 1.15rem; }
+  header h1 { font-size: 1.3rem; }
+  main { padding: 14px 10px; }
+  .news-card { font-size: 1.05rem; line-height: 2.4; padding: 20px 16px; }
+  .blank { min-width: 96px; font-size: 0.95rem; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="emoji">📰</span>
+  <h1>Complete a Notícia</h1>
+  <p>Toque num espaço e depois na palavra certa!</p>
+</header>
+
+<main>
+  <div class="instruction">
+    Toque num espaço vazio e depois toque na palavra do banco para preenchê-lo. Toque num espaço já preenchido para trocar a palavra.
+  </div>
+
+  <div class="news-card" id="news-card"></div>
+
+  <div class="bank-title">Banco de palavras:</div>
+  <div class="word-bank" id="word-bank"></div>
+
+  <div class="check-result" id="check-result">
+    <div class="res-emoji" id="res-emoji"></div>
+    <h3 id="res-title"></h3>
+    <p id="res-text"></p>
+  </div>
+
+  <div class="controls">
+    <button class="btn-check" onclick="checkFill()">Verificar ✅</button>
+    <button class="btn-reset" onclick="resetFill()">Recomeçar 🔀</button>
+  </div>
+</main>
+
+<footer>
+  <button class="btn-back" onclick="voltarAoPortal()">← Voltar ao Portal</button>
+</footer>
+
+<script>
+const blanksData = [
+  { id: 'b1', correct: 'Notícia' },
+  { id: 'b2', correct: 'Fato noticiado' },
+  { id: 'b3', correct: 'Título' },
+  { id: 'b4', correct: 'Legenda' },
+  { id: 'b5', correct: 'Lide' }
+];
+
+const wordBankWords = ['Notícia', 'Fato noticiado', 'Título', 'Legenda', 'Lide', 'Âncora', 'Entrevistado'];
+
+let blankContents = {};
+let activeBlankId = null;
+let wordUsage = {};
+
+function playSound(type) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  if (type === 'correct') {
+    o.frequency.setValueAtTime(523, ctx.currentTime);
+    o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+    o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    o.start(); o.stop(ctx.currentTime + 0.5);
+  } else {
+    o.frequency.setValueAtTime(300, ctx.currentTime);
+    o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    o.start(); o.stop(ctx.currentTime + 0.4);
+  }
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function buildNews() {
+  const card = document.getElementById('news-card');
+  card.innerHTML =
+    'A <span class="blank" id="blank-b1" data-blankid="b1" onclick="selectBlank(\'b1\')"><span class="blank-text">____</span></span> ' +
+    'contou uma história muito interessante sobre um eclipse solar visto no Piauí. Esse acontecimento real é o ' +
+    '<span class="blank" id="blank-b2" data-blankid="b2" onclick="selectBlank(\'b2\')"><span class="blank-text">____</span></span> ' +
+    'da matéria. No começo do texto tinha um ' +
+    '<span class="blank" id="blank-b3" data-blankid="b3" onclick="selectBlank(\'b3\')"><span class="blank-text">____</span></span> ' +
+    'que resumia tudo em poucas palavras. Embaixo da foto havia uma ' +
+    '<span class="blank" id="blank-b4" data-blankid="b4" onclick="selectBlank(\'b4\')"><span class="blank-text">____</span></span> ' +
+    'explicando a imagem. As perguntas do ' +
+    '<span class="blank" id="blank-b5" data-blankid="b5" onclick="selectBlank(\'b5\')"><span class="blank-text">____</span></span> ' +
+    'ajudaram a contar cada detalhe: o quê, quem, onde, quando, como e por quê.';
+}
+
+function buildBank(words) {
+  const bank = document.getElementById('word-bank');
+  bank.innerHTML = '';
+  words.forEach(word => {
+    const tile = document.createElement('div');
+    tile.className = 'word-tile';
+    tile.id = `tile-${word.replace(/\s+/g, '-')}`;
+    tile.textContent = word;
+    tile.onclick = () => chooseWord(word);
+    bank.appendChild(tile);
+  });
+}
+
+function selectBlank(blankId) {
+  document.querySelectorAll('.blank').forEach(b => b.classList.remove('active'));
+  activeBlankId = blankId;
+  document.getElementById(`blank-${blankId}`).classList.add('active');
+}
+
+function chooseWord(word) {
+  if (!activeBlankId) return;
+  const tileId = `tile-${word.replace(/\s+/g, '-')}`;
+  if (wordUsage[word]) return;
+
+  const prevWord = blankContents[activeBlankId];
+  if (prevWord) {
+    wordUsage[prevWord] = false;
+    const prevTile = document.getElementById(`tile-${prevWord.replace(/\s+/g, '-')}`);
+    if (prevTile) prevTile.classList.remove('used');
+  }
+
+  blankContents[activeBlankId] = word;
+  wordUsage[word] = true;
+  document.getElementById(tileId).classList.add('used');
+
+  const blankEl = document.getElementById(`blank-${activeBlankId}`);
+  blankEl.querySelector('.blank-text').textContent = word;
+  blankEl.classList.add('filled');
+  blankEl.classList.remove('active', 'correct', 'wrong');
+
+  activeBlankId = null;
+  clearCheckResult();
+}
+
+function clearCheckResult() {
+  document.getElementById('check-result').classList.remove('show');
+  document.querySelectorAll('.blank').forEach(b => b.classList.remove('correct', 'wrong'));
+}
+
+function checkFill() {
+  const result = document.getElementById('check-result');
+  result.classList.add('show');
+
+  const allFilled = blanksData.every(b => blankContents[b.id]);
+  if (!allFilled) {
+    document.getElementById('res-emoji').textContent = '🤔';
+    document.getElementById('res-title').textContent = 'Notícia incompleta!';
+    document.getElementById('res-text').textContent = 'Preencha todos os espaços antes de verificar.';
+    return;
+  }
+
+  let correct = 0;
+  blanksData.forEach(b => {
+    const blankEl = document.getElementById(`blank-${b.id}`);
+    blankEl.classList.remove('correct', 'wrong');
+    if (blankContents[b.id] === b.correct) { correct++; blankEl.classList.add('correct'); }
+    else { blankEl.classList.add('wrong'); }
+  });
+
+  window.sabendoScore = Math.round((correct / blanksData.length) * 100);
+
+  let emoji, title, text;
+  if (correct === blanksData.length) {
+    emoji = '🥇'; title = 'Notícia completa!'; text = 'Você usou todas as palavras certinho! Fonzinho aprovou a matéria!';
+    playSound('correct');
+  } else {
+    emoji = '📝'; title = `${correct} de ${blanksData.length} corretos!`;
+    text = 'Os espaços vermelhos precisam de outra palavra. Toque neles e tente de novo!';
+    playSound('wrong');
+  }
+
+  document.getElementById('res-emoji').textContent = emoji;
+  document.getElementById('res-title').textContent = title;
+  document.getElementById('res-text').textContent = text;
+}
+
+function resetFill() {
+  blankContents = {};
+  wordUsage = {};
+  activeBlankId = null;
+  clearCheckResult();
+  buildNews();
+  buildBank(shuffle([...wordBankWords]));
+}
+
+window.selectBlank = selectBlank;
+window.chooseWord  = chooseWord;
+window.checkFill   = checkFill;
+window.resetFill   = resetFill;
+
+buildNews();
+buildBank(shuffle([...wordBankWords]));
+</script>
+<!-- ── GAMIFICAÇÃO ─────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'noticia-lide-jornal';
+  var DISCIPLINE    = 'portugues';
+  var ACTIVITY_TYPE = 'completar';
+  var TOTAL_ATIV    = 5;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Fonzinho',
+        characterEmoji:  '🎤',
+        characterImg:    'chars/noticia-lide-jornal-hd.png',
+        themeLabel:      'Notícia e Jornal Falado · Português',
+        totalActivities: TOTAL_ATIV,
+        activityType:    ACTIVITY_TYPE,
+        primaryColor:    '#E8430A',
+        lightColor:      '#FB8C5A',
+        bgColor:         '#FFF4EF',
+        glowRgb:         '232,67,10',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _scoreVal = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _scoreVal = v;
+      var btn = document.getElementById('gamificacao-btn');
+      if (btn) btn.style.display = 'block';
+      var btnOverlay = document.getElementById('gamificacao-btn-overlay');
+      if (btnOverlay) btnOverlay.style.display = 'block';
+    },
+    get: function () { return _scoreVal; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#E8430A,#FB8C5A);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;">
+  Coletar minha carta! 🃏
+</button>
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>
