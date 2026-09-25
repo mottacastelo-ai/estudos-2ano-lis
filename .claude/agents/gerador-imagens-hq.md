@@ -277,12 +277,66 @@ O fluxo de portrait (`_landing/chars/[slug]-hd.png`) segue a mesma lógica dual:
 
 ---
 
+## ⚠️ Regra crítica — proibido desenho programático como fallback (ver ERR-014)
+
+> Origem: em 2026-09-03, o tema `albuns-fotografia` (História) saiu com uma "HQ" feita de formas
+> geométricas primitivas (círculos, retângulos, linhas) desenhadas por um script PowerShell
+> (`System.Drawing`/GDI+) que o próprio Codex escreveu e executou, em vez de gerar a arte via
+> modelo de imagem. O resultado passou pela validação de arquivo (Passo 2) e pela validação visual
+> de texto (Passo 2-bis) porque ambas checam apenas presença/legibilidade de texto — nenhuma delas
+> avalia se a arte É de fato uma ilustração gerada por IA. O erro só foi percebido quando Léo abriu
+> o portal e viu o resultado.
+
+**Terminantemente proibido, em qualquer modo (MCP, `codex exec`, ou legado):**
+- Escrever ou executar código (PowerShell `System.Drawing`, Python `PIL`/`matplotlib`/`svg`,
+  qualquer geração vetorial programática) para produzir as imagens finais da HQ ou dos portraits.
+  Essas ferramentas **desenham formas geométricas**, não substituem geração de imagem por IA —
+  o resultado é sempre clip-art primitivo, incompatível com o estilo "colorful Brazilian children's
+  educational comic book" exigido pelo prompt.
+- Reportar `"status": "ok"` para qualquer arquivo que não tenha sido produzido por uma chamada real
+  de geração de imagem (a tool/modelo de imagem do Codex, invocada com o prompt de arte do `.md`).
+
+**Se a geração de imagem real falhar ou não estiver disponível** (ex: Codex responde apenas em
+texto, tenta escrever código em vez de gerar arte, ou a tool de imagem não existe nesse ambiente):
+- **Não improvisar um substituto.** Interromper, registrar `"status": "error"` com o motivo exato
+  (ex: `"Codex tentou gerar via script de desenho em vez de modelo de imagem"`), e cair para o
+  próximo modo da cadeia (MCP → `codex exec` → legado `.claude/pending`) — nunca para "desenhar na
+  mão".
+- Se todos os modos falharem da mesma forma, reportar a falha ao orquestrador para intervenção de
+  Léo. Uma HQ ausente é preferível a uma HQ com arte falsa publicada no portal.
+
+**Checklist obrigatório antes de reportar sucesso (além do Passo 2-bis):** abrir cada PNG gerado
+(chars + pg1-4) e confirmar visualmente que é **ilustração com sombreado, textura e profundidade**
+(estilo comic/cartoon renderizado), não formas geométricas planas com bordas retas e preenchimento
+sólido uniforme. Se parecer ícone/clipart vetorial em vez de ilustração, é falha — regenerar do
+zero (nunca só "melhorar" o script).
+
+## ⚠️ Regra crítica — texto sempre dentro do balão, nunca sobreposto (patch)
+
+Todo texto de fala/narração deve estar **desenhado dentro do balão pela própria geração de
+imagem**, nunca adicionado depois por overlay, crop, colagem ou caixa de texto HTML sobreposta ao
+PNG. Um balão desenhado vazio com o texto aparecendo fora dele (ou em uma caixa separada
+encostada na borda do painel) é a mesma falha do Passo 2-bis (balão vazio) — regenerar a página
+inteira via nova chamada ao modelo de imagem, nunca colar texto por cima do PNG existente. Ver
+também a regra absoluta da skill: qualquer correção em imagem já gerada é sempre por regeneração
+completa, nunca remendo.
+
 ## Regras
 
 - **Preferir o modo MCP (1A)** sempre que a tool estiver disponível na sessão — elimina a dependência do Codex Desktop aberto e das automações de polling em pasta.
 - **Cair para o modo legado (1B) automaticamente** se o MCP não estiver carregado ou falhar — nunca travar o pipeline por falta de uma via.
 - **Sempre usar caminhos absolutos** ao instruir a geração de imagens, tanto no modo MCP (no prompt) quanto no legado (campo `raiz` do JSON) — evita o bug de imagem salva no projeto errado (5º ano vs 2º ano).
 - **Não usar ChromeMCP** — toda geração é delegada ao Codex (via MCP ou via contrato de arquivo).
+- **Uma única instância/thread do Codex por tema** — a folha de personagens e as 4 páginas devem ser
+  pedidas na mesma sessão (mesma chamada `mcp__codex__codex`/`codex exec`, ou via
+  `mcp__codex__codex-reply`/reenvio ao mesmo processo em background para os itens seguintes), nunca
+  em sessões/threads separadas por página. Isso é o que garante a referência visual consistente dos
+  personagens entre as páginas — o "character reference" só funciona se o modelo enxergar a folha de
+  personagens que ele mesmo acabou de gerar, dentro do mesmo contexto de conversa. Uma correção
+  pontual de página (Passo 2-bis) também deve reenviar ao mesmo thread, nunca abrir um novo.
+- **Sempre citar explicitamente o caminho da folha de personagens recém-gerada (ou da imagem
+  canônica em `Personagens\2o ano\`) como referência visual obrigatória** no pedido de cada página —
+  nunca deixar implícito que o modelo "vai lembrar" sem apontar o arquivo.
 - **Não pedir upload de canônicas** — estão permanentemente em `Personagens\2o ano\`; o Codex as lê diretamente (caminho passado explicitamente no prompt/JSON).
 - **Timeout = falha explícita** — reportar ao orquestrador para intervenção de Léo.
 - **Sem colador-hq** — o projeto da Lis exibe as páginas individualmente no viewer; não montar arquivo único.

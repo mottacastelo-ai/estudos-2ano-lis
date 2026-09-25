@@ -1,6 +1,6 @@
 # Inventário do Portal — Lis (2º Ano)
 
-> Gerado automaticamente por `scripts/update-docs.py` em 2026-09-21.
+> Gerado automaticamente por `scripts/update-docs.py` em 2026-09-22.
 > Fonte primária: `index.html`. Existência de arquivos validada no filesystem.
 
 ---
@@ -9,12 +9,12 @@
 
 | Disciplina | Temas | Atividades | HQs completas |
 |---|---|---|---|
-| 📝 Português | 8 | 43 | 5/8 |
+| 📝 Português | 8 | 43 | 8/8 |
 | 🔢 Matemática | 11 | 52 | 11/11 |
 | 🔬 Ciências | 4 | 16 | 4/4 |
 | 🌍 Geografia | 2 | 8 | 2/2 |
 | 📜 História | 8 | 35 | 7/8 |
-| **Total** | **33** | **154** | **29/33** |
+| **Total** | **33** | **154** | **32/33** |
 
 ---
 
@@ -82,41 +82,41 @@
 
 ### noticia-lide-jornal
 
-**HQ:** `hq-noticia-lide-jornal-pg1.png` — ❌ p1 · ❌ p2 · ❌ p3 · ❌ p4 | ✅ prompt.md
+**HQ:** `hq-noticia-lide-jornal-pg1.png` — ✅ p1 · ✅ p2 · ✅ p3 · ✅ p4 | ✅ prompt.md
 
 **Atividades (5):**
 
+- ✅ [Quiz: Notícia e Jornal Falado](portugues/noticia-lide-jornal/quiz-noticia-lide-jornal.html)
 - ✅ [Ordene o Jornal Falado](portugues/noticia-lide-jornal/ordena-noticia-lide-jornal.html)
 - ✅ [Complete a Notícia](portugues/noticia-lide-jornal/completar-noticia-lide-jornal.html)
 - ✅ [Construa a Frase](portugues/noticia-lide-jornal/frase-noticia-lide-jornal.html)
-- ✅ [Quiz: Notícia e Jornal Falado](portugues/noticia-lide-jornal/quiz-noticia-lide-jornal.html)
 - ✅ [Mapa Mental](portugues/noticia-lide-jornal/mapa-mental-noticia-lide-jornal.html)
 
 ### lenda-relato-arco-iris
 
-**HQ:** `hq-lenda-relato-arco-iris-pg1.png` — ❌ p1 · ❌ p2 · ❌ p3 · ❌ p4 | ✅ prompt.md
+**HQ:** `hq-lenda-relato-arco-iris-pg1.png` — ✅ p1 · ✅ p2 · ✅ p3 · ✅ p4 | ✅ prompt.md
 
 **Atividades (7):**
 
+- ✅ [Quiz: Lenda e Relato do Arco-Íris](portugues/lenda-relato-arco-iris/quiz-lenda-relato-arco-iris.html)
 - ✅ [Verdadeiro ou Falso?](portugues/lenda-relato-arco-iris/vf-lenda-relato-arco-iris.html)
 - ✅ [Ordene a Lenda de Oxumarê](portugues/lenda-relato-arco-iris/ordena-lenda-oxumare.html)
 - ✅ [Ordene o Experimento](portugues/lenda-relato-arco-iris/ordena-experimento-arco-iris.html)
 - ✅ [Arrastar e Soltar](portugues/lenda-relato-arco-iris/arrastar-experimento-arco-iris.html)
 - ✅ [Construa a Explicação](portugues/lenda-relato-arco-iris/frase-explicacao-arco-iris.html)
-- ✅ [Quiz: Lenda e Relato do Arco-Íris](portugues/lenda-relato-arco-iris/quiz-lenda-relato-arco-iris.html)
 - ✅ [Mapa Mental](portugues/lenda-relato-arco-iris/mapa-mental-lenda-relato-arco-iris.html)
 
 ### sons-c-z-e-o-plural
 
-**HQ:** `hq-sons-c-z-e-o-plural-pg1.png` — ❌ p1 · ❌ p2 · ❌ p3 · ❌ p4 | ✅ prompt.md
+**HQ:** `hq-sons-c-z-e-o-plural-pg1.png` — ✅ p1 · ✅ p2 · ✅ p3 · ✅ p4 | ✅ prompt.md
 
 **Atividades (6):**
 
+- ✅ [Quiz: Sons e Plural](portugues/sons-c-z-e-o-plural/quiz-sons-c-z-e-o-plural.html)
 - ✅ [Complete a Palavra](portugues/sons-c-z-e-o-plural/completar-sons-c-z-e-o-plural.html)
 - ✅ [Arrastar e Soltar](portugues/sons-c-z-e-o-plural/arrastar-sons-c-z-e-o-plural.html)
 - ✅ [Verdadeiro ou Falso?](portugues/sons-c-z-e-o-plural/vf-sons-c-z-e-o-plural.html)
 - ✅ [Ilustrador](portugues/sons-c-z-e-o-plural/ilustrador-sons-c-z-e-o-plural.html)
-- ✅ [Quiz: Sons e Plural](portugues/sons-c-z-e-o-plural/quiz-sons-c-z-e-o-plural.html)
 - ✅ [Mapa Mental](portugues/sons-c-z-e-o-plural/mapa-mental-sons-c-z-e-o-plural.html)
 
 ---

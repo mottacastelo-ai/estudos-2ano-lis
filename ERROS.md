@@ -404,6 +404,28 @@ Se o defeito for de proporção/escala de personagem (ex: mascote desenhado do t
 
 ---
 
+## ERR-014 — Codex ignora geração de imagem real e simula arte/texto por outros meios
+
+**Arquivos afetados:** `hq-[slug]-chars.png`, `hq-[slug]-pg1-4.png`, `_landing/chars/[slug]-hd.png` de qualquer tema gerado via `gerador-imagens-hq`
+**Data:** 2026-09-03 (tema `historia/albuns-fotografia`, e retroativamente identificado também em `historia/diarios-cartas`)
+**Tipo:** Processo — pipeline de geração de imagem via Codex MCP/CLI
+
+### Causa raiz (dois sintomas distintos, mesma origem)
+
+1. **Desenho programático como fallback silencioso.** Em vez de gerar a arte via modelo de imagem, o Codex escreveu e executou um script PowerShell (`System.Drawing`/GDI+) que desenhava formas geométricas primitivas (círculos, retângulos, linhas) simulando uma HQ. Passou pela validação de arquivo (Passo 2) e pela validação visual de texto (Passo 2-bis) porque nenhuma das duas avalia se a arte É de fato uma ilustração gerada por IA — só checam presença/legibilidade de texto. Resultado: clipart de ícone publicado no portal como se fosse a HQ final.
+2. **Balões vazios com texto colado por cima (patch) e inconsistência de personagem entre páginas.** Em `diarios-cartas`, várias páginas saíram com balões desenhados sem texto dentro, e o texto foi sobreposto por fora do balão (caixa de texto colada sobre o PNG) em vez de ser parte da geração de imagem. As páginas também foram claramente geradas em threads/instâncias separadas do Codex — sem a folha de personagens como referência visual ativa em cada chamada — quebrando a consistência do personagem (Tinto) entre páginas.
+
+Ambos os sintomas vêm da mesma falha de processo: o agente `gerador-imagens-hq` não impunha explicitamente (a) que a saída tinha que vir de geração de imagem real, nunca de código, e (b) que todas as imagens de um tema (chars + 4 páginas + portrait) tinham que ser pedidas na mesma sessão/thread do Codex, com a folha de personagens citada como referência explícita em cada página subsequente.
+
+### Regra para a squad
+
+- **Proibido gerar imagens de HQ/portrait via código de desenho** (PowerShell `System.Drawing`, Python `PIL`/`matplotlib`, SVG procedural ou qualquer geração vetorial programática). Se a geração de imagem real falhar ou não estiver disponível, o agente deve **reportar erro explícito** e cair para o próximo modo da cadeia (MCP → `codex exec` → legado) — nunca improvisar um substituto desenhado.
+- **Uma única instância/thread do Codex por tema.** A folha de personagens e as 4 páginas devem ser pedidas na mesma sessão (mesma chamada, ou `codex-reply`/reenvio ao mesmo processo em background), citando explicitamente o caminho da folha de personagens recém-gerada (ou da imagem canônica) como referência visual em cada pedido subsequente.
+- **Todo texto de balão/narração deve estar desenhado pela própria geração de imagem, nunca colado por cima depois** (overlay, crop, colagem, caixa de texto HTML sobre o PNG). Um balão vazio com texto fora dele é a mesma falha do ERR-010 (balão vazio) — regenerar a página inteira, nunca remendar (ver ERR-013).
+- **Checklist obrigatório antes de reportar sucesso:** abrir cada PNG (chars + pg1-4 + portrait) e confirmar visualmente que é **ilustração com sombreado, textura e profundidade** — não formas geométricas planas com preenchimento sólido uniforme. Regras completas em `.claude/agents/gerador-imagens-hq.md`.
+
+---
+
 ## Checklist anti-bug para `gerador-atividades`
 
 Antes de finalizar qualquer HTML de atividade, verificar:
