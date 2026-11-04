@@ -292,13 +292,13 @@ footer {
 
   <div class="banco-titulo">Banco de trabalhadores — arraste para classificar:</div>
   <div class="banco" id="banco">
-    <div class="node" draggable="true" data-id="n1" data-slot="s1">🧹 Varredora de rua</div>
-    <div class="node" draggable="true" data-id="n2" data-slot="s2">🌾 Agricultor</div>
-    <div class="node" draggable="true" data-id="n3" data-slot="s3">🩺 Médica</div>
-    <div class="node" draggable="true" data-id="n4" data-slot="s4">✂️ Cabeleireira</div>
-    <div class="node" draggable="true" data-id="n5" data-slot="s5">🎣 Pescador</div>
-    <div class="node" draggable="true" data-id="n6" data-slot="s6">✉️ Carteiro</div>
-    <div class="node" draggable="true" data-id="n7" data-slot="s7">🍽️ Garçonete</div>
+    <div class="node" draggable="true" data-id="n1">🧹 Varredora de rua</div>
+    <div class="node" draggable="true" data-id="n2">🌾 Agricultor</div>
+    <div class="node" draggable="true" data-id="n3">🩺 Médica</div>
+    <div class="node" draggable="true" data-id="n4">✂️ Cabeleireira</div>
+    <div class="node" draggable="true" data-id="n5">🎣 Pescador</div>
+    <div class="node" draggable="true" data-id="n6">✉️ Carteiro</div>
+    <div class="node" draggable="true" data-id="n7">🍽️ Garçonete</div>
   </div>
 
   <div class="no-central">
@@ -393,6 +393,17 @@ function playSound(type) {
     o.start(); o.stop(ctx.currentTime + 0.4);
   }
 }
+
+// Gabarito mantido apenas em variável JS interna — nunca no DOM (evita vazamento via inspeção)
+var gabarito = {
+  n1: 's1', // Varredora de rua → vassourão / limpar ruas
+  n2: 's2', // Agricultor → enxada / plantação
+  n3: 's3', // Médica → estetoscópio / pacientes
+  n4: 's4', // Cabeleireira → tesoura / cabelo
+  n5: 's5', // Pescador → rede ou vara / peixes
+  n6: 's6', // Carteiro → bolsa / cartas
+  n7: 's7'  // Garçonete → bandeja / clientes
+};
 
 const encaixes = {};
 
@@ -513,7 +524,7 @@ function verificar() {
 
   Object.entries(encaixes).forEach(([nodeId, slotId]) => {
     const nodeEl = document.querySelector('[data-id="' + nodeId + '"]');
-    const correto = nodeEl.dataset.slot === slotId;
+    const correto = gabarito[nodeId] === slotId;
     const copia = document.querySelector('[data-node-id="' + nodeId + '"]');
     if (correto) {
       acertos++;
@@ -530,8 +541,7 @@ function verificar() {
     const nodesDentro = Object.entries(encaixes).filter(([, s]) => s === slotId);
     if (nodesDentro.length === 0) return;
     const todosOk = nodesDentro.every(([nId]) => {
-      const nEl = document.querySelector('[data-id="' + nId + '"]');
-      return nEl.dataset.slot === slotId;
+      return gabarito[nId] === slotId;
     });
     slot.classList.remove('correto', 'errado');
     slot.classList.add(todosOk ? 'correto' : 'errado');

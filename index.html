@@ -519,7 +519,7 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
     <button class="disc-nav-btn hist-active" id="nav-hist" onclick="showDisc('hist')">
       <span class="d-icon">📜</span>
       <span class="d-name">História</span>
-      <span class="d-count" id="count-hist">9 temas</span>
+      <span class="d-count" id="count-hist">10 temas</span>
     </button>
     <div class="theme-sub" id="sub-hist">
       <button class="theme-link" onclick="showTheme('hist','memorias-lugares')">🏛️ Memórias dos Lugares</button>
@@ -531,6 +531,7 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
       <button class="theme-link" onclick="showTheme('hist','diarios-cartas')">🖋️ Diários e Cartas</button>
       <button class="theme-link" onclick="showTheme('hist','albuns-fotografia')">📸 Álbuns de Fotografia</button>
       <button class="theme-link" onclick="showTheme('hist','objetos-memorias')">⏱️ Objetos e Memórias</button>
+      <button class="theme-link" onclick="showTheme('hist','tipos-trabalhadores')">🐜 Tipos de Trabalhadores</button>
     </div>
 
     <button class="disc-nav-btn port-active" id="nav-port" onclick="showDisc('port')">
@@ -565,8 +566,8 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
       <div class="home-subtitle">Escolha uma disciplina e vamos aprender juntos! 🎉</div>
       <div class="home-stats">
         <div class="hstat"><span class="hstat-num">5</span><span class="hstat-label">disciplinas</span></div>
-        <div class="hstat"><span class="hstat-num">34</span><span class="hstat-label">temas</span></div>
-        <div class="hstat"><span class="hstat-num">159</span><span class="hstat-label">atividades</span></div>
+        <div class="hstat"><span class="hstat-num">35</span><span class="hstat-label">temas</span></div>
+        <div class="hstat"><span class="hstat-num">164</span><span class="hstat-label">atividades</span></div>
       </div>
       <div class="home-stats" id="streak-banner" style="margin-top:16px;">
         <div class="hstat"><span class="hstat-num" id="streak-count">0</span><span class="hstat-label">🔥 dias seguidos</span></div>
@@ -608,8 +609,8 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
           <div class="dhc-name">História</div>
           <div class="dhc-desc">Histórias, memórias e como vivemos juntos 🏘️</div>
           <div class="dhc-chips">
-            <span class="chip" style="background:#F3E8FF;color:#6D28D9">9 temas</span>
-            <span class="chip" style="background:#FAF5FF;color:#7E22CE">40 atividades</span>
+            <span class="chip" style="background:#F3E8FF;color:#6D28D9">10 temas</span>
+            <span class="chip" style="background:#FAF5FF;color:#7E22CE">45 atividades</span>
           </div>
         </button>
         <button class="disc-home-card port" onclick="showDisc('port')">
@@ -1089,7 +1090,7 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
   <div class="screen" id="screen-hist">
     <div class="disc-hero hist">
       <div class="disc-hero-title">📜 História</div>
-      <div class="disc-hero-sub">9 temas · 40 atividades</div>
+      <div class="disc-hero-sub">10 temas · 45 atividades</div>
     </div>
     <div class="disc-body">
 
@@ -1103,6 +1104,7 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
         <button class="theme-tab-btn hist-tab" id="tab-hist-diarios-cartas" onclick="showTheme('hist','diarios-cartas')">🖋️ Diários e Cartas</button>
         <button class="theme-tab-btn hist-tab" id="tab-hist-albuns-fotografia" onclick="showTheme('hist','albuns-fotografia')">📸 Álbuns de Fotografia</button>
         <button class="theme-tab-btn hist-tab" id="tab-hist-objetos-memorias" onclick="showTheme('hist','objetos-memorias')">⏱️ Objetos e Memórias</button>
+        <button class="theme-tab-btn hist-tab" id="tab-hist-tipos-trabalhadores" onclick="showTheme('hist','tipos-trabalhadores')">🐜 Tipos de Trabalhadores</button>
       </div>
 
       <!-- ── TEMA 1: MEMÓRIAS DOS LUGARES ── -->
@@ -1899,6 +1901,100 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
         <div class="sched">
           <div class="sched-row"><span class="sched-day" style="color:var(--hist-color)">Dia 1</span><span class="sched-acts">HQ + Verdadeiro ou Falso</span></div>
           <div class="sched-row"><span class="sched-day" style="color:var(--hist-color)">Dia 2</span><span class="sched-acts">Jogo da Memória + Criador de Frases</span></div>
+          <div class="sched-row"><span class="sched-day" style="color:var(--hist-color)">Dia 3</span><span class="sched-acts">Quiz Interativo + Mapa Mental</span></div>
+        </div>
+      </div>
+
+      <div class="theme-content" id="theme-hist-tipos-trabalhadores">
+        <div class="hq-card">
+          <div class="hq-viewer-wrap">
+            <div class="hq-viewer-title">🐜 Juca e o Mundo do Trabalho</div>
+            <div class="hq-viewer-sub">Aventura com Lis e Juca · 4 páginas</div>
+            <div class="hq-book-outer">
+              <div class="hq-book-shadow"></div>
+              <div class="hq-book-stack">
+                <div class="hq-page-base" id="hq-tipos-display">
+                  <img id="hq-tipos-img" src="historia/tipos-trabalhadores/hq-tipos-trabalhadores-pg1.png" alt="HQ Tipos de Trabalhadores — Página 1" draggable="false" style="object-fit:contain; touch-action:auto;">
+                  <div class="hq-shine"></div>
+                </div>
+              </div>
+            </div>
+            <div class="hq-controls">
+              <button class="hq-btn" id="hq-tipos-prev" onclick="hqGoTo('tipos',hqCurrent['tipos']-1)" disabled>◀ Voltar</button>
+              <div class="hq-indicator" id="hq-tipos-ind">1 / 4</div>
+              <button class="hq-btn" id="hq-tipos-next" onclick="hqGoTo('tipos',hqCurrent['tipos']+1)">Próxima ▶</button>
+            </div>
+            <div class="hq-dots" id="hq-tipos-dots">
+              <div class="hq-dot active" onclick="hqGoTo('tipos',0)"></div>
+              <div class="hq-dot" onclick="hqGoTo('tipos',1)"></div>
+              <div class="hq-dot" onclick="hqGoTo('tipos',2)"></div>
+              <div class="hq-dot" onclick="hqGoTo('tipos',3)"></div>
+            </div>
+          </div>
+          <div class="hq-caption">
+            <span>📖</span>
+            <span>Juca e o Mundo do Trabalho — 4 páginas · Personagens: Lis e Juca (formiga trabalhadora animada) · Tema: diferentes tipos de trabalhadores e sua importância para a comunidade</span>
+          </div>
+          <div class="livro-ref">📚 Livro p. 92–99</div>
+        </div>
+        <hr class="sdiv">
+        <div class="act-grid">
+          <a class="act-card hist" href="historia/tipos-trabalhadores/arrastar-tipos-trabalhadores.html" target="_blank">
+            <div class="act-icon">🖐️</div>
+            <div class="act-title">Arrastar e Soltar</div>
+            <div class="act-desc">Combine cada trabalhador com sua ferramenta ou função!</div>
+            <div class="act-tags">
+              <span class="tag tag-hist">História</span>
+              <span class="tag tag-a">Prática</span>
+            </div>
+            <span class="level lv2">⚡ Praticar</span>
+          </a>
+          <a class="act-card hist" href="historia/tipos-trabalhadores/caca-palavras-tipos-trabalhadores.html" target="_blank">
+            <div class="act-icon">🔎</div>
+            <div class="act-title">Caça-Palavras</div>
+            <div class="act-desc">Encontre as palavras escondidas sobre tipos de trabalhadores!</div>
+            <div class="act-tags">
+              <span class="tag tag-hist">História</span>
+              <span class="tag tag-a">Caça-Palavras</span>
+            </div>
+            <span class="level lv1">💬 Explorar</span>
+          </a>
+          <a class="act-card hist" href="historia/tipos-trabalhadores/ilustrador-tipos-trabalhadores.html" target="_blank">
+            <div class="act-icon">🎨</div>
+            <div class="act-title">Ilustrador</div>
+            <div class="act-desc">Desenhe sua própria cena com trabalhadores da comunidade!</div>
+            <div class="act-tags">
+              <span class="tag tag-hist">História</span>
+              <span class="tag tag-a">Criação</span>
+            </div>
+            <span class="level lv3">🏆 Criar</span>
+          </a>
+          <a class="act-card hist" href="historia/tipos-trabalhadores/quiz-tipos-trabalhadores.html" target="_blank">
+            <div class="act-icon">❓</div>
+            <div class="act-title">Quiz Interativo</div>
+            <div class="act-desc">Perguntas sobre os diferentes tipos de trabalhadores.</div>
+            <div class="act-tags">
+              <span class="tag tag-hist">História</span>
+              <span class="tag tag-a">Ativo</span>
+            </div>
+            <span class="level lv4">📖 Retrieval practice</span>
+          </a>
+          <a class="act-card hist" href="historia/tipos-trabalhadores/mapa-mental-tipos-trabalhadores.html" target="_blank">
+            <div class="act-icon">🗺️</div>
+            <div class="act-title">Mapa Mental</div>
+            <div class="act-desc">Monte o mapa com os conceitos de tipos de trabalhadores.</div>
+            <div class="act-tags">
+              <span class="tag tag-hist">História</span>
+              <span class="tag tag-a">Arrastar</span>
+            </div>
+            <span class="level lv3">🏆 Explicar</span>
+          </a>
+        </div>
+        <hr class="sdiv">
+        <div class="sched-title">📅 Sugestão de uso</div>
+        <div class="sched">
+          <div class="sched-row"><span class="sched-day" style="color:var(--hist-color)">Dia 1</span><span class="sched-acts">HQ + Arrastar e Soltar</span></div>
+          <div class="sched-row"><span class="sched-day" style="color:var(--hist-color)">Dia 2</span><span class="sched-acts">Caça-Palavras + Ilustrador</span></div>
           <div class="sched-row"><span class="sched-day" style="color:var(--hist-color)">Dia 3</span><span class="sched-acts">Quiz Interativo + Mapa Mental</span></div>
         </div>
       </div>
@@ -3416,6 +3512,7 @@ var hqPages = {
   diarios:       ['historia/diarios-cartas/hq-diarios-cartas-pg1.png','historia/diarios-cartas/hq-diarios-cartas-pg2.png','historia/diarios-cartas/hq-diarios-cartas-pg3.png','historia/diarios-cartas/hq-diarios-cartas-pg4.png'],
   albuns:        ['historia/albuns-fotografia/hq-albuns-fotografia-pg1.png','historia/albuns-fotografia/hq-albuns-fotografia-pg2.png','historia/albuns-fotografia/hq-albuns-fotografia-pg3.png','historia/albuns-fotografia/hq-albuns-fotografia-pg4.png'],
   objetos:       ['historia/objetos-memorias/hq-objetos-memorias-pg1.png','historia/objetos-memorias/hq-objetos-memorias-pg2.png','historia/objetos-memorias/hq-objetos-memorias-pg3.png','historia/objetos-memorias/hq-objetos-memorias-pg4.png'],
+  tipos:         ['historia/tipos-trabalhadores/hq-tipos-trabalhadores-pg1.png','historia/tipos-trabalhadores/hq-tipos-trabalhadores-pg2.png','historia/tipos-trabalhadores/hq-tipos-trabalhadores-pg3.png','historia/tipos-trabalhadores/hq-tipos-trabalhadores-pg4.png'],
   ordinais:      ['matematica/numeros-ordinais/hq-numeros-ordinais-pg1.png','matematica/numeros-ordinais/hq-numeros-ordinais-pg2.png','matematica/numeros-ordinais/hq-numeros-ordinais-pg3.png','matematica/numeros-ordinais/hq-numeros-ordinais-pg4.png'],
   dezena:        ['matematica/dezena-numeros-ate-19/hq-dezena-numeros-ate-19-pg1.png','matematica/dezena-numeros-ate-19/hq-dezena-numeros-ate-19-pg2.png','matematica/dezena-numeros-ate-19/hq-dezena-numeros-ate-19-pg3.png','matematica/dezena-numeros-ate-19/hq-dezena-numeros-ate-19-pg4.png'],
   pares:         ['matematica/pares-impares-dezenas-exatas/hq-pares-impares-dezenas-exatas-pg1.png','matematica/pares-impares-dezenas-exatas/hq-pares-impares-dezenas-exatas-pg2.png','matematica/pares-impares-dezenas-exatas/hq-pares-impares-dezenas-exatas-pg3.png','matematica/pares-impares-dezenas-exatas/hq-pares-impares-dezenas-exatas-pg4.png'],

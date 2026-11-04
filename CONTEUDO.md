@@ -13,8 +13,8 @@
 | 🔢 Matemática | 11 | 52 | 11/11 |
 | 🔬 Ciências | 4 | 16 | 4/4 |
 | 🌍 Geografia | 2 | 8 | 2/2 |
-| 📜 História | 9 | 40 | 8/9 |
-| **Total** | **34** | **159** | **33/34** |
+| 📜 História | 10 | 45 | 9/10 |
+| **Total** | **35** | **164** | **34/35** |
 
 ---
 
@@ -432,6 +432,18 @@
 - ✅ [Criador de Frases!](historia/objetos-memorias/criador-frase-objetos-memorias.html)
 - ✅ [Quiz Interativo](historia/objetos-memorias/quiz-objetos-memorias.html)
 - ✅ [Mapa Mental](historia/objetos-memorias/mapa-mental-objetos-memorias.html)
+
+### tipos-trabalhadores
+
+**HQ:** `hq-tipos-trabalhadores-pg1.png` — ✅ p1 · ✅ p2 · ✅ p3 · ✅ p4 | ✅ prompt.md
+
+**Atividades (5):**
+
+- ✅ [Arrastar e Soltar](historia/tipos-trabalhadores/arrastar-tipos-trabalhadores.html)
+- ✅ [Caça-Palavras](historia/tipos-trabalhadores/caca-palavras-tipos-trabalhadores.html)
+- ✅ [Ilustrador](historia/tipos-trabalhadores/ilustrador-tipos-trabalhadores.html)
+- ✅ [Quiz Interativo](historia/tipos-trabalhadores/quiz-tipos-trabalhadores.html)
+- ✅ [Mapa Mental](historia/tipos-trabalhadores/mapa-mental-tipos-trabalhadores.html)
 
 ---
 

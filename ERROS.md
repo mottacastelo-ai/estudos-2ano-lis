@@ -426,6 +426,25 @@ Ambos os sintomas vêm da mesma falha de processo: o agente `gerador-imagens-hq`
 
 ---
 
+## ERR-015 — Gabarito de pareamento exposto via atributo `data-*` no elemento arrastável (mapa mental / arrastar e soltar)
+
+**Arquivos afetados:** `mapa-mental-[slug].html`, `arrastar-[slug].html` (e qualquer atividade com elementos arrastáveis a serem pareados a um alvo)
+**Data:** 2026-11-04 (tema `historia/tipos-trabalhadores`, reprovado pelo revisor-qualidade com score 15/100)
+**Tipo:** Vazamento de resposta (checklist item 3c) — HTML/JS
+
+### Causa raiz
+
+Ao gerar o HTML dos nós/cartas arrastáveis, o `gerador-atividades` colocou a resposta correta diretamente como atributo no próprio elemento do DOM — `data-slot="s1"` no nó, `data-alvo="a1"` na carta — para facilitar a leitura do valor na função de verificação (`nodeEl.dataset.slot === slotId`). Isso expõe o gabarito completo a qualquer criança (ou adulto) que abra o DevTools ou inspecione o elemento antes de arrastar, sem precisar resolver a atividade.
+
+### Regra para a squad
+
+- **Nunca armazenar a resposta correta de um item arrastável como atributo do próprio elemento (`data-slot`, `data-alvo`, `data-correct`, `data-target`, etc.) quando esse atributo aponta para o ID de destino correto.** Isso vale para mapa mental, arrastar e soltar, e qualquer atividade de pareamento por drag-and-drop.
+- **O gabarito deve existir apenas em uma estrutura JavaScript interna** (ex: `var gabarito = { n1: 's1', n2: 's2', ... }`), nunca lida do DOM. A função de verificação consulta esse objeto, não `element.dataset`.
+- Um `data-id` neutro no elemento arrastável (identificador próprio, sem apontar para a resposta) e um `data-slot`/`data-alvo` no **container de destino** (identificando apenas a si mesmo, não qual item pertence a ele) não são vazamento — são apenas identificadores estruturais.
+- O `revisor-qualidade` deve sempre inspecionar o HTML renderizado (não só o JS) de atividades de pareamento procurando por atributos `data-*` nos itens arrastáveis que coincidam com o ID do destino esperado.
+
+---
+
 ## Checklist anti-bug para `gerador-atividades`
 
 Antes de finalizar qualquer HTML de atividade, verificar:

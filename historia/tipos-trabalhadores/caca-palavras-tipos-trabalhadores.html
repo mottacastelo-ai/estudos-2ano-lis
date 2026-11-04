@@ -94,6 +94,19 @@ header p { font-size: 1rem; opacity: 0.9; margin-top: 4px; }
   text-decoration: line-through;
 }
 
+.legenda-conceito {
+  background: #F5F0FF;
+  border: 2px dashed var(--primary);
+  border-radius: 14px;
+  padding: 14px 18px;
+  margin: 0 auto 24px;
+  max-width: 720px;
+  font-size: 1.05rem;
+  color: #4A1272;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
 .grade-wrapper {
   background: white;
   border-radius: 16px;
@@ -211,6 +224,10 @@ footer {
 
 <div class="container">
 
+  <div class="legenda-conceito">
+    📜 Quando uma pessoa conta uma lembrança em voz alta, como numa entrevista, isso é uma <strong>FONTE ORAL</strong> da história! Encontre a palavra ORAL na grade.
+  </div>
+
   <div class="banco-palavras" id="banco-palavras"></div>
 
   <div class="grade-wrapper">
@@ -256,7 +273,7 @@ function playSound(type) {
 }
 
 // Palavras-alvo: todas com correspondência literal nos termos técnicos / profissões do livro.
-var PALAVRAS = ['TRABALHADOR', 'PREGAO', 'CARTEIRO', 'AGRICULTOR', 'COZINHEIRA', 'MECANICO', 'PESCADOR', 'VENDEDOR'];
+var PALAVRAS = ['TRABALHADOR', 'PREGAO', 'CARTEIRO', 'AGRICULTOR', 'COZINHEIRA', 'MECANICO', 'PESCADOR', 'VENDEDOR', 'ORAL'];
 var TAMANHO = 14;
 var LETRAS_ALEATORIAS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 

@@ -262,12 +262,12 @@ footer {
 
   <div class="banco-titulo">Banco de trabalhadores — arraste para classificar:</div>
   <div class="banco" id="banco">
-    <div class="carta" draggable="true" data-id="c1" data-alvo="a1"><span class="ic">🍳</span>Cozinheira</div>
-    <div class="carta" draggable="true" data-id="c2" data-alvo="a2"><span class="ic">🔧</span>Mecânico</div>
-    <div class="carta" draggable="true" data-id="c3" data-alvo="a3"><span class="ic">🧁</span>Vendedora ambulante</div>
-    <div class="carta" draggable="true" data-id="c4" data-alvo="a4"><span class="ic">🌾</span>Agricultor</div>
-    <div class="carta" draggable="true" data-id="c5" data-alvo="a5"><span class="ic">🎣</span>Pescador</div>
-    <div class="carta" draggable="true" data-id="c6" data-alvo="a6"><span class="ic">🍽️</span>Garçonete</div>
+    <div class="carta" draggable="true" data-id="c1"><span class="ic">🍳</span>Cozinheira</div>
+    <div class="carta" draggable="true" data-id="c2"><span class="ic">🔧</span>Mecânico</div>
+    <div class="carta" draggable="true" data-id="c3"><span class="ic">🧁</span>Vendedora ambulante</div>
+    <div class="carta" draggable="true" data-id="c4"><span class="ic">🌾</span>Agricultor</div>
+    <div class="carta" draggable="true" data-id="c5"><span class="ic">🎣</span>Pescador</div>
+    <div class="carta" draggable="true" data-id="c6"><span class="ic">🍽️</span>Garçonete</div>
   </div>
 
   <div class="alvos-grid">
@@ -342,6 +342,16 @@ function playSound(type) {
     o.start(); o.stop(ctx.currentTime + 0.4);
   }
 }
+
+// Gabarito mantido apenas em variável JS interna — nunca no DOM (evita vazamento via inspeção)
+var gabarito = {
+  c1: 'a1', // Cozinheira → prepara a comida na cozinha
+  c2: 'a2', // Mecânico → conserta carros e motos
+  c3: 'a3', // Vendedora ambulante → vende churros andando pela rua
+  c4: 'a4', // Agricultor → planta e cuida da terra
+  c5: 'a5', // Pescador → pesca os peixes no mar ou no rio
+  c6: 'a6'  // Garçonete → serve a comida para os clientes
+};
 
 const encaixes = {};
 let dragId = null;
@@ -461,7 +471,7 @@ function verificar() {
 
   Object.entries(encaixes).forEach(([cartaId, alvoId]) => {
     const cartaEl = document.querySelector('[data-id="' + cartaId + '"]');
-    const correto = cartaEl.dataset.alvo === alvoId;
+    const correto = gabarito[cartaId] === alvoId;
     const copia = document.querySelector('[data-carta-id="' + cartaId + '"]');
     if (correto) {
       acertos++;
@@ -478,8 +488,7 @@ function verificar() {
     const cartasDentro = Object.entries(encaixes).filter(([, a]) => a === alvoId);
     if (cartasDentro.length === 0) return;
     const todosOk = cartasDentro.every(([cId]) => {
-      const cEl = document.querySelector('[data-id="' + cId + '"]');
-      return cEl.dataset.alvo === alvoId;
+      return gabarito[cId] === alvoId;
     });
     alvo.classList.remove('correto', 'errado');
     alvo.classList.add(todosOk ? 'correto' : 'errado');
