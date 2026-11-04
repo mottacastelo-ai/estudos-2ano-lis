@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caça-palavras — Tipos de Trabalhadores | Portal da Lis</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #A855F7;
+  --light: #D08EF8;
+  --bg: #FAF5FF;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  background: linear-gradient(135deg, #4A1272, #A855F7 60%, #D08EF8);
+  color: white;
+  padding: 24px 20px;
+  text-align: center;
+}
+
+header .personagem { font-size: 3rem; margin-bottom: 8px; }
+
+header h1 {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+header p { font-size: 1rem; opacity: 0.9; margin-top: 4px; }
+
+.instrucao {
+  background: white;
+  border-left: 5px solid var(--primary);
+  margin: 24px auto;
+  max-width: 720px;
+  padding: 16px 20px;
+  border-radius: 0 14px 14px 0;
+  font-size: 1.15rem;
+  color: #4A1272;
+  font-weight: 700;
+  width: calc(100% - 40px);
+}
+
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 20px 32px;
+  flex: 1;
+  width: 100%;
+}
+
+.banco-palavras {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  background: white;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 2px 12px rgba(168,85,247,0.1);
+  margin-bottom: 24px;
+}
+
+.palavra-chip {
+  background: #F5F0FF;
+  border: 2px solid var(--primary);
+  color: #4A1272;
+  border-radius: 99px;
+  padding: 8px 16px;
+  font-weight: 800;
+  font-size: 0.95rem;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+}
+
+.palavra-chip.achada {
+  background: #10B981;
+  border-color: #10B981;
+  color: white;
+  text-decoration: line-through;
+}
+
+.grade-wrapper {
+  background: white;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 2px 12px rgba(168,85,247,0.1);
+  margin-bottom: 24px;
+  overflow-x: auto;
+}
+
+#grade {
+  display: grid;
+  gap: 2px;
+  margin: 0 auto;
+  user-select: none;
+  touch-action: none;
+}
+
+.letra-cel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  min-height: 36px;
+  background: #F5F0FF;
+  border-radius: 6px;
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: #4A1272;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.letra-cel.selecionando { background: #DDD6FE; }
+.letra-cel.achada { background: #10B981; color: white; }
+
+.acoes { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+
+.btn-limpar {
+  flex: 1;
+  background: white;
+  color: var(--primary);
+  border: 3px solid var(--primary);
+  border-radius: 14px;
+  padding: 16px 24px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  min-height: 54px;
+  transition: all 0.2s;
+}
+
+.btn-limpar:hover { background: var(--primary); color: white; }
+
+.resultado {
+  display: none;
+  background: white;
+  border-radius: 20px;
+  padding: 24px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(168,85,247,0.15);
+  margin-bottom: 24px;
+}
+
+.resultado.show { display: block; }
+.resultado .emoji-res { font-size: 3.5rem; margin-bottom: 12px; }
+.resultado h3 { font-family: 'Baloo 2', sans-serif; font-size: 1.6rem; color: #4A1272; margin-bottom: 8px; }
+.resultado p { font-size: 1.2rem; color: #5B21B6; }
+
+footer {
+  background: white;
+  border-top: 2px solid #E9D5FF;
+  padding: 16px 20px;
+  text-align: center;
+}
+
+.btn-voltar {
+  background: transparent;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  border-radius: 12px;
+  padding: 10px 24px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-height: 44px;
+}
+
+.btn-voltar:hover { background: var(--primary); color: white; }
+
+@media (max-width: 480px) {
+  body { font-size: 1.15rem; }
+  header h1 { font-size: 1.3rem; }
+  .letra-cel { width: 28px; height: 28px; min-width: 28px; min-height: 28px; font-size: 0.9rem; }
+  .acoes { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="personagem">🐜</div>
+  <h1>Caça-palavras — Tipos de Trabalhadores</h1>
+  <p>Encontre as palavras sobre os trabalhadores!</p>
+</header>
+
+<div class="instrucao">
+  💡 Toque na primeira letra, depois toque na última letra da palavra para marcar.
+</div>
+
+<div class="container">
+
+  <div class="banco-palavras" id="banco-palavras"></div>
+
+  <div class="grade-wrapper">
+    <div id="grade"></div>
+  </div>
+
+  <div class="acoes">
+    <button class="btn-limpar" onclick="reiniciar()">Recomeçar 🔄</button>
+  </div>
+
+  <div class="resultado" id="resultado">
+    <div class="emoji-res">🏆</div>
+    <h3>Você encontrou todas as palavras!</h3>
+    <p>Juca está muito orgulhoso de você, trabalhadora Lis!</p>
+  </div>
+
+</div>
+
+<footer>
+  <button class="btn-voltar" onclick="voltarAoPortal()">← Voltar ao Portal</button>
+</footer>
+
+<script>
+function playSound(type) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  if (type === 'correct') {
+    o.frequency.setValueAtTime(523, ctx.currentTime);
+    o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+    o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    o.start(); o.stop(ctx.currentTime + 0.5);
+  } else {
+    o.frequency.setValueAtTime(300, ctx.currentTime);
+    o.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    o.start(); o.stop(ctx.currentTime + 0.4);
+  }
+}
+
+// Palavras-alvo: todas com correspondência literal nos termos técnicos / profissões do livro.
+var PALAVRAS = ['TRABALHADOR', 'PREGAO', 'CARTEIRO', 'AGRICULTOR', 'COZINHEIRA', 'MECANICO', 'PESCADOR', 'VENDEDOR'];
+var TAMANHO = 14;
+var LETRAS_ALEATORIAS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+var gradeDados = null; // matriz [linha][coluna] = letra
+var localizacoes = {}; // palavra -> {cels: [[r,c],...]}
+
+function criarGradeVazia() {
+  var g = [];
+  for (var r = 0; r < TAMANHO; r++) {
+    var linha = [];
+    for (var c = 0; c < TAMANHO; c++) linha.push(null);
+    g.push(linha);
+  }
+  return g;
+}
+
+function tentarColocar(g, palavra) {
+  var direcoes = [
+    [0, 1],  // horizontal →
+    [1, 0],  // vertical ↓
+  ];
+  var tentativas = 200;
+  while (tentativas-- > 0) {
+    var dir = direcoes[Math.floor(Math.random() * direcoes.length)];
+    var dr = dir[0], dc = dir[1];
+    var maxR = TAMANHO - (dr === 1 ? palavra.length : 1);
+    var maxC = TAMANHO - (dc === 1 ? palavra.length : 1);
+    var r0 = Math.floor(Math.random() * (maxR + 1));
+    var c0 = Math.floor(Math.random() * (maxC + 1));
+
+    var cels = [];
+    var cabe = true;
+    for (var i = 0; i < palavra.length; i++) {
+      var r = r0 + dr * i;
+      var c = c0 + dc * i;
+      var existente = g[r][c];
+      if (existente !== null && existente !== palavra[i]) { cabe = false; break; }
+      cels.push([r, c]);
+    }
+    if (!cabe) continue;
+
+    cels.forEach(function (rc, i) { g[rc[0]][rc[1]] = palavra[i]; });
+    return cels;
+  }
+  return null;
+}
+
+function gerarGrade() {
+  var g = criarGradeVazia();
+  localizacoes = {};
+  var ordenadas = PALAVRAS.slice().sort(function (a, b) { return b.length - a.length; });
+  ordenadas.forEach(function (p) {
+    var cels = tentarColocar(g, p);
+    if (cels) localizacoes[p] = { cels: cels, achada: false };
+  });
+  for (var r = 0; r < TAMANHO; r++) {
+    for (var c = 0; c < TAMANHO; c++) {
+      if (g[r][c] === null) {
+        g[r][c] = LETRAS_ALEATORIAS[Math.floor(Math.random() * LETRAS_ALEATORIAS.length)];
+      }
+    }
+  }
+  gradeDados = g;
+}
+
+var selecaoInicio = null;
+
+function renderGrade() {
+  var gradeEl = document.getElementById('grade');
+  gradeEl.innerHTML = '';
+  gradeEl.style.gridTemplateColumns = 'repeat(' + TAMANHO + ', 1fr)';
+  for (var r = 0; r < TAMANHO; r++) {
+    for (var c = 0; c < TAMANHO; c++) {
+      var cel = document.createElement('div');
+      cel.className = 'letra-cel';
+      cel.textContent = gradeDados[r][c];
+      cel.dataset.r = r;
+      cel.dataset.c = c;
+      cel.addEventListener('click', onCelClique);
+      gradeEl.appendChild(cel);
+    }
+  }
+}
+
+function celEl(r, c) {
+  return document.querySelector('.letra-cel[data-r="' + r + '"][data-c="' + c + '"]');
+}
+
+function limparSelecaoVisual() {
+  document.querySelectorAll('.letra-cel.selecionando').forEach(function (el) {
+    el.classList.remove('selecionando');
+  });
+}
+
+function onCelClique(e) {
+  var r = parseInt(e.target.dataset.r, 10);
+  var c = parseInt(e.target.dataset.c, 10);
+
+  if (!selecaoInicio) {
+    selecaoInicio = { r: r, c: c };
+    limparSelecaoVisual();
+    e.target.classList.add('selecionando');
+    return;
+  }
+
+  var r0 = selecaoInicio.r, c0 = selecaoInicio.c;
+  var dr = Math.sign(r - r0);
+  var dc = Math.sign(c - c0);
+
+  // Só aceita linha reta horizontal ou vertical
+  var cels = [];
+  if (r === r0) {
+    var passo = c >= c0 ? 1 : -1;
+    for (var cc = c0; passo > 0 ? cc <= c : cc >= c; cc += passo) cels.push([r0, cc]);
+  } else if (c === c0) {
+    var passoR = r >= r0 ? 1 : -1;
+    for (var rr = r0; passoR > 0 ? rr <= r : rr >= r; rr += passoR) cels.push([rr, c0]);
+  } else {
+    limparSelecaoVisual();
+    selecaoInicio = null;
+    return;
+  }
+
+  checarSelecao(cels);
+  limparSelecaoVisual();
+  selecaoInicio = null;
+}
+
+function checarSelecao(cels) {
+  var palavraDireta = cels.map(function (rc) { return gradeDados[rc[0]][rc[1]]; }).join('');
+  var palavraInversa = palavraDireta.split('').reverse().join('');
+
+  Object.keys(localizacoes).forEach(function (p) {
+    var loc = localizacoes[p];
+    if (loc.achada) return;
+    var alvoDireta = loc.cels.map(function (rc) { return gradeDados[rc[0]][rc[1]]; }).join('');
+    var mesmasCels = cels.length === loc.cels.length && cels.every(function (rc, i) {
+      return (rc[0] === loc.cels[i][0] && rc[1] === loc.cels[i][1]) ||
+             (rc[0] === loc.cels[cels.length - 1 - i][0] && rc[1] === loc.cels[cels.length - 1 - i][1]);
+    });
+    if (mesmasCels && (palavraDireta === p || palavraInversa === p)) {
+      marcarAchada(p);
+    }
+  });
+}
+
+function marcarAchada(palavra) {
+  var loc = localizacoes[palavra];
+  loc.achada = true;
+  loc.cels.forEach(function (rc) {
+    var el = celEl(rc[0], rc[1]);
+    if (el) el.classList.add('achada');
+  });
+  var chip = document.querySelector('.palavra-chip[data-palavra="' + palavra + '"]');
+  if (chip) chip.classList.add('achada');
+  playSound('correct');
+  checarVitoria();
+}
+
+function checarVitoria() {
+  var todas = Object.keys(localizacoes).every(function (p) { return localizacoes[p].achada; });
+  if (todas) {
+    document.getElementById('resultado').className = 'resultado show';
+    window.sabendoScore = 100;
+  }
+}
+
+function renderBanco() {
+  var banco = document.getElementById('banco-palavras');
+  banco.innerHTML = '';
+  Object.keys(localizacoes).forEach(function (p) {
+    var chip = document.createElement('div');
+    chip.className = 'palavra-chip';
+    chip.dataset.palavra = p;
+    chip.textContent = p;
+    banco.appendChild(chip);
+  });
+}
+
+function reiniciar() {
+  document.getElementById('resultado').className = 'resultado';
+  selecaoInicio = null;
+  gerarGrade();
+  renderGrade();
+  renderBanco();
+}
+
+reiniciar();
+</script>
+
+<!-- ── GAMIFICAÇÃO ─────────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../../shared/gamification.js"></script>
+<script>
+(function () {
+  var SUPA_URL      = 'https://mmtrzxmitklpibfilbio.supabase.co';
+  var SUPA_KEY      = 'sb_publishable_ZgA70ikD1XRgEhxzz7aKzQ_TNSAsxQ_';
+  var THEME_SLUG    = 'tipos-trabalhadores';
+  var DISCIPLINE    = 'historia';
+  var ACTIVITY_TYPE = 'caca-palavras';
+  var TOTAL_ATIV    = 5;
+  var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  function abrirGamificacao() {
+    supa.auth.getSession().then(function (result) {
+      var uid = result.data.session ? result.data.session.user.id : 'anonimo';
+
+      supa.from('activity_log').insert({
+        user_id: uid, discipline: DISCIPLINE,
+        theme_slug: THEME_SLUG, activity_type: ACTIVITY_TYPE,
+        score: typeof window.sabendoScore === 'number' ? window.sabendoScore : 0
+      });
+
+      SabendoGamification.run(supa, uid, THEME_SLUG, DISCIPLINE, {
+        characterName:   'Juca',
+        characterEmoji:  '🐜',
+        characterImg:    'chars/tipos-trabalhadores-hd.png',
+        themeLabel:      'Tipos de Trabalhadores · História',
+        totalActivities: TOTAL_ATIV,
+        activityType:    ACTIVITY_TYPE,
+        primaryColor:    '#A855F7',
+        lightColor:      '#D08EF8',
+        bgColor:         '#FAF5FF',
+        glowRgb:         '168,85,247',
+        backUrl:         '../../index.html'
+      });
+    });
+  }
+
+  var _scoreVal = null;
+  Object.defineProperty(window, 'sabendoScore', {
+    configurable: true,
+    set: function (v) {
+      _scoreVal = v;
+      var btn = document.getElementById('gamificacao-btn');
+      if (btn) btn.style.display = 'block';
+    },
+    get: function () { return _scoreVal; }
+  });
+  window._abrirGamificacao = abrirGamificacao;
+})();
+</script>
+
+<button id="gamificacao-btn"
+  onclick="window._abrirGamificacao()"
+  style="display:none;margin:24px auto;padding:16px 32px;
+    background:linear-gradient(135deg,#A855F7,#D08EF8);
+    color:#fff;border:none;border-radius:50px;
+    font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;
+    cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);
+    width:fit-content;min-height:44px;">
+  Coletar minha carta! 🃏
+</button>
+<script src="../../shared/portal-back.js"></script>
+</body>
+</html>
