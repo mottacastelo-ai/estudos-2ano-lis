@@ -519,7 +519,7 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
     <button class="disc-nav-btn hist-active" id="nav-hist" onclick="showDisc('hist')">
       <span class="d-icon">📜</span>
       <span class="d-name">História</span>
-      <span class="d-count" id="count-hist">8 temas</span>
+      <span class="d-count" id="count-hist">9 temas</span>
     </button>
     <div class="theme-sub" id="sub-hist">
       <button class="theme-link" onclick="showTheme('hist','memorias-lugares')">🏛️ Memórias dos Lugares</button>
@@ -530,6 +530,7 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
       <button class="theme-link" onclick="showTheme('hist','convivencia-transportes-coletivos')">🔔 Convivência nos Transportes Coletivos</button>
       <button class="theme-link" onclick="showTheme('hist','diarios-cartas')">🖋️ Diários e Cartas</button>
       <button class="theme-link" onclick="showTheme('hist','albuns-fotografia')">📸 Álbuns de Fotografia</button>
+      <button class="theme-link" onclick="showTheme('hist','objetos-memorias')">⏱️ Objetos e Memórias</button>
     </div>
 
     <button class="disc-nav-btn port-active" id="nav-port" onclick="showDisc('port')">
@@ -564,8 +565,8 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
       <div class="home-subtitle">Escolha uma disciplina e vamos aprender juntos! 🎉</div>
       <div class="home-stats">
         <div class="hstat"><span class="hstat-num">5</span><span class="hstat-label">disciplinas</span></div>
-        <div class="hstat"><span class="hstat-num">33</span><span class="hstat-label">temas</span></div>
-        <div class="hstat"><span class="hstat-num">154</span><span class="hstat-label">atividades</span></div>
+        <div class="hstat"><span class="hstat-num">34</span><span class="hstat-label">temas</span></div>
+        <div class="hstat"><span class="hstat-num">159</span><span class="hstat-label">atividades</span></div>
       </div>
       <div class="home-stats" id="streak-banner" style="margin-top:16px;">
         <div class="hstat"><span class="hstat-num" id="streak-count">0</span><span class="hstat-label">🔥 dias seguidos</span></div>
@@ -607,8 +608,8 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
           <div class="dhc-name">História</div>
           <div class="dhc-desc">Histórias, memórias e como vivemos juntos 🏘️</div>
           <div class="dhc-chips">
-            <span class="chip" style="background:#F3E8FF;color:#6D28D9">8 temas</span>
-            <span class="chip" style="background:#FAF5FF;color:#7E22CE">35 atividades</span>
+            <span class="chip" style="background:#F3E8FF;color:#6D28D9">9 temas</span>
+            <span class="chip" style="background:#FAF5FF;color:#7E22CE">40 atividades</span>
           </div>
         </button>
         <button class="disc-home-card port" onclick="showDisc('port')">
@@ -1088,7 +1089,7 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
   <div class="screen" id="screen-hist">
     <div class="disc-hero hist">
       <div class="disc-hero-title">📜 História</div>
-      <div class="disc-hero-sub">7 temas · 30 atividades</div>
+      <div class="disc-hero-sub">9 temas · 40 atividades</div>
     </div>
     <div class="disc-body">
 
@@ -1101,6 +1102,7 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
         <button class="theme-tab-btn hist-tab" id="tab-hist-convivencia-transportes-coletivos" onclick="showTheme('hist','convivencia-transportes-coletivos')">🔔 Convivência nos Transportes Coletivos</button>
         <button class="theme-tab-btn hist-tab" id="tab-hist-diarios-cartas" onclick="showTheme('hist','diarios-cartas')">🖋️ Diários e Cartas</button>
         <button class="theme-tab-btn hist-tab" id="tab-hist-albuns-fotografia" onclick="showTheme('hist','albuns-fotografia')">📸 Álbuns de Fotografia</button>
+        <button class="theme-tab-btn hist-tab" id="tab-hist-objetos-memorias" onclick="showTheme('hist','objetos-memorias')">⏱️ Objetos e Memórias</button>
       </div>
 
       <!-- ── TEMA 1: MEMÓRIAS DOS LUGARES ── -->
@@ -1803,6 +1805,100 @@ body { font-family: 'Nunito', sans-serif; background: #F8FAFC; display: flex; mi
         <div class="sched">
           <div class="sched-row"><span class="sched-day" style="color:var(--hist-color)">Dia 1</span><span class="sched-acts">HQ + Verdadeiro ou Falso</span></div>
           <div class="sched-row"><span class="sched-day" style="color:var(--hist-color)">Dia 2</span><span class="sched-acts">Arrastar e Soltar + Ilustrador</span></div>
+          <div class="sched-row"><span class="sched-day" style="color:var(--hist-color)">Dia 3</span><span class="sched-acts">Quiz Interativo + Mapa Mental</span></div>
+        </div>
+      </div>
+
+      <div class="theme-content" id="theme-hist-objetos-memorias">
+        <div class="hq-card">
+          <div class="hq-viewer-wrap">
+            <div class="hq-viewer-title">⏱️ O Tic-Tac das Memórias</div>
+            <div class="hq-viewer-sub">Aventura com Lis e Tic-Tac · 4 páginas</div>
+            <div class="hq-book-outer">
+              <div class="hq-book-shadow"></div>
+              <div class="hq-book-stack">
+                <div class="hq-page-base" id="hq-objetos-display">
+                  <img id="hq-objetos-img" src="historia/objetos-memorias/hq-objetos-memorias-pg1.png" alt="HQ Objetos e Memórias — Página 1" draggable="false" style="object-fit:contain; touch-action:auto;">
+                  <div class="hq-shine"></div>
+                </div>
+              </div>
+            </div>
+            <div class="hq-controls">
+              <button class="hq-btn" id="hq-objetos-prev" onclick="hqGoTo('objetos',hqCurrent['objetos']-1)" disabled>◀ Voltar</button>
+              <div class="hq-indicator" id="hq-objetos-ind">1 / 4</div>
+              <button class="hq-btn" id="hq-objetos-next" onclick="hqGoTo('objetos',hqCurrent['objetos']+1)">Próxima ▶</button>
+            </div>
+            <div class="hq-dots" id="hq-objetos-dots">
+              <div class="hq-dot active" onclick="hqGoTo('objetos',0)"></div>
+              <div class="hq-dot" onclick="hqGoTo('objetos',1)"></div>
+              <div class="hq-dot" onclick="hqGoTo('objetos',2)"></div>
+              <div class="hq-dot" onclick="hqGoTo('objetos',3)"></div>
+            </div>
+          </div>
+          <div class="hq-caption">
+            <span>📖</span>
+            <span>O Tic-Tac das Memórias — 4 páginas · Personagens: Lis e Tic-Tac (relógio de bolso de família antigo e animado) · Tema: objetos de família como fontes de memória e história oral</span>
+          </div>
+          <div class="livro-ref">📚 Livro p. 78–91</div>
+        </div>
+        <hr class="sdiv">
+        <div class="act-grid">
+          <a class="act-card hist" href="historia/objetos-memorias/vf-objetos-memorias.html" target="_blank">
+            <div class="act-icon">✅</div>
+            <div class="act-title">Verdadeiro ou Falso</div>
+            <div class="act-desc">Descubra o que é verdadeiro sobre objetos e memórias de família!</div>
+            <div class="act-tags">
+              <span class="tag tag-hist">História</span>
+              <span class="tag tag-a">Discussão</span>
+            </div>
+            <span class="level lv1">💬 Explorar</span>
+          </a>
+          <a class="act-card hist" href="historia/objetos-memorias/memoria-objetos-memorias.html" target="_blank">
+            <div class="act-icon">🃏</div>
+            <div class="act-title">Jogo da Memória</div>
+            <div class="act-desc">Encontre os pares: cada objeto de família com sua lembrança!</div>
+            <div class="act-tags">
+              <span class="tag tag-hist">História</span>
+              <span class="tag tag-a">Memória</span>
+            </div>
+            <span class="level lv2">⚡ Praticar</span>
+          </a>
+          <a class="act-card hist" href="historia/objetos-memorias/criador-frase-objetos-memorias.html" target="_blank">
+            <div class="act-icon">✍️</div>
+            <div class="act-title">Criador de Frases!</div>
+            <div class="act-desc">Monte frases sobre objetos de família escolhendo as palavras do banco!</div>
+            <div class="act-tags">
+              <span class="tag tag-hist">História</span>
+              <span class="tag tag-a">Criar</span>
+            </div>
+            <span class="level lv3">🏆 Criar</span>
+          </a>
+          <a class="act-card hist" href="historia/objetos-memorias/quiz-objetos-memorias.html" target="_blank">
+            <div class="act-icon">❓</div>
+            <div class="act-title">Quiz Interativo</div>
+            <div class="act-desc">Perguntas sobre objetos de família e memórias que eles guardam.</div>
+            <div class="act-tags">
+              <span class="tag tag-hist">História</span>
+              <span class="tag tag-a">Ativo</span>
+            </div>
+            <span class="level lv4">📖 Retrieval practice</span>
+          </a>
+          <a class="act-card hist" href="historia/objetos-memorias/mapa-mental-objetos-memorias.html" target="_blank">
+            <div class="act-icon">🗺️</div>
+            <div class="act-title">Mapa Mental</div>
+            <div class="act-desc">Monte o mapa com os conceitos de objetos e memórias.</div>
+            <div class="act-tags">
+              <span class="tag tag-hist">História</span>
+              <span class="tag tag-a">Arrastar</span>
+            </div>
+            <span class="level lv3">🏆 Explicar</span>
+          </a>
+        </div>
+        <hr class="sdiv">
+        <div class="sched-title">📅 Sugestão de uso</div>
+        <div class="sched">
+          <div class="sched-row"><span class="sched-day" style="color:var(--hist-color)">Dia 1</span><span class="sched-acts">HQ + Verdadeiro ou Falso</span></div>
+          <div class="sched-row"><span class="sched-day" style="color:var(--hist-color)">Dia 2</span><span class="sched-acts">Jogo da Memória + Criador de Frases</span></div>
           <div class="sched-row"><span class="sched-day" style="color:var(--hist-color)">Dia 3</span><span class="sched-acts">Quiz Interativo + Mapa Mental</span></div>
         </div>
       </div>
@@ -3319,6 +3415,7 @@ var hqPages = {
   transportes:   ['historia/convivencia-transportes-coletivos/hq-convivencia-transportes-coletivos-pg1.png','historia/convivencia-transportes-coletivos/hq-convivencia-transportes-coletivos-pg2.png','historia/convivencia-transportes-coletivos/hq-convivencia-transportes-coletivos-pg3.png','historia/convivencia-transportes-coletivos/hq-convivencia-transportes-coletivos-pg4.png'],
   diarios:       ['historia/diarios-cartas/hq-diarios-cartas-pg1.png','historia/diarios-cartas/hq-diarios-cartas-pg2.png','historia/diarios-cartas/hq-diarios-cartas-pg3.png','historia/diarios-cartas/hq-diarios-cartas-pg4.png'],
   albuns:        ['historia/albuns-fotografia/hq-albuns-fotografia-pg1.png','historia/albuns-fotografia/hq-albuns-fotografia-pg2.png','historia/albuns-fotografia/hq-albuns-fotografia-pg3.png','historia/albuns-fotografia/hq-albuns-fotografia-pg4.png'],
+  objetos:       ['historia/objetos-memorias/hq-objetos-memorias-pg1.png','historia/objetos-memorias/hq-objetos-memorias-pg2.png','historia/objetos-memorias/hq-objetos-memorias-pg3.png','historia/objetos-memorias/hq-objetos-memorias-pg4.png'],
   ordinais:      ['matematica/numeros-ordinais/hq-numeros-ordinais-pg1.png','matematica/numeros-ordinais/hq-numeros-ordinais-pg2.png','matematica/numeros-ordinais/hq-numeros-ordinais-pg3.png','matematica/numeros-ordinais/hq-numeros-ordinais-pg4.png'],
   dezena:        ['matematica/dezena-numeros-ate-19/hq-dezena-numeros-ate-19-pg1.png','matematica/dezena-numeros-ate-19/hq-dezena-numeros-ate-19-pg2.png','matematica/dezena-numeros-ate-19/hq-dezena-numeros-ate-19-pg3.png','matematica/dezena-numeros-ate-19/hq-dezena-numeros-ate-19-pg4.png'],
   pares:         ['matematica/pares-impares-dezenas-exatas/hq-pares-impares-dezenas-exatas-pg1.png','matematica/pares-impares-dezenas-exatas/hq-pares-impares-dezenas-exatas-pg2.png','matematica/pares-impares-dezenas-exatas/hq-pares-impares-dezenas-exatas-pg3.png','matematica/pares-impares-dezenas-exatas/hq-pares-impares-dezenas-exatas-pg4.png'],

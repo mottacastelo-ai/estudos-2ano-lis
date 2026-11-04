@@ -1,6 +1,6 @@
 # Inventário do Portal — Lis (2º Ano)
 
-> Gerado automaticamente por `scripts/update-docs.py` em 2026-09-22.
+> Gerado automaticamente por `scripts/update-docs.py` em 2026-11-04.
 > Fonte primária: `index.html`. Existência de arquivos validada no filesystem.
 
 ---
@@ -13,8 +13,8 @@
 | 🔢 Matemática | 11 | 52 | 11/11 |
 | 🔬 Ciências | 4 | 16 | 4/4 |
 | 🌍 Geografia | 2 | 8 | 2/2 |
-| 📜 História | 8 | 35 | 7/8 |
-| **Total** | **33** | **154** | **32/33** |
+| 📜 História | 9 | 40 | 8/9 |
+| **Total** | **34** | **159** | **33/34** |
 
 ---
 
@@ -420,6 +420,18 @@
 - ✅ [Ilustrador](historia/albuns-fotografia/ilustrador-albuns-fotografia.html)
 - ✅ [Quiz Interativo](historia/albuns-fotografia/quiz-albuns-fotografia.html)
 - ✅ [Mapa Mental](historia/albuns-fotografia/mapa-mental-albuns-fotografia.html)
+
+### objetos-memorias
+
+**HQ:** `hq-objetos-memorias-pg1.png` — ✅ p1 · ✅ p2 · ✅ p3 · ✅ p4 | ✅ prompt.md
+
+**Atividades (5):**
+
+- ✅ [Verdadeiro ou Falso](historia/objetos-memorias/vf-objetos-memorias.html)
+- ✅ [Jogo da Memória](historia/objetos-memorias/memoria-objetos-memorias.html)
+- ✅ [Criador de Frases!](historia/objetos-memorias/criador-frase-objetos-memorias.html)
+- ✅ [Quiz Interativo](historia/objetos-memorias/quiz-objetos-memorias.html)
+- ✅ [Mapa Mental](historia/objetos-memorias/mapa-mental-objetos-memorias.html)
 
 ---
 
